@@ -19,7 +19,7 @@
         <div class="max-w-4xl mx-auto flex justify-between items-center">
             <div>
                 <h1 class="text-3xl font-bold"><i class="fa-solid fa-rocket mr-2"></i> SCiUS Space</h1>
-                <p class="text-blue-100 mt-1">ห้องเรียนออนไลน์ วมว.</p>
+                <p class="text-blue-100 mt-1">ห้องเรียนออนไลน์ วมว. มหาวิทยาลัยนเรศวร</p>
             </div>
             <div id="userProfile" class="hidden text-right">
                 <p class="text-sm text-blue-200">เข้าสู่ระบบโดย</p>
@@ -57,12 +57,12 @@
         </div>
 
         <div id="dashboardView" class="hidden">
-            <div id="adminPanel" class="hidden mb-6 bg-yellow-50 p-4 rounded-xl border border-yellow-200 flex justify-between items-center">
+            <div id="adminPanel" class="hidden mb-6 bg-yellow-50 p-4 rounded-xl border border-yellow-200 flex flex-col md:flex-row justify-between items-center gap-4">
                 <div>
-                    <h3 class="font-bold text-yellow-800"><i class="fa-solid fa-crown"></i> เมนูสำหรับผู้ดูแล</h3>
-                    <p class="text-sm text-yellow-700">คุณสามารถจัดการบทเรียนและดูคะแนนได้</p>
+                    <h3 class="font-bold text-yellow-800"><i class="fa-solid fa-crown"></i> เมนูสำหรับอาจารย์ผู้สอน</h3>
+                    <p class="text-sm text-yellow-700">จัดการบทเรียน, ข้อสอบ และดูคะแนนนักเรียน</p>
                 </div>
-                <a href="https://script.google.com/macros/s/AKfycbyfjFSPDWkUs-EB2oTpYQRWcvJEDriuLX8l4FHpvJ0hH8mGkfA_dC-uM9t0YetjcZpNaQ/exec" target="_blank" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg font-bold text-sm shadow-sm transition">
+                <a href="ใส่_ลิงก์_GOOGLE_SHEETS_ตรงนี้" target="_blank" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg font-bold text-sm shadow-sm transition whitespace-nowrap">
                     จัดการข้อมูลหลังบ้าน
                 </a>
             </div>
@@ -91,29 +91,29 @@
                     <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
                         <p id="disp_q1" class="font-semibold text-lg mb-3">1. คำถาม?</p>
                         <div class="space-y-2">
-                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer"><input type="radio" name="ans1" value="1" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c1_1">ตัวเลือก</span></label>
-                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer"><input type="radio" name="ans1" value="2" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c1_2">ตัวเลือก</span></label>
-                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer"><input type="radio" name="ans1" value="3" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c1_3">ตัวเลือก</span></label>
+                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer hover:bg-green-50 transition"><input type="radio" name="ans1" value="1" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c1_1">ก</span></label>
+                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer hover:bg-green-50 transition"><input type="radio" name="ans1" value="2" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c1_2">ข</span></label>
+                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer hover:bg-green-50 transition"><input type="radio" name="ans1" value="3" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c1_3">ค</span></label>
                         </div>
                     </div>
                     <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
                         <p id="disp_q2" class="font-semibold text-lg mb-3">2. คำถาม?</p>
                         <div class="space-y-2">
-                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer"><input type="radio" name="ans2" value="1" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c2_1">ตัวเลือก</span></label>
-                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer"><input type="radio" name="ans2" value="2" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c2_2">ตัวเลือก</span></label>
-                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer"><input type="radio" name="ans2" value="3" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c2_3">ตัวเลือก</span></label>
+                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer hover:bg-green-50 transition"><input type="radio" name="ans2" value="1" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c2_1">ก</span></label>
+                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer hover:bg-green-50 transition"><input type="radio" name="ans2" value="2" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c2_2">ข</span></label>
+                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer hover:bg-green-50 transition"><input type="radio" name="ans2" value="3" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c2_3">ค</span></label>
                         </div>
                     </div>
                     <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
                         <p id="disp_q3" class="font-semibold text-lg mb-3">3. คำถาม?</p>
                         <div class="space-y-2">
-                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer"><input type="radio" name="ans3" value="1" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c3_1">ตัวเลือก</span></label>
-                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer"><input type="radio" name="ans3" value="2" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c3_2">ตัวเลือก</span></label>
-                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer"><input type="radio" name="ans3" value="3" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c3_3">ตัวเลือก</span></label>
+                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer hover:bg-green-50 transition"><input type="radio" name="ans3" value="1" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c3_1">ก</span></label>
+                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer hover:bg-green-50 transition"><input type="radio" name="ans3" value="2" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c3_2">ข</span></label>
+                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer hover:bg-green-50 transition"><input type="radio" name="ans3" value="3" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c3_3">ค</span></label>
                         </div>
                     </div>
 
-                    <button type="button" onclick="submitQuiz()" class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-4 rounded-xl mt-4 shadow-md transition text-lg">
+                    <button type="button" onclick="submitQuiz()" class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-4 rounded-xl mt-4 shadow-md transition text-lg transform hover:-translate-y-1">
                         ส่งคำตอบและบันทึกคะแนน 🚀
                     </button>
                 </form>
@@ -122,17 +122,15 @@
     </main>
 
     <script>
-        // ⚠️ นำ Web App URL ของคุณมาใส่ตรงนี้
-        const GAS_URL = 'ใส่_URL_ของ_APPS_SCRIPT_ตรงนี้';
+        // ⚠️ เอา Web App URL จาก Google Apps Script (ส่วนที่ 1) มาวางตรงนี้ ⚠️
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbyfjFSPDWkUs-EB2oTpYQRWcvJEDriuLX8l4FHpvJ0hH8mGkfA_dC-uM9t0YetjcZpNaQ/exec';
         
         let allLessons = [];
         let currentLesson = null;
-        
-        // ตัวแปรเก็บข้อมูลคนที่ Login แล้ว
         let currentUser = "";
         let currentRole = "";
 
-        // 1. ฟังก์ชันเข้าสู่ระบบ
+        // ฟังก์ชัน Login
         function login() {
             const userBox = document.getElementById('username').value.trim();
             const passBox = document.getElementById('password').value.trim();
@@ -144,50 +142,46 @@
 
             Swal.fire({ title: 'กำลังตรวจสอบ...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
-            // ส่งข้อมูลไปตรวจที่ Apps Script
+            // ส่งไปเช็คที่ Apps Script
             fetch(GAS_URL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: JSON.stringify({ action: "login", username: userBox, password: passBox })
             })
-            .then(response => response.json())
+            .then(res => res.json())
             .then(result => {
                 if (result.status === "success") {
-                    // Login สำเร็จ
                     currentUser = result.name;
                     currentRole = result.role;
 
-                    // แสดงชื่อบน Header
                     document.getElementById('userProfile').classList.remove('hidden');
                     document.getElementById('displayUserName').innerText = currentUser;
 
-                    // เปลี่ยนหน้าไป Dashboard
                     document.getElementById('loginView').style.display = 'none';
                     document.getElementById('dashboardView').style.display = 'block';
 
-                    // โชว์เมนูพิเศษถ้าเป็น Teacher หรือ Admin
+                    // โชว์เมนูแอดมินถ้าเป็น teacher หรือ admin
                     if (currentRole === 'teacher' || currentRole === 'admin') {
                         document.getElementById('adminPanel').classList.remove('hidden');
                     }
 
                     Swal.close();
-                    loadLessons(); // สั่งดึงบทเรียน
+                    loadLessons(); 
                 } else {
                     Swal.fire('เข้าสู่ระบบไม่สำเร็จ', result.message, 'error');
                 }
-            }).catch(err => {
-                Swal.fire('ระบบขัดข้อง', 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้', 'error');
+            })
+            .catch(err => {
+                Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้ กรุณาลองใหม่', 'error');
             });
         }
 
-        // 2. ดึงบทเรียนทั้งหมดจาก Google Sheets
+        // ดึงบทเรียนมาแสดง
         function loadLessons() {
             fetch(GAS_URL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: JSON.stringify({ action: "getLessons" })
             })
-            .then(response => response.json())
+            .then(res => res.json())
             .then(result => {
                 if (result.status === "success") {
                     allLessons = result.data;
@@ -196,7 +190,7 @@
             });
         }
 
-        // 3. สร้างการ์ดบทเรียน
+        // สร้างการ์ดบทเรียน
         function renderLessons() {
             document.getElementById('loadingLessons').style.display = 'none';
             const grid = document.getElementById('lessonGrid');
@@ -210,19 +204,18 @@
                             <span class="text-slate-400 text-xs"><i class="fa-solid fa-eye"></i> ${lesson.views}</span>
                         </div>
                         <h3 class="text-lg font-bold text-slate-800">${lesson.title}</h3>
-                        <p class="text-sm text-slate-500 mt-2">คลิกเพื่อเข้าสู่บทเรียน 👉</p>
+                        <p class="text-sm text-slate-500 mt-2 text-blue-500 hover:underline">คลิกเพื่อเข้าสู่บทเรียน 👉</p>
                     </div>
                 `;
             });
         }
 
-        // 4. เมื่อกดเข้าบทเรียน
+        // เปิดหน้าเนื้อหา
         function openLesson(index) {
             currentLesson = allLessons[index];
             document.getElementById('dashboardView').style.display = 'none';
             document.getElementById('lessonView').style.display = 'block';
             
-            // ใส่ข้อมูลลงหน้าเว็บ
             document.getElementById('displayEp').innerText = currentLesson.ep;
             document.getElementById('displayTitle').innerText = currentLesson.title;
             document.getElementById('displayContent').innerText = currentLesson.content;
@@ -245,20 +238,21 @@
             
             document.getElementById('quizForm').reset();
 
-            // ส่งบันทึกยอด View
+            // ส่งข้อมูลบันทึก View ลง Sheets ทันที
             fetch(GAS_URL, {
-                method: 'POST', body: JSON.stringify({ action: "view", studentName: currentUser, lessonName: currentLesson.title })
+                method: 'POST',
+                body: JSON.stringify({ action: "view", studentName: currentUser, lessonName: currentLesson.title })
             });
         }
 
-        // 5. ส่งข้อสอบ
+        // ส่งข้อสอบ
         function submitQuiz() {
             const a1 = document.querySelector('input[name="ans1"]:checked');
             const a2 = document.querySelector('input[name="ans2"]:checked');
             const a3 = document.querySelector('input[name="ans3"]:checked');
 
             if (!a1 || !a2 || !a3) {
-                Swal.fire('เอ๊ะ!', 'กรุณาตอบคำถามให้ครบ 3 ข้อนะ', 'warning');
+                Swal.fire('ยังทำไม่ครบ!', 'กรุณาเลือกคำตอบให้ครบทั้ง 3 ข้อก่อนส่งครับ', 'warning');
                 return;
             }
 
@@ -267,14 +261,20 @@
             if (a2.value === currentLesson.ans2) score++;
             if (a3.value === currentLesson.ans3) score++;
 
-            Swal.fire({ icon: score >= 2 ? 'success' : 'info', title: score === 3 ? 'ยอดเยี่ยม! 🎉' : 'ทำได้ดี!', text: `คุณทำได้ ${score} / 3 คะแนน` });
+            Swal.fire({ 
+                icon: score >= 2 ? 'success' : 'info', 
+                title: score === 3 ? 'ยอดเยี่ยม! 🎉' : 'ทำได้ดี!', 
+                text: `คุณทำได้ ${score} / 3 คะแนน ข้อมูลถูกบันทึกเข้าระบบแล้ว` 
+            });
 
-            // ส่งบันทึกคะแนน
+            // ส่งคะแนนไปบันทึกลง Sheets
             fetch(GAS_URL, {
-                method: 'POST', body: JSON.stringify({ action: "quiz", studentName: currentUser, lessonName: currentLesson.title, score: score })
+                method: 'POST',
+                body: JSON.stringify({ action: "quiz", studentName: currentUser, lessonName: currentLesson.title, score: score })
             });
         }
 
+        // ปุ่มกลับ
         function goBack() {
             document.getElementById('dashboardView').style.display = 'block';
             document.getElementById('lessonView').style.display = 'none';
