@@ -3,281 +3,411 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCiUS-Space ระบบนิเวศการเรียนรู้ วมว.</title>
+    <title>SCiUS Learning Ecosystem</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;700&family=Sarabun:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style> 
-        body { font-family: 'Sarabun', sans-serif; background-color: #f0f4f8; } 
-        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+    <style>
+        h1, h2, h3, .font-prompt { font-family: 'Prompt', sans-serif; }
+        body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; }
+        .student-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .student-card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
     </style>
 </head>
-<body class="text-slate-800 pb-20">
+<body class="pb-20 text-slate-800">
 
     <header class="bg-blue-700 text-white p-6 shadow-lg rounded-b-3xl mb-8">
-        <div class="max-w-4xl mx-auto flex justify-between items-center">
+        <div class="max-w-5xl mx-auto flex justify-between items-center">
             <div>
                 <h1 class="text-3xl font-bold"><i class="fa-solid fa-rocket mr-2"></i> SCiUS Space</h1>
-                <p class="text-blue-100 mt-1">ห้องเรียนออนไลน์ วมว. มหาวิทยาลัยนเรศวร</p>
+                <p class="text-blue-100 mt-1 font-prompt">ห้องเรียนออนไลน์ วมว. มหาวิทยาลัยนเรศวร</p>
             </div>
-            <div id="userProfile" class="hidden text-right">
+            <div id="userProfile" class="hidden flex flex-col items-end">
                 <p class="text-sm text-blue-200">เข้าสู่ระบบโดย</p>
-                <p id="displayUserName" class="font-bold text-lg">ชื่อผู้ใช้</p>
+                <p id="displayUserName" class="font-bold text-lg mb-2 font-prompt">ชื่อผู้ใช้</p>
+                <button onclick="logout()" class="text-xs bg-red-500 hover:bg-red-600 px-3 py-1.5 rounded-lg shadow-sm transition flex items-center">
+                    <i class="fa-solid fa-right-from-bracket mr-1"></i> ออกจากระบบ
+                </button>
             </div>
         </div>
     </header>
 
-    <main class="max-w-4xl mx-auto px-4">
+    <main class="max-w-5xl mx-auto px-4">
         
         <div id="loginView" class="max-w-md mx-auto mt-10">
             <div class="bg-white p-8 rounded-3xl shadow-xl border-t-4 border-blue-600">
                 <div class="text-center mb-8">
-                    <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
-                        <i class="fa-solid fa-user-astronaut"></i>
-                    </div>
-                    <h2 class="text-2xl font-bold text-slate-800">เข้าสู่ระบบ</h2>
-                    <p class="text-slate-500">กรอกรหัสประจำตัวเพื่อเข้าสู่ชั้นเรียน</p>
+                    <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><i class="fa-solid fa-user-astronaut"></i></div>
+                    <h2 class="text-2xl font-bold text-slate-800 font-prompt">เข้าสู่ระบบ</h2>
+                    <p class="text-slate-500">SCiUS Digital Learning Ecosystem</p>
                 </div>
-                
                 <form id="loginForm" class="space-y-5">
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-1">รหัสผู้ใช้งาน (Username)</label>
-                        <input type="text" id="username" class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" placeholder="เช่น 68001 หรือ T001" required>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">รหัสผู้ใช้งาน</label>
+                        <input type="text" id="login_user" class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-1">รหัสผ่าน (Password)</label>
-                        <input type="password" id="password" class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" placeholder="••••••••" required>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">รหัสผ่าน</label>
+                        <input type="password" id="login_pass" class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" required>
                     </div>
-                    <button type="button" onclick="login()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition shadow-md">
+                    <button type="button" onclick="login()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition shadow-md font-prompt">
                         Login เข้าสู่ระบบ
                     </button>
                 </form>
             </div>
         </div>
 
-        <div id="dashboardView" class="hidden">
-            <div id="adminPanel" class="hidden mb-6 bg-yellow-50 p-4 rounded-xl border border-yellow-200 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div id="studentDashboardView" class="hidden">
+            <div class="flex items-center justify-between mb-8">
                 <div>
-                    <h3 class="font-bold text-yellow-800"><i class="fa-solid fa-crown"></i> เมนูสำหรับอาจารย์ผู้สอน</h3>
-                    <p class="text-sm text-yellow-700">จัดการบทเรียน, ข้อสอบ และดูคะแนนนักเรียน</p>
+                    <h2 class="text-3xl font-bold text-slate-800 mb-1 font-prompt">สวัสดี, <span id="welcomeName">นักเรียน</span> 👋</h2>
+                    <p class="text-slate-500 text-lg">พร้อมลุยภารกิจโครงงานวิทยาศาสตร์วันนี้หรือยัง?</p>
                 </div>
-                <a href="ใส่_ลิงก์_GOOGLE_SHEETS_ตรงนี้" target="_blank" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg font-bold text-sm shadow-sm transition whitespace-nowrap">
-                    จัดการข้อมูลหลังบ้าน
-                </a>
             </div>
-
-            <h2 class="text-xl font-bold mb-4 text-slate-700">ภารกิจการเรียนรู้ของคุณ 🎯</h2>
             <div id="loadingLessons" class="text-center text-blue-500 py-10 font-bold"><i class="fa-solid fa-spinner fa-spin mr-2"></i> กำลังโหลดบทเรียน...</div>
-            <div id="lessonGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            <div id="lessonGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
         </div>
 
-        <div id="lessonView" class="hidden">
-            <button onclick="goBack()" class="text-blue-600 font-bold mb-4 hover:underline"><i class="fa-solid fa-arrow-left mr-1"></i> กลับไปหน้าหลัก</button>
+        <div id="lessonDetailView" class="hidden max-w-4xl mx-auto">
+            <button onclick="backToStudentDashboard()" class="text-blue-600 font-bold mb-4 hover:underline"><i class="fa-solid fa-arrow-left mr-1"></i> กลับไปหน้าหลัก</button>
             
-            <div class="glass-card rounded-2xl shadow-lg p-6 md:p-8 border-t-4 border-blue-500 mb-6">
+            <div class="bg-white rounded-[2rem] shadow-lg p-6 md:p-10 border-t-4 border-blue-500 mb-6">
                 <div class="flex justify-between items-start mb-4">
-                    <span id="displayEp" class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-bold">EP.X</span>
-                    <span class="text-slate-500 text-sm"><i class="fa-solid fa-eye text-blue-500"></i> เข้าชม <span id="displayViews" class="font-bold text-slate-800">0</span> คน</span>
+                    <span id="det_ep" class="bg-blue-100 text-blue-700 px-4 py-1.5 rounded-full text-sm font-bold">EP.X</span>
+                    <span class="text-slate-500 text-sm"><i class="fa-solid fa-eye text-blue-500"></i> เข้าชม <span id="det_views" class="font-bold">0</span> คน</span>
                 </div>
-                <h2 id="displayTitle" class="text-3xl font-bold text-slate-800 mb-6">ชื่อบทเรียน</h2>
-                <div id="displayContent" class="prose max-w-none text-slate-700 leading-relaxed mb-8 whitespace-pre-wrap"></div>
+                <h2 id="det_title" class="text-3xl font-bold text-slate-800 mb-6 font-prompt">ชื่อบทเรียน</h2>
+                <div id="det_content" class="prose max-w-none text-slate-700 leading-relaxed mb-8 whitespace-pre-wrap text-lg"></div>
             </div>
 
-            <div class="glass-card rounded-2xl shadow-lg p-6 md:p-8 border-t-4 border-green-500">
-                <h3 class="text-xl font-bold mb-6 text-slate-800"><i class="fa-solid fa-gamepad text-green-500 mr-2"></i> ทดสอบความเข้าใจ (3 ข้อ)</h3>
-                
+            <div class="bg-white rounded-[2rem] shadow-lg p-6 md:p-10 border-t-4 border-emerald-500">
+                <h3 class="text-2xl font-bold mb-6 text-slate-800 font-prompt"><i class="fa-solid fa-gamepad text-emerald-500 mr-2"></i> ทดสอบความเข้าใจ (3 ข้อ)</h3>
                 <form id="quizForm" class="space-y-6">
-                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
-                        <p id="disp_q1" class="font-semibold text-lg mb-3">1. คำถาม?</p>
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200">
+                        <p id="det_q1" class="font-bold text-lg mb-4">1. คำถาม?</p>
                         <div class="space-y-2">
-                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer hover:bg-green-50 transition"><input type="radio" name="ans1" value="1" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c1_1">ก</span></label>
-                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer hover:bg-green-50 transition"><input type="radio" name="ans1" value="2" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c1_2">ข</span></label>
-                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer hover:bg-green-50 transition"><input type="radio" name="ans1" value="3" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c1_3">ค</span></label>
+                            <label class="flex items-center p-3 bg-white border rounded-xl cursor-pointer hover:bg-emerald-50 transition"><input type="radio" name="ans1" value="1" class="w-5 h-5 text-emerald-600 mr-3"> <span id="det_c1_1">ก</span></label>
+                            <label class="flex items-center p-3 bg-white border rounded-xl cursor-pointer hover:bg-emerald-50 transition"><input type="radio" name="ans1" value="2" class="w-5 h-5 text-emerald-600 mr-3"> <span id="det_c1_2">ข</span></label>
+                            <label class="flex items-center p-3 bg-white border rounded-xl cursor-pointer hover:bg-emerald-50 transition"><input type="radio" name="ans1" value="3" class="w-5 h-5 text-emerald-600 mr-3"> <span id="det_c1_3">ค</span></label>
                         </div>
                     </div>
-                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
-                        <p id="disp_q2" class="font-semibold text-lg mb-3">2. คำถาม?</p>
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200">
+                        <p id="det_q2" class="font-bold text-lg mb-4">2. คำถาม?</p>
                         <div class="space-y-2">
-                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer hover:bg-green-50 transition"><input type="radio" name="ans2" value="1" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c2_1">ก</span></label>
-                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer hover:bg-green-50 transition"><input type="radio" name="ans2" value="2" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c2_2">ข</span></label>
-                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer hover:bg-green-50 transition"><input type="radio" name="ans2" value="3" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c2_3">ค</span></label>
+                            <label class="flex items-center p-3 bg-white border rounded-xl cursor-pointer hover:bg-emerald-50 transition"><input type="radio" name="ans2" value="1" class="w-5 h-5 text-emerald-600 mr-3"> <span id="det_c2_1">ก</span></label>
+                            <label class="flex items-center p-3 bg-white border rounded-xl cursor-pointer hover:bg-emerald-50 transition"><input type="radio" name="ans2" value="2" class="w-5 h-5 text-emerald-600 mr-3"> <span id="det_c2_2">ข</span></label>
+                            <label class="flex items-center p-3 bg-white border rounded-xl cursor-pointer hover:bg-emerald-50 transition"><input type="radio" name="ans2" value="3" class="w-5 h-5 text-emerald-600 mr-3"> <span id="det_c2_3">ค</span></label>
                         </div>
                     </div>
-                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
-                        <p id="disp_q3" class="font-semibold text-lg mb-3">3. คำถาม?</p>
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200">
+                        <p id="det_q3" class="font-bold text-lg mb-4">3. คำถาม?</p>
                         <div class="space-y-2">
-                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer hover:bg-green-50 transition"><input type="radio" name="ans3" value="1" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c3_1">ก</span></label>
-                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer hover:bg-green-50 transition"><input type="radio" name="ans3" value="2" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c3_2">ข</span></label>
-                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer hover:bg-green-50 transition"><input type="radio" name="ans3" value="3" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c3_3">ค</span></label>
+                            <label class="flex items-center p-3 bg-white border rounded-xl cursor-pointer hover:bg-emerald-50 transition"><input type="radio" name="ans3" value="1" class="w-5 h-5 text-emerald-600 mr-3"> <span id="det_c3_1">ก</span></label>
+                            <label class="flex items-center p-3 bg-white border rounded-xl cursor-pointer hover:bg-emerald-50 transition"><input type="radio" name="ans3" value="2" class="w-5 h-5 text-emerald-600 mr-3"> <span id="det_c3_2">ข</span></label>
+                            <label class="flex items-center p-3 bg-white border rounded-xl cursor-pointer hover:bg-emerald-50 transition"><input type="radio" name="ans3" value="3" class="w-5 h-5 text-emerald-600 mr-3"> <span id="det_c3_3">ค</span></label>
                         </div>
                     </div>
 
-                    <button type="button" onclick="submitQuiz()" class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-4 rounded-xl mt-4 shadow-md transition text-lg transform hover:-translate-y-1">
+                    <button type="button" onclick="submitQuiz()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-2xl mt-6 shadow-lg transition text-xl font-prompt">
                         ส่งคำตอบและบันทึกคะแนน 🚀
                     </button>
                 </form>
             </div>
         </div>
+
+        <div id="teacherDashboardView" class="hidden max-w-4xl mx-auto">
+            <div class="mb-8 flex justify-between items-end">
+                <div>
+                    <h2 class="text-3xl font-bold text-slate-800 mb-2 font-prompt">ระบบจัดการบทเรียน (LMS Admin)</h2>
+                    <p class="text-slate-600 text-lg">เพิ่มเนื้อหาและแบบทดสอบสำหรับนักเรียนได้อย่างง่ายดาย</p>
+                </div>
+            </div>
+
+            <form id="teacherForm" class="bg-white rounded-3xl p-6 md:p-10 shadow-lg border-t-8 border-emerald-500">
+                <div class="mb-10">
+                    <div class="flex items-center mb-6">
+                        <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-xl mr-3">1</div>
+                        <h3 class="text-2xl font-bold text-slate-800 font-prompt">ข้อมูลเนื้อหาบทเรียน</h3>
+                    </div>
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-5">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+                            <div class="md:col-span-1">
+                                <label class="block font-bold text-slate-700 mb-2">บทที่ / ลำดับ</label>
+                                <input type="text" id="t_ep" placeholder="เช่น EP.1" class="w-full px-4 py-3 rounded-xl border border-slate-300 outline-none text-lg" required>
+                            </div>
+                            <div class="md:col-span-3">
+                                <label class="block font-bold text-slate-700 mb-2">ชื่อหัวข้อบทเรียน</label>
+                                <input type="text" id="t_title" placeholder="ระบุชื่อเรื่อง..." class="w-full px-4 py-3 rounded-xl border border-slate-300 outline-none text-lg" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-2">รายละเอียดเนื้อหา</label>
+                            <textarea id="t_content" rows="5" placeholder="พิมพ์เนื้อหาบทเรียนที่นี่..." class="w-full px-4 py-3 rounded-xl border border-slate-300 outline-none text-lg" required></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-10">
+                    <div class="flex items-center mb-6">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xl mr-3">2</div>
+                        <h3 class="text-2xl font-bold text-slate-800 font-prompt">ชุดแบบทดสอบ (3 ข้อ)</h3>
+                    </div>
+
+                    <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 mb-6">
+                        <label class="block font-bold text-blue-800 mb-2">คำถามข้อที่ 1</label>
+                        <input type="text" id="t_q1" class="w-full px-4 py-3 rounded-xl border border-blue-200 outline-none mb-4" required>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                            <div><label class="block text-sm font-semibold mb-1">ตัวเลือก 1</label><input type="text" id="t_c1_1" class="w-full px-4 py-2 rounded-lg border outline-none" required></div>
+                            <div><label class="block text-sm font-semibold mb-1">ตัวเลือก 2</label><input type="text" id="t_c1_2" class="w-full px-4 py-2 rounded-lg border outline-none" required></div>
+                            <div><label class="block text-sm font-semibold mb-1">ตัวเลือก 3</label><input type="text" id="t_c1_3" class="w-full px-4 py-2 rounded-lg border outline-none" required></div>
+                        </div>
+                        <div class="flex items-center bg-white p-3 rounded-lg border border-slate-200 inline-block">
+                            <label class="font-bold text-slate-700 mr-3">คำตอบที่ถูก:</label>
+                            <select id="t_ans1" class="px-4 py-2 rounded-lg border bg-slate-50 font-bold text-blue-600 outline-none"><option value="1">ตัวเลือก 1</option><option value="2">ตัวเลือก 2</option><option value="3">ตัวเลือก 3</option></select>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 mb-6">
+                        <label class="block font-bold text-blue-800 mb-2">คำถามข้อที่ 2</label>
+                        <input type="text" id="t_q2" class="w-full px-4 py-3 rounded-xl border border-blue-200 outline-none mb-4" required>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                            <div><label class="block text-sm font-semibold mb-1">ตัวเลือก 1</label><input type="text" id="t_c2_1" class="w-full px-4 py-2 rounded-lg border outline-none" required></div>
+                            <div><label class="block text-sm font-semibold mb-1">ตัวเลือก 2</label><input type="text" id="t_c2_2" class="w-full px-4 py-2 rounded-lg border outline-none" required></div>
+                            <div><label class="block text-sm font-semibold mb-1">ตัวเลือก 3</label><input type="text" id="t_c2_3" class="w-full px-4 py-2 rounded-lg border outline-none" required></div>
+                        </div>
+                        <div class="flex items-center bg-white p-3 rounded-lg border border-slate-200 inline-block">
+                            <label class="font-bold text-slate-700 mr-3">คำตอบที่ถูก:</label>
+                            <select id="t_ans2" class="px-4 py-2 rounded-lg border bg-slate-50 font-bold text-blue-600 outline-none"><option value="1">ตัวเลือก 1</option><option value="2">ตัวเลือก 2</option><option value="3">ตัวเลือก 3</option></select>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 mb-6">
+                        <label class="block font-bold text-blue-800 mb-2">คำถามข้อที่ 3</label>
+                        <input type="text" id="t_q3" class="w-full px-4 py-3 rounded-xl border border-blue-200 outline-none mb-4" required>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                            <div><label class="block text-sm font-semibold mb-1">ตัวเลือก 1</label><input type="text" id="t_c3_1" class="w-full px-4 py-2 rounded-lg border outline-none" required></div>
+                            <div><label class="block text-sm font-semibold mb-1">ตัวเลือก 2</label><input type="text" id="t_c3_2" class="w-full px-4 py-2 rounded-lg border outline-none" required></div>
+                            <div><label class="block text-sm font-semibold mb-1">ตัวเลือก 3</label><input type="text" id="t_c3_3" class="w-full px-4 py-2 rounded-lg border outline-none" required></div>
+                        </div>
+                        <div class="flex items-center bg-white p-3 rounded-lg border border-slate-200 inline-block">
+                            <label class="font-bold text-slate-700 mr-3">คำตอบที่ถูก:</label>
+                            <select id="t_ans3" class="px-4 py-2 rounded-lg border bg-slate-50 font-bold text-blue-600 outline-none"><option value="1">ตัวเลือก 1</option><option value="2">ตัวเลือก 2</option><option value="3">ตัวเลือก 3</option></select>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" onclick="addLesson()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-2xl text-xl shadow-lg transition font-prompt">
+                    <i class="fa-solid fa-save mr-2"></i> บันทึกและเผยแพร่บทเรียน
+                </button>
+            </form>
+        </div>
+
     </main>
 
     <script>
-        // ⚠️ เอา Web App URL จาก Google Apps Script (ส่วนที่ 1) มาวางตรงนี้ ⚠️
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbyfjFSPDWkUs-EB2oTpYQRWcvJEDriuLX8l4FHpvJ0hH8mGkfA_dC-uM9t0YetjcZpNaQ/exec';
+        // =========================================================
+        // ⚠️ 1. เปลี่ยน URL ด้านล่างเป็น Web App URL ของคุณ ⚠️
+        // =========================================================
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbw4JgymDhTqMCkN7PuVCi1GXtuf2XahagxXQxitZq1R-i97-SwBHpOIU98L2LW_8Mbp7Q/exec';
         
         let allLessons = [];
         let currentLesson = null;
         let currentUser = "";
         let currentRole = "";
 
-        // ฟังก์ชัน Login
+        // ซ่อนทุกหน้า
+        function hideAllViews() {
+            document.getElementById('loginView').style.display = 'none';
+            document.getElementById('studentDashboardView').style.display = 'none';
+            document.getElementById('lessonDetailView').style.display = 'none';
+            document.getElementById('teacherDashboardView').style.display = 'none';
+        }
+
+        // ==========================================
+        // ระบบ Login และแบ่งสิทธิ์
+        // ==========================================
         function login() {
-            const userBox = document.getElementById('username').value.trim();
-            const passBox = document.getElementById('password').value.trim();
+            const u = document.getElementById('login_user').value.trim();
+            const p = document.getElementById('login_pass').value.trim();
 
-            if (!userBox || !passBox) {
-                Swal.fire('ข้อมูลไม่ครบ', 'กรุณากรอกรหัสผู้ใช้งานและรหัสผ่าน', 'warning');
-                return;
-            }
+            if (!u || !p) { Swal.fire('ผิดพลาด', 'กรุณากรอกรหัสผ่านให้ครบ', 'warning'); return; }
 
-            Swal.fire({ title: 'กำลังตรวจสอบ...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+            Swal.fire({ title: 'กำลังตรวจสอบ...', didOpen: () => Swal.showLoading() });
 
-            // ส่งไปเช็คที่ Apps Script
             fetch(GAS_URL, {
                 method: 'POST',
-                body: JSON.stringify({ action: "login", username: userBox, password: passBox })
+                body: JSON.stringify({ action: "login", username: u, password: p })
             })
             .then(res => res.json())
             .then(result => {
                 if (result.status === "success") {
                     currentUser = result.name;
-                    currentRole = result.role;
+                    currentRole = result.role; // student หรือ teacher/admin
 
+                    // แสดงแถบ User ข้างบน
                     document.getElementById('userProfile').classList.remove('hidden');
                     document.getElementById('displayUserName').innerText = currentUser;
 
-                    document.getElementById('loginView').style.display = 'none';
-                    document.getElementById('dashboardView').style.display = 'block';
-
-                    // โชว์เมนูแอดมินถ้าเป็น teacher หรือ admin
-                    if (currentRole === 'teacher' || currentRole === 'admin') {
-                        document.getElementById('adminPanel').classList.remove('hidden');
-                    }
-
+                    hideAllViews();
                     Swal.close();
-                    loadLessons(); 
+
+                    // แยกสิทธิ์พาไปหน้าต่างที่ถูกต้อง
+                    if (currentRole === 'teacher' || currentRole === 'admin') {
+                        document.getElementById('teacherDashboardView').style.display = 'block';
+                    } else {
+                        document.getElementById('welcomeName').innerText = currentUser;
+                        document.getElementById('studentDashboardView').style.display = 'block';
+                        loadLessons(); // เด็กนักเรียนให้โหลดบทเรียน
+                    }
                 } else {
-                    Swal.fire('เข้าสู่ระบบไม่สำเร็จ', result.message, 'error');
+                    Swal.fire('เข้าสู่ระบบล้มเหลว', result.message, 'error');
                 }
-            })
-            .catch(err => {
-                Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้ กรุณาลองใหม่', 'error');
+            }).catch(e => Swal.fire('Error', 'เชื่อมต่อฐานข้อมูลไม่ได้', 'error'));
+        }
+
+        function logout() {
+            Swal.fire({
+                title: 'ออกจากระบบ?', text: 'คุณต้องการออกจากระบบใช่หรือไม่', icon: 'question',
+                showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'ออกจากระบบ'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    currentUser = ""; currentRole = "";
+                    document.getElementById('userProfile').classList.add('hidden');
+                    document.getElementById('loginForm').reset();
+                    hideAllViews();
+                    document.getElementById('loginView').style.display = 'block';
+                }
             });
         }
 
-        // ดึงบทเรียนมาแสดง
+        // ==========================================
+        // ระบบฝั่งนักเรียน (Student)
+        // ==========================================
         function loadLessons() {
-            fetch(GAS_URL, {
-                method: 'POST',
-                body: JSON.stringify({ action: "getLessons" })
-            })
+            document.getElementById('loadingLessons').style.display = 'block';
+            document.getElementById('lessonGrid').innerHTML = "";
+
+            fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "getLessons" }) })
             .then(res => res.json())
             .then(result => {
                 if (result.status === "success") {
                     allLessons = result.data;
-                    renderLessons();
+                    document.getElementById('loadingLessons').style.display = 'none';
+                    const grid = document.getElementById('lessonGrid');
+                    
+                    allLessons.forEach((lesson, index) => {
+                        // ใช้ดีไซน์การ์ดแบบใหม่สำหรับนักเรียน
+                        grid.innerHTML += `
+                            <div class="student-card bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 relative overflow-hidden group cursor-pointer" onclick="openLesson(${index})">
+                                <div class="absolute -top-10 -right-10 w-32 h-32 bg-blue-50 rounded-full -z-10 group-hover:bg-blue-100 transition-colors"></div>
+                                <div class="flex items-center justify-between mb-4">
+                                    <span class="bg-blue-100 text-blue-700 px-4 py-1.5 rounded-full text-sm font-bold tracking-wide">${lesson.ep}</span>
+                                    <span class="text-slate-400 text-sm"><i class="fa-solid fa-eye"></i> ${lesson.views}</span>
+                                </div>
+                                <h3 class="text-xl font-bold text-slate-800 mb-3 line-clamp-2">${lesson.title}</h3>
+                                <p class="text-slate-500 text-sm mb-6 line-clamp-2 leading-relaxed">คลิกเพื่อเข้าสู่เนื้อหาและทำแบบทดสอบ</p>
+                                <button class="w-full bg-slate-50 text-slate-700 font-bold py-3 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                    เข้าสู่บทเรียน <i class="fa-solid fa-arrow-right ml-1"></i>
+                                </button>
+                            </div>
+                        `;
+                    });
                 }
             });
         }
 
-        // สร้างการ์ดบทเรียน
-        function renderLessons() {
-            document.getElementById('loadingLessons').style.display = 'none';
-            const grid = document.getElementById('lessonGrid');
-            grid.innerHTML = "";
-            
-            allLessons.forEach((lesson, index) => {
-                grid.innerHTML += `
-                    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md border border-slate-200 p-5 cursor-pointer transform transition hover:-translate-y-1" onclick="openLesson(${index})">
-                        <div class="flex justify-between mb-2">
-                            <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded">${lesson.ep}</span>
-                            <span class="text-slate-400 text-xs"><i class="fa-solid fa-eye"></i> ${lesson.views}</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-800">${lesson.title}</h3>
-                        <p class="text-sm text-slate-500 mt-2 text-blue-500 hover:underline">คลิกเพื่อเข้าสู่บทเรียน 👉</p>
-                    </div>
-                `;
-            });
-        }
-
-        // เปิดหน้าเนื้อหา
         function openLesson(index) {
             currentLesson = allLessons[index];
-            document.getElementById('dashboardView').style.display = 'none';
-            document.getElementById('lessonView').style.display = 'block';
+            hideAllViews();
+            document.getElementById('lessonDetailView').style.display = 'block';
             
-            document.getElementById('displayEp').innerText = currentLesson.ep;
-            document.getElementById('displayTitle').innerText = currentLesson.title;
-            document.getElementById('displayContent').innerText = currentLesson.content;
-            document.getElementById('displayViews').innerText = currentLesson.views + 1; 
+            // นำข้อมูลเนื้อหามาโชว์
+            document.getElementById('det_ep').innerText = currentLesson.ep;
+            document.getElementById('det_title').innerText = currentLesson.title;
+            document.getElementById('det_content').innerText = currentLesson.content;
+            document.getElementById('det_views').innerText = currentLesson.views + 1; 
             
-            document.getElementById('disp_q1').innerText = "1. " + currentLesson.q1;
-            document.getElementById('disp_c1_1').innerText = currentLesson.c1_1;
-            document.getElementById('disp_c1_2').innerText = currentLesson.c1_2;
-            document.getElementById('disp_c1_3').innerText = currentLesson.c1_3;
+            // นำคำถามมาโชว์
+            document.getElementById('det_q1').innerText = "1. " + currentLesson.q1;
+            document.getElementById('det_c1_1').innerText = currentLesson.c1_1;
+            document.getElementById('det_c1_2').innerText = currentLesson.c1_2;
+            document.getElementById('det_c1_3').innerText = currentLesson.c1_3;
 
-            document.getElementById('disp_q2').innerText = "2. " + currentLesson.q2;
-            document.getElementById('disp_c2_1').innerText = currentLesson.c2_1;
-            document.getElementById('disp_c2_2').innerText = currentLesson.c2_2;
-            document.getElementById('disp_c2_3').innerText = currentLesson.c2_3;
+            document.getElementById('det_q2').innerText = "2. " + currentLesson.q2;
+            document.getElementById('det_c2_1').innerText = currentLesson.c2_1;
+            document.getElementById('det_c2_2').innerText = currentLesson.c2_2;
+            document.getElementById('det_c2_3').innerText = currentLesson.c2_3;
 
-            document.getElementById('disp_q3').innerText = "3. " + currentLesson.q3;
-            document.getElementById('disp_c3_1').innerText = currentLesson.c3_1;
-            document.getElementById('disp_c3_2').innerText = currentLesson.c3_2;
-            document.getElementById('disp_c3_3').innerText = currentLesson.c3_3;
+            document.getElementById('det_q3').innerText = "3. " + currentLesson.q3;
+            document.getElementById('det_c3_1').innerText = currentLesson.c3_1;
+            document.getElementById('det_c3_2').innerText = currentLesson.c3_2;
+            document.getElementById('det_c3_3').innerText = currentLesson.c3_3;
             
             document.getElementById('quizForm').reset();
 
-            // ส่งข้อมูลบันทึก View ลง Sheets ทันที
-            fetch(GAS_URL, {
-                method: 'POST',
-                body: JSON.stringify({ action: "view", studentName: currentUser, lessonName: currentLesson.title })
-            });
+            // ส่งข้อมูลบันทึก View ลง Sheets (ทำงานเบื้องหลัง)
+            fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "view", studentName: currentUser, lessonName: currentLesson.title }) });
         }
 
-        // ส่งข้อสอบ
         function submitQuiz() {
             const a1 = document.querySelector('input[name="ans1"]:checked');
             const a2 = document.querySelector('input[name="ans2"]:checked');
             const a3 = document.querySelector('input[name="ans3"]:checked');
 
-            if (!a1 || !a2 || !a3) {
-                Swal.fire('ยังทำไม่ครบ!', 'กรุณาเลือกคำตอบให้ครบทั้ง 3 ข้อก่อนส่งครับ', 'warning');
-                return;
-            }
+            if (!a1 || !a2 || !a3) { Swal.fire('แจ้งเตือน', 'กรุณาเลือกคำตอบให้ครบ 3 ข้อ', 'warning'); return; }
 
             let score = 0;
             if (a1.value === currentLesson.ans1) score++;
             if (a2.value === currentLesson.ans2) score++;
             if (a3.value === currentLesson.ans3) score++;
 
-            Swal.fire({ 
-                icon: score >= 2 ? 'success' : 'info', 
-                title: score === 3 ? 'ยอดเยี่ยม! 🎉' : 'ทำได้ดี!', 
-                text: `คุณทำได้ ${score} / 3 คะแนน ข้อมูลถูกบันทึกเข้าระบบแล้ว` 
-            });
+            Swal.fire({ icon: score >= 2 ? 'success' : 'info', title: score === 3 ? 'เก่งมาก! 🎉' : 'บันทึกแล้ว', text: `ได้ ${score} / 3 คะแนน` });
 
-            // ส่งคะแนนไปบันทึกลง Sheets
-            fetch(GAS_URL, {
-                method: 'POST',
-                body: JSON.stringify({ action: "quiz", studentName: currentUser, lessonName: currentLesson.title, score: score })
-            });
+            // ส่งคะแนนไป Sheets
+            fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "quiz", studentName: currentUser, lessonName: currentLesson.title, score: score }) });
         }
 
-        // ปุ่มกลับ
-        function goBack() {
-            document.getElementById('dashboardView').style.display = 'block';
-            document.getElementById('lessonView').style.display = 'none';
+        function backToStudentDashboard() {
+            hideAllViews();
+            document.getElementById('studentDashboardView').style.display = 'block';
+        }
+
+        // ==========================================
+        // ระบบฝั่งอาจารย์ (Teacher) เพิ่มบทเรียนใหม่
+        // ==========================================
+        function addLesson() {
+            // ดึงข้อมูลจากฟอร์มอาจารย์ทั้งหมด
+            const newLesson = {
+                action: "addLesson",
+                ep: document.getElementById('t_ep').value,
+                title: document.getElementById('t_title').value,
+                content: document.getElementById('t_content').value,
+                q1: document.getElementById('t_q1').value, c1_1: document.getElementById('t_c1_1').value, c1_2: document.getElementById('t_c1_2').value, c1_3: document.getElementById('t_c1_3').value, ans1: document.getElementById('t_ans1').value,
+                q2: document.getElementById('t_q2').value, c2_1: document.getElementById('t_c2_1').value, c2_2: document.getElementById('t_c2_2').value, c2_3: document.getElementById('t_c2_3').value, ans2: document.getElementById('t_ans2').value,
+                q3: document.getElementById('t_q3').value, c3_1: document.getElementById('t_c3_1').value, c3_2: document.getElementById('t_c3_2').value, c3_3: document.getElementById('t_c3_3').value, ans3: document.getElementById('t_ans3').value,
+            };
+
+            // เช็คว่ากรอกครบไหม (เช็คแค่หัวข้อหลักๆ)
+            if (!newLesson.title || !newLesson.content || !newLesson.q1) {
+                Swal.fire('ข้อมูลไม่ครบ', 'กรุณากรอกชื่อเรื่อง เนื้อหา และคำถามให้ครบถ้วน', 'warning'); return;
+            }
+
+            Swal.fire({ title: 'กำลังบันทึกข้อมูลเข้า Google Sheets...', didOpen: () => Swal.showLoading() });
+
+            fetch(GAS_URL, {
+                method: 'POST',
+                body: JSON.stringify(newLesson)
+            })
+            .then(res => res.json())
+            .then(result => {
+                if (result.status === "success") {
+                    Swal.fire('สำเร็จ!', 'เพิ่มบทเรียนเรียบร้อยแล้ว นักเรียนสามารถเข้าเรียนได้ทันที', 'success');
+                    document.getElementById('teacherForm').reset(); // ล้างหน้าจอให้อาจารย์พิมพ์ใหม่ได้
+                } else {
+                    Swal.fire('ข้อผิดพลาด', 'ไม่สามารถบันทึกได้', 'error');
+                }
+            });
         }
     </script>
 </body>
