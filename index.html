@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCiUS-Space ระบบนิเวศการเรียนรู้ วมว.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style> 
+        body { font-family: 'Sarabun', sans-serif; background-color: #f0f4f8; } 
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="text-slate-800 pb-20">
+
+    <header class="bg-blue-700 text-white p-6 shadow-lg rounded-b-3xl mb-8">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold"><i class="fa-solid fa-rocket mr-2"></i> SCiUS Space</h1>
+                <p class="text-blue-100 mt-1">ห้องเรียนออนไลน์ วมว.</p>
+            </div>
+            <div id="userProfile" class="hidden text-right">
+                <p class="text-sm text-blue-200">เข้าสู่ระบบโดย</p>
+                <p id="displayUserName" class="font-bold text-lg">ชื่อผู้ใช้</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4">
+        
+        <div id="loginView" class="max-w-md mx-auto mt-10">
+            <div class="bg-white p-8 rounded-3xl shadow-xl border-t-4 border-blue-600">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                        <i class="fa-solid fa-user-astronaut"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-800">เข้าสู่ระบบ</h2>
+                    <p class="text-slate-500">กรอกรหัสประจำตัวเพื่อเข้าสู่ชั้นเรียน</p>
+                </div>
+                
+                <form id="loginForm" class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">รหัสผู้ใช้งาน (Username)</label>
+                        <input type="text" id="username" class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" placeholder="เช่น 68001 หรือ T001" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">รหัสผ่าน (Password)</label>
+                        <input type="password" id="password" class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" placeholder="••••••••" required>
+                    </div>
+                    <button type="button" onclick="login()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition shadow-md">
+                        Login เข้าสู่ระบบ
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div id="dashboardView" class="hidden">
+            <div id="adminPanel" class="hidden mb-6 bg-yellow-50 p-4 rounded-xl border border-yellow-200 flex justify-between items-center">
+                <div>
+                    <h3 class="font-bold text-yellow-800"><i class="fa-solid fa-crown"></i> เมนูสำหรับผู้ดูแล</h3>
+                    <p class="text-sm text-yellow-700">คุณสามารถจัดการบทเรียนและดูคะแนนได้</p>
+                </div>
+                <a href="ใส่_ลิงก์_GOOGLE_SHEETS_ตรงนี้" target="_blank" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg font-bold text-sm shadow-sm transition">
+                    จัดการข้อมูลหลังบ้าน
+                </a>
+            </div>
+
+            <h2 class="text-xl font-bold mb-4 text-slate-700">ภารกิจการเรียนรู้ของคุณ 🎯</h2>
+            <div id="loadingLessons" class="text-center text-blue-500 py-10 font-bold"><i class="fa-solid fa-spinner fa-spin mr-2"></i> กำลังโหลดบทเรียน...</div>
+            <div id="lessonGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </div>
+
+        <div id="lessonView" class="hidden">
+            <button onclick="goBack()" class="text-blue-600 font-bold mb-4 hover:underline"><i class="fa-solid fa-arrow-left mr-1"></i> กลับไปหน้าหลัก</button>
+            
+            <div class="glass-card rounded-2xl shadow-lg p-6 md:p-8 border-t-4 border-blue-500 mb-6">
+                <div class="flex justify-between items-start mb-4">
+                    <span id="displayEp" class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-bold">EP.X</span>
+                    <span class="text-slate-500 text-sm"><i class="fa-solid fa-eye text-blue-500"></i> เข้าชม <span id="displayViews" class="font-bold text-slate-800">0</span> คน</span>
+                </div>
+                <h2 id="displayTitle" class="text-3xl font-bold text-slate-800 mb-6">ชื่อบทเรียน</h2>
+                <div id="displayContent" class="prose max-w-none text-slate-700 leading-relaxed mb-8 whitespace-pre-wrap"></div>
+            </div>
+
+            <div class="glass-card rounded-2xl shadow-lg p-6 md:p-8 border-t-4 border-green-500">
+                <h3 class="text-xl font-bold mb-6 text-slate-800"><i class="fa-solid fa-gamepad text-green-500 mr-2"></i> ทดสอบความเข้าใจ (3 ข้อ)</h3>
+                
+                <form id="quizForm" class="space-y-6">
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                        <p id="disp_q1" class="font-semibold text-lg mb-3">1. คำถาม?</p>
+                        <div class="space-y-2">
+                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer"><input type="radio" name="ans1" value="1" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c1_1">ตัวเลือก</span></label>
+                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer"><input type="radio" name="ans1" value="2" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c1_2">ตัวเลือก</span></label>
+                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer"><input type="radio" name="ans1" value="3" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c1_3">ตัวเลือก</span></label>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                        <p id="disp_q2" class="font-semibold text-lg mb-3">2. คำถาม?</p>
+                        <div class="space-y-2">
+                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer"><input type="radio" name="ans2" value="1" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c2_1">ตัวเลือก</span></label>
+                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer"><input type="radio" name="ans2" value="2" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c2_2">ตัวเลือก</span></label>
+                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer"><input type="radio" name="ans2" value="3" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c2_3">ตัวเลือก</span></label>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                        <p id="disp_q3" class="font-semibold text-lg mb-3">3. คำถาม?</p>
+                        <div class="space-y-2">
+                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer"><input type="radio" name="ans3" value="1" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c3_1">ตัวเลือก</span></label>
+                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer"><input type="radio" name="ans3" value="2" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c3_2">ตัวเลือก</span></label>
+                            <label class="flex items-center p-3 bg-white border rounded-lg cursor-pointer"><input type="radio" name="ans3" value="3" class="w-5 h-5 text-green-600 mr-3"> <span id="disp_c3_3">ตัวเลือก</span></label>
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="submitQuiz()" class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-4 rounded-xl mt-4 shadow-md transition text-lg">
+                        ส่งคำตอบและบันทึกคะแนน 🚀
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // ⚠️ นำ Web App URL ของคุณมาใส่ตรงนี้
+        const GAS_URL = 'ใส่_URL_ของ_APPS_SCRIPT_ตรงนี้';
+        
+        let allLessons = [];
+        let currentLesson = null;
+        
+        // ตัวแปรเก็บข้อมูลคนที่ Login แล้ว
+        let currentUser = "";
+        let currentRole = "";
+
+        // 1. ฟังก์ชันเข้าสู่ระบบ
+        function login() {
+            const userBox = document.getElementById('username').value.trim();
+            const passBox = document.getElementById('password').value.trim();
+
+            if (!userBox || !passBox) {
+                Swal.fire('ข้อมูลไม่ครบ', 'กรุณากรอกรหัสผู้ใช้งานและรหัสผ่าน', 'warning');
+                return;
+            }
+
+            Swal.fire({ title: 'กำลังตรวจสอบ...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+            // ส่งข้อมูลไปตรวจที่ Apps Script
+            fetch(GAS_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: JSON.stringify({ action: "login", username: userBox, password: passBox })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.status === "success") {
+                    // Login สำเร็จ
+                    currentUser = result.name;
+                    currentRole = result.role;
+
+                    // แสดงชื่อบน Header
+                    document.getElementById('userProfile').classList.remove('hidden');
+                    document.getElementById('displayUserName').innerText = currentUser;
+
+                    // เปลี่ยนหน้าไป Dashboard
+                    document.getElementById('loginView').style.display = 'none';
+                    document.getElementById('dashboardView').style.display = 'block';
+
+                    // โชว์เมนูพิเศษถ้าเป็น Teacher หรือ Admin
+                    if (currentRole === 'teacher' || currentRole === 'admin') {
+                        document.getElementById('adminPanel').classList.remove('hidden');
+                    }
+
+                    Swal.close();
+                    loadLessons(); // สั่งดึงบทเรียน
+                } else {
+                    Swal.fire('เข้าสู่ระบบไม่สำเร็จ', result.message, 'error');
+                }
+            }).catch(err => {
+                Swal.fire('ระบบขัดข้อง', 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้', 'error');
+            });
+        }
+
+        // 2. ดึงบทเรียนทั้งหมดจาก Google Sheets
+        function loadLessons() {
+            fetch(GAS_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: JSON.stringify({ action: "getLessons" })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.status === "success") {
+                    allLessons = result.data;
+                    renderLessons();
+                }
+            });
+        }
+
+        // 3. สร้างการ์ดบทเรียน
+        function renderLessons() {
+            document.getElementById('loadingLessons').style.display = 'none';
+            const grid = document.getElementById('lessonGrid');
+            grid.innerHTML = "";
+            
+            allLessons.forEach((lesson, index) => {
+                grid.innerHTML += `
+                    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md border border-slate-200 p-5 cursor-pointer transform transition hover:-translate-y-1" onclick="openLesson(${index})">
+                        <div class="flex justify-between mb-2">
+                            <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded">${lesson.ep}</span>
+                            <span class="text-slate-400 text-xs"><i class="fa-solid fa-eye"></i> ${lesson.views}</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-800">${lesson.title}</h3>
+                        <p class="text-sm text-slate-500 mt-2">คลิกเพื่อเข้าสู่บทเรียน 👉</p>
+                    </div>
+                `;
+            });
+        }
+
+        // 4. เมื่อกดเข้าบทเรียน
+        function openLesson(index) {
+            currentLesson = allLessons[index];
+            document.getElementById('dashboardView').style.display = 'none';
+            document.getElementById('lessonView').style.display = 'block';
+            
+            // ใส่ข้อมูลลงหน้าเว็บ
+            document.getElementById('displayEp').innerText = currentLesson.ep;
+            document.getElementById('displayTitle').innerText = currentLesson.title;
+            document.getElementById('displayContent').innerText = currentLesson.content;
+            document.getElementById('displayViews').innerText = currentLesson.views + 1; 
+            
+            document.getElementById('disp_q1').innerText = "1. " + currentLesson.q1;
+            document.getElementById('disp_c1_1').innerText = currentLesson.c1_1;
+            document.getElementById('disp_c1_2').innerText = currentLesson.c1_2;
+            document.getElementById('disp_c1_3').innerText = currentLesson.c1_3;
+
+            document.getElementById('disp_q2').innerText = "2. " + currentLesson.q2;
+            document.getElementById('disp_c2_1').innerText = currentLesson.c2_1;
+            document.getElementById('disp_c2_2').innerText = currentLesson.c2_2;
+            document.getElementById('disp_c2_3').innerText = currentLesson.c2_3;
+
+            document.getElementById('disp_q3').innerText = "3. " + currentLesson.q3;
+            document.getElementById('disp_c3_1').innerText = currentLesson.c3_1;
+            document.getElementById('disp_c3_2').innerText = currentLesson.c3_2;
+            document.getElementById('disp_c3_3').innerText = currentLesson.c3_3;
+            
+            document.getElementById('quizForm').reset();
+
+            // ส่งบันทึกยอด View
+            fetch(GAS_URL, {
+                method: 'POST', body: JSON.stringify({ action: "view", studentName: currentUser, lessonName: currentLesson.title })
+            });
+        }
+
+        // 5. ส่งข้อสอบ
+        function submitQuiz() {
+            const a1 = document.querySelector('input[name="ans1"]:checked');
+            const a2 = document.querySelector('input[name="ans2"]:checked');
+            const a3 = document.querySelector('input[name="ans3"]:checked');
+
+            if (!a1 || !a2 || !a3) {
+                Swal.fire('เอ๊ะ!', 'กรุณาตอบคำถามให้ครบ 3 ข้อนะ', 'warning');
+                return;
+            }
+
+            let score = 0;
+            if (a1.value === currentLesson.ans1) score++;
+            if (a2.value === currentLesson.ans2) score++;
+            if (a3.value === currentLesson.ans3) score++;
+
+            Swal.fire({ icon: score >= 2 ? 'success' : 'info', title: score === 3 ? 'ยอดเยี่ยม! 🎉' : 'ทำได้ดี!', text: `คุณทำได้ ${score} / 3 คะแนน` });
+
+            // ส่งบันทึกคะแนน
+            fetch(GAS_URL, {
+                method: 'POST', body: JSON.stringify({ action: "quiz", studentName: currentUser, lessonName: currentLesson.title, score: score })
+            });
+        }
+
+        function goBack() {
+            document.getElementById('dashboardView').style.display = 'block';
+            document.getElementById('lessonView').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
