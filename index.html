@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCiUS Space Dashboard</title>
+    <title>SCiUS Coursue Dashboard</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -40,12 +40,12 @@
 <body class="flex h-screen w-screen antialiased">
 
     <div id="loginLayout" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-50 backdrop-blur-md">
-        <div class="bg-white p-10 rounded-3xl shadow-xl w-full max-w-md border border-slate-100">
+        <div class="bg-white p-10 rounded-[2rem] shadow-2xl w-full max-w-md border border-slate-100">
             <div class="flex items-center justify-center mb-8">
-                <div class="w-12 h-12 bg-purple-600 text-white rounded-full flex items-center justify-center text-xl mr-3 shadow-lg shadow-purple-200">
-                    <i class="fa-solid fa-graduation-cap"></i>
+                <div class="w-12 h-12 bg-[#6d28d9] text-white rounded-full flex items-center justify-center text-xl mr-3 shadow-lg shadow-purple-200">
+                    <i class="fa-solid fa-sparkles"></i>
                 </div>
-                <h1 class="text-3xl font-bold font-prompt text-slate-800 tracking-tight">SCiUS Space</h1>
+                <h1 class="text-3xl font-bold font-prompt text-[#6d28d9] tracking-tight uppercase">Coursue</h1>
             </div>
             <p class="text-slate-500 font-medium mb-6 text-center">เข้าสู่ระบบเพื่อเริ่มต้นการเรียนรู้</p>
             <form id="loginForm" class="space-y-5">
@@ -55,101 +55,107 @@
                 <div>
                     <input type="password" id="login_pass" placeholder="รหัสผ่าน" class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none text-slate-700 transition" required>
                 </div>
-                <button type="button" onclick="login()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-purple-200 font-prompt text-lg mt-2">
+                <button type="button" onclick="login()" class="w-full bg-[#6d28d9] hover:bg-purple-800 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-purple-200 font-prompt text-lg mt-2">
                     Sign In
                 </button>
             </form>
         </div>
     </div>
 
-    <div id="appLayout" class="hidden w-full h-full flex bg-slate-50">
+    <div id="appLayout" class="hidden w-full h-full flex bg-white">
         
         <aside class="w-64 bg-white border-r border-slate-200 flex flex-col flex-shrink-0 z-20">
             <div class="h-24 flex items-center px-8 border-b border-slate-100 cursor-pointer" onclick="location.reload()">
-                <div class="w-8 h-8 bg-purple-600 text-white rounded-lg flex items-center justify-center text-sm shadow-md mr-3">
-                    <i class="fa-solid fa-star"></i>
+                <div class="w-8 h-8 bg-[#6d28d9] text-white rounded-full flex items-center justify-center text-sm shadow-md mr-3">
+                    <i class="fa-solid fa-sparkles"></i>
                 </div>
-                <h1 class="text-xl font-bold font-prompt tracking-tight text-slate-800 uppercase">SCiUS</h1>
+                <h1 class="text-xl font-black font-prompt tracking-tight text-[#6d28d9] uppercase">Coursue</h1>
             </div>
 
             <div class="flex-1 overflow-y-auto py-6 hide-scroll flex flex-col gap-8">
                 <div>
-                    <p class="px-8 text-xs font-bold text-slate-400 mb-4 tracking-widest uppercase">Overview</p>
-                    <nav class="flex flex-col font-prompt text-slate-600" id="sidebarMenu">
+                    <p class="px-8 text-[10px] font-bold text-slate-400 mb-4 tracking-widest uppercase">Overview</p>
+                    <nav class="flex flex-col font-prompt text-slate-500 font-medium text-sm" id="sidebarMenu">
                         </nav>
                 </div>
             </div>
 
             <div class="p-6 border-t border-slate-100">
-                <p class="px-2 text-xs font-bold text-slate-400 mb-3 tracking-widest uppercase">Settings</p>
-                <div class="flex flex-col font-prompt">
-                    <a class="menu-item px-8 py-3 flex items-center text-slate-600 cursor-pointer"><i class="fa-solid fa-gear w-6 mr-2"></i> Settings</a>
+                <p class="px-8 text-[10px] font-bold text-slate-400 mb-3 tracking-widest uppercase">Settings</p>
+                <div class="flex flex-col font-prompt text-sm font-medium">
+                    <a class="menu-item px-8 py-3 flex items-center text-slate-500 cursor-pointer"><i class="fa-solid fa-gear w-6 mr-2"></i> Settings</a>
                     <a onclick="logout()" class="menu-item px-8 py-3 flex items-center text-rose-500 cursor-pointer hover:bg-rose-50 hover:border-rose-300"><i class="fa-solid fa-arrow-right-from-bracket w-6 mr-2"></i> Logout</a>
                 </div>
             </div>
         </aside>
 
-        <main class="flex-1 flex flex-col overflow-hidden relative bg-[#f8fafc]">
-            <header class="h-24 flex items-center justify-between px-8 md:px-10 border-b border-slate-100 bg-white/50 backdrop-blur-md z-10 sticky top-0">
+        <main class="flex-1 flex flex-col overflow-hidden relative bg-slate-50/50">
+            <header class="h-24 flex items-center justify-between px-8 md:px-10 border-b border-slate-100 bg-white/80 backdrop-blur-md z-10 sticky top-0">
                 <div class="flex-1 max-w-2xl relative">
                     <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
-                    <input type="text" placeholder="Search your course here..." class="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-100 shadow-sm text-sm font-medium transition">
+                    <input type="text" placeholder="Search your course here..." class="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-100 shadow-sm text-sm font-medium transition">
                 </div>
-                <button class="ml-4 w-11 h-11 bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-500 hover:text-purple-600 hover:bg-purple-50 transition shadow-sm lg:hidden" onclick="document.getElementById('rightSidebar').classList.toggle('hidden')">
+                <button class="ml-4 w-11 h-11 bg-white border border-slate-200 rounded-xl flex items-center justify-center text-slate-500 hover:text-[#6d28d9] transition shadow-sm lg:hidden" onclick="document.getElementById('rightSidebar').classList.toggle('hidden')">
                     <i class="fa-regular fa-user"></i>
                 </button>
             </header>
 
             <div class="flex-1 overflow-y-auto p-8 md:p-10 hide-scroll pb-24">
                 
-                <div id="view_student_home" class="hidden">
-                    <div class="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-3xl p-8 md:p-10 text-white shadow-lg shadow-purple-200/50 mb-10 relative overflow-hidden flex justify-between items-center">
-                        <div class="absolute right-0 top-0 opacity-20 pointer-events-none text-[15rem] leading-none transform translate-x-1/4 -translate-y-1/4">✨</div>
+                <div id="view_student_home" class="hidden max-w-5xl mx-auto">
+                    <div class="bg-[#6d28d9] rounded-3xl p-8 md:p-10 text-white shadow-lg mb-10 relative overflow-hidden flex justify-between items-center">
+                        <div class="absolute right-10 top-10 opacity-30 text-6xl">✨</div>
+                        <div class="absolute right-32 bottom-4 opacity-10 text-8xl">✨</div>
+                        
                         <div class="relative z-10 max-w-xl">
-                            <span class="bg-white/20 px-3 py-1 rounded-full text-xs font-bold tracking-wider mb-4 inline-block uppercase">SCiUS Program</span>
-                            <h2 class="text-3xl md:text-4xl font-prompt font-bold leading-tight mb-4">Sharpen Your Skills With Professional Online Courses</h2>
+                            <span class="text-purple-200 text-xs font-bold tracking-wider mb-2 inline-block uppercase">Online Course</span>
+                            <h2 class="text-3xl md:text-4xl font-prompt font-bold leading-tight mb-6">Sharpen Your Skills With Professional Online Courses</h2>
                             <button class="bg-slate-900 text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-slate-800 transition shadow-md flex items-center">
                                 Join Now <i class="fa-solid fa-circle-play ml-2"></i>
                             </button>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10" id="subjectGrid"></div>
+                    <div class="flex overflow-x-auto hide-scroll gap-4 pb-4 mb-8" id="subjectGrid"></div>
 
                     <div class="mb-6 flex justify-between items-end">
-                        <h3 class="text-xl font-bold text-slate-800 font-prompt" id="currentSubjectTitle">Continue Watching (All)</h3>
-                        <button onclick="backToSubjects()" id="backSubBtn" class="hidden text-sm text-purple-600 font-bold hover:underline">View All Courses</button>
+                        <h3 class="text-xl font-bold text-slate-800 font-prompt" id="currentSubjectTitle">Continue Watching</h3>
+                        <div class="flex gap-2">
+                            <button onclick="backToSubjects()" id="backSubBtn" class="hidden text-sm text-[#6d28d9] font-bold hover:underline">View All</button>
+                            <button class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50 bg-white"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                            <button class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50 bg-white"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                        </div>
                     </div>
                     
                     <div id="loadingLessons_student" class="text-purple-500 font-bold"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> โหลดบทเรียน...</div>
-                    <div id="lessonGrid_student" class="grid grid-cols-1 xl:grid-cols-2 gap-6"></div>
+                    <div id="lessonGrid_student" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
                 </div>
 
                 <div id="view_lesson_detail" class="hidden max-w-4xl mx-auto">
-                    <button onclick="nav('home')" class="text-slate-500 text-sm font-bold mb-6 hover:text-purple-600 transition flex items-center"><i class="fa-solid fa-arrow-left mr-2"></i> Back to Courses</button>
+                    <button onclick="nav('home')" class="text-slate-500 text-sm font-bold mb-6 hover:text-[#6d28d9] transition flex items-center"><i class="fa-solid fa-arrow-left mr-2"></i> Back to Courses</button>
                     
                     <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 mb-8">
-                        <div class="w-full h-64 md:h-96 bg-slate-900 rounded-2xl mb-8 overflow-hidden relative">
+                        <div class="w-full h-80 bg-slate-900 rounded-2xl mb-8 overflow-hidden relative">
                             <img id="det_img_src" src="" class="w-full h-full object-cover opacity-80">
                             <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 to-transparent"></div>
-                            <div class="absolute bottom-6 left-6 text-white pr-6">
-                                <span id="det_ep" class="bg-purple-600 px-3 py-1 rounded-md text-xs font-bold mb-3 inline-block shadow-sm">EP.X</span>
-                                <h2 id="det_title" class="text-3xl md:text-4xl font-bold font-prompt leading-tight">Lesson Title</h2>
+                            <div class="absolute bottom-6 left-6 text-white">
+                                <span id="det_ep" class="bg-[#6d28d9] px-3 py-1 rounded-md text-xs font-bold mb-3 inline-block">EP.X</span>
+                                <h2 id="det_title" class="text-3xl font-bold font-prompt leading-tight">Lesson Title</h2>
                             </div>
                         </div>
-                        <div class="flex justify-end mb-6 text-slate-400 text-sm font-medium"><i class="fa-solid fa-eye text-purple-500 mt-0.5 mr-2"></i> <span id="det_views" class="font-bold text-slate-600">0</span> Views</div>
+                        <div class="flex justify-end mb-6 text-slate-400 text-sm font-medium"><i class="fa-solid fa-eye text-[#6d28d9] mt-0.5 mr-2"></i> <span id="det_views" class="font-bold text-slate-600">0</span> Views</div>
                         <div id="det_content" class="rich-text whitespace-pre-wrap px-2"></div>
                     </div>
 
-                    <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 relative border-t-8 border-emerald-400">
-                        <h3 class="text-2xl font-bold mb-8 text-slate-800 font-prompt border-b border-slate-100 pb-4">Quiz Time (5 Questions)</h3>
+                    <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 relative">
+                        <h3 class="text-xl font-bold mb-6 text-slate-800 font-prompt border-b border-slate-100 pb-4">Quiz Time (5 Questions)</h3>
                         
-                        <div id="quizCompletedMsg" class="hidden bg-emerald-50 rounded-2xl p-8 text-center border border-emerald-100">
-                            <div class="w-16 h-16 bg-emerald-500 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-md"><i class="fa-solid fa-check"></i></div>
-                            <h4 class="text-xl font-bold text-emerald-900 font-prompt mb-2">Lesson Completed!</h4>
-                            <div class="inline-block bg-white px-6 py-3 rounded-xl shadow-sm mt-3 font-prompt border border-emerald-50">
+                        <div id="quizCompletedMsg" class="hidden bg-purple-50 rounded-2xl p-8 text-center border border-purple-100">
+                            <div class="w-16 h-16 bg-[#6d28d9] text-white rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-md"><i class="fa-solid fa-check"></i></div>
+                            <h4 class="text-xl font-bold text-purple-900 font-prompt mb-2">Lesson Completed!</h4>
+                            <div class="inline-block bg-white px-6 py-3 rounded-xl shadow-sm mt-3 font-prompt border border-purple-50">
                                 <span class="text-slate-500 font-bold mr-2 text-sm">Score:</span>
-                                <span id="quizScoreResult" class="text-3xl font-black text-emerald-600">X</span>
+                                <span id="quizScoreResult" class="text-3xl font-black text-[#6d28d9]">X</span>
                                 <span class="text-lg font-bold text-slate-400">/ 5</span>
                             </div>
                         </div>
@@ -157,16 +163,16 @@
                         <form id="quizForm" class="space-y-6">
                             <div id="quizWarnMsg" class="hidden bg-rose-50 text-rose-600 p-4 rounded-xl font-bold mb-6 text-center border border-rose-200 text-sm"><i class="fa-solid fa-triangle-exclamation mr-1"></i> ห้ามสลับหน้าจอ! สลับอีกครั้งจะถูกปรับตกทันที</div>
                             <div id="quizContainer"></div>
-                            <button type="button" onclick="submitQuiz(false)" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 rounded-xl shadow-md transition font-prompt text-lg">Submit Answers 🚀</button>
+                            <button type="button" onclick="submitQuiz(false)" class="w-full bg-[#6d28d9] hover:bg-purple-800 text-white font-bold py-4 rounded-xl shadow-md transition font-prompt text-lg">Submit Answers 🚀</button>
                         </form>
                     </div>
                 </div>
 
-                <div id="view_teacher_manage" class="hidden">
+                <div id="view_teacher_manage" class="hidden max-w-5xl mx-auto">
                     <h2 class="text-2xl font-bold text-slate-800 mb-6 font-prompt">Manage Lessons</h2>
                     <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 mb-8">
                         <div class="flex justify-between items-center mb-6">
-                            <h3 id="formActionTitle" class="text-lg font-bold text-purple-600 font-prompt"><i class="fa-solid fa-pen-to-square mr-2"></i> Create New Lesson</h3>
+                            <h3 id="formActionTitle" class="text-lg font-bold text-[#6d28d9] font-prompt"><i class="fa-solid fa-pen-to-square mr-2"></i> Create New Lesson</h3>
                             <button type="button" onclick="resetTeacherForm()" id="cancelEditBtn" class="hidden bg-slate-100 text-slate-600 px-4 py-2 rounded-lg font-bold hover:bg-slate-200 transition text-sm"><i class="fa-solid fa-xmark mr-1"></i> Cancel</button>
                         </div>
                         <form id="teacherForm">
@@ -179,20 +185,20 @@
                                 <div><label class="block font-bold text-slate-700 mb-2 text-sm">Lesson Title</label><input type="text" id="t_title" class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-purple-500" required></div>
                                 <div>
                                     <label class="block font-bold text-slate-700 mb-2 text-sm">Content</label>
-                                    <div class="bg-purple-50/50 p-3 rounded-lg mb-3 text-xs text-purple-700 font-medium">พิมพ์ <code>สำคัญมาก:</code>(ป้ายแดง), <code>ทริค:</code>(ป้ายเขียว), <code>**เน้นคำ**</code>(ตัวใหญ่สีเหลือง), <code>- </code>(เช็คลิสต์)</div>
+                                    <div class="bg-purple-50 p-3 rounded-lg mb-3 text-xs text-purple-700 font-medium">พิมพ์ <code>สำคัญมาก:</code>(ป้ายแดง), <code>ทริค:</code>(ป้ายเขียว), <code>**เน้นคำ**</code>(ตัวใหญ่สีเหลือง), <code>- </code>(เช็คลิสต์)</div>
                                     <textarea id="t_content" rows="6" class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-purple-500 leading-relaxed" required></textarea>
                                 </div>
                             </div>
                             <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 mb-8"><h4 class="font-bold text-slate-700 font-prompt border-b pb-2 mb-4">Quiz (5 Questions)</h4><div id="t_quizFields"></div></div>
-                            <button type="button" onclick="saveLesson()" id="saveBtn" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 rounded-xl shadow-md transition font-prompt text-lg">Save Lesson</button>
+                            <button type="button" onclick="saveLesson()" id="saveBtn" class="w-full bg-[#6d28d9] hover:bg-purple-800 text-white font-bold py-4 rounded-xl shadow-md transition font-prompt text-lg">Save Lesson</button>
                         </form>
                     </div>
                     <h3 class="text-xl font-bold text-slate-800 mb-4 font-prompt">All Lessons</h3>
                     <div id="loadingLessons_teacher" class="text-purple-500 font-bold"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> โหลดข้อมูล...</div>
-                    <div id="lessonGrid_teacher" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+                    <div id="lessonGrid_teacher" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
                 </div>
 
-                <div id="view_teacher_stats" class="hidden">
+                <div id="view_teacher_stats" class="hidden max-w-5xl mx-auto">
                     <h2 class="text-2xl font-bold text-slate-800 mb-6 font-prompt">Analytics</h2>
                     <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 mb-8 flex flex-col sm:flex-row gap-4 items-center">
                         <select id="statLessonSelect" onchange="renderTeacherTables()" class="w-full sm:w-auto flex-1 px-4 py-3 border border-slate-200 rounded-xl outline-none font-bold text-purple-700 bg-slate-50 focus:ring-2 focus:ring-purple-500"><option value="">-- เลือกบทเรียน --</option></select>
@@ -200,15 +206,15 @@
                     </div>
                     <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
                         <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100"><h3 class="text-lg font-bold text-slate-800 font-prompt mb-4 border-b pb-2"><i class="fa-solid fa-eye text-sky-500 mr-2"></i> View Logs</h3><div class="overflow-x-auto"><table class="w-full text-left border-collapse"><tbody id="logTableBody" class="divide-y divide-slate-100 text-sm"></tbody></table></div></div>
-                        <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100"><h3 class="text-lg font-bold text-slate-800 font-prompt mb-4 border-b pb-2"><i class="fa-solid fa-ranking-star text-purple-500 mr-2"></i> Quiz Scores</h3><div class="overflow-x-auto"><table class="w-full text-left border-collapse"><tbody id="statTableBody" class="divide-y divide-slate-100 text-sm"></tbody></table></div></div>
+                        <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100"><h3 class="text-lg font-bold text-slate-800 font-prompt mb-4 border-b pb-2"><i class="fa-solid fa-ranking-star text-[#6d28d9] mr-2"></i> Quiz Scores</h3><div class="overflow-x-auto"><table class="w-full text-left border-collapse"><tbody id="statTableBody" class="divide-y divide-slate-100 text-sm"></tbody></table></div></div>
                     </div>
                 </div>
 
-                <div id="view_admin" class="hidden">
+                <div id="view_admin" class="hidden max-w-5xl mx-auto">
                     <h2 class="text-2xl font-bold text-slate-800 mb-6 font-prompt">Admin Panel</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100"><h3 class="text-lg font-bold text-slate-800 mb-6 font-prompt"><i class="fa-solid fa-layer-group text-purple-500 mr-2"></i> Add Subject</h3><div class="space-y-4"><input type="text" id="a_subName" placeholder="Subject Name (e.g. Physics)" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-300"><button onclick="adminAddSubject()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3.5 rounded-xl transition font-prompt">Save Subject</button></div></div>
-                        <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100"><h3 class="text-lg font-bold text-slate-800 mb-6 font-prompt"><i class="fa-solid fa-user-tie text-purple-500 mr-2"></i> Add Teacher</h3><div class="space-y-4"><input type="text" id="a_tUser" placeholder="Username" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none"><input type="text" id="a_tPass" placeholder="Password" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none"><input type="text" id="a_tName" placeholder="Full Name" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none"><div><p class="font-bold text-slate-700 text-sm mb-2">Assigned Subjects</p><div id="a_subjectCheckboxes" class="flex flex-wrap gap-2"></div></div><button onclick="adminAddTeacher()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3.5 rounded-xl transition font-prompt mt-2">Register Teacher</button></div></div>
+                        <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100"><h3 class="text-lg font-bold text-slate-800 mb-6 font-prompt"><i class="fa-solid fa-user-tie text-purple-500 mr-2"></i> Add Teacher</h3><div class="space-y-4"><input type="text" id="a_tUser" placeholder="Username" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none"><input type="text" id="a_tPass" placeholder="Password" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none"><input type="text" id="a_tName" placeholder="Full Name" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none"><div><p class="font-bold text-slate-700 text-sm mb-2">Assigned Subjects</p><div id="a_subjectCheckboxes" class="flex flex-wrap gap-2"></div></div><button onclick="adminAddTeacher()" class="w-full bg-[#6d28d9] hover:bg-purple-800 text-white font-bold py-3.5 rounded-xl transition font-prompt mt-2">Register Teacher</button></div></div>
                     </div>
                 </div>
 
@@ -219,35 +225,39 @@
             <div class="p-8 overflow-y-auto hide-scroll flex-1">
                 <div class="text-right lg:hidden mb-4"><button onclick="document.getElementById('rightSidebar').classList.add('hidden')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-xl"></i></button></div>
                 
-                <div class="flex justify-center gap-3 mb-8">
-                    <div class="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-500 cursor-pointer hover:bg-slate-50"><i class="fa-regular fa-bell"></i></div>
-                    <div class="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-500 cursor-pointer hover:bg-slate-50"><i class="fa-regular fa-envelope"></i></div>
-                    <div class="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-500 cursor-pointer hover:bg-slate-50"><i class="fa-solid fa-ellipsis-vertical"></i></div>
+                <div class="flex justify-between items-center mb-8">
+                    <h3 class="font-bold text-slate-800 text-sm">Your Profile</h3>
+                    <i class="fa-solid fa-ellipsis-vertical text-slate-400 cursor-pointer"></i>
                 </div>
 
-                <div class="text-center mb-10">
+                <div class="text-center mb-8">
                     <div class="relative w-24 h-24 mx-auto mb-4">
-                        <svg class="w-full h-full absolute top-0 left-0" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="none" stroke="#f1f5f9" stroke-width="4"></circle><circle cx="50" cy="50" r="48" fill="none" stroke="#9333ea" stroke-width="4" stroke-dasharray="300" stroke-dashoffset="100" transform="rotate(-90 50 50)"></circle></svg>
+                        <svg class="w-full h-full absolute top-0 left-0" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="none" stroke="#f1f5f9" stroke-width="4"></circle><circle cx="50" cy="50" r="48" fill="none" stroke="#6d28d9" stroke-width="4" stroke-dasharray="300" stroke-dashoffset="100" transform="rotate(-90 50 50)"></circle></svg>
                         <div class="absolute inset-1 rounded-full bg-purple-100 overflow-hidden flex items-center justify-center text-3xl font-bold text-purple-600" id="rightProfileAvatar">A</div>
                     </div>
-                    <h3 class="font-bold text-slate-800 text-lg font-prompt">Hello <span id="rightProfileName">User</span></h3>
+                    <h3 class="font-bold text-slate-800 text-lg font-prompt">Good Morning <span id="rightProfileName">User</span></h3>
                     <p class="text-xs text-slate-400 font-medium px-4 mt-1">Continue Your Journey And Achieve Your Target</p>
+                </div>
+                
+                <div class="flex justify-center gap-4 mb-10">
+                    <div class="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-500 cursor-pointer hover:bg-slate-50"><i class="fa-regular fa-bell"></i></div>
+                    <div class="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-500 cursor-pointer hover:bg-slate-50"><i class="fa-regular fa-envelope"></i></div>
+                    <div class="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-500 cursor-pointer hover:bg-slate-50"><i class="fa-solid fa-graduation-cap"></i></div>
                 </div>
 
                 <div class="mb-10">
                     <div class="flex items-end justify-between h-24 gap-2 border-b border-slate-100 pb-2 px-2">
-                        <div class="w-1/6 bg-purple-200 rounded-t-sm h-1/4"></div><div class="w-1/6 bg-purple-300 rounded-t-sm h-2/4"></div><div class="w-1/6 bg-purple-400 rounded-t-sm h-3/4"></div><div class="w-1/6 bg-purple-500 rounded-t-sm h-full"></div><div class="w-1/6 bg-purple-600 rounded-t-sm h-5/6"></div>
+                        <div class="w-1/6 bg-purple-200 rounded-t-sm h-1/4"></div><div class="w-1/6 bg-purple-300 rounded-t-sm h-2/4"></div><div class="w-1/6 bg-purple-400 rounded-t-sm h-3/4"></div><div class="w-1/6 bg-purple-500 rounded-t-sm h-full"></div><div class="w-1/6 bg-[#6d28d9] rounded-t-sm h-5/6"></div>
                     </div>
-                    <div class="flex justify-between mt-2 text-[10px] text-slate-400 font-bold px-2"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span></div>
                 </div>
 
                 <div>
                     <div class="flex justify-between items-center mb-6"><h4 class="font-bold text-slate-800 font-prompt text-sm">Your Mentor</h4><button class="w-6 h-6 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 text-xs"><i class="fa-solid fa-plus"></i></button></div>
                     <div class="space-y-4 mb-6">
-                        <div class="flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden"><img src="https://i.pravatar.cc/100?img=11" class="w-full h-full object-cover"></div><div><p class="text-sm font-bold text-slate-800 font-prompt leading-none">Teacher 1</p><p class="text-[10px] text-slate-400">Instructor</p></div></div><button class="text-[10px] font-bold bg-purple-600 text-white px-3 py-1.5 rounded-full hover:bg-purple-700">Follow</button></div>
-                        <div class="flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden"><img src="https://i.pravatar.cc/100?img=12" class="w-full h-full object-cover"></div><div><p class="text-sm font-bold text-slate-800 font-prompt leading-none">Teacher 2</p><p class="text-[10px] text-slate-400">Instructor</p></div></div><button class="text-[10px] font-bold bg-purple-600 text-white px-3 py-1.5 rounded-full hover:bg-purple-700">Follow</button></div>
+                        <div class="flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden"><img src="https://i.pravatar.cc/100?img=11" class="w-full h-full object-cover"></div><div><p class="text-sm font-bold text-slate-800 font-prompt leading-none truncate w-24">อ.ธนาภรณ์</p><p class="text-[10px] text-slate-400 mt-1">Instructor</p></div></div><button class="text-[10px] font-bold bg-[#6d28d9] text-white px-4 py-1.5 rounded-full hover:bg-purple-800">Follow</button></div>
+                        <div class="flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden"><img src="https://i.pravatar.cc/100?img=12" class="w-full h-full object-cover"></div><div><p class="text-sm font-bold text-slate-800 font-prompt leading-none truncate w-24">SCiUS Admin</p><p class="text-[10px] text-slate-400 mt-1">Staff</p></div></div><button class="text-[10px] font-bold bg-[#6d28d9] text-white px-4 py-1.5 rounded-full hover:bg-purple-800">Follow</button></div>
                     </div>
-                    <button class="w-full py-3 bg-purple-50 text-purple-700 font-bold text-xs rounded-xl hover:bg-purple-100 transition">See All</button>
+                    <button class="w-full py-3 bg-purple-50 text-[#6d28d9] font-bold text-xs rounded-xl hover:bg-purple-100 transition">See All</button>
                 </div>
             </div>
         </aside>
@@ -257,7 +267,7 @@
     <script>
         // =================================================================
         // ⚠️ ใส่ Web App URL ของ Google Apps Script ที่นี่ ⚠️
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbzxhOP_d3JzhhWevRSmDjsA4fG0_xfA_InkIKTE9doZB56PSNuhXda4xSNYf06tqpElJA/exec';
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbzIG8mVElDkbaOuh1qtb-9r13eFDLU8Q5RcFy0MlVHK7j0L6eL3A1keU76s3GIdLffKyQ/exec';
         // =================================================================
 
         let allSubjects = [], allLessons = [];
@@ -290,23 +300,21 @@
             text = text.replace(/(ตัวอย่าง|ทริค|Tip|ข้อแนะนำ|ไอเดีย)(:|\s)/g, '<span class="inline-flex items-center bg-emerald-100 text-emerald-800 px-3 py-1 rounded-xl font-bold text-sm mb-1 shadow-sm"><i class="fa-solid fa-lightbulb text-yellow-500 mr-2"></i> $1$2</span>');
             text = text.replace(/(สรุป|สรุปเนื้อหา)(:|\s)/g, '<span class="inline-flex items-center bg-indigo-100 text-indigo-800 px-3 py-1 rounded-xl font-bold text-sm mb-1 shadow-sm"><i class="fa-solid fa-flag-checkered mr-2"></i> $1$2</span>');
             text = text.replace(/\*\*(.*?)\*\*/g, '<span class="pop-word">$1</span>');
-            text = text.replace(/^### (.*$)/gim, '<h4 class="text-xl font-bold text-purple-700 mt-6 mb-3 font-prompt">$1</h4>');
+            text = text.replace(/^### (.*$)/gim, '<h4 class="text-xl font-bold text-[#6d28d9] mt-6 mb-3 font-prompt">$1</h4>');
             text = text.replace(/^## (.*$)/gim, '<h3 class="text-2xl font-bold text-slate-800 mt-8 mb-4 font-prompt">$1</h3>');
             text = text.replace(/^# (.*$)/gim, '<h2 class="text-3xl font-black text-slate-800 mt-10 mb-5 font-prompt border-b border-slate-100 pb-2">$1</h2>');
-            text = text.replace(/^- (.*$)/gim, '<div class="flex items-start my-1.5"><div class="text-purple-500 mt-1.5 mr-2 text-sm"><i class="fa-solid fa-circle-check"></i></div><div class="flex-1">$1</div></div>');
+            text = text.replace(/^- (.*$)/gim, '<div class="flex items-start my-1.5"><div class="text-[#6d28d9] mt-1.5 mr-2 text-sm"><i class="fa-solid fa-circle-check"></i></div><div class="flex-1">$1</div></div>');
             return text;
         }
 
-        const imgKeywords = ['study', 'technology', 'science', 'laptop', 'notebook', 'biology', 'math', 'chemistry'];
         function getImageUrl(title) { 
-            let idx = title.length % imgKeywords.length;
-            return `https://source.unsplash.com/800x600/?${imgKeywords[idx]}&sig=${encodeURIComponent(title)}`; 
+            return `https://picsum.photos/seed/${encodeURIComponent(title)}/800/600`; 
         }
 
         function renderTeacherQuizFields() {
             let html = "";
             for(let i=1; i<=5; i++) {
-                html += `<div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm mb-4"><label class="block font-bold text-slate-800 mb-2 text-sm">ข้อ ${i}.</label><input type="text" id="t_q${i}" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none text-sm mb-3 focus:ring-2 focus:ring-purple-500" required><div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3 text-sm"><div class="flex items-center"><span class="font-bold text-slate-400 mr-2 w-5">ก.</span><input type="text" id="t_c${i}_1" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none focus:border-purple-500"></div><div class="flex items-center"><span class="font-bold text-slate-400 mr-2 w-5">ข.</span><input type="text" id="t_c${i}_2" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none focus:border-purple-500"></div><div class="flex items-center"><span class="font-bold text-slate-400 mr-2 w-5">ค.</span><input type="text" id="t_c${i}_3" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none focus:border-purple-500"></div><div class="flex items-center"><span class="font-bold text-slate-400 mr-2 w-5">ง.</span><input type="text" id="t_c${i}_4" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none focus:border-purple-500"></div></div><div class="flex items-center text-sm"><label class="font-bold text-slate-600 mr-2">เฉลยข้อที่ถูก:</label><select id="t_ans${i}" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 font-bold text-purple-700 outline-none"><option value="1">ก.</option><option value="2">ข.</option><option value="3">ค.</option><option value="4">ง.</option></select></div></div>`;
+                html += `<div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm mb-4"><label class="block font-bold text-slate-800 mb-2 text-sm">ข้อ ${i}.</label><input type="text" id="t_q${i}" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none text-sm mb-3 focus:ring-2 focus:ring-[#6d28d9]" required><div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3 text-sm"><div class="flex items-center"><span class="font-bold text-slate-400 mr-2 w-5">ก.</span><input type="text" id="t_c${i}_1" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none focus:border-[#6d28d9]"></div><div class="flex items-center"><span class="font-bold text-slate-400 mr-2 w-5">ข.</span><input type="text" id="t_c${i}_2" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none focus:border-[#6d28d9]"></div><div class="flex items-center"><span class="font-bold text-slate-400 mr-2 w-5">ค.</span><input type="text" id="t_c${i}_3" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none focus:border-[#6d28d9]"></div><div class="flex items-center"><span class="font-bold text-slate-400 mr-2 w-5">ง.</span><input type="text" id="t_c${i}_4" class="w-full px-3 py-2 rounded-lg border border-slate-200 outline-none focus:border-[#6d28d9]"></div></div><div class="flex items-center text-sm"><label class="font-bold text-slate-600 mr-2">เฉลยข้อที่ถูก:</label><select id="t_ans${i}" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 font-bold text-[#6d28d9] outline-none"><option value="1">ก.</option><option value="2">ข.</option><option value="3">ค.</option><option value="4">ง.</option></select></div></div>`;
             }
             document.getElementById('t_quizFields').innerHTML = html;
         }
@@ -319,6 +327,7 @@
             let navHtml = "";
             if (currentUser.role === 'student') {
                 navHtml += `<a onclick="nav('home')" id="nav_home" class="menu-item px-8 py-3 flex items-center cursor-pointer active"><i class="fa-solid fa-house w-6 mr-2"></i> Dashboard</a>`;
+                navHtml += `<a class="menu-item px-8 py-3 flex items-center cursor-pointer"><i class="fa-solid fa-inbox w-6 mr-2"></i> Inbox</a>`;
                 navHtml += `<a class="menu-item px-8 py-3 flex items-center cursor-pointer"><i class="fa-solid fa-book-open w-6 mr-2"></i> Lesson</a>`;
                 navHtml += `<a class="menu-item px-8 py-3 flex items-center cursor-pointer"><i class="fa-solid fa-list-check w-6 mr-2"></i> Task</a>`;
             } else if (currentUser.role === 'teacher') {
@@ -361,19 +370,20 @@
             Swal.fire({ title: 'Signing in...', didOpen: () => Swal.showLoading() });
 
             fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "login", username: u, password: p }) })
-            .then(res => res.json()).then(result => {
+            .then(res => res.json())
+            .then(result => {
                 if (result.status === "success") {
                     currentUser = { id: result.username, name: result.name, role: result.role, assigned: result.assigned };
                     
                     let shortName = currentUser.name.split(' ')[0];
                     document.getElementById('rightProfileName').innerText = shortName;
                     document.getElementById('rightProfileAvatar').innerText = shortName.charAt(0);
-                    document.getElementById('profileInitial').innerText = shortName.charAt(0);
                     
                     document.getElementById('loginLayout').style.display = 'none';
                     document.getElementById('appLayout').classList.remove('hidden');
                     
-                    renderSidebarMenu(); Swal.close();
+                    renderSidebarMenu();
+                    Swal.close();
 
                     if (currentUser.role === 'student') { nav('home'); fetchSubjects(); loadLessons(); } 
                     else if (currentUser.role === 'teacher') { nav('home'); fetchSubjects(); loadLessons(); }
@@ -396,8 +406,8 @@
                         let htmlSub = "";
                         res.data.forEach((sub) => {
                             htmlSub += `
-                            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center justify-between min-w-[200px] cursor-pointer hover:border-purple-300 transition shrink-0" onclick="selectSubject('${sub}')">
-                                <div class="flex items-center"><div class="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-500 mr-3"><i class="fa-regular fa-bell"></i></div><div><p class="text-xs text-slate-400 font-bold mb-0.5 uppercase tracking-wide">Course</p><p class="text-sm font-bold text-slate-800 leading-none truncate w-24">${sub}</p></div></div><i class="fa-solid fa-ellipsis-vertical text-slate-300"></i>
+                            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center justify-between min-w-[220px] cursor-pointer hover:border-[#c4b5fd] transition shrink-0" onclick="selectSubject('${sub}')">
+                                <div class="flex items-center"><div class="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-[#6d28d9] mr-3"><i class="fa-regular fa-bell"></i></div><div><p class="text-[10px] text-slate-400 font-bold mb-0.5 uppercase tracking-wide">Course / วิชา</p><p class="text-sm font-bold text-slate-800 leading-none truncate w-24">${sub}</p></div></div><i class="fa-solid fa-ellipsis-vertical text-slate-300"></i>
                             </div>`;
                         });
                         document.getElementById('subjectGrid').innerHTML = htmlSub;
@@ -412,7 +422,7 @@
 
                     if(currentUser.role === 'admin') {
                         let chkHtml = "";
-                        allSubjects.forEach(sub => { chkHtml += `<label class="flex items-center bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl cursor-pointer hover:bg-white transition text-sm"><input type="checkbox" value="${sub}" class="teacher-subject-cb w-4 h-4 text-purple-600 mr-3"> <span class="font-medium">${sub}</span></label>`; });
+                        allSubjects.forEach(sub => { chkHtml += `<label class="flex items-center bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl cursor-pointer hover:bg-white transition text-sm"><input type="checkbox" value="${sub}" class="teacher-subject-cb w-4 h-4 text-[#6d28d9] mr-3"> <span class="font-medium">${sub}</span></label>`; });
                         document.getElementById('a_subjectCheckboxes').innerHTML = chkHtml;
                     }
                 }
@@ -454,25 +464,27 @@
 
             filtered.forEach(lesson => {
                 let index = allLessons.indexOf(lesson); let isCompleted = lesson.studentScore !== null; let imgUrl = getImageUrl(lesson.title);
-                let tagColor = index % 2 === 0 ? 'text-purple-600 bg-purple-50' : 'text-blue-600 bg-blue-50';
                 
                 htmlS += `
-                <div class="course-card bg-white rounded-3xl p-4 shadow-sm border border-slate-100 cursor-pointer flex flex-col" onclick="openLesson(${index})">
-                    <div class="h-44 w-full rounded-2xl mb-4 relative overflow-hidden bg-slate-900 shrink-0">
-                        <img src="${imgUrl}" class="w-full h-full object-cover opacity-80 ${isCompleted ? 'grayscale' : ''}">
+                <div class="course-card bg-white rounded-3xl p-5 shadow-sm border border-slate-100 cursor-pointer" onclick="openLesson(${index})">
+                    <div class="h-44 w-full rounded-2xl mb-4 relative overflow-hidden bg-slate-900 group">
+                        <img src="${imgUrl}" class="w-full h-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105 ${isCompleted ? 'grayscale' : ''}">
+                        <div class="absolute top-3 right-3 w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white"><i class="fa-regular fa-heart text-xs"></i></div>
                         ${isCompleted ? `<div class="absolute inset-0 flex items-center justify-center bg-slate-900/40"><div class="bg-emerald-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-md"><i class="fa-solid fa-check mr-1"></i> Completed</div></div>` : ''}
                     </div>
-                    <div class="px-2 flex flex-col flex-1">
-                        <div>
-                            <span class="px-2.5 py-1 rounded text-[10px] font-bold tracking-widest uppercase mb-3 inline-block ${tagColor}">${lesson.subject} | ${lesson.ep}</span>
-                            <h3 class="text-lg font-bold text-slate-800 line-clamp-2 leading-tight font-prompt mb-4">${lesson.title}</h3>
-                        </div>
-                        <div class="flex items-center justify-between border-t border-slate-100 pt-4 mt-auto">
+                    <div class="px-2">
+                        <span class="bg-purple-100 text-[#6d28d9] px-2.5 py-1 rounded text-[10px] font-bold tracking-widest uppercase mb-3 inline-block">${lesson.subject} | ${lesson.ep}</span>
+                        <h3 class="text-lg font-bold text-slate-800 line-clamp-2 leading-tight font-prompt mb-4">${lesson.title}</h3>
+                        
+                        <div class="flex items-center justify-between border-t border-slate-100 pt-4 mt-2">
                             <div class="flex items-center gap-2">
                                 <div class="w-6 h-6 rounded-full bg-slate-200 overflow-hidden"><img src="https://i.pravatar.cc/100?img=${(index%50)+1}" class="w-full h-full object-cover"></div>
-                                <div><p class="text-[10px] font-bold text-slate-700 leading-none truncate w-20">Instructor</p></div>
+                                <div><p class="text-[10px] font-bold text-slate-700 leading-none">Instructor</p><p class="text-[9px] text-slate-400">Teacher</p></div>
                             </div>
-                            ${isCompleted ? `<span class="text-xs font-bold text-emerald-500 bg-emerald-50 px-2 py-1 rounded">${lesson.studentScore}/5</span>` : `<span class="text-xs font-bold text-purple-600 bg-purple-50 px-3 py-1 rounded">Start</span>`}
+                            ${isCompleted 
+                                ? `<span class="text-xs font-bold text-emerald-500 bg-emerald-50 px-2 py-1 rounded border border-emerald-100">Score: ${lesson.studentScore}/5</span>` 
+                                : `<span class="text-xs font-bold text-white bg-[#6d28d9] px-3 py-1 rounded-full shadow-sm">Learn Now</span>`
+                            }
                         </div>
                     </div>
                 </div>`;
@@ -491,8 +503,8 @@
                 let index = allLessons.indexOf(lesson); 
                 htmlT += `
                 <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex flex-col justify-between">
-                    <div><div class="flex justify-between mb-3"><span class="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-lg text-xs font-bold">${lesson.subject} | ${lesson.ep}</span> <span class="text-slate-400 text-xs"><i class="fa-solid fa-eye"></i> ${lesson.views}</span></div><h3 class="text-lg font-bold text-slate-800 mb-5 line-clamp-2 font-prompt leading-snug">${lesson.title}</h3></div>
-                    <div class="flex gap-2"><button onclick="editLessonSetup(${index})" class="flex-1 bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold py-2 rounded-xl text-sm transition">Edit</button><button onclick="deleteLesson('${lesson.title}')" class="flex-1 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold py-2 rounded-xl text-sm transition">Delete</button></div>
+                    <div><div class="flex justify-between mb-3"><span class="bg-purple-50 text-[#6d28d9] px-3 py-1 rounded-lg text-xs font-bold">${lesson.subject} | ${lesson.ep}</span> <span class="text-slate-400 text-xs"><i class="fa-solid fa-eye"></i> ${lesson.views}</span></div><h3 class="text-lg font-bold text-slate-800 mb-5 line-clamp-2 font-prompt leading-snug">${lesson.title}</h3></div>
+                    <div class="flex gap-2"><button onclick="editLessonSetup(${index})" class="flex-1 bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold py-2.5 rounded-xl text-sm transition">Edit</button><button onclick="deleteLesson('${lesson.title}')" class="flex-1 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold py-2.5 rounded-xl text-sm transition">Delete</button></div>
                 </div>`;
                 if(selStat) selStat.innerHTML += `<option value="${lesson.title}">[${lesson.subject}] ${lesson.title}</option>`;
             });
@@ -529,13 +541,13 @@
                 currentLesson.questions.forEach((qObj, idx) => {
                     let i = idx + 1;
                     qHtml += `
-                    <div class="bg-slate-50/50 p-6 md:p-8 rounded-3xl border border-slate-100 mb-6">
+                    <div class="bg-white p-6 md:p-8 rounded-3xl border border-slate-100 mb-6 shadow-sm">
                         <p class="font-bold text-lg mb-5 text-slate-800">${i}. ${qObj.q}</p>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-base">
-                            <label class="flex items-center p-4 bg-white border border-slate-200 rounded-2xl cursor-pointer hover:border-purple-400 transition"><input type="radio" name="ans${i}" value="1" class="w-5 h-5 text-purple-600 mr-3 focus:ring-purple-500"> <span class="font-medium text-slate-700">ก. ${qObj.c1}</span></label>
-                            <label class="flex items-center p-4 bg-white border border-slate-200 rounded-2xl cursor-pointer hover:border-purple-400 transition"><input type="radio" name="ans${i}" value="2" class="w-5 h-5 text-purple-600 mr-3 focus:ring-purple-500"> <span class="font-medium text-slate-700">ข. ${qObj.c2}</span></label>
-                            <label class="flex items-center p-4 bg-white border border-slate-200 rounded-2xl cursor-pointer hover:border-purple-400 transition"><input type="radio" name="ans${i}" value="3" class="w-5 h-5 text-purple-600 mr-3 focus:ring-purple-500"> <span class="font-medium text-slate-700">ค. ${qObj.c3}</span></label>
-                            <label class="flex items-center p-4 bg-white border border-slate-200 rounded-2xl cursor-pointer hover:border-purple-400 transition"><input type="radio" name="ans${i}" value="4" class="w-5 h-5 text-purple-600 mr-3 focus:ring-purple-500"> <span class="font-medium text-slate-700">ง. ${qObj.c4}</span></label>
+                            <label class="flex items-center p-4 bg-slate-50 border border-slate-100 rounded-2xl cursor-pointer hover:border-[#6d28d9] transition"><input type="radio" name="ans${i}" value="1" class="w-5 h-5 text-[#6d28d9] mr-3 focus:ring-purple-500"> <span class="font-medium text-slate-700">ก. ${qObj.c1}</span></label>
+                            <label class="flex items-center p-4 bg-slate-50 border border-slate-100 rounded-2xl cursor-pointer hover:border-[#6d28d9] transition"><input type="radio" name="ans${i}" value="2" class="w-5 h-5 text-[#6d28d9] mr-3 focus:ring-purple-500"> <span class="font-medium text-slate-700">ข. ${qObj.c2}</span></label>
+                            <label class="flex items-center p-4 bg-slate-50 border border-slate-100 rounded-2xl cursor-pointer hover:border-[#6d28d9] transition"><input type="radio" name="ans${i}" value="3" class="w-5 h-5 text-[#6d28d9] mr-3 focus:ring-purple-500"> <span class="font-medium text-slate-700">ค. ${qObj.c3}</span></label>
+                            <label class="flex items-center p-4 bg-slate-50 border border-slate-100 rounded-2xl cursor-pointer hover:border-[#6d28d9] transition"><input type="radio" name="ans${i}" value="4" class="w-5 h-5 text-[#6d28d9] mr-3 focus:ring-purple-500"> <span class="font-medium text-slate-700">ง. ${qObj.c4}</span></label>
                         </div>
                     </div>`;
                 });
@@ -565,12 +577,12 @@
         // ----------------------------------------------------
         function resetTeacherForm() {
             document.getElementById('teacherForm').reset(); document.getElementById('t_mode').value = "add";
-            document.getElementById('formActionTitle').innerHTML = '<i class="fa-solid fa-pen-to-square mr-2"></i> สร้างบทเรียนใหม่'; document.getElementById('saveBtn').innerHTML = 'บันทึกขึ้นระบบ'; document.getElementById('cancelEditBtn').classList.add('hidden');
+            document.getElementById('formActionTitle').innerHTML = '<i class="fa-solid fa-pen-to-square mr-2"></i> Create New Lesson'; document.getElementById('saveBtn').innerHTML = 'Save Lesson'; document.getElementById('cancelEditBtn').classList.add('hidden');
         }
 
         function editLessonSetup(index) {
             let l = allLessons[index]; document.getElementById('t_mode').value = "edit"; document.getElementById('t_oldTitle').value = l.title;
-            document.getElementById('formActionTitle').innerHTML = '<i class="fa-solid fa-pen mr-2"></i> แก้ไขบทเรียน'; document.getElementById('saveBtn').innerHTML = 'บันทึกการแก้ไข'; document.getElementById('cancelEditBtn').classList.remove('hidden');
+            document.getElementById('formActionTitle').innerHTML = '<i class="fa-solid fa-pen mr-2"></i> Edit Lesson'; document.getElementById('saveBtn').innerHTML = 'Save Changes'; document.getElementById('cancelEditBtn').classList.remove('hidden');
             document.getElementById('t_subject').value = l.subject; document.getElementById('t_ep').value = l.ep; document.getElementById('t_title').value = l.title; document.getElementById('t_content').value = l.content;
             l.questions.forEach((qObj, idx) => { let i = idx + 1; document.getElementById('t_q'+i).value = qObj.q; document.getElementById('t_ans'+i).value = qObj.ans; document.getElementById('t_c'+i+'_1').value = qObj.c1; document.getElementById('t_c'+i+'_2').value = qObj.c2; document.getElementById('t_c'+i+'_3').value = qObj.c3; document.getElementById('t_c'+i+'_4').value = qObj.c4; });
             document.getElementById('view_teacher_manage').scrollIntoView();
@@ -611,7 +623,7 @@
         function adminAddSubject() {
             let sub = document.getElementById('a_subName').value.trim(); if(!sub) return;
             Swal.fire({title:'กำลังเพิ่ม...', didOpen:()=>Swal.showLoading()});
-            fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "addSubject", subjectName: sub }) }).then(res => res.json()).then(r => { if(r.status==="success") { Swal.fire('สำเร็จ','','success'); document.getElementById('a_subName').value=""; fetchSubjects(); }});
+            fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "addSubject", subjectName: sub }) }).then(res => res.json()).then(r => { if(r.status==="success") { Swal.fire('สำเร็จ','เพิ่มวิชาแล้ว','success'); document.getElementById('a_subName').value=""; fetchSubjects(); }});
         }
 
         function adminAddTeacher() {
