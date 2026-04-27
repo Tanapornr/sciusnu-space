@@ -83,7 +83,7 @@
             <div class="p-6 border-t border-slate-100">
                 <p class="px-8 text-[10px] font-bold text-slate-400 mb-3 tracking-widest uppercase">Settings</p>
                 <div class="flex flex-col font-prompt text-sm font-medium">
-                    <a class="menu-item px-8 py-3 flex items-center text-slate-500 cursor-pointer"><i class="fa-solid fa-gear w-6 mr-2"></i> Settings</a>
+                    <a onclick="nav('settings')" id="nav_settings" class="menu-item px-8 py-3 flex items-center text-slate-500 cursor-pointer"><i class="fa-solid fa-user-gear w-6 mr-2"></i> Profile Settings</a>
                     <a onclick="logout()" class="menu-item px-8 py-3 flex items-center text-rose-500 cursor-pointer hover:bg-rose-50 hover:border-rose-300"><i class="fa-solid fa-arrow-right-from-bracket w-6 mr-2"></i> Logout</a>
                 </div>
             </div>
@@ -168,6 +168,37 @@
                     </div>
                 </div>
 
+                <div id="view_settings" class="hidden max-w-2xl mx-auto">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-6 font-prompt">Profile Settings</h2>
+                    <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+                        <div class="flex items-center gap-6 mb-8 border-b border-slate-100 pb-8">
+                            <div class="relative w-24 h-24 rounded-full bg-slate-100 overflow-hidden shadow-inner">
+                                <img id="previewSettingPic" src="https://i.pravatar.cc/150" class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-xl text-slate-800 font-prompt" id="settingName">Name</h3>
+                                <p class="text-sm text-slate-500" id="settingRole">Role</p>
+                            </div>
+                        </div>
+
+                        <form id="profileForm" class="space-y-5">
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">ลิงก์รูปภาพโปรไฟล์ (Image URL)</label>
+                                <input type="url" id="set_pic" placeholder="https://..." class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-300 transition">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">อีเมล (Email)</label>
+                                <input type="email" id="set_email" placeholder="example@email.com" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-300 transition">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">เบอร์โทรศัพท์ (Phone)</label>
+                                <input type="tel" id="set_phone" placeholder="08X-XXX-XXXX" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-300 transition">
+                            </div>
+                            <button type="button" onclick="saveProfile()" class="w-full bg-[#6d28d9] hover:bg-purple-800 text-white font-bold py-3.5 rounded-xl transition font-prompt mt-4">บันทึกข้อมูลส่วนตัว</button>
+                        </form>
+                    </div>
+                </div>
+
                 <div id="view_teacher_manage" class="hidden max-w-5xl mx-auto">
                     <h2 class="text-2xl font-bold text-slate-800 mb-6 font-prompt">Manage Lessons</h2>
                     <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 mb-8">
@@ -195,7 +226,7 @@
                     </div>
                     <h3 class="text-xl font-bold text-slate-800 mb-4 font-prompt">All Lessons</h3>
                     <div id="loadingLessons_teacher" class="text-purple-500 font-bold"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> โหลดข้อมูล...</div>
-                    <div id="lessonGrid_teacher" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+                    <div id="lessonGrid_teacher" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
                 </div>
 
                 <div id="view_teacher_stats" class="hidden max-w-5xl mx-auto">
@@ -227,21 +258,24 @@
                 
                 <div class="flex justify-between items-center mb-8">
                     <h3 class="font-bold text-slate-800 text-sm">Your Profile</h3>
-                    <i class="fa-solid fa-ellipsis-vertical text-slate-400 cursor-pointer"></i>
+                    <i class="fa-solid fa-ellipsis-vertical text-slate-400 cursor-pointer" onclick="nav('settings')"></i>
                 </div>
 
                 <div class="text-center mb-8">
                     <div class="relative w-24 h-24 mx-auto mb-4">
                         <svg class="w-full h-full absolute top-0 left-0" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="none" stroke="#f1f5f9" stroke-width="4"></circle><circle cx="50" cy="50" r="48" fill="none" stroke="#6d28d9" stroke-width="4" stroke-dasharray="300" stroke-dashoffset="100" transform="rotate(-90 50 50)"></circle></svg>
-                        <div class="absolute inset-1 rounded-full bg-purple-100 overflow-hidden flex items-center justify-center text-3xl font-bold text-purple-600" id="rightProfileAvatar">A</div>
+                        <div class="absolute inset-1 rounded-full bg-purple-100 overflow-hidden flex items-center justify-center text-3xl font-bold text-purple-600">
+                            <img id="rightProfileImage" src="" class="w-full h-full object-cover hidden">
+                            <span id="rightProfileAvatar">A</span>
+                        </div>
                     </div>
                     <h3 class="font-bold text-slate-800 text-lg font-prompt">Good Morning <span id="rightProfileName">User</span></h3>
                     <p class="text-xs text-slate-400 font-medium px-4 mt-1">Continue Your Journey And Achieve Your Target</p>
                 </div>
                 
                 <div class="flex justify-center gap-4 mb-10">
-                    <div class="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-500 cursor-pointer hover:bg-slate-50"><i class="fa-regular fa-bell"></i></div>
-                    <div class="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-500 cursor-pointer hover:bg-slate-50"><i class="fa-regular fa-envelope"></i></div>
+                    <div class="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-500 cursor-pointer hover:bg-slate-50" onclick="nav('settings')"><i class="fa-regular fa-user"></i></div>
+                    <div class="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-500 cursor-pointer hover:bg-slate-50" onclick="Swal.fire('Inbox', 'ยังไม่มีข้อความใหม่', 'info')"><i class="fa-regular fa-envelope"></i></div>
                     <div class="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-500 cursor-pointer hover:bg-slate-50"><i class="fa-solid fa-graduation-cap"></i></div>
                 </div>
 
@@ -252,12 +286,17 @@
                 </div>
 
                 <div>
-                    <div class="flex justify-between items-center mb-6"><h4 class="font-bold text-slate-800 font-prompt text-sm">Your Mentor</h4><button class="w-6 h-6 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 text-xs"><i class="fa-solid fa-plus"></i></button></div>
+                    <div class="flex justify-between items-center mb-6"><h4 class="font-bold text-slate-800 font-prompt text-sm">Your Mentor</h4></div>
                     <div class="space-y-4 mb-6">
-                        <div class="flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden"><img src="https://i.pravatar.cc/100?img=11" class="w-full h-full object-cover"></div><div><p class="text-sm font-bold text-slate-800 font-prompt leading-none truncate w-24">อ.ธนาภรณ์</p><p class="text-[10px] text-slate-400 mt-1">Instructor</p></div></div><button class="text-[10px] font-bold bg-[#6d28d9] text-white px-4 py-1.5 rounded-full hover:bg-purple-800">Follow</button></div>
-                        <div class="flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden"><img src="https://i.pravatar.cc/100?img=12" class="w-full h-full object-cover"></div><div><p class="text-sm font-bold text-slate-800 font-prompt leading-none truncate w-24">SCiUS Admin</p><p class="text-[10px] text-slate-400 mt-1">Staff</p></div></div><button class="text-[10px] font-bold bg-[#6d28d9] text-white px-4 py-1.5 rounded-full hover:bg-purple-800">Follow</button></div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden"><img src="https://i.pravatar.cc/100?img=11" class="w-full h-full object-cover"></div><div><p class="text-sm font-bold text-slate-800 font-prompt leading-none truncate w-24">อ.ธนาภรณ์</p><p class="text-[10px] text-slate-400 mt-1">Instructor</p></div></div>
+                            <button onclick="contactMentor('อ.ธนาภรณ์')" class="text-[10px] font-bold bg-[#6d28d9] text-white px-4 py-1.5 rounded-full hover:bg-purple-800 transition">ปรึกษา</button>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden"><img src="https://i.pravatar.cc/100?img=12" class="w-full h-full object-cover"></div><div><p class="text-sm font-bold text-slate-800 font-prompt leading-none truncate w-24">SCiUS Admin</p><p class="text-[10px] text-slate-400 mt-1">Staff</p></div></div>
+                            <button onclick="contactMentor('แอดมินระบบ')" class="text-[10px] font-bold bg-[#6d28d9] text-white px-4 py-1.5 rounded-full hover:bg-purple-800 transition">ปรึกษา</button>
+                        </div>
                     </div>
-                    <button class="w-full py-3 bg-purple-50 text-[#6d28d9] font-bold text-xs rounded-xl hover:bg-purple-100 transition">See All</button>
                 </div>
             </div>
         </aside>
@@ -267,12 +306,12 @@
     <script>
         // =================================================================
         // ⚠️ ใส่ Web App URL ของ Google Apps Script ที่นี่ ⚠️
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbzIG8mVElDkbaOuh1qtb-9r13eFDLU8Q5RcFy0MlVHK7j0L6eL3A1keU76s3GIdLffKyQ/exec';
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbyLbixkJBDSsqoUUtuiS9mRakRSZ9nQnyMqyz5L9x9Ed8FN_I4Py8NAnmJS-_46v0YT/exec';
         // =================================================================
 
         let allSubjects = [], allLessons = [];
         let currentSubject = "", currentLesson = null;
-        let currentUser = { id: "", name: "", role: "", assigned: "" };
+        let currentUser = { id: "", name: "", role: "", assigned: "", pic: "", email: "", phone: "" };
         let globalStatData = { students: [], scores: [], logs: [] };
         let isTakingQuiz = false, tabSwitchCount = 0;
 
@@ -297,7 +336,7 @@
         function formatContent(text) {
             if (!text) return "";
             text = text.replace(/(สำคัญมาก|ข้อควรระวัง|หมายเหตุ|เตือน|คำเตือน)(:|\s)/g, '<span class="inline-flex items-center bg-rose-100 text-rose-700 px-3 py-1 rounded-xl font-bold text-sm mb-1 shadow-sm"><i class="fa-solid fa-triangle-exclamation mr-2"></i> $1$2</span>');
-            text = text.replace(/(ตัวอย่าง|ทริค|Tip|ข้อแนะนำ|ไอเดีย)(:|\s)/g, '<span class="inline-flex items-center bg-emerald-100 text-emerald-800 px-3 py-1 rounded-xl font-bold text-sm mb-1 shadow-sm"><i class="fa-solid fa-lightbulb text-yellow-500 mr-2"></i> $1$2</span>');
+            text = text.replace(/(ตัวอย่าง|ทริค|Tip|ข้อแนะนำ|ไอเดีย)(:|\s)/g, '<span class="inline-flex items-center bg-emerald-100 text-emerald-800 px-3 py-1 rounded-xl font-bold text-sm mb-1 shadow-sm"><i class="fa-solid fa-lightbulb text-yellow-600 mr-2"></i> $1$2</span>');
             text = text.replace(/(สรุป|สรุปเนื้อหา)(:|\s)/g, '<span class="inline-flex items-center bg-indigo-100 text-indigo-800 px-3 py-1 rounded-xl font-bold text-sm mb-1 shadow-sm"><i class="fa-solid fa-flag-checkered mr-2"></i> $1$2</span>');
             text = text.replace(/\*\*(.*?)\*\*/g, '<span class="pop-word">$1</span>');
             text = text.replace(/^### (.*$)/gim, '<h4 class="text-xl font-bold text-[#6d28d9] mt-6 mb-3 font-prompt">$1</h4>');
@@ -327,9 +366,7 @@
             let navHtml = "";
             if (currentUser.role === 'student') {
                 navHtml += `<a onclick="nav('home')" id="nav_home" class="menu-item px-8 py-3 flex items-center cursor-pointer active"><i class="fa-solid fa-house w-6 mr-2"></i> Dashboard</a>`;
-                navHtml += `<a class="menu-item px-8 py-3 flex items-center cursor-pointer"><i class="fa-solid fa-inbox w-6 mr-2"></i> Inbox</a>`;
                 navHtml += `<a class="menu-item px-8 py-3 flex items-center cursor-pointer"><i class="fa-solid fa-book-open w-6 mr-2"></i> Lesson</a>`;
-                navHtml += `<a class="menu-item px-8 py-3 flex items-center cursor-pointer"><i class="fa-solid fa-list-check w-6 mr-2"></i> Task</a>`;
             } else if (currentUser.role === 'teacher') {
                 navHtml += `<a onclick="nav('home')" id="nav_home" class="menu-item px-8 py-3 flex items-center cursor-pointer active"><i class="fa-solid fa-pen-ruler w-6 mr-2"></i> Manage Lessons</a>`;
                 navHtml += `<a onclick="nav('stats')" id="nav_stats" class="menu-item px-8 py-3 flex items-center cursor-pointer"><i class="fa-solid fa-chart-pie w-6 mr-2"></i> Analytics</a>`;
@@ -340,7 +377,7 @@
         }
 
         function nav(target) {
-            ['view_student_home', 'view_lesson_detail', 'view_teacher_manage', 'view_teacher_stats', 'view_admin'].forEach(id => {
+            ['view_student_home', 'view_lesson_detail', 'view_teacher_manage', 'view_teacher_stats', 'view_admin', 'view_settings'].forEach(id => {
                 let el = document.getElementById(id);
                 if(el) el.style.display = 'none';
             });
@@ -356,11 +393,25 @@
                 document.getElementById('view_teacher_stats').style.display = 'block'; loadAnalytics();
             } else if (target === 'admin') {
                 document.getElementById('view_admin').style.display = 'block';
+            } else if (target === 'settings') {
+                document.getElementById('view_settings').style.display = 'block';
+                setupProfilePage();
             }
         }
 
+        function setupProfilePage() {
+            document.getElementById('settingName').innerText = currentUser.name;
+            document.getElementById('settingRole').innerText = currentUser.role.toUpperCase() + (currentUser.assigned ? ` (${currentUser.assigned})` : "");
+            document.getElementById('set_pic').value = currentUser.pic;
+            document.getElementById('set_email').value = currentUser.email;
+            document.getElementById('set_phone').value = currentUser.phone;
+            
+            if(currentUser.pic) document.getElementById('previewSettingPic').src = currentUser.pic;
+            else document.getElementById('previewSettingPic').src = "https://i.pravatar.cc/150";
+        }
+
         // ----------------------------------------------------
-        // AUTHENTICATION
+        // AUTHENTICATION & PROFILE
         // ----------------------------------------------------
         function login() {
             const u = document.getElementById('login_user').value.trim();
@@ -373,23 +424,71 @@
             .then(res => res.json())
             .then(result => {
                 if (result.status === "success") {
-                    currentUser = { id: result.username, name: result.name, role: result.role, assigned: result.assigned };
-                    
-                    let shortName = currentUser.name.split(' ')[0];
-                    document.getElementById('rightProfileName').innerText = shortName;
-                    document.getElementById('rightProfileAvatar').innerText = shortName.charAt(0);
+                    currentUser = { 
+                        id: result.username, name: result.name, role: result.role, assigned: result.assigned,
+                        pic: result.pic, email: result.email, phone: result.phone
+                    };
+                    updateProfileUI();
                     
                     document.getElementById('loginLayout').style.display = 'none';
                     document.getElementById('appLayout').classList.remove('hidden');
                     
-                    renderSidebarMenu();
-                    Swal.close();
+                    renderSidebarMenu(); Swal.close();
 
                     if (currentUser.role === 'student') { nav('home'); fetchSubjects(); loadLessons(); } 
                     else if (currentUser.role === 'teacher') { nav('home'); fetchSubjects(); loadLessons(); }
                     else if (currentUser.role === 'admin') { nav('admin'); fetchSubjects(); }
                 } else { Swal.fire('Error', result.message, 'error'); }
-            }).catch(err => { Swal.fire('Error', 'Connection failed. Check your GAS_URL.', 'error'); });
+            }).catch(err => { Swal.fire('Error', 'Connection failed.', 'error'); });
+        }
+
+        function updateProfileUI() {
+            let shortName = currentUser.name.split(' ')[0];
+            document.getElementById('rightProfileName').innerText = shortName;
+            
+            if(currentUser.pic) {
+                document.getElementById('rightProfileImage').src = currentUser.pic;
+                document.getElementById('rightProfileImage').classList.remove('hidden');
+                document.getElementById('rightProfileAvatar').classList.add('hidden');
+            } else {
+                document.getElementById('rightProfileImage').classList.add('hidden');
+                document.getElementById('rightProfileAvatar').classList.remove('hidden');
+                document.getElementById('rightProfileAvatar').innerText = shortName.charAt(0);
+            }
+        }
+
+        function saveProfile() {
+            let pic = document.getElementById('set_pic').value.trim();
+            let email = document.getElementById('set_email').value.trim();
+            let phone = document.getElementById('set_phone').value.trim();
+
+            Swal.fire({ title: 'กำลังบันทึก...', didOpen: () => Swal.showLoading() });
+
+            fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "updateProfile", username: currentUser.id, pic: pic, email: email, phone: phone }) })
+            .then(res => res.json()).then(r => {
+                if(r.status === "success") {
+                    currentUser.pic = pic; currentUser.email = email; currentUser.phone = phone;
+                    updateProfileUI();
+                    Swal.fire('สำเร็จ', 'อัปเดตข้อมูลส่วนตัวแล้ว', 'success');
+                }
+            });
+        }
+
+        function contactMentor(name) {
+            Swal.fire({
+                title: `ปรึกษา ${name}`,
+                input: 'textarea',
+                inputLabel: 'ส่งคำถามหรือข้อสงสัยของคุณได้เลยครับ',
+                inputPlaceholder: 'พิมพ์ข้อความที่นี่...',
+                showCancelButton: true,
+                confirmButtonText: 'ส่งข้อความ',
+                confirmButtonColor: '#6d28d9',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    Swal.fire('ส่งข้อความสำเร็จ!', 'อาจารย์จะรีบตอบกลับโดยเร็วที่สุด', 'success');
+                }
+            });
         }
 
         function logout() { location.reload(); }
@@ -411,7 +510,6 @@
                             </div>`;
                         });
                         document.getElementById('subjectGrid').innerHTML = htmlSub;
-                        document.getElementById('loadingSubjects').style.display = 'none';
                     }
 
                     if(currentUser.role === 'teacher') {
