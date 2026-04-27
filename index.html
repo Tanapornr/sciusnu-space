@@ -138,7 +138,6 @@
                         </div>
                         <form id="quizForm" class="space-y-6">
                             <div id="quizContainer"></div>
-                            <button type="button" onclick="submitQuiz(false)" class="w-full bg-[#6d28d9] hover:bg-purple-800 text-white font-bold py-4 rounded-xl shadow-md transition font-prompt text-lg">Submit Answers</button>
                         </form>
                     </div>
                 </div>
@@ -147,7 +146,7 @@
                     <h2 class="text-2xl font-bold text-slate-800 mb-6 font-prompt" data-i18n="menu_inbox">Inbox</h2>
                     <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
                         <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-lg font-bold text-[#6d28d9] font-prompt"><i class="fa-solid fa-envelope-open-text mr-2"></i> ข้อความของคุณ</h3>
+                            <h3 class="text-lg font-bold text-[#6d28d9] font-prompt"><i class="fa-solid fa-envelope-open-text mr-2"></i> กล่องข้อความของคุณ</h3>
                             <button onclick="loadMessages()" class="text-sm bg-slate-100 text-slate-600 px-4 py-2 rounded-lg hover:bg-slate-200 transition"><i class="fa-solid fa-rotate mr-1"></i> Refresh</button>
                         </div>
                         <div id="loadingMsgs" class="text-center py-6 text-purple-500 font-bold"><i class="fa-solid fa-spinner fa-spin mr-2"></i> โหลดข้อมูล...</div>
@@ -178,12 +177,48 @@
                                 <div><label class="block text-sm font-bold text-slate-700 mb-2">อีเมล (Email)</label><input type="email" id="set_email" class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-300 transition"></div>
                                 <div><label class="block text-sm font-bold text-slate-700 mb-2">เบอร์โทรศัพท์ (Phone)</label><input type="tel" id="set_phone" class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-300 transition"></div>
                             </div>
-                            <button type="button" onclick="saveProfile()" class="w-full bg-[#6d28d9] hover:bg-purple-800 text-white font-bold py-4 rounded-xl transition shadow-md font-prompt text-lg mt-4" data-i18n="save_profile">บันทึกข้อมูล (Save Profile)</button>
+                            <button type="button" onclick="saveProfile()" class="w-full bg-[#6d28d9] hover:bg-purple-800 text-white font-bold py-4 rounded-xl transition shadow-md font-prompt text-lg mt-4" data-i18n="save_profile">บันทึกข้อมูล</button>
                         </form>
                     </div>
                 </div>
 
-                <div id="view_teacher_manage" class="hidden max-w-5xl mx-auto"><h2 class="text-2xl font-bold text-slate-800 mb-6 font-prompt">Manage Lessons</h2><div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 mb-8"><div class="flex justify-between items-center mb-6"><h3 id="formActionTitle" class="text-lg font-bold text-[#6d28d9] font-prompt"><i class="fa-solid fa-pen-to-square mr-2"></i> Create New Lesson</h3><button type="button" onclick="resetTeacherForm()" id="cancelEditBtn" class="hidden bg-slate-100 text-slate-600 px-4 py-2 rounded-lg font-bold hover:bg-slate-200 transition text-sm">Cancel</button></div><form id="teacherForm"><input type="hidden" id="t_mode" value="add"><input type="hidden" id="t_oldTitle" value=""><div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 space-y-5 mb-8"><div class="grid grid-cols-1 md:grid-cols-2 gap-5"><div><label class="block font-bold text-slate-700 mb-2 text-sm">Subject</label><select id="t_subject" class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-purple-500 bg-white" required></select></div><div><label class="block font-bold text-slate-700 mb-2 text-sm">EP.</label><input type="text" id="t_ep" class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-purple-500" required></div></div><div><label class="block font-bold text-slate-700 mb-2 text-sm">Lesson Title</label><input type="text" id="t_title" class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-purple-500" required></div><div><label class="block font-bold text-slate-700 mb-2 text-sm">Content</label><div class="bg-purple-50 p-3 rounded-lg mb-3 text-xs text-purple-700 font-medium">พิมพ์ <code>สำคัญมาก:</code>(ป้ายแดง), <code>ทริค:</code>(ป้ายเขียว), <code>**เน้นคำ**</code>(ตัวใหญ่สีเหลือง), <code>- </code>(เช็คลิสต์)</div><textarea id="t_content" rows="6" class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-purple-500 leading-relaxed" required></textarea></div></div><div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 mb-8"><div class="flex justify-between items-center border-b border-slate-200 pb-3 mb-4"><h4 class="font-bold text-slate-700 font-prompt">Quiz (แบบทดสอบ)</h4><button type="button" onclick="addTeacherQuizField()" class="text-xs bg-purple-100 text-purple-700 font-bold px-3 py-1.5 rounded-lg hover:bg-purple-200 transition"><i class="fa-solid fa-plus mr-1"></i> เพิ่มคำถาม</button></div><div id="t_quizFields"></div><p class="text-xs text-slate-400 mt-2">* หากไม่ตั้งคำถาม ผู้เรียนจะกดปุ่ม "เรียนจบ" ได้เลย (สูงสุด 5 ข้อ)</p></div><button type="button" onclick="saveLesson()" id="saveBtn" class="w-full bg-[#6d28d9] hover:bg-purple-800 text-white font-bold py-4 rounded-xl shadow-md transition font-prompt text-lg">Save Lesson</button></form></div><h3 class="text-xl font-bold text-slate-800 mb-4 font-prompt">All Lessons</h3><div id="loadingLessons_teacher" class="text-purple-500 font-bold"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Loading...</div><div id="lessonGrid_teacher" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div></div>
+                <div id="view_teacher_manage" class="hidden max-w-5xl mx-auto">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-6 font-prompt">Manage Lessons</h2>
+                    <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 mb-8">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 id="formActionTitle" class="text-lg font-bold text-[#6d28d9] font-prompt"><i class="fa-solid fa-pen-to-square mr-2"></i> Create New Lesson</h3>
+                            <button type="button" onclick="resetTeacherForm()" id="cancelEditBtn" class="hidden bg-slate-100 text-slate-600 px-4 py-2 rounded-lg font-bold hover:bg-slate-200 transition text-sm">Cancel</button>
+                        </div>
+                        <form id="teacherForm">
+                            <input type="hidden" id="t_mode" value="add"><input type="hidden" id="t_oldTitle" value="">
+                            <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 space-y-5 mb-8">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <div><label class="block font-bold text-slate-700 mb-2 text-sm">Subject</label><select id="t_subject" class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-purple-500 bg-white" required></select></div>
+                                    <div><label class="block font-bold text-slate-700 mb-2 text-sm">EP.</label><input type="text" id="t_ep" class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-purple-500" required></div>
+                                </div>
+                                <div><label class="block font-bold text-slate-700 mb-2 text-sm">Lesson Title</label><input type="text" id="t_title" class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-purple-500" required></div>
+                                <div>
+                                    <label class="block font-bold text-slate-700 mb-2 text-sm">Content</label>
+                                    <div class="bg-purple-50 p-3 rounded-lg mb-3 text-xs text-purple-700 font-medium">พิมพ์ <code>สำคัญมาก:</code>(ป้ายแดง), <code>ทริค:</code>(ป้ายเขียว), <code>**เน้นคำ**</code>(ตัวใหญ่สีเหลือง), <code>- </code>(เช็คลิสต์)</div>
+                                    <textarea id="t_content" rows="6" class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-purple-500 leading-relaxed" required></textarea>
+                                </div>
+                            </div>
+                            <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 mb-8">
+                                <div class="flex justify-between items-center border-b border-slate-200 pb-3 mb-4">
+                                    <h4 class="font-bold text-slate-700 font-prompt">Quiz (แบบทดสอบ)</h4>
+                                    <button type="button" onclick="addTeacherQuizField()" class="text-xs bg-purple-100 text-purple-700 font-bold px-3 py-1.5 rounded-lg hover:bg-purple-200 transition"><i class="fa-solid fa-plus mr-1"></i> เพิ่มคำถาม</button>
+                                </div>
+                                <div id="t_quizFields"></div>
+                                <p class="text-xs text-slate-400 mt-2">* หากไม่ตั้งคำถาม ผู้เรียนจะกดปุ่ม "เรียนจบ" ได้เลย (สูงสุด 5 ข้อ)</p>
+                            </div>
+                            <button type="button" onclick="saveLesson()" id="saveBtn" class="w-full bg-[#6d28d9] hover:bg-purple-800 text-white font-bold py-4 rounded-xl shadow-md transition font-prompt text-lg">Save Lesson</button>
+                        </form>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 font-prompt">All Lessons</h3>
+                    <div id="loadingLessons_teacher" class="text-purple-500 font-bold"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Loading...</div>
+                    <div id="lessonGrid_teacher" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+                </div>
+
                 <div id="view_teacher_stats" class="hidden max-w-5xl mx-auto"><h2 class="text-2xl font-bold text-slate-800 mb-6 font-prompt">Analytics</h2><div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 mb-8 flex flex-col sm:flex-row gap-4 items-center"><select id="statLessonSelect" onchange="renderTeacherTables()" class="w-full sm:w-auto flex-1 px-4 py-3 border border-slate-200 rounded-xl outline-none font-bold text-purple-700 bg-slate-50 focus:ring-2 focus:ring-purple-500"><option value="">-- เลือกบทเรียน --</option></select><button onclick="loadAnalytics()" class="w-full sm:w-auto bg-slate-100 text-slate-600 px-6 py-3 rounded-xl font-bold hover:bg-slate-200 transition">Refresh</button></div><div class="grid grid-cols-1 xl:grid-cols-2 gap-6"><div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100"><h3 class="text-lg font-bold text-slate-800 font-prompt mb-4 border-b pb-2"><i class="fa-solid fa-eye text-sky-500 mr-2"></i> View Logs</h3><div class="overflow-x-auto"><table class="w-full text-left border-collapse"><tbody id="logTableBody" class="divide-y divide-slate-100 text-sm"></tbody></table></div></div><div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100"><h3 class="text-lg font-bold text-slate-800 font-prompt mb-4 border-b pb-2"><i class="fa-solid fa-ranking-star text-[#6d28d9] mr-2"></i> Quiz Scores</h3><div class="overflow-x-auto"><table class="w-full text-left border-collapse"><tbody id="statTableBody" class="divide-y divide-slate-100 text-sm"></tbody></table></div></div></div></div>
                 <div id="view_admin" class="hidden max-w-5xl mx-auto"><h2 class="text-2xl font-bold text-slate-800 mb-6 font-prompt">Admin Panel</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-8"><div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100"><h3 class="text-lg font-bold text-slate-800 mb-6 font-prompt"><i class="fa-solid fa-layer-group text-purple-500 mr-2"></i> Add Subject</h3><div class="space-y-4"><input type="text" id="a_subName" placeholder="Subject Name (e.g. Physics)" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-300"><button onclick="adminAddSubject()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3.5 rounded-xl transition font-prompt">Save Subject</button></div></div><div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100"><h3 class="text-lg font-bold text-slate-800 mb-6 font-prompt"><i class="fa-solid fa-user-tie text-purple-500 mr-2"></i> Add Teacher</h3><div class="space-y-4"><input type="text" id="a_tUser" placeholder="Username" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none"><input type="text" id="a_tPass" placeholder="Password" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none"><input type="text" id="a_tName" placeholder="Full Name" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none"><div><p class="font-bold text-slate-700 text-sm mb-2">Assigned Subjects</p><div id="a_subjectCheckboxes" class="flex flex-wrap gap-2"></div></div><button onclick="adminAddTeacher()" class="w-full bg-[#6d28d9] hover:bg-purple-800 text-white font-bold py-3.5 rounded-xl transition font-prompt mt-2">Register Teacher</button></div></div></div></div>
 
@@ -255,11 +290,365 @@
         let currentSubject = "", currentLesson = null;
         let currentUser = { id: "", name: "", role: "", assigned: "", pic: "", email: "", phone: "" };
         let globalStatData = { students: [], scores: [], logs: [] };
+        let isTakingQuiz = false;
         let uploadedImageBase64 = "";
         let cachedMessages = [];
 
         // ----------------------------------------------------
-        // LOAD DATA & INITIALIZATION (THE POWERFUL FETCH)
+        // LANGUAGE TRANSLATION
+        // ----------------------------------------------------
+        const dict = {
+            'th': {
+                'menu_home': 'แดชบอร์ด', 'menu_lesson': 'บทเรียน', 'menu_inbox': 'กล่องข้อความ', 'menu_manage': 'จัดการเนื้อหา', 'menu_stats': 'สถิติการเรียน', 'menu_admin': 'ตั้งค่าระบบ', 'menu_settings': 'ตั้งค่าโปรไฟล์', 'menu_logout': 'ออกจากระบบ',
+                'banner_title': 'ยกระดับทักษะของคุณกับห้องเรียนออนไลน์ วมว.', 'banner_btn': 'เริ่มเรียนเลย', 'continue_watching': 'เรียนค้างไว้ (ล่าสุด)', 'all_lessons': 'บทเรียนทั้งหมด (All Lessons)', 'view_all': 'ดูทั้งหมด', 'back_courses': 'กลับไปหน้ารายวิชา', 'your_profile': 'โปรไฟล์ของคุณ', 'hello': 'สวัสดี', 'profile_sub': 'เรียนรู้อย่างต่อเนื่อง เพื่ออนาคตของคุณ', 'your_mentor': 'ที่ปรึกษาของคุณ', 'login_desc': 'เข้าสู่ระบบเพื่อเริ่มต้นการเรียนรู้', 'save_profile': 'บันทึกข้อมูล', 'profile_incomplete': 'โปรไฟล์ไม่สมบูรณ์', 'profile_incomplete_desc': 'กรุณาอัปเดต รูปภาพโปรไฟล์, อีเมล และเบอร์โทรศัพท์ ให้ครบถ้วนในเมนูตั้งค่าก่อนส่งข้อความครับ', 'go_to_settings': 'ไปตั้งค่าโปรไฟล์'
+            },
+            'en': {
+                'menu_home': 'Dashboard', 'menu_lesson': 'Lessons', 'menu_inbox': 'Inbox', 'menu_manage': 'Manage Lessons', 'menu_stats': 'Analytics', 'menu_admin': 'Admin Panel', 'menu_settings': 'Profile Settings', 'menu_logout': 'Logout',
+                'banner_title': 'Sharpen Your Skills With Professional Online Courses', 'banner_btn': 'Join Now', 'continue_watching': 'Continue Watching', 'all_lessons': 'All Courses', 'view_all': 'View All', 'back_courses': 'Back to Courses', 'your_profile': 'Your Profile', 'hello': 'Hello', 'profile_sub': 'Continue Your Journey And Achieve Your Target', 'your_mentor': 'Your Mentor', 'login_desc': 'Login to start your learning journey', 'save_profile': 'Save Profile', 'profile_incomplete': 'Incomplete Profile', 'profile_incomplete_desc': 'Please update your profile picture, email, and phone number in settings before sending a message.', 'go_to_settings': 'Go to Settings'
+            }
+        };
+        let currentLang = 'th';
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'th' ? 'en' : 'th';
+            document.getElementById('langToggleBtn').innerText = currentLang === 'th' ? 'EN' : 'TH';
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                let key = el.getAttribute('data-i18n');
+                if(dict[currentLang][key]) {
+                    if(el.tagName === 'INPUT') el.placeholder = dict[currentLang][key];
+                    else el.innerHTML = dict[currentLang][key] + (el.innerHTML.includes('<i class="fa-solid fa-circle-play') ? ' <i class="fa-solid fa-circle-play ml-2"></i>' : '');
+                }
+            });
+            renderSidebarMenu(); 
+        }
+
+        // ----------------------------------------------------
+        // UTILITIES
+        // ----------------------------------------------------
+        function getInitials(name) {
+            let parts = name.trim().split(/\s+/);
+            if(parts.length >= 2) return (parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
+            return name.substring(0, 2).toUpperCase();
+        }
+
+        function formatContent(text) {
+            if (!text) return "";
+            text = text.replace(/(สำคัญมาก|ข้อควรระวัง|หมายเหตุ|เตือน|คำเตือน)(:|\s)/g, '<span class="inline-flex items-center bg-rose-100 text-rose-700 px-3 py-1 rounded-xl font-bold text-sm mb-1 shadow-sm"><i class="fa-solid fa-triangle-exclamation mr-2"></i> $1$2</span>');
+            text = text.replace(/(ตัวอย่าง|ทริค|Tip|ข้อแนะนำ|ไอเดีย)(:|\s)/g, '<span class="inline-flex items-center bg-emerald-100 text-emerald-800 px-3 py-1 rounded-xl font-bold text-sm mb-1 shadow-sm"><i class="fa-solid fa-lightbulb text-yellow-600 mr-2"></i> $1$2</span>');
+            text = text.replace(/(สรุป|สรุปเนื้อหา)(:|\s)/g, '<span class="inline-flex items-center bg-indigo-100 text-indigo-800 px-3 py-1 rounded-xl font-bold text-sm mb-1 shadow-sm"><i class="fa-solid fa-flag-checkered mr-2"></i> $1$2</span>');
+            text = text.replace(/\*\*(.*?)\*\*/g, '<span class="pop-word">$1</span>');
+            text = text.replace(/^### (.*$)/gim, '<h4 class="text-xl font-bold text-[#6d28d9] mt-6 mb-3 font-prompt">$1</h4>');
+            text = text.replace(/^## (.*$)/gim, '<h3 class="text-2xl font-bold text-slate-800 mt-8 mb-4 font-prompt">$1</h3>');
+            text = text.replace(/^# (.*$)/gim, '<h2 class="text-3xl font-black text-slate-800 mt-10 mb-5 font-prompt border-b border-slate-100 pb-2">$1</h2>');
+            text = text.replace(/^- (.*$)/gim, '<div class="flex items-start my-1.5"><div class="text-[#6d28d9] mt-1.5 mr-2 text-sm"><i class="fa-solid fa-circle-check"></i></div><div class="flex-1">$1</div></div>');
+            return text;
+        }
+
+        function getImageUrl(title) { return `https://source.unsplash.com/800x600/?technology&sig=${encodeURIComponent(title)}`; }
+
+        // Dynamic Teacher Quiz Fields
+        function addTeacherQuizField(qData = null) {
+            let container = document.getElementById('t_quizFields');
+            let count = container.children.length;
+            if(count >= 5) { Swal.fire('เตือน', 'เพิ่มคำถามได้สูงสุด 5 ข้อครับ', 'warning'); return; }
+            
+            let div = document.createElement('div');
+            div.className = "quiz-item bg-white p-5 rounded-2xl border border-slate-200 shadow-sm mb-4 relative";
+            div.innerHTML = `
+                <button type="button" onclick="this.parentElement.remove(); updateQuizNumbers();" class="absolute top-4 right-4 text-rose-400 hover:text-rose-600 transition"><i class="fa-solid fa-trash"></i></button>
+                <label class="quiz-number block font-bold text-slate-800 mb-2 text-sm">ข้อ X.</label>
+                <input type="text" class="t_q w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none text-sm mb-3 focus:ring-2 focus:ring-[#6d28d9]" value="${qData ? qData.q : ''}" required>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3 text-sm">
+                    <div class="flex items-center"><span class="font-bold text-slate-400 mr-2 w-5">ก.</span><input type="text" class="t_c1 w-full px-3 py-2 rounded-lg border border-slate-200 outline-none focus:border-[#6d28d9]" value="${qData ? qData.c1 : ''}"></div>
+                    <div class="flex items-center"><span class="font-bold text-slate-400 mr-2 w-5">ข.</span><input type="text" class="t_c2 w-full px-3 py-2 rounded-lg border border-slate-200 outline-none focus:border-[#6d28d9]" value="${qData ? qData.c2 : ''}"></div>
+                    <div class="flex items-center"><span class="font-bold text-slate-400 mr-2 w-5">ค.</span><input type="text" class="t_c3 w-full px-3 py-2 rounded-lg border border-slate-200 outline-none focus:border-[#6d28d9]" value="${qData ? qData.c3 : ''}"></div>
+                    <div class="flex items-center"><span class="font-bold text-slate-400 mr-2 w-5">ง.</span><input type="text" class="t_c4 w-full px-3 py-2 rounded-lg border border-slate-200 outline-none focus:border-[#6d28d9]" value="${qData ? qData.c4 : ''}"></div>
+                </div>
+                <div class="flex items-center text-sm">
+                    <label class="font-bold text-slate-600 mr-2">เฉลยข้อที่ถูก:</label>
+                    <select class="t_ans px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 font-bold text-[#6d28d9] outline-none">
+                        <option value="1" ${qData && qData.ans == '1' ? 'selected' : ''}>ก.</option><option value="2" ${qData && qData.ans == '2' ? 'selected' : ''}>ข.</option><option value="3" ${qData && qData.ans == '3' ? 'selected' : ''}>ค.</option><option value="4" ${qData && qData.ans == '4' ? 'selected' : ''}>ง.</option>
+                    </select>
+                </div>
+            `;
+            container.appendChild(div);
+            updateQuizNumbers();
+        }
+
+        function updateQuizNumbers() {
+            let items = document.querySelectorAll('.quiz-item');
+            items.forEach((item, index) => { item.querySelector('.quiz-number').innerText = `ข้อ ${index + 1}.`; });
+        }
+
+        // ----------------------------------------------------
+        // NOTIFICATIONS
+        // ----------------------------------------------------
+        function checkNotifications() {
+            fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "getMessages", myId: currentUser.id, myName: currentUser.name, role: currentUser.role }) })
+            .then(res => res.json()).then(result => {
+                if(result.status === "success") {
+                    cachedMessages = result.data;
+                    let unread = 0;
+                    if(currentUser.role === 'student') {
+                        let totalReplies = result.data.filter(m => m.reply && m.reply.trim() !== "").length;
+                        let readReplies = parseInt(localStorage.getItem('readReplies_' + currentUser.id) || "0");
+                        unread = totalReplies - readReplies;
+                        if(unread < 0) unread = 0;
+                    } else {
+                        unread = result.data.filter(m => !m.reply || m.reply.trim() === "").length;
+                    }
+                    
+                    let badges = document.querySelectorAll('.inbox-badge');
+                    badges.forEach(b => { if(unread > 0) { b.innerText = unread; b.classList.remove('hidden'); } else { b.classList.add('hidden'); } });
+                }
+            });
+        }
+
+        function updateLessonBadge() {
+            if(currentUser.role !== 'student') return;
+            let savedCount = parseInt(localStorage.getItem('lessonCount_' + currentUser.id) || "0");
+            let badge = document.getElementById('lessonNewBadge');
+            if(badge) {
+                if(allLessons.length > savedCount) badge.classList.remove('hidden');
+                else badge.classList.add('hidden');
+            }
+        }
+
+        // ----------------------------------------------------
+        // NAVIGATION
+        // ----------------------------------------------------
+        function renderSidebarMenu() {
+            let navHtml = "";
+            let t = dict[currentLang];
+            if (currentUser.role === 'student') {
+                navHtml += `<a onclick="nav('home')" id="nav_home" class="menu-item px-8 py-3 flex items-center cursor-pointer active"><i class="fa-solid fa-house w-6 mr-2"></i> ${t.menu_home}</a>`;
+                navHtml += `<a onclick="nav('lessons')" id="nav_lessons" class="menu-item px-8 py-3 flex items-center cursor-pointer relative"><i class="fa-solid fa-book-open w-6 mr-2"></i> ${t.menu_lesson} <span id="lessonNewBadge" class="hidden absolute right-6 bg-rose-500 text-white text-[10px] px-2 py-0.5 rounded-full shadow-sm">New</span></a>`;
+                navHtml += `<a onclick="nav('inbox')" id="nav_inbox" class="menu-item px-8 py-3 flex items-center cursor-pointer relative"><i class="fa-solid fa-inbox w-6 mr-2"></i> ${t.menu_inbox} <span class="inbox-badge hidden absolute right-6 bg-rose-500 text-white text-[10px] px-2 py-0.5 rounded-full shadow-sm">0</span></a>`;
+            } else if (currentUser.role === 'teacher') {
+                navHtml += `<a onclick="nav('home')" id="nav_home" class="menu-item px-8 py-3 flex items-center cursor-pointer active"><i class="fa-solid fa-pen-ruler w-6 mr-2"></i> ${t.menu_manage}</a>`;
+                navHtml += `<a onclick="nav('stats')" id="nav_stats" class="menu-item px-8 py-3 flex items-center cursor-pointer"><i class="fa-solid fa-chart-pie w-6 mr-2"></i> ${t.menu_stats}</a>`;
+                navHtml += `<a onclick="nav('inbox')" id="nav_inbox" class="menu-item px-8 py-3 flex items-center cursor-pointer relative"><i class="fa-solid fa-inbox w-6 mr-2"></i> ${t.menu_inbox} <span class="inbox-badge hidden absolute right-6 bg-rose-500 text-white text-[10px] px-2 py-0.5 rounded-full shadow-sm">0</span></a>`;
+            } else if (currentUser.role === 'admin') {
+                navHtml += `<a onclick="nav('admin')" id="nav_admin" class="menu-item px-8 py-3 flex items-center cursor-pointer active"><i class="fa-solid fa-gear w-6 mr-2"></i> ${t.menu_admin}</a>`;
+                navHtml += `<a onclick="nav('inbox')" id="nav_inbox" class="menu-item px-8 py-3 flex items-center cursor-pointer relative"><i class="fa-solid fa-inbox w-6 mr-2"></i> ${t.menu_inbox} <span class="inbox-badge hidden absolute right-6 bg-rose-500 text-white text-[10px] px-2 py-0.5 rounded-full shadow-sm">0</span></a>`;
+            }
+            document.getElementById('sidebarMenu').innerHTML = navHtml;
+        }
+
+        function nav(target) {
+            ['view_student_home', 'view_all_lessons', 'view_lesson_detail', 'view_teacher_manage', 'view_teacher_stats', 'view_admin', 'view_settings', 'view_inbox'].forEach(id => {
+                let el = document.getElementById(id);
+                if(el) el.style.display = 'none';
+            });
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+
+            let activeTab = document.getElementById('nav_' + target);
+            if(activeTab) activeTab.classList.add('active');
+
+            if (target === 'home') {
+                if(currentUser.role === 'student') { document.getElementById('view_student_home').style.display = 'block'; }
+                if(currentUser.role === 'teacher') { document.getElementById('view_teacher_manage').style.display = 'block'; }
+            } else if (target === 'lessons') {
+                document.getElementById('view_all_lessons').style.display = 'block';
+                currentSubject = ""; renderStudentLessons();
+                if(currentUser.role === 'student') {
+                    localStorage.setItem('lessonCount_' + currentUser.id, allLessons.length);
+                    let badge = document.getElementById('lessonNewBadge');
+                    if(badge) badge.classList.add('hidden');
+                }
+            } else if (target === 'stats') { document.getElementById('view_teacher_stats').style.display = 'block'; loadAnalytics();
+            } else if (target === 'admin') { document.getElementById('view_admin').style.display = 'block';
+            } else if (target === 'settings') { document.getElementById('view_settings').style.display = 'block'; setupProfilePage();
+            } else if (target === 'inbox') { 
+                document.getElementById('view_inbox').style.display = 'block'; loadMessages(); 
+                if(currentUser.role === 'student') {
+                    let totalReplies = cachedMessages.filter(m => m.reply && m.reply.trim() !== "").length;
+                    localStorage.setItem('readReplies_' + currentUser.id, totalReplies);
+                    document.querySelectorAll('.inbox-badge').forEach(b => b.classList.add('hidden'));
+                }
+            }
+        }
+
+        // ----------------------------------------------------
+        // PROFILE & SETTINGS
+        // ----------------------------------------------------
+        function updateProfileUI() {
+            let shortName = currentUser.name.split(' ')[0];
+            let initials = getInitials(currentUser.name);
+            document.getElementById('rightProfileName').innerText = shortName;
+            
+            let imgEl = document.getElementById('rightProfileImage');
+            let initEl = document.getElementById('rightProfileInitials');
+            
+            if(currentUser.pic && currentUser.pic !== "") {
+                imgEl.src = currentUser.pic; imgEl.classList.remove('hidden'); initEl.classList.add('hidden');
+            } else {
+                imgEl.classList.add('hidden'); initEl.classList.remove('hidden'); initEl.innerText = initials;
+            }
+        }
+
+        function setupProfilePage() {
+            document.getElementById('settingName').innerText = currentUser.name;
+            document.getElementById('settingRole').innerText = currentUser.role.toUpperCase() + (currentUser.assigned ? ` (${currentUser.assigned})` : "");
+            document.getElementById('set_email').value = currentUser.email || "";
+            document.getElementById('set_phone').value = currentUser.phone || "";
+            
+            let imgEl = document.getElementById('previewSettingPic');
+            let initEl = document.getElementById('previewSettingInitials');
+            
+            if(currentUser.pic && currentUser.pic !== "") {
+                imgEl.src = currentUser.pic; imgEl.classList.remove('hidden'); initEl.classList.add('hidden');
+            } else {
+                imgEl.classList.add('hidden'); initEl.classList.remove('hidden'); initEl.innerText = getInitials(currentUser.name);
+            }
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 200;
+                    const scaleSize = MAX_WIDTH / img.width;
+                    canvas.width = MAX_WIDTH; canvas.height = img.height * scaleSize;
+                    const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    uploadedImageBase64 = canvas.toDataURL('image/jpeg', 0.8);
+                    document.getElementById('previewSettingPic').src = uploadedImageBase64;
+                    document.getElementById('previewSettingPic').classList.remove('hidden');
+                    document.getElementById('previewSettingInitials').classList.add('hidden');
+                }
+                img.src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+
+        function saveProfile() {
+            let email = document.getElementById('set_email').value.trim();
+            let phone = document.getElementById('set_phone').value.trim();
+            let picToSave = uploadedImageBase64 !== "" ? uploadedImageBase64 : currentUser.pic;
+
+            Swal.fire({ title: 'กำลังบันทึก...', didOpen: () => Swal.showLoading() });
+            fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "updateProfile", username: currentUser.id, pic: picToSave, email: email, phone: phone }) })
+            .then(res => res.json()).then(r => {
+                if(r.status === "success") {
+                    currentUser.pic = picToSave; currentUser.email = email; currentUser.phone = phone;
+                    updateProfileUI(); Swal.fire('สำเร็จ', 'อัปเดตข้อมูลส่วนตัวเรียบร้อย', 'success');
+                }
+            });
+        }
+
+        // ----------------------------------------------------
+        // MESSAGING SYSTEM
+        // ----------------------------------------------------
+        function contactMentor(receiverName) {
+            if (currentUser.role === 'student') {
+                if (!currentUser.pic || !currentUser.email || !currentUser.phone) {
+                    Swal.fire({
+                        icon: 'warning', title: dict[currentLang]['profile_incomplete'] || 'โปรไฟล์ไม่สมบูรณ์', text: dict[currentLang]['profile_incomplete_desc'], confirmButtonText: dict[currentLang]['go_to_settings'], confirmButtonColor: '#6d28d9'
+                    }).then((result) => { if(result.isConfirmed) nav('settings'); });
+                    return;
+                }
+            }
+
+            Swal.fire({
+                title: `ปรึกษา ${receiverName}`,
+                input: 'textarea', inputLabel: 'พิมพ์ข้อความของคุณที่นี่...',
+                showCancelButton: true, confirmButtonText: 'ส่งข้อความ <i class="fa-solid fa-paper-plane ml-1"></i>', confirmButtonColor: '#6d28d9'
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    Swal.fire({title: 'กำลังส่ง...', didOpen: ()=>Swal.showLoading()});
+                    fetch(GAS_URL, { 
+                        method: 'POST', 
+                        body: JSON.stringify({ action: "sendMessage", senderId: currentUser.id, senderName: currentUser.name, senderRoom: currentUser.assigned, senderPic: currentUser.pic, receiver: receiverName, message: result.value }) 
+                    }).then(() => Swal.fire('สำเร็จ!', 'ส่งข้อความแล้ว', 'success'));
+                }
+            });
+        }
+
+        function viewStudentProfile(name, id, room, picUrl, email, phone) {
+            let img = picUrl ? `<img src="${picUrl}" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-4 border-purple-100 shadow-md">` : `<div class="w-24 h-24 rounded-full mx-auto mb-4 bg-purple-100 text-purple-600 flex items-center justify-center text-3xl font-bold border-4 border-purple-200 shadow-md">${getInitials(name)}</div>`;
+            Swal.fire({
+                html: `
+                    ${img}
+                    <h2 class="text-2xl font-bold text-slate-800 font-prompt mb-1">${name}</h2>
+                    <p class="text-sm text-purple-600 font-bold mb-4 bg-purple-50 inline-block px-3 py-1 rounded-full">${id} | ห้อง ${room}</p>
+                    <div class="text-left bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-3">
+                        <div class="flex items-center"><i class="fa-solid fa-envelope text-slate-400 w-6"></i> <span class="text-slate-700">${email || 'ยังไม่มีข้อมูลอีเมล'}</span></div>
+                        <div class="flex items-center"><i class="fa-solid fa-phone text-slate-400 w-6"></i> <span class="text-slate-700">${phone || 'ยังไม่มีข้อมูลเบอร์โทร'}</span></div>
+                    </div>
+                `, showCloseButton: true, showConfirmButton: false
+            });
+        }
+
+        function replyToMsg(row, studentName) {
+            Swal.fire({
+                title: `ตอบกลับ ${studentName}`,
+                input: 'textarea', inputPlaceholder: 'พิมพ์ข้อความตอบกลับ...',
+                showCancelButton: true, confirmButtonText: 'ตอบกลับ', confirmButtonColor: '#10b981'
+            }).then((result) => {
+                if(result.isConfirmed && result.value) {
+                    Swal.fire({title: 'กำลังบันทึก...', didOpen: ()=>Swal.showLoading()});
+                    fetch(GAS_URL, {
+                        method: 'POST', body: JSON.stringify({ action: "replyMessage", row: row, replyText: result.value })
+                    }).then(res=>res.json()).then(r=>{
+                        if(r.status==="success") { Swal.fire('สำเร็จ','ตอบกลับข้อความแล้ว','success'); loadMessages(); checkNotifications(); }
+                    });
+                }
+            });
+        }
+
+        function loadMessages() {
+            document.getElementById('loadingMsgs').style.display = 'block'; document.getElementById('msgContainer').innerHTML = "";
+            fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "getMessages", myId: currentUser.id, myName: currentUser.name, role: currentUser.role }) })
+            .then(res => res.json()).then(result => {
+                document.getElementById('loadingMsgs').style.display = 'none';
+                if(result.status === "success") {
+                    cachedMessages = result.data;
+                    let html = "";
+                    if(result.data.length === 0) { html = `<p class="text-center text-slate-400 py-10 font-bold">ไม่มีข้อความ</p>`; }
+                    else {
+                        result.data.reverse().forEach(m => {
+                            let date = new Date(m.date).toLocaleString('th-TH', {day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'});
+                            
+                            if (currentUser.role === 'student') {
+                                html += `
+                                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm mb-4">
+                                    <div class="flex justify-between items-center mb-3"><span class="font-bold text-[#6d28d9]"><i class="fa-solid fa-paper-plane mr-2"></i> ถึง: ${m.receiver}</span><span class="text-xs text-slate-400">${date}</span></div>
+                                    <p class="text-slate-600 bg-slate-50 p-4 rounded-xl mb-4 text-sm leading-relaxed">${m.message}</p>
+                                    ${m.reply ? `<div class="bg-emerald-50 border border-emerald-100 p-4 rounded-2xl ml-6 relative"><div class="absolute -left-3 top-4 text-emerald-300"><i class="fa-solid fa-reply"></i></div><p class="text-xs font-bold text-emerald-700 mb-1"><i class="fa-solid fa-user-tie mr-1"></i> ตอบกลับจาก ${m.receiver}:</p><p class="text-sm text-emerald-900">${m.reply}</p></div>` : `<p class="text-xs font-medium text-slate-400 ml-2"><i class="fa-solid fa-clock mr-1"></i> รอการตอบกลับ...</p>`}
+                                </div>`;
+                            } else {
+                                let picHtml = m.senderPic ? `<img src="${m.senderPic}" class="w-full h-full object-cover">` : `<div class="w-full h-full bg-indigo-100 text-indigo-500 flex items-center justify-center font-bold text-xl">${getInitials(m.senderName)}</div>`;
+                                html += `
+                                <div class="bg-white p-6 md:p-8 rounded-3xl border border-slate-100 shadow-sm mb-4">
+                                    <div class="flex items-start gap-4 mb-4">
+                                        <div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 shrink-0 shadow-inner border border-slate-100 cursor-pointer" onclick="viewStudentProfile('${m.senderName}', '${m.senderId}', '${m.senderRoom}', '${m.senderPic}', '${m.senderEmail}', '${m.senderPhone}')">${picHtml}</div>
+                                        <div class="flex-1">
+                                            <div class="flex justify-between items-start">
+                                                <div class="cursor-pointer" onclick="viewStudentProfile('${m.senderName}', '${m.senderId}', '${m.senderRoom}', '${m.senderPic}', '${m.senderEmail}', '${m.senderPhone}')">
+                                                    <p class="font-bold text-slate-800 text-lg font-prompt hover:text-[#6d28d9] transition">${m.senderName} <span class="text-xs font-bold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-md ml-2 border border-purple-100">${m.senderId}</span></p>
+                                                    <p class="text-xs text-slate-500 font-medium mt-0.5">ห้อง: <span class="text-slate-700 font-bold">${m.senderRoom}</span></p>
+                                                </div>
+                                                <span class="text-xs font-medium text-slate-400 bg-slate-50 px-3 py-1 rounded-full border border-slate-100">${date}</span>
+                                            </div>
+                                            <div class="mt-4 text-slate-700 bg-slate-50 border border-slate-100 p-4 rounded-2xl text-sm leading-relaxed">${m.message}</div>
+                                        </div>
+                                    </div>
+                                    ${m.reply ? `<div class="bg-purple-50 border border-purple-100 p-5 rounded-2xl ml-16 relative"><div class="absolute -left-3 top-5 text-purple-300"><i class="fa-solid fa-reply"></i></div><p class="text-xs font-bold text-purple-700 mb-1"><i class="fa-solid fa-check-double mr-1"></i> คุณตอบกลับแล้ว:</p><p class="text-sm text-purple-900">${m.reply}</p></div>` : `<div class="ml-16 mt-2"><button onclick="replyToMsg(${m.row}, '${m.senderName}')" class="text-sm font-bold bg-[#6d28d9] text-white px-5 py-2 rounded-xl hover:bg-purple-800 transition shadow-sm"><i class="fa-solid fa-reply mr-2"></i> ตอบกลับ</button></div>`}
+                                </div>`;
+                            }
+                        });
+                    }
+                    document.getElementById('msgContainer').innerHTML = html;
+                }
+            });
+        }
+
+        // ----------------------------------------------------
+        // LOAD DATA INITIALIZATION
         // ----------------------------------------------------
         function login() {
             const u = document.getElementById('login_user').value.trim(), p = document.getElementById('login_pass').value.trim();
@@ -275,12 +664,11 @@
                     toggleLanguage(); toggleLanguage(); 
                     
                     nav('home');
-                    loadDashboardData(); // โหลดทุกอย่างแบบรอบเดียวจบ
+                    loadDashboardData();
                 } else { Swal.fire('Error', result.message, 'error'); }
             }).catch(err => { Swal.fire('Error', 'Connection failed.', 'error'); });
         }
 
-        // ฟังก์ชันใหม่! โหลดข้อมูล 3 อย่างพร้อมกันใน 1 วินาที
         function loadDashboardData() {
             document.getElementById('loadingSubjects').style.display = 'block';
             document.getElementById('loadingLessons_home').style.display = 'block';
@@ -348,29 +736,46 @@
             badges.forEach(b => { if(unread > 0) { b.innerText = unread; b.classList.remove('hidden'); } else { b.classList.add('hidden'); } });
         }
 
-        // ----------------------------------------------------
-        // UI RENDERERS
-        // ----------------------------------------------------
         function renderStudentHomeLessons() { 
             let htmlS = ""; let unfinished = allLessons.filter(l => l.studentScore === null).slice(0, 2); if(unfinished.length === 0) unfinished = allLessons.slice(0, 2); 
             if(allLessons.length === 0) { document.getElementById('lessonGrid_home').innerHTML = `<div class="col-span-full text-slate-400 font-medium">ยังไม่มีบทเรียน</div>`; return; } 
             unfinished.forEach(lesson => { 
-                let index = allLessons.indexOf(lesson); let isCompleted = lesson.studentScore !== null; let imgUrl = getImageUrl(lesson.title); let maxScore = lesson.questions.filter(q => q.q && q.q.trim() !== "").length; let scoreText = maxScore > 0 ? `${lesson.studentScore}/${maxScore}` : `<i class="fa-solid fa-check"></i>`; 
+                let index = allLessons.indexOf(lesson); let isCompleted = lesson.studentScore !== null; let imgUrl = getImageUrl(lesson.title); let validQs = lesson.questions ? lesson.questions.filter(q => q.q && q.q.trim() !== "") : []; let maxScore = validQs.length; let scoreText = maxScore > 0 ? `${lesson.studentScore}/${maxScore}` : `<i class="fa-solid fa-check"></i>`; 
                 htmlS += `<div class="course-card bg-white rounded-3xl p-5 shadow-sm border border-slate-100 cursor-pointer" onclick="openLesson(${index})"><div class="h-44 w-full rounded-2xl mb-4 relative overflow-hidden bg-slate-900 group"><img src="${imgUrl}" class="w-full h-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105 ${isCompleted ? 'grayscale' : ''}"><div class="absolute top-3 right-3 w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white"><i class="fa-regular fa-heart text-xs"></i></div>${isCompleted ? `<div class="absolute inset-0 flex items-center justify-center bg-slate-900/40"><div class="bg-emerald-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-md"><i class="fa-solid fa-check mr-1"></i> Completed</div></div>` : ''}</div><div class="px-2"><span class="bg-purple-100 text-[#6d28d9] px-2.5 py-1 rounded text-[10px] font-bold tracking-widest uppercase mb-3 inline-block">${lesson.subject} | ${lesson.ep}</span><h3 class="text-lg font-bold text-slate-800 line-clamp-2 leading-tight font-prompt mb-4">${lesson.title}</h3><div class="flex items-center justify-between border-t border-slate-100 pt-4 mt-2"><div class="flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-indigo-100 overflow-hidden flex items-center justify-center font-bold text-indigo-500 text-xs">T</div><div><p class="text-[10px] font-bold text-slate-700 leading-none">Instructor</p></div></div>${isCompleted ? `<span class="text-xs font-bold text-emerald-500 bg-emerald-50 px-3 py-1 rounded border border-emerald-100">${scoreText}</span>` : `<span class="text-xs font-bold text-white bg-[#6d28d9] px-3 py-1 rounded-full shadow-sm">Learn Now</span>`}</div></div></div>`; 
             }); 
             document.getElementById('lessonGrid_home').innerHTML = htmlS; 
         }
         function selectSubject(sub) { currentSubject = sub; nav('lessons'); document.getElementById('allSubjectTitle').innerText = sub; renderStudentLessons(); }
         function backToSubjects() { currentSubject = ""; nav('lessons'); document.getElementById('allSubjectTitle').innerText = dict[currentLang]['all_lessons']; renderStudentLessons(); }
-        function renderStudentLessons() { let htmlS = ""; let filtered = currentSubject === "" ? allLessons : allLessons.filter(l => l.subject === currentSubject); if(filtered.length === 0) { document.getElementById('lessonGrid_student').innerHTML = `<div class="col-span-full text-center py-10 text-slate-400 font-medium">ยังไม่มีบทเรียน</div>`; return; } filtered.forEach(lesson => { let index = allLessons.indexOf(lesson); let isCompleted = lesson.studentScore !== null; let imgUrl = getImageUrl(lesson.title); let maxScore = lesson.questions.filter(q => q.q && q.q.trim() !== "").length; let scoreText = maxScore > 0 ? `${lesson.studentScore}/${maxScore}` : `<i class="fa-solid fa-check"></i>`; htmlS += `<div class="course-card bg-white rounded-3xl p-5 shadow-sm border border-slate-100 cursor-pointer" onclick="openLesson(${index})"><div class="h-44 w-full rounded-2xl mb-4 relative overflow-hidden bg-slate-900 group"><img src="${imgUrl}" class="w-full h-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105 ${isCompleted ? 'grayscale' : ''}"><div class="absolute top-3 right-3 w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white"><i class="fa-regular fa-heart text-xs"></i></div>${isCompleted ? `<div class="absolute inset-0 flex items-center justify-center bg-slate-900/40"><div class="bg-emerald-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-md"><i class="fa-solid fa-check mr-1"></i> Completed</div></div>` : ''}</div><div class="px-2"><span class="bg-purple-100 text-[#6d28d9] px-2.5 py-1 rounded text-[10px] font-bold tracking-widest uppercase mb-3 inline-block">${lesson.subject} | ${lesson.ep}</span><h3 class="text-lg font-bold text-slate-800 line-clamp-2 leading-tight font-prompt mb-4">${lesson.title}</h3><div class="flex items-center justify-between border-t border-slate-100 pt-4 mt-2"><div class="flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-indigo-100 overflow-hidden flex items-center justify-center font-bold text-indigo-500 text-xs">T</div><div><p class="text-[10px] font-bold text-slate-700 leading-none">Instructor</p></div></div>${isCompleted ? `<span class="text-xs font-bold text-emerald-500 bg-emerald-50 px-3 py-1 rounded border border-emerald-100">${scoreText}</span>` : `<span class="text-xs font-bold text-white bg-[#6d28d9] px-3 py-1 rounded-full shadow-sm">Learn Now</span>`}</div></div></div>`; }); document.getElementById('lessonGrid_student').innerHTML = htmlS; }
-        function renderTeacherLessons() { let htmlT = ""; let selStat = document.getElementById('statLessonSelect'); if(selStat) selStat.innerHTML = '<option value="">-- เลือกบทเรียน --</option>'; let mySubjects = currentUser.assigned ? currentUser.assigned.split(',').map(s=>s.trim()) : []; let filtered = allLessons.filter(l => mySubjects.includes(l.subject)); filtered.forEach((lesson) => { let index = allLessons.indexOf(lesson); htmlT += `<div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex flex-col justify-between"><div><div class="flex justify-between mb-3"><span class="bg-purple-50 text-[#6d28d9] px-3 py-1 rounded-lg text-xs font-bold">${lesson.subject} | ${lesson.ep}</span> <span class="text-slate-400 text-xs"><i class="fa-solid fa-eye"></i> ${lesson.views}</span></div><h3 class="text-lg font-bold text-slate-800 mb-5 line-clamp-2 font-prompt leading-snug">${lesson.title}</h3></div><div class="flex gap-2"><button onclick="editLessonSetup(${index})" class="flex-1 bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold py-2.5 rounded-xl text-sm transition">Edit</button><button onclick="deleteLesson('${lesson.title}')" class="flex-1 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold py-2.5 rounded-xl text-sm transition">Delete</button></div></div>`; if(selStat) selStat.innerHTML += `<option value="${lesson.title}">[${lesson.subject}] ${lesson.title}</option>`; }); if(document.getElementById('lessonGrid_teacher')) document.getElementById('lessonGrid_teacher').innerHTML = htmlT; }
+        function renderStudentLessons() { 
+            let htmlS = ""; let filtered = currentSubject === "" ? allLessons : allLessons.filter(l => l.subject === currentSubject); 
+            if(filtered.length === 0) { document.getElementById('lessonGrid_student').innerHTML = `<div class="col-span-full text-center py-10 text-slate-400 font-medium">ยังไม่มีบทเรียน</div>`; return; } 
+            filtered.forEach(lesson => { 
+                let index = allLessons.indexOf(lesson); let isCompleted = lesson.studentScore !== null; let imgUrl = getImageUrl(lesson.title); let validQs = lesson.questions ? lesson.questions.filter(q => q.q && q.q.trim() !== "") : []; let maxScore = validQs.length; let scoreText = maxScore > 0 ? `${lesson.studentScore}/${maxScore}` : `<i class="fa-solid fa-check"></i>`; 
+                htmlS += `<div class="course-card bg-white rounded-3xl p-5 shadow-sm border border-slate-100 cursor-pointer" onclick="openLesson(${index})"><div class="h-44 w-full rounded-2xl mb-4 relative overflow-hidden bg-slate-900 group"><img src="${imgUrl}" class="w-full h-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105 ${isCompleted ? 'grayscale' : ''}"><div class="absolute top-3 right-3 w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white"><i class="fa-regular fa-heart text-xs"></i></div>${isCompleted ? `<div class="absolute inset-0 flex items-center justify-center bg-slate-900/40"><div class="bg-emerald-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-md"><i class="fa-solid fa-check mr-1"></i> Completed</div></div>` : ''}</div><div class="px-2"><span class="bg-purple-100 text-[#6d28d9] px-2.5 py-1 rounded text-[10px] font-bold tracking-widest uppercase mb-3 inline-block">${lesson.subject} | ${lesson.ep}</span><h3 class="text-lg font-bold text-slate-800 line-clamp-2 leading-tight font-prompt mb-4">${lesson.title}</h3><div class="flex items-center justify-between border-t border-slate-100 pt-4 mt-2"><div class="flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-indigo-100 overflow-hidden flex items-center justify-center font-bold text-indigo-500 text-xs">T</div><div><p class="text-[10px] font-bold text-slate-700 leading-none">Instructor</p></div></div>${isCompleted ? `<span class="text-xs font-bold text-emerald-500 bg-emerald-50 px-3 py-1 rounded border border-emerald-100">${scoreText}</span>` : `<span class="text-xs font-bold text-white bg-[#6d28d9] px-3 py-1 rounded-full shadow-sm">Learn Now</span>`}</div></div></div>`; 
+            }); 
+            document.getElementById('lessonGrid_student').innerHTML = htmlS; 
+        }
+
+        function renderTeacherLessons() { 
+            let htmlT = ""; let selStat = document.getElementById('statLessonSelect'); if(selStat) selStat.innerHTML = '<option value="">-- เลือกบทเรียน --</option>'; 
+            let mySubjects = currentUser.assigned ? currentUser.assigned.split(',').map(s=>s.trim()) : []; let filtered = allLessons.filter(l => mySubjects.includes(l.subject)); 
+            filtered.forEach((lesson) => { 
+                let index = allLessons.indexOf(lesson); 
+                htmlT += `<div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex flex-col justify-between"><div><div class="flex justify-between mb-3"><span class="bg-purple-50 text-[#6d28d9] px-3 py-1 rounded-lg text-xs font-bold">${lesson.subject} | ${lesson.ep}</span> <span class="text-slate-400 text-xs"><i class="fa-solid fa-eye"></i> ${lesson.views}</span></div><h3 class="text-lg font-bold text-slate-800 mb-5 line-clamp-2 font-prompt leading-snug">${lesson.title}</h3></div><div class="flex gap-2"><button onclick="editLessonSetup(${index})" class="flex-1 bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold py-2.5 rounded-xl text-sm transition">Edit</button><button onclick="deleteLesson('${lesson.title}')" class="flex-1 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold py-2.5 rounded-xl text-sm transition">Delete</button></div></div>`; 
+                if(selStat) selStat.innerHTML += `<option value="${lesson.title}">[${lesson.subject}] ${lesson.title}</option>`; 
+            }); 
+            if(document.getElementById('lessonGrid_teacher')) document.getElementById('lessonGrid_teacher').innerHTML = htmlT; 
+        }
         
         function openLesson(index) { 
             currentLesson = allLessons[index]; nav('lesson_detail'); document.getElementById('det_img_src').src = getImageUrl(currentLesson.title); document.getElementById('det_ep').innerText = currentLesson.subject + " | " + currentLesson.ep; document.getElementById('det_title').innerText = currentLesson.title; document.getElementById('det_content').innerHTML = formatContent(currentLesson.content); document.getElementById('det_views').innerText = currentLesson.views + 1; 
             
-            let validQs = currentLesson.questions.filter(q => q.q && q.q.trim() !== "");
+            let validQs = currentLesson.questions ? currentLesson.questions.filter(q => q.q && q.q.trim() !== "") : [];
             let maxScore = validQs.length;
             document.getElementById('quizSectionTitle').innerText = maxScore > 0 ? `แบบทดสอบ (${maxScore} ข้อ)` : `เรียนจบแล้ว`;
+
+            isTakingQuiz = false; tabSwitchCount = 0; document.getElementById('quizWarnMsg').classList.add('hidden'); 
 
             if (currentLesson.studentScore !== null && currentUser.role === 'student') { 
                 document.getElementById('quizForm').classList.add('hidden'); document.getElementById('quizCompletedMsg').classList.remove('hidden'); 
@@ -390,25 +795,18 @@
         }
 
         function submitQuiz(isNoQuiz = false, overrideScore = 0) { 
-            let validQs = currentLesson.questions.filter(q => q.q && q.q.trim() !== ""); let score = 0; 
+            let validQs = currentLesson.questions ? currentLesson.questions.filter(q => q.q && q.q.trim() !== "") : []; let score = 0; 
             if (isNoQuiz) { score = overrideScore; } else { for(let i=1; i<=validQs.length; i++){ let ans = document.querySelector(`input[name="ans${i}"]:checked`); if(!ans) { Swal.fire('เตือน', 'กรุณาทำข้อสอบให้ครบ', 'warning'); return; } if(ans.value === validQs[i-1].ans) score++; } Swal.fire({ icon: score >= Math.ceil(validQs.length/2) ? 'success' : 'info', title: 'Submitted!', text: `Your Score: ${score} / ${validQs.length}` }); } 
             fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "quiz", username: currentUser.id, name: currentUser.name, room: currentUser.assigned, subject: currentLesson.subject, lessonName: currentLesson.title, score: score }) }).then(() => { currentLesson.studentScore = score; openLesson(allLessons.indexOf(currentLesson)); loadDashboardData(); }); 
         }
 
-        // ----------------------------------------------------
-        // TEACHER / ADMIN ACTIONS
-        // ----------------------------------------------------
-        function addTeacherQuizField(qData = null) {
-            let container = document.getElementById('t_quizFields'); let count = container.children.length; if(count >= 5) { Swal.fire('เตือน', 'เพิ่มคำถามได้สูงสุด 5 ข้อครับ', 'warning'); return; }
-            let div = document.createElement('div'); div.className = "quiz-item bg-white p-5 rounded-2xl border border-slate-200 shadow-sm mb-4 relative";
-            div.innerHTML = `<button type="button" onclick="this.parentElement.remove(); updateQuizNumbers();" class="absolute top-4 right-4 text-rose-400 hover:text-rose-600 transition"><i class="fa-solid fa-trash"></i></button><label class="quiz-number block font-bold text-slate-800 mb-2 text-sm">ข้อ X.</label><input type="text" class="t_q w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none text-sm mb-3 focus:ring-2 focus:ring-[#6d28d9]" value="${qData ? qData.q : ''}" required><div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3 text-sm"><div class="flex items-center"><span class="font-bold text-slate-400 mr-2 w-5">ก.</span><input type="text" class="t_c1 w-full px-3 py-2 rounded-lg border border-slate-200 outline-none focus:border-[#6d28d9]" value="${qData ? qData.c1 : ''}"></div><div class="flex items-center"><span class="font-bold text-slate-400 mr-2 w-5">ข.</span><input type="text" class="t_c2 w-full px-3 py-2 rounded-lg border border-slate-200 outline-none focus:border-[#6d28d9]" value="${qData ? qData.c2 : ''}"></div><div class="flex items-center"><span class="font-bold text-slate-400 mr-2 w-5">ค.</span><input type="text" class="t_c3 w-full px-3 py-2 rounded-lg border border-slate-200 outline-none focus:border-[#6d28d9]" value="${qData ? qData.c3 : ''}"></div><div class="flex items-center"><span class="font-bold text-slate-400 mr-2 w-5">ง.</span><input type="text" class="t_c4 w-full px-3 py-2 rounded-lg border border-slate-200 outline-none focus:border-[#6d28d9]" value="${qData ? qData.c4 : ''}"></div></div><div class="flex items-center text-sm"><label class="font-bold text-slate-600 mr-2">เฉลยข้อที่ถูก:</label><select class="t_ans px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 font-bold text-[#6d28d9] outline-none"><option value="1" ${qData && qData.ans == '1' ? 'selected' : ''}>ก.</option><option value="2" ${qData && qData.ans == '2' ? 'selected' : ''}>ข.</option><option value="3" ${qData && qData.ans == '3' ? 'selected' : ''}>ค.</option><option value="4" ${qData && qData.ans == '4' ? 'selected' : ''}>ง.</option></select></div>`;
-            container.appendChild(div); updateQuizNumbers();
+        function saveLesson() { 
+            let mode = document.getElementById('t_mode').value; let questions = []; let items = document.querySelectorAll('.quiz-item');
+            items.forEach(item => { questions.push({ q: item.querySelector('.t_q').value, ans: item.querySelector('.t_ans').value, c1: item.querySelector('.t_c1').value, c2: item.querySelector('.t_c2').value, c3: item.querySelector('.t_c3').value, c4: item.querySelector('.t_c4').value }); });
+            while(questions.length < 5) { questions.push({q:"", c1:"", c2:"", c3:"", c4:"", ans:"1"}); }
+            let req = { action: mode === "add" ? "addLesson" : "editLesson", oldTitle: document.getElementById('t_oldTitle').value, subject: document.getElementById('t_subject').value, ep: document.getElementById('t_ep').value, title: document.getElementById('t_title').value, content: document.getElementById('t_content').value, questions: questions }; 
+            if (!req.subject || !req.title) { Swal.fire('เตือน', 'กรุณากรอกวิชาและชื่อเรื่อง', 'warning'); return; } Swal.fire({ title: 'กำลังบันทึก...', didOpen: () => Swal.showLoading() }); fetch(GAS_URL, { method: 'POST', body: JSON.stringify(req) }).then(res => res.json()).then(result => { if (result.status === "success") { Swal.fire('สำเร็จ!','','success'); resetTeacherForm(); loadDashboardData(); }}); 
         }
-        function updateQuizNumbers() { let items = document.querySelectorAll('.quiz-item'); items.forEach((item, index) => { item.querySelector('.quiz-number').innerText = `ข้อ ${index + 1}.`; }); }
-
-        function resetTeacherForm() { document.getElementById('teacherForm').reset(); document.getElementById('t_mode').value = "add"; document.getElementById('formActionTitle').innerHTML = '<i class="fa-solid fa-pen-to-square mr-2"></i> Create New Lesson'; document.getElementById('saveBtn').innerHTML = 'Save Lesson'; document.getElementById('cancelEditBtn').classList.add('hidden'); document.getElementById('t_quizFields').innerHTML = ""; }
-        function editLessonSetup(index) { let l = allLessons[index]; document.getElementById('t_mode').value = "edit"; document.getElementById('t_oldTitle').value = l.title; document.getElementById('formActionTitle').innerHTML = '<i class="fa-solid fa-pen mr-2"></i> Edit Lesson'; document.getElementById('saveBtn').innerHTML = 'Save Changes'; document.getElementById('cancelEditBtn').classList.remove('hidden'); document.getElementById('t_subject').value = l.subject; document.getElementById('t_ep').value = l.ep; document.getElementById('t_title').value = l.title; document.getElementById('t_content').value = l.content; document.getElementById('t_quizFields').innerHTML = ""; let validQs = l.questions.filter(q => q.q && q.q.trim() !== ""); validQs.forEach(q => addTeacherQuizField(q)); document.getElementById('view_teacher_manage').scrollIntoView(); }
-        function saveLesson() { let mode = document.getElementById('t_mode').value; let questions = []; let items = document.querySelectorAll('.quiz-item'); items.forEach(item => { questions.push({ q: item.querySelector('.t_q').value, ans: item.querySelector('.t_ans').value, c1: item.querySelector('.t_c1').value, c2: item.querySelector('.t_c2').value, c3: item.querySelector('.t_c3').value, c4: item.querySelector('.t_c4').value }); }); while(questions.length < 5) { questions.push({q:"", c1:"", c2:"", c3:"", c4:"", ans:"1"}); } let req = { action: mode === "add" ? "addLesson" : "editLesson", oldTitle: document.getElementById('t_oldTitle').value, subject: document.getElementById('t_subject').value, ep: document.getElementById('t_ep').value, title: document.getElementById('t_title').value, content: document.getElementById('t_content').value, questions: questions }; if (!req.subject || !req.title) { Swal.fire('เตือน', 'กรุณากรอกวิชาและชื่อเรื่อง', 'warning'); return; } Swal.fire({ title: 'กำลังบันทึก...', didOpen: () => Swal.showLoading() }); fetch(GAS_URL, { method: 'POST', body: JSON.stringify(req) }).then(res => res.json()).then(result => { if (result.status === "success") { Swal.fire('สำเร็จ!','','success'); resetTeacherForm(); loadDashboardData(); }}); }
         function deleteLesson(title) { Swal.fire({ title: 'ลบข้อมูล?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33' }).then((res) => { if(res.isConfirmed) { fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "deleteLesson", title: title }) }).then(r => r.json()).then(res => { if(res.status === "success") { Swal.fire('ลบแล้ว','','success'); loadDashboardData(); }}); }}); }
         
         function loadAnalytics() { let loadHtml = '<tr><td colspan="4" class="py-6 text-center text-purple-500 font-bold"><i class="fa-solid fa-spinner fa-spin"></i> โหลดข้อมูล...</td></tr>'; document.getElementById('statTableBody').innerHTML = loadHtml; document.getElementById('logTableBody').innerHTML = loadHtml; fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "getAnalytics" }) }).then(res => res.json()).then(result => { if (result.status === "success") { globalStatData = result; renderTeacherTables(); }}); }
@@ -416,6 +814,7 @@
 
         function adminAddSubject() { let sub = document.getElementById('a_subName').value.trim(); if(!sub) return; Swal.fire({title:'กำลังเพิ่ม...', didOpen:()=>Swal.showLoading()}); fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "addSubject", subjectName: sub }) }).then(res => res.json()).then(r => { if(r.status==="success") { Swal.fire('สำเร็จ','','success'); document.getElementById('a_subName').value=""; fetchSubjects(); }}); }
         function adminAddTeacher() { let u = document.getElementById('a_tUser').value.trim(), p = document.getElementById('a_tPass').value.trim(), n = document.getElementById('a_tName').value.trim(); let cbs = document.querySelectorAll('.teacher-subject-cb:checked'); let subs = Array.from(cbs).map(cb => cb.value).join(', '); if(!u || !p || !n) return; Swal.fire({title:'กำลังเพิ่ม...', didOpen:()=>Swal.showLoading()}); fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "addTeacher", t_username: u, t_password: p, t_name: n, t_subjects: subs }) }).then(res => res.json()).then(r => { if(r.status==="success") { Swal.fire('สำเร็จ','','success'); document.getElementById('a_tUser').value=""; document.getElementById('a_tPass').value=""; document.getElementById('a_tName').value=""; Array.from(cbs).forEach(cb=>cb.checked=false); }}); }
+        function logout() { location.reload(); }
     </script>
 </body>
 </html>
