@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;700&family=Sarabun:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; overflow: hidden; }
+        h1, h2, h3, h4, .font-prompt { font-family: 'Prompt', sans-serif; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; } ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .hide-scroll::-webkit-scrollbar { display: none; } .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+        .menu-item { transition: all 0.2s; border-left: 3px solid transparent; cursor: pointer; }
+        .menu-item:hover, .menu-item.active { color: #6d28d9; background-color: #f5f3ff; border-left-color: #6d28d9; font-weight: bold; }
+        .course-card { transition: transform 0.3s; cursor: pointer; } .course-card:hover { transform: translateY(-5px); }
+        .fav-btn { transition: transform 0.2s; cursor: pointer; } .fav-btn:hover { transform: scale(1.2); } .fav-active { color: #ef4444 !important; }
+        .rich-text { line-height: 1.9; font-size: 1.1rem; color: #475569; } .rich-text p { margin-bottom: 1rem; }
+    </style>
+</head>
+<body class="flex h-screen w-screen antialiased">
+    
+    <aside class="w-64 bg-white border-r flex flex-col z-20">
+        <div class="h-24 flex items-center px-8 border-b"><div class="w-8 h-8 bg-[#6d28d9] text-white rounded-full flex items-center justify-center text-sm mr-3"><i class="fa-solid fa-sparkles"></i></div><h1 class="text-xl font-black font-prompt text-[#6d28d9]">Coursue</h1></div>
+        <div class="flex-1 py-6"><nav class="flex flex-col text-slate-500 text-sm" id="sidebarMenu">
+            <a onclick="nav('home')" id="nav_home" class="menu-item px-8 py-3 flex items-center active"><i class="fa-solid fa-house w-6"></i> แดชบอร์ด</a>
+            <a onclick="nav('lessons')" id="nav_lessons" class="menu-item px-8 py-3 flex items-center relative"><i class="fa-solid fa-book-open w-6"></i> บทเรียน <span id="lessonNewBadge" class="hidden absolute right-6 bg-rose-500 text-white text-[10px] px-2 rounded-full">New</span></a>
+            <a onclick="nav('inbox')" id="nav_inbox" class="menu-item px-8 py-3 flex items-center relative"><i class="fa-solid fa-inbox w-6"></i> ข้อความ <span class="inbox-badge hidden absolute right-6 bg-rose-500 text-white text-[10px] px-2 rounded-full">0</span></a>
+        </nav></div>
+        <div class="p-6 border-t"><nav class="flex flex-col text-sm">
+            <a onclick="nav('settings')" id="nav_settings" class="menu-item px-8 py-3 flex items-center text-slate-500"><i class="fa-solid fa-user-gear w-6"></i> ตั้งค่าโปรไฟล์</a>
+            <a onclick="logout()" class="menu-item px-8 py-3 flex items-center text-rose-500 hover:bg-rose-50"><i class="fa-solid fa-arrow-right-from-bracket w-6"></i> ออกจากระบบ</a>
+        </nav></div>
+    </aside>
+
+    <main class="flex-1 flex flex-col overflow-hidden bg-slate-50/50">
+        <header class="h-24 flex items-center justify-between px-10 border-b bg-white/80 backdrop-blur-md">
+            <div class="flex-1 max-w-xl relative"><i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i><input type="text" placeholder="ค้นหาบทเรียน..." class="w-full pl-12 pr-4 py-3 bg-white border rounded-xl outline-none focus:ring-2 focus:ring-purple-100 text-sm"></div>
+            <button class="w-11 h-11 bg-white border rounded-xl text-slate-500 lg:hidden" onclick="document.getElementById('rightSidebar').classList.toggle('hidden')"><i class="fa-regular fa-user"></i></button>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-10 hide-scroll">
+            <div id="view_home" class="max-w-5xl mx-auto">
+                <div id="resumeBanner" class="hidden bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl p-6 text-white shadow-lg mb-8 flex justify-between items-center cursor-pointer hover:shadow-xl transition" onclick="resumeLesson()">
+                    <div><span class="bg-white/20 px-3 py-1 rounded-full text-[10px] font-bold uppercase mb-2 inline-block"><i class="fa-solid fa-clock-rotate-left"></i> เรียนค้างไว้</span><h3 class="text-xl font-bold font-prompt" id="resumeTitle">Lesson</h3></div>
+                    <div class="w-12 h-12 bg-white text-emerald-500 rounded-full flex items-center justify-center text-xl shadow-md"><i class="fa-solid fa-play"></i></div>
+                </div>
+                <div class="bg-[#6d28d9] rounded-3xl p-10 text-white shadow-lg mb-10 relative overflow-hidden"><h2 class="text-4xl font-prompt font-bold mb-4">ยกระดับทักษะของคุณกับห้องเรียนออนไลน์ วมว.</h2><button class="bg-slate-900 px-6 py-2.5 rounded-full font-bold text-sm">เริ่มเรียนเลย</button></div>
+                <div class="flex overflow-x-auto hide-scroll gap-4 pb-4 mb-8" id="subjectGrid"></div>
+                <h3 class="text-xl font-bold text-slate-800 font-prompt mb-4">เรียนค้างไว้ (ล่าสุด)</h3>
+                <div id="lessonGrid_home" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+            </div>
+
+            <div id="view_lessons" class="hidden max-w-5xl mx-auto">
+                <div class="flex justify-between items-center mb-8"><h2 class="text-3xl font-black text-slate-800 font-prompt" id="allSubjectTitle">บทเรียนทั้งหมด</h2><button onclick="toggleShowFavorites()" id="favFilterBtn" class="bg-white border px-4 py-2 rounded-full text-sm font-bold text-slate-600 hover:text-rose-500 shadow-sm"><i class="fa-regular fa-heart"></i> รายการโปรด</button></div>
+                <div class="flex overflow-x-auto hide-scroll gap-4 pb-4 mb-8" id="allSubjectGrid"></div>
+                <div id="lessonGrid_student" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+            </div>
+
+            <div id="view_lesson_detail" class="hidden max-w-4xl mx-auto">
+                <button onclick="nav('lessons')" class="text-slate-500 text-sm font-bold mb-6 hover:text-[#6d28d9]"><i class="fa-solid fa-arrow-left"></i> กลับ</button>
+                <div class="bg-white rounded-3xl p-8 shadow-sm border mb-8">
+                    <div id="det_video_container" class="w-full h-[450px] bg-slate-900 rounded-2xl mb-8 overflow-hidden hidden"></div>
+                    <div id="det_image_container" class="w-full h-80 bg-slate-900 rounded-2xl mb-8 overflow-hidden relative"><img id="det_img_src" class="w-full h-full object-cover opacity-80"><div class="absolute bottom-6 left-6 text-white"><span id="det_ep" class="bg-[#6d28d9] px-3 py-1 rounded-md text-xs font-bold mb-3 inline-block">EP</span><h2 id="det_title" class="text-3xl font-bold font-prompt">Title</h2></div></div>
+                    <div id="det_content" class="rich-text whitespace-pre-wrap"></div>
+                </div>
+                <div class="bg-white rounded-3xl p-8 shadow-sm border border-t-8 border-purple-500">
+                    <h3 id="quizSectionTitle" class="text-xl font-bold mb-6 font-prompt border-b pb-4">Quiz Time</h3>
+                    <div id="quizCompletedMsg" class="hidden bg-purple-50 rounded-2xl p-8 text-center border"><div class="w-16 h-16 bg-[#6d28d9] text-white rounded-full flex items-center justify-center mx-auto mb-4 text-3xl"><i class="fa-solid fa-check"></i></div><h4 class="text-xl font-bold font-prompt mb-2">เรียนจบแล้ว!</h4><div class="inline-block bg-white px-6 py-3 rounded-xl shadow-sm mt-3 font-prompt">Score: <span id="quizScoreResult" class="text-3xl font-black text-[#6d28d9]">X</span><span id="quizMaxScoreDisplay" class="text-lg font-bold text-slate-400"></span></div></div>
+                    <form id="quizForm" class="space-y-6"><div id="quizContainer"></div></form>
+                </div>
+            </div>
+
+            <div id="view_inbox" class="hidden max-w-4xl mx-auto"><h2 class="text-2xl font-bold mb-6 font-prompt">กล่องข้อความ</h2><div class="bg-white rounded-3xl p-8 border"><button onclick="loadMessages()" class="mb-4 text-sm bg-slate-100 px-4 py-2 rounded-lg hover:bg-slate-200"><i class="fa-solid fa-rotate"></i> Refresh</button><div id="msgContainer"></div></div></div>
+
+            <div id="view_settings" class="hidden max-w-3xl mx-auto"><h2 class="text-2xl font-bold mb-6 font-prompt">ตั้งค่าโปรไฟล์</h2><div class="bg-white rounded-3xl p-8 border"><div class="flex items-center gap-6 mb-8 border-b pb-8"><div class="relative w-24 h-24 rounded-full bg-slate-100 overflow-hidden"><img id="previewSettingPic" class="w-full h-full object-cover hidden"><div id="previewSettingInitials" class="w-full h-full flex items-center justify-center text-3xl font-bold text-purple-600 bg-purple-100">A</div><label class="absolute inset-0 flex flex-col items-center justify-center text-white bg-black/50 opacity-0 hover:opacity-100 cursor-pointer transition"><i class="fa-solid fa-camera"></i><input type="file" id="fileUpload" class="hidden" accept="image/*" onchange="handleImageUpload(event)"></label></div><div><h3 class="font-bold text-2xl font-prompt" id="settingName">Name</h3><p class="text-sm text-slate-500 uppercase" id="settingRole">Role</p></div></div><div class="grid grid-cols-2 gap-5 mb-5"><div><label class="block text-sm font-bold mb-2">อีเมล</label><input type="email" id="set_email" class="w-full px-5 py-3 border rounded-xl outline-none"></div><div><label class="block text-sm font-bold mb-2">เบอร์โทรศัพท์</label><input type="tel" id="set_phone" class="w-full px-5 py-3 border rounded-xl outline-none"></div></div><button onclick="saveProfile()" class="w-full bg-[#6d28d9] text-white font-bold py-4 rounded-xl">บันทึกข้อมูล</button></div></div>
+        </div>
+    </main>
+
+    <aside id="rightSidebar" class="w-80 bg-white border-l z-20 hidden lg:flex flex-col h-full absolute right-0 lg:relative">
+        <div class="p-8 overflow-y-auto flex-1">
+            <h3 class="font-bold text-sm mb-8">โปรไฟล์ของคุณ</h3>
+            <div class="text-center mb-8"><div class="relative w-24 h-24 mx-auto mb-4 cursor-pointer overflow-hidden rounded-full border-4 border-purple-100" onclick="nav('settings')"><img id="rightProfileImage" class="w-full h-full object-cover hidden"><span id="rightProfileInitials" class="w-full h-full flex items-center justify-center text-3xl font-bold text-purple-600 bg-purple-100">A</span></div><h3 class="font-bold text-lg font-prompt">สวัสดี <span id="rightProfileName">User</span></h3><p class="text-xs text-slate-400">เรียนรู้อย่างต่อเนื่อง</p></div>
+            <div class="flex justify-between items-center mb-6 mt-10"><h4 class="font-bold text-sm font-prompt">ที่ปรึกษาของคุณ</h4></div>
+            <div class="space-y-4"><div class="flex justify-between items-center"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center font-bold text-indigo-600 text-sm">ธภ</div><div><p class="text-sm font-bold font-prompt w-24 truncate">อ.ธนาภรณ์</p><p class="text-[10px] text-slate-400">Instructor</p></div></div><button onclick="contactMentor('อ.ธนาภรณ์')" class="bg-[#6d28d9] text-white px-3 py-1.5 rounded-full text-xs hover:bg-purple-800"><i class="fa-solid fa-paper-plane"></i></button></div><div class="flex justify-between items-center"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center font-bold text-rose-600 text-sm">AD</div><div><p class="text-sm font-bold font-prompt w-24 truncate">SCiUS Admin</p><p class="text-[10px] text-slate-400">Staff</p></div></div><button onclick="contactMentor('SCiUS Admin')" class="bg-[#6d28d9] text-white px-3 py-1.5 rounded-full text-xs hover:bg-purple-800"><i class="fa-solid fa-paper-plane"></i></button></div></div>
+        </div>
+    </aside>
+    </div>
+
+    <script>
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbz22baIknv96tjyJYB_qiit6T-owv4qSSUpjA22cZMHXeZ02JnqcPxaQGVUyWzhTubQhA/exec';
+        
+        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if(!currentUser || currentUser.role !== 'student') window.location.href = 'index.html'; // เตะกลับถ้าไม่ใช่สิทธิ์นักเรียน
+
+        let allSubjects = [], allLessons = [], cachedMessages = [], currentSubject = "", currentLesson = null;
+        let showFavoritesOnly = false, uploadedImageBase64 = "";
+
+        // Core Fetch
+        function fetchGAS(payload) { return fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r=>r.json()); }
+        function logout() { localStorage.removeItem('currentUser'); window.location.href = 'index.html'; }
+
+        // Utils
+        let getInitials = (n) => { let p=n.trim().split(/\s+/); return p.length>=2 ? (p[0][0]+p[1][0]).toUpperCase() : n.substring(0,2).toUpperCase(); };
+        let extractYouTubeID = (u) => { let m=u.match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/); return (m&&m[7].length===11)?m[7]:false; };
+        let getImageUrl = (t) => `https://picsum.photos/seed/${encodeURIComponent(t)}/800/600`;
+        let formatContent = (t) => { if(!t) return ""; t=t.replace(/\[YT:(.*?)\]\n?/g, ""); t=t.replace(/(สำคัญมาก|ข้อควรระวัง)(:|\s)/g, '<span class="bg-rose-100 text-rose-700 px-2 py-1 rounded font-bold text-sm shadow-sm">$1$2</span>'); t=t.replace(/\*\*(.*?)\*\*/g, '<span class="text-yellow-600 font-bold">$1</span>'); t=t.replace(/^### (.*$)/gim, '<h4 class="text-xl font-bold text-[#6d28d9] mt-4 mb-2 font-prompt">$1</h4>'); t=t.replace(/^- (.*$)/gim, '<div class="flex items-start my-1 text-sm"><i class="fa-solid fa-circle-check text-purple-600 mt-1 mr-2"></i> $1</div>'); return t; };
+
+        // Initialization
+        window.onload = () => { updateProfileUI(); nav('home'); loadDashboardData(); };
+
+        function updateProfileUI() {
+            document.getElementById('rightProfileName').innerText = currentUser.name.split(' ')[0];
+            if(currentUser.pic) { document.getElementById('rightProfileImage').src=currentUser.pic; document.getElementById('rightProfileImage').classList.remove('hidden'); document.getElementById('rightProfileInitials').classList.add('hidden'); }
+            else { document.getElementById('rightProfileImage').classList.add('hidden'); document.getElementById('rightProfileInitials').classList.remove('hidden'); document.getElementById('rightProfileInitials').innerText=getInitials(currentUser.name); }
+        }
+
+        function nav(target) {
+            ['view_home', 'view_lessons', 'view_lesson_detail', 'view_inbox', 'view_settings'].forEach(id => document.getElementById(id).style.display = 'none');
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active')); 
+            document.getElementById('nav_' + target).classList.add('active');
+            document.getElementById('view_' + (target==='home'?'home':target)).style.display = 'block';
+            
+            if(target==='lessons') { currentSubject=""; renderLessons(); localStorage.setItem('lessonCount_'+currentUser.id, allLessons.length); document.getElementById('lessonNewBadge').classList.add('hidden'); }
+            if(target==='settings') { document.getElementById('settingName').innerText=currentUser.name; document.getElementById('settingRole').innerText="Student"; document.getElementById('set_email').value=currentUser.email; document.getElementById('set_phone').value=currentUser.phone; if(currentUser.pic){document.getElementById('previewSettingPic').src=currentUser.pic; document.getElementById('previewSettingPic').classList.remove('hidden'); document.getElementById('previewSettingInitials').classList.add('hidden');} }
+            if(target==='inbox') { loadMessages(); let u=cachedMessages.filter(m=>m.reply).length; localStorage.setItem('readReplies_'+currentUser.id, u); document.querySelectorAll('.inbox-badge').forEach(b=>b.classList.add('hidden')); }
+        }
+
+        function loadDashboardData() {
+            fetchGAS({ action: "getDashboardData", myId: currentUser.id, myName: currentUser.name, role: currentUser.role }).then(r => {
+                if(r.status === "success") {
+                    allSubjects = r.subjects; allLessons = r.lessons; cachedMessages = r.messages;
+                    let sH = ""; allSubjects.forEach(s => sH += `<div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center min-w-[200px] cursor-pointer hover:border-purple-300" onclick="selectSubject('${s}')"><div class="w-10 h-10 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center mr-3"><i class="fa-solid fa-layer-group"></i></div><p class="font-bold text-sm">${s}</p></div>`);
+                    document.getElementById('subjectGrid').innerHTML = sH; document.getElementById('allSubjectGrid').innerHTML = sH;
+                    renderHomeLessons(); checkResumeBanner();
+                    
+                    let unread = cachedMessages.filter(m=>m.reply).length - parseInt(localStorage.getItem('readReplies_'+currentUser.id)||"0");
+                    if(unread>0) document.querySelectorAll('.inbox-badge').forEach(b=>{b.innerText=unread; b.classList.remove('hidden');});
+                    if(allLessons.length > parseInt(localStorage.getItem('lessonCount_'+currentUser.id)||"0")) document.getElementById('lessonNewBadge').classList.remove('hidden');
+                }
+            });
+        }
+
+        function renderLessonCard(l, idx) {
+            let favs=JSON.parse(localStorage.getItem('favs_'+currentUser.id)||"[]"); let isC=l.studentScore!==null; let maxQ=(l.questions||[]).filter(q=>q.q).length; let isF=favs.includes(l.title);
+            return `<div class="course-card bg-white rounded-3xl p-5 shadow-sm border border-slate-100 flex flex-col" onclick="openLesson(${idx})"><div class="h-44 w-full rounded-2xl mb-4 relative overflow-hidden bg-slate-900 group"><img src="${getImageUrl(l.title)}" class="w-full h-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105 ${isC?'grayscale':''}"><div class="absolute top-3 right-3 w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white fav-btn" onclick="toggleFavorite(event, '${l.title}')"><i class="${isF?'fa-solid fav-active':'fa-regular'} fa-heart text-xs pointer-events-none"></i></div>${isC?`<div class="absolute inset-0 flex items-center justify-center bg-black/40"><div class="bg-emerald-500 text-white px-3 py-1 rounded-lg text-xs font-bold"><i class="fa-solid fa-check"></i> Completed</div></div>`:''}</div><div class="flex-1 flex flex-col justify-between"><p class="text-xs font-bold text-purple-600 bg-purple-50 px-2 py-1 rounded inline-block w-max mb-2">${l.subject}</p><h3 class="font-bold font-prompt text-lg mb-4 leading-tight">${l.title}</h3><div class="flex justify-between items-center border-t pt-3"><span class="text-xs text-slate-400">EP.${l.ep}</span>${isC?`<span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded">${maxQ>0?l.studentScore+'/'+maxQ:'สำเร็จ'}</span>`:`<span class="text-xs font-bold text-white bg-purple-600 px-3 py-1 rounded-full">Learn Now</span>`}</div></div></div>`;
+        }
+
+        function renderHomeLessons() {
+            let uf = allLessons.filter(l=>l.studentScore===null).slice(0,2); if(uf.length===0) uf=allLessons.slice(0,2);
+            document.getElementById('lessonGrid_home').innerHTML = uf.length===0 ? '<p>ไม่มีบทเรียน</p>' : uf.map(l => renderLessonCard(l, allLessons.indexOf(l))).join('');
+        }
+        
+        function selectSubject(s) { currentSubject=s; nav('lessons'); document.getElementById('allSubjectTitle').innerText=s; showFavoritesOnly=false; renderLessons(); }
+        function backToSubjects() { currentSubject=""; nav('lessons'); document.getElementById('allSubjectTitle').innerText='บทเรียนทั้งหมด'; renderLessons(); }
+        function toggleShowFavorites() { showFavoritesOnly=!showFavoritesOnly; document.getElementById('favFilterBtn').classList.toggle('text-rose-500',showFavoritesOnly); renderLessons(); }
+        function toggleFavorite(e, t) { e.stopPropagation(); let f=JSON.parse(localStorage.getItem('favs_'+currentUser.id)||"[]"); let i=f.indexOf(t); if(i>-1) f.splice(i,1); else f.push(t); localStorage.setItem('favs_'+currentUser.id,JSON.stringify(f)); if(showFavoritesOnly)renderLessons(); else { e.target.classList.toggle('fa-solid'); e.target.classList.toggle('fa-regular'); e.target.classList.toggle('fav-active'); } }
+        
+        function renderLessons() {
+            let f = currentSubject ? allLessons.filter(l=>l.subject===currentSubject) : allLessons;
+            if(showFavoritesOnly) { let favs=JSON.parse(localStorage.getItem('favs_'+currentUser.id)||"[]"); f=f.filter(l=>favs.includes(l.title)); }
+            document.getElementById('lessonGrid_student').innerHTML = f.length===0 ? '<div class="col-span-full text-center py-10 text-slate-400">ไม่มีบทเรียน</div>' : f.map(l => renderLessonCard(l, allLessons.indexOf(l))).join('');
+        }
+
+        function checkResumeBanner() { let s=localStorage.getItem('resume_'+currentUser.id); let b=document.getElementById('resumeBanner'); if(s){let d=JSON.parse(s); document.getElementById('resumeTitle').innerText=d.title; b.classList.remove('hidden');}else b.classList.add('hidden'); }
+        function resumeLesson() { let s=localStorage.getItem('resume_'+currentUser.id); if(s) openLesson(JSON.parse(s).index); }
+
+        function openLesson(idx) {
+            currentLesson = allLessons[idx]; nav('lesson_detail'); localStorage.setItem('resume_'+currentUser.id, JSON.stringify({index:idx,title:currentLesson.title})); checkResumeBanner();
+            let yt = extractYouTubeID(currentLesson.content.match(/\[YT:(.*?)\]/)?currentLesson.content.match(/\[YT:(.*?)\]/)[1]:"");
+            if(yt) { document.getElementById('det_video_container').innerHTML=`<iframe class="w-full h-full" src="https://www.youtube.com/embed/${yt}?rel=0" frameborder="0" allowfullscreen></iframe>`; document.getElementById('det_video_container').classList.remove('hidden'); document.getElementById('det_image_container').classList.add('hidden'); }
+            else { document.getElementById('det_video_container').classList.add('hidden'); document.getElementById('det_image_container').classList.remove('hidden'); document.getElementById('det_img_src').src=getImageUrl(currentLesson.title); }
+            document.getElementById('det_ep').innerText="EP."+currentLesson.ep; document.getElementById('det_title').innerText=currentLesson.title; document.getElementById('det_views').innerText=currentLesson.views+1; document.getElementById('det_content').innerHTML=formatContent(currentLesson.content);
+            
+            let vQs = (currentLesson.questions||[]).filter(q=>q.q); let mQ = vQs.length; document.getElementById('quizSectionTitle').innerText = mQ>0?`แบบทดสอบ (${mQ} ข้อ)`:'เรียนจบแล้ว';
+            if(currentLesson.studentScore!==null) { document.getElementById('quizForm').classList.add('hidden'); document.getElementById('quizCompletedMsg').classList.remove('hidden'); document.getElementById('quizScoreResult').innerText=currentLesson.studentScore; document.getElementById('quizMaxScoreDisplay').innerText=mQ>0?`/${mQ}`:''; }
+            else { document.getElementById('quizForm').classList.remove('hidden'); document.getElementById('quizCompletedMsg').classList.add('hidden');
+                if(mQ===0) document.getElementById('quizContainer').innerHTML=`<div class="text-center py-6"><button type="button" onclick="submitQuiz(true,0)" class="bg-purple-600 text-white font-bold px-8 py-3 rounded-xl">ทำเครื่องหมายว่าเรียนจบแล้ว</button></div>`;
+                else { let qh=""; vQs.forEach((q,i)=>{ qh+=`<div class="bg-white p-6 rounded-2xl border mb-4"><p class="font-bold mb-3">${i+1}. ${q.q}</p><div class="grid grid-cols-1 sm:grid-cols-2 gap-2"><label class="p-3 bg-slate-50 rounded-lg cursor-pointer flex items-center"><input type="radio" name="ans${i+1}" value="1" class="mr-2"> ก. ${q.c1}</label><label class="p-3 bg-slate-50 rounded-lg cursor-pointer flex items-center"><input type="radio" name="ans${i+1}" value="2" class="mr-2"> ข. ${q.c2}</label><label class="p-3 bg-slate-50 rounded-lg cursor-pointer flex items-center"><input type="radio" name="ans${i+1}" value="3" class="mr-2"> ค. ${q.c3}</label><label class="p-3 bg-slate-50 rounded-lg cursor-pointer flex items-center"><input type="radio" name="ans${i+1}" value="4" class="mr-2"> ง. ${q.c4}</label></div></div>`; }); document.getElementById('quizContainer').innerHTML=qh+`<button type="button" onclick="submitQuiz()" class="w-full bg-purple-600 text-white font-bold py-4 rounded-xl mt-4">ส่งคำตอบ</button>`; }
+            }
+            fetchGAS({action:"view", username:currentUser.id, name:currentUser.name, room:currentUser.assigned, subject:currentLesson.subject, lessonName:currentLesson.title});
+        }
+
+        function submitQuiz(noQ=false, sc=0) {
+            let vQs = (currentLesson.questions||[]).filter(q=>q.q);
+            if(!noQ) { for(let i=1;i<=vQs.length;i++){ let a=document.querySelector(`input[name="ans${i}"]:checked`); if(!a) return Swal.fire('เตือน','ทำข้อสอบให้ครบ','warning'); if(a.value===vQs[i-1].ans) sc++; } Swal.fire({icon:'success',title:'สำเร็จ',text:`ได้คะแนน ${sc}/${vQs.length}`}); } else Swal.fire({icon:'success',title:'เรียนจบแล้ว',showConfirmButton:false,timer:1500});
+            localStorage.removeItem('resume_'+currentUser.id); checkResumeBanner();
+            fetchGAS({action:"quiz", username:currentUser.id, name:currentUser.name, room:currentUser.assigned, subject:currentLesson.subject, lessonName:currentLesson.title, score:sc}).then(()=>{currentLesson.studentScore=sc; openLesson(allLessons.indexOf(currentLesson)); loadDashboardData();});
+        }
+
+        function loadMessages() { fetchGAS({action:"getMessages", myId:currentUser.id, myName:currentUser.name, role:currentUser.role}).then(r=>{ if(r.status==="success"){cachedMessages=r.data; let h=""; if(r.data.length===0)h="<p class='text-center py-10'>ไม่มีข้อความ</p>"; else [...r.data].reverse().forEach(m=>{let d=new Date(m.date).toLocaleString('th-TH'); h+=`<div class="bg-white p-5 rounded-2xl border mb-4"><div class="flex justify-between mb-2"><span class="font-bold text-purple-600">ถึง: ${m.receiver}</span><span class="text-xs text-gray-400">${d}</span></div><p class="bg-gray-50 p-3 rounded-lg text-sm">${m.message}</p>${m.reply?`<div class="mt-3 ml-4 bg-emerald-50 p-3 rounded-lg border-l-4 border-emerald-400"><p class="text-xs font-bold text-emerald-700">ตอบกลับ:</p><p class="text-sm">${m.reply}</p></div>`:'<p class="text-xs text-gray-400 mt-2 ml-4">รอการตอบกลับ...</p>'}</div>`;}); document.getElementById('msgContainer').innerHTML=h; } }); }
+        function contactMentor(n) { if(!currentUser.pic||!currentUser.email||!currentUser.phone) return Swal.fire({icon:'warning',title:'โปรไฟล์ไม่สมบูรณ์',text:'กรุณาอัปเดตข้อมูลให้ครบก่อนส่งข้อความ'}).then(r=>{if(r.isConfirmed)nav('settings')}); Swal.fire({title:`ปรึกษา ${n}`,input:'textarea',showCancelButton:true,confirmButtonText:'ส่งข้อความ'}).then(r=>{if(r.isConfirmed&&r.value) fetchGAS({action:"sendMessage",senderId:currentUser.id,senderName:currentUser.name,senderRoom:currentUser.assigned,senderPic:currentUser.pic,receiver:n,message:r.value}).then(()=>Swal.fire('สำเร็จ','ส่งข้อความแล้ว','success'));}); }
+        function handleImageUpload(e) { let f=e.target.files[0]; if(!f) return; let r=new FileReader(); r.onload=ev=>{ let img=new Image(); img.onload=()=>{ let c=document.createElement('canvas'), w=200; c.width=w; c.height=img.height*(w/img.width); c.getContext('2d').drawImage(img,0,0,c.width,c.height); uploadedImageBase64=c.toDataURL('image/jpeg',0.8); document.getElementById('previewSettingPic').src=uploadedImageBase64; document.getElementById('previewSettingPic').classList.remove('hidden'); document.getElementById('previewSettingInitials').classList.add('hidden'); }; img.src=ev.target.result; }; r.readAsDataURL(f); }
+        function saveProfile() { let e=document.getElementById('set_email').value.trim(), p=document.getElementById('set_phone').value.trim(), c=uploadedImageBase64||currentUser.pic; Swal.fire({title:'Saving...',didOpen:()=>Swal.showLoading()}); fetchGAS({action:"updateProfile",username:currentUser.id,pic:c,email:e,phone:p}).then(r=>{if(r.status==="success"){currentUser.pic=c;currentUser.email=e;currentUser.phone=p;localStorage.setItem('currentUser',JSON.stringify(currentUser)); updateProfileUI(); Swal.fire('สำเร็จ','อัปเดตแล้ว','success');}}); }
+    </script>
+</body>
+</html>
