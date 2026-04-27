@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;700&family=Sarabun:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style> body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; overflow: hidden; } h1, h2, h3, .font-prompt { font-family: 'Prompt', sans-serif; } .menu-item { transition: all 0.2s; border-left: 3px solid transparent; cursor: pointer; } .menu-item:hover, .menu-item.active { color: #6d28d9; background-color: #f5f3ff; border-left-color: #6d28d9; font-weight: bold; } </style>
+</head>
+<body class="flex h-screen w-screen antialiased">
+    
+    <aside class="w-64 bg-white border-r flex flex-col z-20">
+        <div class="h-24 flex items-center px-8 border-b"><div class="w-8 h-8 bg-[#6d28d9] text-white rounded-full flex items-center justify-center text-sm mr-3"><i class="fa-solid fa-sparkles"></i></div><h1 class="text-xl font-black font-prompt text-[#6d28d9]">Coursue</h1></div>
+        <div class="flex-1 py-6"><nav class="flex flex-col text-slate-500 text-sm" id="sidebarMenu">
+            <a class="menu-item px-8 py-3 flex items-center active"><i class="fa-solid fa-gear w-6"></i> ตั้งค่าระบบ</a>
+        </nav></div>
+        <div class="p-6 border-t"><nav class="flex flex-col text-sm">
+            <a onclick="logout()" class="menu-item px-8 py-3 flex items-center text-rose-500 hover:bg-rose-50"><i class="fa-solid fa-arrow-right-from-bracket w-6"></i> ออกจากระบบ</a>
+        </nav></div>
+    </aside>
+
+    <main class="flex-1 flex flex-col overflow-hidden bg-slate-50/50">
+        <header class="h-24 flex items-center justify-end px-10 border-b bg-white/80">
+            <div class="font-bold text-[#6d28d9] bg-purple-50 px-4 py-2 rounded-full border border-purple-100 shadow-sm"><i class="fa-solid fa-user-shield mr-2"></i> โหมดผู้ดูแลระบบ</div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-10">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-3xl font-bold font-prompt mb-8">Admin Panel</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white rounded-3xl p-8 shadow-sm border">
+                        <h3 class="text-lg font-bold mb-6 font-prompt"><i class="fa-solid fa-layer-group text-purple-500 mr-2"></i> เพิ่มวิชาใหม่</h3>
+                        <div class="space-y-4">
+                            <input type="text" id="a_subName" placeholder="ชื่อรายวิชา" class="w-full px-4 py-3 bg-slate-50 border rounded-xl outline-none focus:ring-2 focus:ring-purple-300">
+                            <button onclick="adminAddSubject()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3.5 rounded-xl font-prompt">บันทึกรายวิชา</button>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-3xl p-8 shadow-sm border">
+                        <h3 class="text-lg font-bold mb-6 font-prompt"><i class="fa-solid fa-user-tie text-purple-500 mr-2"></i> ลงทะเบียนครูผู้สอน</h3>
+                        <div class="space-y-4">
+                            <input type="text" id="a_tUser" placeholder="ชื่อผู้ใช้งาน (Username)" class="w-full px-4 py-3 bg-slate-50 border rounded-xl outline-none">
+                            <input type="password" id="a_tPass" placeholder="รหัสผ่าน (Password)" class="w-full px-4 py-3 bg-slate-50 border rounded-xl outline-none">
+                            <input type="text" id="a_tName" placeholder="ชื่อ-สกุล" class="w-full px-4 py-3 bg-slate-50 border rounded-xl outline-none">
+                            <div>
+                                <p class="font-bold text-slate-700 text-sm mb-2">วิชาที่รับผิดชอบ</p>
+                                <div id="a_subjectCheckboxes" class="flex flex-wrap gap-2"></div>
+                            </div>
+                            <button onclick="adminAddTeacher()" class="w-full bg-[#6d28d9] hover:bg-purple-800 text-white font-bold py-3.5 rounded-xl mt-2 font-prompt">เพิ่มครูผู้สอน</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbz22baIknv96tjyJYB_qiit6T-owv4qSSUpjA22cZMHXeZ02JnqcPxaQGVUyWzhTubQhA/exec';
+        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if(!currentUser || currentUser.role !== 'admin') window.location.href = 'index.html'; // เตะกลับถ้าไม่ใช่แอดมิน
+
+        function fetchGAS(payload) { return fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r=>r.json()); }
+        function logout() { localStorage.removeItem('currentUser'); window.location.href = 'index.html'; }
+
+        window.onload = () => { loadSubjects(); };
+
+        function loadSubjects() {
+            fetchGAS({ action: "getDashboardData", myId: currentUser.id, myName: currentUser.name, role: currentUser.role }).then(r => {
+                if(r.status === "success") {
+                    let chkHtml = "";
+                    r.subjects.forEach(sub => { chkHtml += `<label class="flex items-center bg-slate-50 border px-3 py-2 rounded-lg cursor-pointer text-sm"><input type="checkbox" value="${sub}" class="t-cb mr-2"> ${sub}</label>`; });
+                    document.getElementById('a_subjectCheckboxes').innerHTML = chkHtml;
+                }
+            });
+        }
+
+        function adminAddSubject() { 
+            let sub = document.getElementById('a_subName').value.trim(); if(!sub) return; 
+            Swal.fire({title:'กำลังบันทึก...', didOpen:()=>Swal.showLoading()}); 
+            fetchGAS({action:"addSubject", subjectName:sub}).then(r => { if(r.status==="success") { Swal.fire('สำเร็จ','','success'); document.getElementById('a_subName').value=""; loadSubjects(); }}); 
+        }
+
+        function adminAddTeacher() { 
+            let u = document.getElementById('a_tUser').value.trim(), p = document.getElementById('a_tPass').value.trim(), n = document.getElementById('a_tName').value.trim(); 
+            let cbs = document.querySelectorAll('.t-cb:checked'); let subs = Array.from(cbs).map(cb => cb.value).join(','); 
+            if(!u || !p || !n) return Swal.fire('เตือน','กรอกให้ครบ','warning'); 
+            Swal.fire({title:'กำลังบันทึก...', didOpen:()=>Swal.showLoading()}); 
+            fetchGAS({action:"addTeacher", t_username:u, t_password:p, t_name:n, t_subjects:subs}).then(r => { if(r.status==="success") { Swal.fire('สำเร็จ','','success'); document.getElementById('a_tUser').value=""; document.getElementById('a_tPass').value=""; document.getElementById('a_tName').value=""; Array.from(cbs).forEach(cb=>cb.checked=false); }}); 
+        }
+    </script>
+</body>
+</html>
