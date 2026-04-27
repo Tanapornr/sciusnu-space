@@ -4,109 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - SCiUS Dashboard</title>
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;700&family=Sarabun:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <style> 
-        body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; } 
-        h1, h2, h3, .font-prompt { font-family: 'Prompt', sans-serif; } 
-    </style>
+    <style> body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; } h1, h2, h3, .font-prompt { font-family: 'Prompt', sans-serif; } </style>
 </head>
 <body class="flex h-screen w-screen items-center justify-center bg-slate-50">
 
     <div class="bg-white p-10 rounded-[2rem] shadow-2xl w-full max-w-md border border-slate-100">
         <div class="flex items-center justify-center mb-8">
-            <div class="w-12 h-12 bg-[#6d28d9] text-white rounded-full flex items-center justify-center text-xl mr-3 shadow-lg shadow-purple-200">
-                <i class="fa-solid fa-sparkles"></i>
-            </div>
+            <div class="w-12 h-12 bg-[#6d28d9] text-white rounded-full flex items-center justify-center text-xl mr-3 shadow-lg shadow-purple-200"><i class="fa-solid fa-sparkles"></i></div>
             <h1 class="text-3xl font-bold font-prompt text-[#6d28d9] uppercase">Coursue</h1>
         </div>
         <p class="text-slate-500 font-medium mb-6 text-center">เข้าสู่ระบบเพื่อเริ่มต้นการเรียนรู้</p>
         
         <form onsubmit="event.preventDefault(); login();" class="space-y-5">
-            <div>
-                <input type="text" id="login_user" placeholder="รหัสผู้ใช้งาน (Username)" class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition" required>
-            </div>
-            <div>
-                <input type="password" id="login_pass" placeholder="รหัสผ่าน (Password)" class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition" required>
-            </div>
-            <button type="submit" class="w-full bg-[#6d28d9] hover:bg-purple-800 text-white font-bold py-4 rounded-xl transition shadow-md font-prompt text-lg">
-                Sign In
-            </button>
+            <div><input type="text" id="login_user" placeholder="รหัสผู้ใช้งาน (Username)" class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition" required></div>
+            <div><input type="password" id="login_pass" placeholder="รหัสผ่าน (Password)" class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition" required></div>
+            <button type="submit" class="w-full bg-[#6d28d9] hover:bg-purple-800 text-white font-bold py-4 rounded-xl transition shadow-md font-prompt text-lg">Sign In</button>
         </form>
     </div>
 
     <script>
-        // =================================================================
         // ⚠️ ใส่ Web App URL ของ Google Apps Script ที่นี่ ⚠️
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbz22baIknv96tjyJYB_qiit6T-owv4qSSUpjA22cZMHXeZ02JnqcPxaQGVUyWzhTubQhA/exec';
-        // =================================================================
 
-        // ถ้ายูสเซอร์เคยล็อกอินไว้แล้ว ให้ข้ามไปหน้าของตัวเองเลยทันที
+        // ระบบดักจับและแปลงสิทธิ์ผู้ใช้ให้ถูกต้อง
         let savedUser = JSON.parse(localStorage.getItem('currentUser'));
-        if(savedUser) {
-            if(savedUser.role === 'student') window.location.href = 'student.html';
-            else if(savedUser.role === 'teacher') window.location.href = 'teacher.html';
-            else if(savedUser.role === 'admin') window.location.href = 'admin.html';
+        if(savedUser && savedUser.role) {
+            let userRole = String(savedUser.role).toLowerCase().trim(); // บังคับเป็นตัวเล็กและตัดช่องว่าง
+            if(userRole === 'student') window.location.replace('student.html');
+            else if(userRole === 'teacher') window.location.replace('teacher.html');
+            else if(userRole === 'admin') window.location.replace('admin.html');
         }
 
-        // ระบบล็อกอิน (ดัก Error อัจฉริยะ)
         function login() {
             let u = document.getElementById('login_user').value.trim();
             let p = document.getElementById('login_pass').value.trim();
+            if(!u || !p) return;
             
-            if(!u || !p) {
-                Swal.fire('แจ้งเตือน', 'กรุณากรอกรหัสผู้ใช้งานและรหัสผ่านให้ครบ', 'warning');
-                return;
-            }
+            Swal.fire({title:'Signing in...', allowOutsideClick: false, didOpen:()=>Swal.showLoading()});
             
-            // เปิดหน้าต่างโหลดหมุนๆ
-            Swal.fire({
-                title: 'Signing in...',
-                allowOutsideClick: false,
-                didOpen: () => { Swal.showLoading(); }
-            });
-            
-            fetch(GAS_URL, { 
-                method: 'POST', 
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({ action: "login", username: u, password: p }) 
-            })
-            .then(async res => {
-                const text = await res.text();
-                try {
-                    let r = JSON.parse(text);
-                    if(r.status === "success") {
-                        // ดึงข้อมูลมาเซฟลงเครื่อง
-                        let userObj = { id: r.username, name: r.name, role: r.role, assigned: r.assigned, pic: r.pic, email: r.email, phone: r.phone };
-                        localStorage.setItem('currentUser', JSON.stringify(userObj));
-                        
-                        // ปิดหน้าต่างโหลด แล้วเปลี่ยนเป็นติ๊กถูก
-                        Swal.fire({ icon: 'success', title: 'เข้าสู่ระบบสำเร็จ', showConfirmButton: false, timer: 1000 }).then(() => {
-                            // เด้งไปยังหน้าต่างๆ ตามสิทธิ์
-                            if(r.role === 'student') window.location.href = 'student.html';
-                            else if(r.role === 'teacher') window.location.href = 'teacher.html';
-                            else window.location.href = 'admin.html';
-                        });
-                    } else {
-                        // ปิดโหลด แล้วแจ้งเตือนรหัสผิด
-                        Swal.fire('เข้าสู่ระบบล้มเหลว', r.message, 'error');
-                    }
-                } catch(e) {
-                    console.error("GAS Error:", text);
-                    if(text.includes("<html")) {
-                        Swal.fire('ข้อผิดพลาด', 'Google บล็อกการเข้าถึง! โปรดตั้งค่าสิทธิ์ Apps Script เป็น "ทุกคน (Anyone)"', 'error');
-                    } else {
-                        Swal.fire('ข้อผิดพลาด', 'ลิงก์ GAS_URL ไม่ถูกต้อง หรือระบบหลังบ้านมีปัญหา', 'error');
-                    }
+            fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "login", username: u, password: p }) })
+            .then(res => res.json()).then(r => {
+                if(r.status === "success") {
+                    let safeRole = String(r.role).toLowerCase().trim(); // บังคับเป็นตัวเล็กเสมอ
+                    let userObj = { id: r.username, name: r.name, role: safeRole, assigned: r.assigned, pic: r.pic, email: r.email, phone: r.phone };
+                    localStorage.setItem('currentUser', JSON.stringify(userObj));
+                    
+                    if(safeRole === 'student') window.location.replace('student.html');
+                    else if(safeRole === 'teacher') window.location.replace('teacher.html');
+                    else window.location.replace('admin.html');
+                } else {
+                    Swal.fire('เข้าสู่ระบบล้มเหลว', r.message, 'error');
                 }
-            })
-            .catch(e => {
-                Swal.fire('ข้อผิดพลาดทางเครือข่าย', 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ โปรดตรวจสอบอินเทอร์เน็ต', 'error');
-            });
+            }).catch(e => Swal.fire('Error', 'เชื่อมต่อระบบล้มเหลว', 'error'));
         }
     </script>
 </body>
