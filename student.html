@@ -136,9 +136,12 @@
             <div id="view_lesson_detail" class="hidden max-w-4xl mx-auto">
                 <button onclick="nav('lessons')" class="mb-4 lg:mb-6 flex items-center bg-white px-4 py-2 rounded-full shadow-sm text-sm font-bold text-slate-500 border hover:bg-slate-50 transition"><i class="fa-solid fa-arrow-left mr-2"></i> กลับ</button>
                 <div class="bg-white rounded-[1.5rem] lg:rounded-[2rem] p-4 lg:p-8 border border-slate-100 mb-6 shadow-sm">
-                    <div id="det_video_container" class="w-full aspect-video bg-slate-900 rounded-xl lg:rounded-[1.5rem] mb-6 overflow-hidden hidden shadow-inner relative">
-                        <!-- ระบบ YouTube IFrame API -->
+                    <div id="det_video_container" class="w-full aspect-video bg-slate-900 rounded-xl lg:rounded-[1.5rem] mb-6 overflow-hidden hidden shadow-inner relative group">
                         <div id="ytplayer_div" class="w-full h-full absolute inset-0"></div>
+                        <!-- ไอคอนเตือนเวลานักเรียนพยายามกรอวิดีโอข้าม -->
+                        <div id="antiSkipWarning" class="absolute top-4 left-1/2 -translate-x-1/2 bg-rose-500 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg transition-opacity duration-300 opacity-0 pointer-events-none z-50">
+                            <i class="fa-solid fa-ban mr-1"></i> ห้ามข้ามวิดีโอนะครับ
+                        </div>
                     </div>
                     <div id="det_image_container" class="w-full h-48 lg:h-80 bg-slate-900 rounded-xl lg:rounded-[1.5rem] mb-6 overflow-hidden relative">
                         <img id="det_img_src" src="" class="w-full h-full object-cover opacity-60">
@@ -246,9 +249,9 @@
         let ytProgressTimer = null; 
         let showFavoritesOnly = false; 
 
-        // ตัวแปรสำหรับระบบคุมวิดีโอ (Anti-Skip & Questions)
-        let maxTimeWatched = 0;
-        let lastTime = 0;
+        // ตัวแปรสำหรับระบบคุมวิดีโอ
+        let maxTimeWatched = 0; 
+        let lastTime = 0; 
         let questionTriggers = []; 
 
         function fetchGAS(payload) { return fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r => r.json()); }
@@ -280,13 +283,9 @@
         }
 
         function clickMenuLessons() { 
-            currentSubject = ""; 
-            showFavoritesOnly = false; 
+            currentSubject = ""; showFavoritesOnly = false; 
             let btn = document.getElementById('favFilterBtn');
-            if(btn) {
-                btn.className = "bg-white border border-slate-200 px-5 py-2.5 rounded-full text-sm font-bold text-slate-600 shadow-sm active:bg-slate-50 transition";
-                btn.innerHTML = `<i class="fa-regular fa-heart mr-2 text-rose-500"></i> <span>รายการโปรด</span>`;
-            }
+            if(btn) { btn.className = "bg-white border border-slate-200 px-5 py-2.5 rounded-full text-sm font-bold text-slate-600 shadow-sm active:bg-slate-50 transition"; btn.innerHTML = `<i class="fa-regular fa-heart mr-2 text-rose-500"></i> <span>รายการโปรด</span>`; }
             document.getElementById('allSubjectTitle').innerText = "บทเรียนทั้งหมด"; 
             nav('lessons'); 
         }
@@ -294,13 +293,8 @@
         function toggleShowFavorites() {
             showFavoritesOnly = !showFavoritesOnly;
             let btn = document.getElementById('favFilterBtn');
-            if(showFavoritesOnly) {
-                btn.className = "bg-rose-50 border border-rose-200 px-5 py-2.5 rounded-full text-sm font-bold text-rose-600 shadow-sm active:bg-rose-100 transition";
-                btn.innerHTML = `<i class="fa-solid fa-heart mr-2 text-rose-500"></i> <span>รายการโปรด</span>`;
-            } else {
-                btn.className = "bg-white border border-slate-200 px-5 py-2.5 rounded-full text-sm font-bold text-slate-600 shadow-sm active:bg-slate-50 transition";
-                btn.innerHTML = `<i class="fa-regular fa-heart mr-2 text-rose-500"></i> <span>รายการโปรด</span>`;
-            }
+            if(showFavoritesOnly) { btn.className = "bg-rose-50 border border-rose-200 px-5 py-2.5 rounded-full text-sm font-bold text-rose-600 shadow-sm active:bg-rose-100 transition"; btn.innerHTML = `<i class="fa-solid fa-heart mr-2 text-rose-500"></i> <span>รายการโปรด</span>`; } 
+            else { btn.className = "bg-white border border-slate-200 px-5 py-2.5 rounded-full text-sm font-bold text-slate-600 shadow-sm active:bg-slate-50 transition"; btn.innerHTML = `<i class="fa-regular fa-heart mr-2 text-rose-500"></i> <span>รายการโปรด</span>`; }
             renderStudentLessons();
         }
 
@@ -309,25 +303,16 @@
                 if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') ytPlayer.pauseVideo();
                 if (ytProgressTimer) { clearInterval(ytProgressTimer); ytProgressTimer = null; }
             }
-
             ['view_home', 'view_lessons', 'view_lesson_detail', 'view_inbox', 'view_settings'].forEach(id => document.getElementById(id).style.display = 'none');
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active')); 
             let tab = document.getElementById('nav_' + target); if(tab) tab.classList.add('active');
             let v = document.getElementById('view_' + target); if(v) v.style.display = (target === 'inbox' ? 'flex' : 'block');
             
             if(window.innerWidth < 1024) { document.getElementById('mainSidebar').classList.remove('active'); document.getElementById('sidebarOverlay').classList.remove('active'); }
-
             if(target !== 'inbox' && chatTimer) { clearInterval(chatTimer); chatTimer = null; }
-
-            if(target === 'inbox') { 
-                renderChatContacts(); 
-                if(activeChatContact) openChat(activeChatContact);
-                if(!chatTimer) chatTimer = setInterval(loadMessagesForChat, 5000);
-            }
-
+            if(target === 'inbox') { renderChatContacts(); if(activeChatContact) openChat(activeChatContact); if(!chatTimer) chatTimer = setInterval(loadMessagesForChat, 5000); }
             if(target === 'lessons') { renderStudentLessons(); }
             if(target === 'settings') { updateProfileUI(); } 
-
             document.getElementById('mainScrollArea').scrollTop = 0;
         }
 
@@ -335,10 +320,7 @@
             let count = 0;
             cachedMessages.forEach(m => {
                 if (m.senderName === teacherName && m.receiver === currentUser.name && m.message && m.message.trim() !== "") count += 1;
-                if (m.senderName === currentUser.name && m.receiver === teacherName && m.reply && m.reply.trim() !== "") {
-                    let replies = m.reply.split('<br><br>').filter(x => x.trim() !== "");
-                    count += replies.length;
-                }
+                if (m.senderName === currentUser.name && m.receiver === teacherName && m.reply && m.reply.trim() !== "") { count += m.reply.split('<br><br>').filter(x => x.trim() !== "").length; }
             });
             return count;
         }
@@ -351,36 +333,20 @@
                 let unreadCount = totalMsgs - readCount;
                 if(unreadCount > 0) globalUnread += unreadCount;
             });
-            
-            document.querySelectorAll('.inbox-badge').forEach(b => { 
-                if(globalUnread > 0) { b.innerText = globalUnread; b.classList.remove('hidden'); } else { b.classList.add('hidden'); } 
-            });
+            document.querySelectorAll('.inbox-badge').forEach(b => { if(globalUnread > 0) { b.innerText = globalUnread; b.classList.remove('hidden'); } else { b.classList.add('hidden'); } });
         }
 
         function loadDashboardData() {
             fetchGAS({ action: "getDashboardData", myId: currentUser.id, myName: currentUser.name, role: currentUser.role })
             .then(r => {
                 if(r.status === "success") {
-                    allSubjects = r.subjects || []; 
-                    allLessons = r.lessons || []; 
-                    cachedMessages = r.messages || [];
-                    
+                    allSubjects = r.subjects || []; allLessons = r.lessons || []; cachedMessages = r.messages || [];
                     let rawUsers = r.users || r.teachers || r.data || [];
                     if(rawUsers.length > 0) {
                         allUsersData = rawUsers;
                         mentors = allUsersData.filter(u => u.role && ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({
-                            name: u.name || u.Name || "",
-                            role: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher',
-                            initials: getInitials(u.name || u.Name || "A"),
-                            pic: u.pic || u.ProfilePic || "",
-                            room: u.assigned || u.room || u.Room || "-",
-                            bgColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "bg-rose-100" : "bg-indigo-100",
-                            textColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "text-rose-600" : "text-indigo-600"
-                        })).sort((a, b) => {
-                            if (a.role === 'Admin' && b.role !== 'Admin') return 1;
-                            if (a.role !== 'Admin' && b.role === 'Admin') return -1;
-                            return 0;
-                        });
+                            name: u.name || u.Name || "", role: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher', initials: getInitials(u.name || u.Name || "A"), pic: u.pic || u.ProfilePic || "", room: u.assigned || u.room || u.Room || "-", bgColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "bg-rose-100" : "bg-indigo-100", textColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "text-rose-600" : "text-indigo-600"
+                        })).sort((a, b) => (a.role === 'Admin' && b.role !== 'Admin') ? 1 : (a.role !== 'Admin' && b.role === 'Admin') ? -1 : 0);
                     }
 
                     document.getElementById('loadingLessons_student').style.display = 'none';
@@ -398,29 +364,19 @@
             document.getElementById('rightProfileClass').innerText = "Class: " + (currentUser.assigned || "-");
         }
 
-        function selectSubject(s) { 
-            currentSubject = s; 
-            document.getElementById('allSubjectTitle').innerText = "วิชา: " + s; 
-            nav('lessons'); 
-        }
+        function selectSubject(s) { currentSubject = s; document.getElementById('allSubjectTitle').innerText = "วิชา: " + s; nav('lessons'); }
 
         function renderStudentLessons() {
             let filtered = allLessons;
             let favs = JSON.parse(localStorage.getItem('favs_'+currentUser.id)||'[]');
 
-            if(currentSubject !== "") {
-                filtered = filtered.filter(l => String(l.subject).trim() === String(currentSubject).trim());
-            } else if(!showFavoritesOnly) {
-                document.getElementById('lessonGrid_student').innerHTML = '<div class="col-span-full py-10 lg:py-20 text-center text-slate-400 font-bold border-2 border-dashed border-slate-200 rounded-[2rem] text-sm px-4"><i class="fa-solid fa-arrow-up block text-3xl mb-4 text-purple-200"></i> กรุณาเลือก "รายวิชา" ด้านบน เพื่อดูบทเรียน</div>';
-                return;
-            }
+            if(currentSubject !== "") { filtered = filtered.filter(l => String(l.subject).trim() === String(currentSubject).trim()); } 
+            else if(!showFavoritesOnly) { document.getElementById('lessonGrid_student').innerHTML = '<div class="col-span-full py-10 lg:py-20 text-center text-slate-400 font-bold border-2 border-dashed border-slate-200 rounded-[2rem] text-sm px-4"><i class="fa-solid fa-arrow-up block text-3xl mb-4 text-purple-200"></i> กรุณาเลือก "รายวิชา" ด้านบน เพื่อดูบทเรียน</div>'; return; }
 
             if(showFavoritesOnly) {
                 filtered = filtered.filter(l => favs.includes(l.title));
                 document.getElementById('allSubjectTitle').innerText = currentSubject !== "" ? "วิชา: " + currentSubject + " (เฉพาะรายการโปรด)" : "รายการโปรดทั้งหมด";
-            } else {
-                document.getElementById('allSubjectTitle').innerText = currentSubject !== "" ? "วิชา: " + currentSubject : "บทเรียนทั้งหมด";
-            }
+            } else { document.getElementById('allSubjectTitle').innerText = currentSubject !== "" ? "วิชา: " + currentSubject : "บทเรียนทั้งหมด"; }
 
             document.getElementById('lessonGrid_student').innerHTML = filtered.length > 0 ? filtered.map(l => renderLessonCard(l, allLessons.indexOf(l))).join('') : '<div class="col-span-full py-20 text-center text-slate-400 font-bold border-2 border-dashed border-slate-200 rounded-[2rem]">ไม่พบข้อมูลบทเรียน</div>';
         }
@@ -428,15 +384,10 @@
         function searchLesson(val) {
             let q = val.toLowerCase().trim();
             if(!q) { renderStudentLessons(); return; }
-            nav('lessons');
-            document.getElementById('allSubjectTitle').innerText = "ผลการค้นหา: " + val;
+            nav('lessons'); document.getElementById('allSubjectTitle').innerText = "ผลการค้นหา: " + val;
             
             let filtered = allLessons.filter(l => l.title.toLowerCase().includes(q) || l.subject.toLowerCase().includes(q));
-            
-            if (showFavoritesOnly) {
-                let favs = JSON.parse(localStorage.getItem('favs_'+currentUser.id)||'[]');
-                filtered = filtered.filter(l => favs.includes(l.title));
-            }
+            if (showFavoritesOnly) { let favs = JSON.parse(localStorage.getItem('favs_'+currentUser.id)||'[]'); filtered = filtered.filter(l => favs.includes(l.title)); }
 
             document.getElementById('lessonGrid_student').innerHTML = filtered.length > 0 ? filtered.map(l => renderLessonCard(l, allLessons.indexOf(l))).join('') : '<div class="col-span-full py-20 text-center text-slate-400 font-bold border-2 border-dashed border-slate-200 rounded-[2rem]">ไม่พบสิ่งที่ค้นหา</div>';
         }
@@ -492,10 +443,7 @@
             if(continueLessons.length > 0) {
                 continueGrid.innerHTML = continueLessons.slice(0, 4).map(l => renderLessonCard(l, allLessons.indexOf(l))).join('');
                 continueSection.classList.remove('hidden');
-            } else {
-                continueSection.classList.add('hidden');
-                continueGrid.innerHTML = '';
-            }
+            } else { continueSection.classList.add('hidden'); continueGrid.innerHTML = ''; }
         }
 
         function renderHomeFavorites() {
@@ -519,7 +467,7 @@
         }
 
         // =====================================
-        // ระบบ YouTube API (จำเวลาค้าง + Anti Skip + Multiple Questions)
+        // ระบบ YouTube API: Anti-Skip + 1 Minute Questions (โหมดทดสอบ)
         // =====================================
         function showQuestionPopup(questionObj, qIndex) {
             if(ytPlayer && typeof ytPlayer.pauseVideo === 'function') ytPlayer.pauseVideo(); 
@@ -537,9 +485,9 @@
             `;
 
             Swal.fire({
-                title: `📌 คำถามที่ ${qIndex + 1} คั่นเวลา!`,
+                title: `📌 คำถามคั่นเวลา (ข้อ ${qIndex + 1})`,
                 html: html,
-                timer: 90000, // จับเวลา 90 วินาที
+                timer: 90000, 
                 timerProgressBar: true,
                 showCancelButton: false,
                 confirmButtonText: 'ส่งคำตอบ',
@@ -548,14 +496,10 @@
                 allowEscapeKey: false,
                 preConfirm: () => {
                     let ans = document.querySelector('input[name="popupAns"]:checked');
-                    if (!ans) {
-                        Swal.showValidationMessage('กรุณาเลือกคำตอบก่อนไปต่อนะครับ');
-                        return false;
-                    }
+                    if (!ans) { Swal.showValidationMessage('กรุณาเลือกคำตอบก่อนไปต่อนะครับ'); return false; }
                     return { userAns: ans.value, correctAns: questionObj.ans };
                 }
             }).then((result) => {
-                // บันทึกสถานะว่าตอบคำถามข้อนี้ไปแล้ว
                 let answeredList = JSON.parse(localStorage.getItem('ytAnsQs_' + currentUser.id + '_' + currentLesson.title) || '[]');
                 if(!answeredList.includes(qIndex)) answeredList.push(qIndex);
                 localStorage.setItem('ytAnsQs_' + currentUser.id + '_' + currentLesson.title, JSON.stringify(answeredList));
@@ -573,6 +517,28 @@
             });
         }
 
+        function calculateQuestionTriggers() {
+            questionTriggers = [];
+            if(!ytPlayer || typeof ytPlayer.getDuration !== 'function') return;
+            
+            let duration = ytPlayer.getDuration();
+            let vQs = (currentLesson.questions || []).filter(q => q.q);
+            let answeredList = JSON.parse(localStorage.getItem('ytAnsQs_' + currentUser.id + '_' + currentLesson.title) || '[]');
+
+            if (duration > 0 && vQs.length > 0) {
+                // บังคับเด้งทุกๆ 60 วินาทีตามที่อาจารย์ขอครับ 
+                let interval = 60;
+                
+                for(let i=0; i<vQs.length; i++) {
+                    questionTriggers.push({ 
+                        time: interval * (i + 1), // ข้อ 1 เด้ง 1 นาที, ข้อ 2 เด้ง 2 นาที ฯลฯ
+                        question: vQs[i], 
+                        answered: answeredList.includes(i) 
+                    });
+                }
+            }
+        }
+
         function onYouTubePlayerReady(event) {
             let savedTime = localStorage.getItem('ytProg_' + currentUser.id + '_' + currentLesson.title);
             maxTimeWatched = parseFloat(localStorage.getItem('ytMax_' + currentUser.id + '_' + currentLesson.title)) || 0;
@@ -585,33 +551,12 @@
                 lastTime = 0;
             }
 
-            // คำนวณจุดเด้งคำถามตามจำนวนข้อที่มี
             calculateQuestionTriggers();
-        }
-
-        function calculateQuestionTriggers() {
-            questionTriggers = [];
-            if(!ytPlayer || typeof ytPlayer.getDuration !== 'function') return;
-            let duration = ytPlayer.getDuration();
-            let vQs = (currentLesson.questions || []).filter(q => q.q);
-            let answeredList = JSON.parse(localStorage.getItem('ytAnsQs_' + currentUser.id + '_' + currentLesson.title) || '[]');
-
-            if (duration > 0 && vQs.length > 0) {
-                let interval = duration / (vQs.length + 1);
-                for(let i=0; i<vQs.length; i++) {
-                    questionTriggers.push({ 
-                        time: interval * (i + 1), // กระจายให้เท่าๆ กัน (เช่น 3 ข้อ = 25%, 50%, 75%)
-                        question: vQs[i], 
-                        answered: answeredList.includes(i) // ถ้ารหัส i อยู่ใน Local แสดงว่าเคยตอบแล้ว
-                    });
-                }
-            }
         }
 
         function onYouTubePlayerStateChange(event) {
             if (event.data == YT.PlayerState.PLAYING) {
                 
-                // ตรวจสอบและคำนวณ Trigger อีกครั้งเผื่อวิดีโอยังโหลดความยาวไม่เสร็จในตอนแรก
                 if(questionTriggers.length === 0) calculateQuestionTriggers();
 
                 ytProgressTimer = setInterval(() => {
@@ -619,14 +564,14 @@
                         let currentTime = ytPlayer.getCurrentTime();
                         let duration = ytPlayer.getDuration();
 
-                        // 🚫 ระบบ Anti-Skip (ห้ามกรอข้าม)
-                        if (currentTime > maxTimeWatched && currentTime > lastTime + 3) {
-                            // ถ้านักเรียนพยายามข้ามเวลาเกิน 3 วินาทีไปยังจุดที่ยังไม่เคยดู
+                        // 🚫 ระบบ Anti-Skip (ล็อกห้ามกรอข้าม)
+                        if (currentTime > maxTimeWatched && currentTime > lastTime + 2) {
                             ytPlayer.seekTo(maxTimeWatched, true);
-                            Swal.fire({ toast: true, position: 'top-end', text: '⚠️ ไม่อนุญาตให้ข้ามวิดีโอนะครับ', icon: 'warning', showConfirmButton: false, timer: 2000 });
-                            currentTime = maxTimeWatched; // บังคับเวลาให้กลับมาเท่าเดิม
+                            currentTime = maxTimeWatched; 
+                            
+                            let warnUI = document.getElementById('antiSkipWarning');
+                            if(warnUI) { warnUI.classList.remove('opacity-0'); setTimeout(() => { warnUI.classList.add('opacity-0'); }, 2500); }
                         } else {
-                            // บันทึกเวลาที่ดูได้ไกลที่สุด
                             if (currentTime > maxTimeWatched) {
                                 maxTimeWatched = currentTime;
                                 localStorage.setItem('ytMax_' + currentUser.id + '_' + currentLesson.title, maxTimeWatched);
@@ -637,17 +582,16 @@
                         if (duration > 0) {
                             let pct = (currentTime / duration) * 100;
 
-                            // 📝 เช็คจุดเด้งคำถามแบบเรียงตามคิว
+                            // 📝 เช็คจุดเด้งคำถามคั่นเวลา
                             for (let i = 0; i < questionTriggers.length; i++) {
                                 let trigger = questionTriggers[i];
                                 if (currentTime >= trigger.time && !trigger.answered) {
                                     trigger.answered = true; 
                                     showQuestionPopup(trigger.question, i);
-                                    break; // เด้งแค่ข้อเดียวต่อการเช็ค 1 ครั้ง
+                                    break; 
                                 }
                             }
 
-                            // เช็คการจบวิดีโอ (เหลือไม่ถึง 5 วิ ถือว่าจบ)
                             if (duration - currentTime < 5) {
                                 localStorage.setItem('ytProg_' + currentUser.id + '_' + currentLesson.title, "done");
                                 localStorage.removeItem('ytPct_' + currentUser.id + '_' + currentLesson.title);
@@ -658,7 +602,7 @@
                             }
                         }
                     }
-                }, 1000); // เช็คแบบวินาทีต่อวินาทีให้แม่นยำขึ้น
+                }, 1000); 
             } else {
                 if (ytProgressTimer) { clearInterval(ytProgressTimer); ytProgressTimer = null; }
             }
@@ -674,7 +618,10 @@
             let ytId = extractYouTubeID(currentLesson.content.match(/\[YT:(.*?)\]/)?.[1] || "");
             
             if(ytId) { 
-                document.getElementById('det_video_container').innerHTML = `<div id="ytplayer_div" class="w-full h-full absolute inset-0"></div>`; 
+                document.getElementById('det_video_container').innerHTML = `
+                    <div id="ytplayer_div" class="w-full h-full absolute inset-0"></div>
+                    <div id="antiSkipWarning" class="absolute top-4 left-1/2 -translate-x-1/2 bg-rose-500 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg transition-opacity duration-300 opacity-0 pointer-events-none z-50"><i class="fa-solid fa-ban mr-1"></i> ห้ามข้ามวิดีโอนะครับ</div>
+                `; 
                 document.getElementById('det_video_container').classList.remove('hidden'); 
                 document.getElementById('det_image_container').classList.add('hidden'); 
                 
@@ -704,7 +651,6 @@
             let vQs = (currentLesson.questions || []).filter(q => q.q);
             if(!noQ) { for(let i=1; i<=vQs.length; i++) { let a = document.querySelector(`input[name="ans${i}"]:checked`); if(!a) return Swal.fire('เตือน', 'กรุณาทำข้อสอบให้ครบครับ', 'warning'); if(a.value === vQs[i-1].ans) sc++; } }
             
-            // ล้างประวัติการดูเมื่อทำสอบเสร็จ
             localStorage.removeItem('ytProg_' + currentUser.id + '_' + currentLesson.title);
             localStorage.removeItem('ytPct_' + currentUser.id + '_' + currentLesson.title);
             localStorage.removeItem('ytMax_' + currentUser.id + '_' + currentLesson.title);
