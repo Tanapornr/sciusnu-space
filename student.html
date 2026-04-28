@@ -52,10 +52,7 @@
 
         <div class="flex-1 overflow-y-auto py-6 hide-scroll flex flex-col gap-6">
             <nav class="flex flex-col font-prompt text-slate-500 font-medium text-sm" id="sidebarMenu">
-                <a onclick="nav('home')" id="nav_home" class="menu-item px-8 py-4 flex items-center active"><i class="fa-solid fa-house w-6 mr-3 text-lg"></i> <span>แดชบอร์ด</span></a>
-                <a onclick="nav('lessons')" id="nav_lessons" class="menu-item px-8 py-4 flex items-center relative"><i class="fa-solid fa-book-open w-6 mr-3 text-lg"></i> <span>บทเรียน</span></a>
-                <a onclick="nav('inbox')" id="nav_inbox" class="menu-item px-8 py-4 flex items-center relative"><i class="fa-solid fa-inbox w-6 mr-3 text-lg"></i> <span>ข้อความ</span><span class="inbox-badge hidden absolute right-6 bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">0</span></a>
-            </nav>
+                </nav>
         </div>
 
         <div class="p-6 border-t border-slate-100">
@@ -70,15 +67,13 @@
         
         <header class="h-20 lg:h-24 flex items-center justify-between px-4 lg:px-10 border-b bg-white/95 backdrop-blur-md z-30 shrink-0 shadow-sm lg:shadow-none">
             <div class="flex items-center gap-3">
-                <button onclick="toggleSidebar()" class="lg:hidden w-10 h-10 flex items-center justify-center text-slate-600 bg-slate-100 rounded-xl">
-                    <i class="fa-solid fa-bars-staggered text-xl"></i>
-                </button>
+                <button onclick="toggleSidebar()" class="lg:hidden w-10 h-10 flex items-center justify-center text-slate-600 bg-slate-100 rounded-xl"><i class="fa-solid fa-bars-staggered text-xl"></i></button>
                 <div class="lg:hidden font-black font-prompt text-[#6d28d9] text-xl">COURSUE</div>
             </div>
 
             <div class="flex-1 max-w-lg mx-4 relative hidden sm:block">
                 <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                <input type="text" id="globalSearchInput" onkeyup="searchLesson(this.value)" placeholder="ค้นหาบทเรียน..." class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-full outline-none focus:ring-2 focus:ring-purple-200 transition text-sm">
+                <input type="text" id="globalSearchInput" onkeyup="searchLesson(this.value)" placeholder="ค้นหาบทเรียนหรือรายวิชา..." class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-full outline-none focus:ring-2 focus:ring-purple-200 transition text-sm">
             </div>
 
             <div class="flex items-center gap-3">
@@ -97,7 +92,7 @@
                     <div class="relative z-10">
                         <span class="text-purple-200 text-[10px] lg:text-xs font-bold tracking-widest uppercase bg-white/10 px-3 py-1 rounded-full">Online Education</span>
                         <h2 class="text-2xl lg:text-4xl font-prompt font-bold leading-tight my-4 lg:my-6">ยกระดับทักษะของคุณกับห้องเรียนออนไลน์ วมว.</h2>
-                        <button onclick="nav('lessons')" class="bg-slate-900 text-white px-6 lg:px-8 py-3 rounded-full font-bold text-xs lg:text-sm shadow-md active:scale-95 transition">เริ่มเรียนเลย</button>
+                        <button onclick="clickMenuLessons()" class="bg-slate-900 text-white px-6 lg:px-8 py-3 rounded-full font-bold text-xs lg:text-sm shadow-md active:scale-95 transition">เริ่มเรียนเลย</button>
                     </div>
                     <i class="fa-solid fa-sparkles absolute -right-4 -bottom-4 text-9xl text-white/10"></i>
                 </div>
@@ -136,7 +131,7 @@
                     <h3 id="quizSectionTitle" class="text-xl lg:text-2xl font-bold mb-6 border-b pb-4">แบบทดสอบ</h3>
                     <div id="quizCompletedMsg" class="hidden bg-emerald-50 rounded-2xl p-8 lg:p-10 text-center border border-emerald-100">
                         <i class="fa-solid fa-circle-check text-5xl text-emerald-500 mb-4"></i>
-                        <h4 class="text-xl font-bold text-emerald-900 mb-2">คุณทำคะแนนได้:</h4>
+                        <h4 class="text-xl font-bold text-emerald-900 mb-2 font-prompt">คุณทำคะแนนได้:</h4>
                         <div class="text-4xl lg:text-5xl font-black text-emerald-600"><span id="quizScoreResult">0</span><span class="text-xl text-slate-400">/5</span></div>
                     </div>
                     <form id="quizForm" class="space-y-4 lg:space-y-6"><div id="quizContainer"></div></form>
@@ -235,7 +230,7 @@
             if(!t) return ""; t = t.replace(/\[YT:(.*?)\]\n?/g, ""); t = t.replace(/(สำคัญมาก|ข้อควรระวัง)(:|\s)/g, '<span class="bg-rose-100 text-rose-700 px-2 py-0.5 rounded font-bold text-xs ml-1 shadow-sm">$1$2</span>'); t = t.replace(/\*\*(.*?)\*\*/g, '<span class="text-yellow-600 font-bold bg-yellow-50 px-1 py-0.5 rounded">$1</span>'); t = t.replace(/^### (.*$)/gim, '<h4 class="text-lg font-bold text-[#6d28d9] mt-4 mb-2 font-prompt">$1</h4>'); t = t.replace(/^- (.*$)/gim, '<div class="flex items-start my-1 text-sm"><i class="fa-solid fa-circle-check text-[#6d28d9] mt-1 mr-2"></i> <span>$1</span></div>'); return t;
         }
 
-        // ToggleSidebar สำหรับมือถือ
+        // สำหรับมือถือ
         function toggleSidebar() {
             const sb = document.getElementById('mainSidebar');
             const ov = document.getElementById('sidebarOverlay');
@@ -253,6 +248,7 @@
         }
 
         window.onload = () => { 
+            renderSidebarMenu();
             updateProfileUI(); 
             nav('home'); 
             loadDashboardData(); 
@@ -260,13 +256,27 @@
             if(chatInput) { chatInput.addEventListener("keypress", (e) => { if(e.key === "Enter") sendChatMessage(); }); }
         };
 
+        function renderSidebarMenu() {
+            document.getElementById('sidebarMenu').innerHTML = `
+                <a onclick="nav('home')" id="nav_home" class="menu-item px-8 py-4 flex items-center active"><i class="fa-solid fa-house w-6 mr-3 text-lg"></i> <span>แดชบอร์ด</span></a>
+                <a onclick="clickMenuLessons()" id="nav_lessons" class="menu-item px-8 py-4 flex items-center relative"><i class="fa-solid fa-book-open w-6 mr-3 text-lg"></i> <span>บทเรียน</span></a>
+                <a onclick="nav('inbox')" id="nav_inbox" class="menu-item px-8 py-4 flex items-center relative"><i class="fa-solid fa-inbox w-6 mr-3 text-lg"></i> <span>ข้อความ</span><span class="inbox-badge hidden absolute right-6 bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">0</span></a>
+            `;
+        }
+
+        // ฟังก์ชันแยกสำหรับการกดเมนู "บทเรียน" ฝั่งซ้าย
+        function clickMenuLessons() {
+            currentSubject = ""; // ล้างค่าวิชา
+            document.getElementById('allSubjectTitle').innerText = "บทเรียนทั้งหมด";
+            nav('lessons');
+        }
+
         function nav(target) {
             ['view_home', 'view_lessons', 'view_lesson_detail', 'view_inbox', 'view_settings'].forEach(id => document.getElementById(id).style.display = 'none');
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active')); 
             let tab = document.getElementById('nav_' + target); if(tab) tab.classList.add('active');
             let v = document.getElementById('view_' + target); if(v) v.style.display = (target === 'inbox' ? 'flex' : 'block');
             
-            // ปิด Sidebar ทันทีที่กดเมนูบนมือถือ
             if(window.innerWidth < 1024) {
                 document.getElementById('mainSidebar').classList.remove('active');
                 document.getElementById('sidebarOverlay').classList.remove('active');
@@ -279,7 +289,11 @@
                 if(!chatTimer) chatTimer = setInterval(loadMessagesForChat, 5000);
             } else if(chatTimer) { clearInterval(chatTimer); chatTimer = null; }
 
-            if(target === 'lessons') { currentSubject = ""; renderStudentLessons(); }
+            // แก้ไข: ไม่เคลียร์ currentSubject ตรงนี้แล้ว เพื่อให้การกดวิชา (selectSubject) ยังจำค่าได้
+            if(target === 'lessons') { 
+                renderStudentLessons(); 
+            }
+
             if(target === 'settings') {
                 document.getElementById('settingNameDisplay').innerText = currentUser.name;
                 document.getElementById('set_email').value = currentUser.email || "";
@@ -318,7 +332,11 @@
             document.getElementById('statAvgScore').innerText = avg;
         }
 
-        function selectSubject(s) { currentSubject = s; nav('lessons'); document.getElementById('allSubjectTitle').innerText = "วิชา: " + s; renderStudentLessons(); }
+        function selectSubject(s) { 
+            currentSubject = s; 
+            document.getElementById('allSubjectTitle').innerText = "วิชา: " + s; 
+            nav('lessons'); 
+        }
 
         function renderStudentLessons() {
             if(currentSubject === "") {
@@ -332,15 +350,15 @@
         function searchLesson(val) {
             let q = val.toLowerCase().trim();
             if(!q) { renderStudentLessons(); return; }
-            nav('lessons');
             document.getElementById('allSubjectTitle').innerText = "ค้นหา: " + val;
+            nav('lessons');
             let filtered = allLessons.filter(l => l.title.toLowerCase().includes(q) || l.subject.toLowerCase().includes(q));
             document.getElementById('lessonGrid_student').innerHTML = filtered.length > 0 ? filtered.map(l => renderLessonCard(l, allLessons.indexOf(l))).join('') : '<div class="col-span-full py-20 text-center text-slate-400">ไม่พบสิ่งที่ค้นหา</div>';
         }
 
         function renderLessonCard(l, idx) {
             let isC = l.studentScore !== null;
-            return `<div class="course-card bg-white rounded-2xl lg:rounded-3xl p-4 lg:p-5 border flex flex-col h-full shadow-sm" onclick="openLesson(${idx})"><div class="h-32 lg:h-48 w-full rounded-xl lg:rounded-2xl mb-4 lg:mb-5 relative overflow-hidden bg-slate-900 group"><img src="${getImageUrl(l.title)}" class="w-full h-full object-cover opacity-90 transition group-hover:scale-105 ${isC?'grayscale':''}">${isC?`<div class="absolute inset-0 flex items-center justify-center bg-black/40"><div class="bg-emerald-500 text-white px-3 py-1 rounded-lg text-[10px] font-bold shadow-md">Success</div></div>`:''}</div><div class="flex-1 flex flex-col justify-between px-1"><div><span class="text-[9px] lg:text-xs font-bold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full mb-2 inline-block">${l.subject}</span><h3 class="font-bold text-sm lg:text-lg mb-4 leading-tight text-slate-800 line-clamp-2">${l.title}</h3></div><div class="flex justify-between items-end border-t pt-3">${isC?`<span class="text-xs font-black text-emerald-600">คะแนน: ${l.studentScore}/5</span>`:`<span class="bg-[#6d28d9] text-white text-[10px] px-4 py-2 rounded-full font-bold shadow-md">เริ่มเรียน</span>`}</div></div></div>`;
+            return `<div class="course-card bg-white rounded-2xl lg:rounded-3xl p-4 lg:p-5 border flex flex-col h-full shadow-sm" onclick="openLesson(${idx})"><div class="h-32 lg:h-48 w-full rounded-xl lg:rounded-2xl mb-4 lg:mb-5 relative overflow-hidden bg-slate-900 group"><img src="${getImageUrl(l.title)}" class="w-full h-full object-cover opacity-90 transition group-hover:scale-105 ${isC?'grayscale':''}">${isC?`<div class="absolute inset-0 flex items-center justify-center bg-black/40"><div class="bg-emerald-500 text-white px-3 py-1 rounded-lg text-[10px] font-bold shadow-md">Completed</div></div>`:''}</div><div class="flex-1 flex flex-col justify-between px-1"><div><span class="text-[9px] lg:text-xs font-bold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full mb-2 inline-block">${l.subject}</span><h3 class="font-bold text-sm lg:text-lg mb-4 leading-tight text-slate-800 line-clamp-2">${l.title}</h3></div><div class="flex justify-between items-end border-t pt-3">${isC?`<span class="text-xs font-black text-emerald-600">คะแนน: ${l.studentScore}/5</span>`:`<span class="bg-[#6d28d9] text-white text-[10px] px-4 py-2 rounded-full font-bold shadow-md">เริ่มเรียน</span>`}</div></div></div>`;
         }
 
         function renderHomeLessons() { let uf = allLessons.filter(l => l.studentScore === null).slice(0, 2); if(uf.length === 0) uf = allLessons.slice(0, 2); document.getElementById('lessonGrid_home').innerHTML = uf.map(l => renderLessonCard(l, allLessons.indexOf(l))).join(''); }
@@ -370,25 +388,33 @@
         function renderChatContacts() {
             let html = ""; mentors.forEach(c => {
                 let isActive = activeChatContact === c.name ? "active" : "";
-                html += `<div class="chat-contact ${isActive} flex items-center gap-3 p-3 lg:p-4 rounded-xl cursor-pointer hover:bg-slate-50 transition mb-1 shadow-sm border border-transparent" onclick="openChat('${c.name}')"><div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor} flex items-center justify-center font-bold ${c.textColor} shadow-sm border border-white text-xs lg:text-sm">${c.initials}</div><div class="flex-1 min-w-0"><h4 class="font-bold text-xs lg:text-sm truncate text-slate-700">${c.name}</h4><p class="text-[10px] text-slate-400">สนทนาตอนนี้</p></div></div>`;
+                html += `<div class="chat-contact ${isActive} flex items-center gap-3 p-3 lg:p-4 rounded-xl cursor-pointer hover:bg-slate-50 transition mb-1 border border-transparent shadow-sm" onclick="openChat('${c.name}')"><div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor} flex items-center justify-center font-bold ${c.textColor} shadow-sm border border-white text-xs lg:text-sm">${c.initials}</div><div class="flex-1 min-w-0"><h4 class="font-bold text-xs lg:text-sm truncate text-slate-700">${c.name}</h4><p class="text-[10px] text-slate-400">สนทนาตอนนี้</p></div></div>`;
             });
             document.getElementById('chatContactList').innerHTML = html;
         }
 
         function openChat(n) {
             activeChatContact = n; document.getElementById('chatPlaceholder').classList.add('hidden'); renderChatContacts();
-            let partnerMsg = cachedMessages.find(m => m.senderName === n);
-            let pPic = `<div class="w-full h-full bg-indigo-100 flex items-center justify-center font-bold text-indigo-600 text-xs lg:text-sm shadow-inner border border-white">${getInitials(n)}</div>`;
-            if(partnerMsg && partnerMsg.senderPic) pPic = `<img src="${partnerMsg.senderPic}" class="w-full h-full object-cover">`;
-            document.getElementById('chatHeaderName').innerText = n; document.getElementById('chatHeaderAvatar').innerHTML = pPic;
-            let msgs = cachedMessages.filter(m => m.receiver === n); let h = "";
+            let partnerMsg = cachedMessages.find(m => m.receiver === n || m.senderName === n);
+            let partnerPicHtml = `<div class="w-full h-full bg-indigo-100 flex items-center justify-center font-bold text-indigo-600 text-sm">${getInitials(n)}</div>`;
+            if(partnerMsg && partnerMsg.senderName === n && partnerMsg.senderPic) partnerPicHtml = `<img src="${partnerMsg.senderPic}" class="w-full h-full object-cover">`;
+
+            document.getElementById('chatHeaderName').innerText = n; 
+            document.getElementById('chatHeaderAvatar').innerHTML = partnerPicHtml;
+            
+            let msgs = cachedMessages.filter(m => m.receiver === n); 
+            let h = "";
             let myPicHtml = currentUser.pic ? `<img src="${currentUser.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-purple-100 text-purple-600 font-bold text-[8px]">${getInitials(currentUser.name)}</div>`;
+            
             [...msgs].reverse().forEach(m => {
                 let d = new Date(m.date).toLocaleString('th-TH', { hour:'2-digit', minute:'2-digit' });
-                h += `<div class="flex flex-col items-end w-full mb-4"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400">${d}</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-slate-200">${myPicHtml}</div></div><div class="max-w-[85%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${m.message}</div></div>`;
-                if(m.reply) { h += `<div class="flex flex-col items-start w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${pPic}</div><p class="text-[9px] font-bold text-slate-500">${n}</p></div><div class="max-w-[85%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm border border-slate-100">${m.reply}</div></div>`; }
+                h += `<div class="flex flex-col items-end w-full mb-4"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400">${d} • คุณ</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${myPicHtml}</div></div><div class="max-w-[85%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${m.message}</div></div>`;
+                if(m.reply) { 
+                    h += `<div class="flex flex-col items-start w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${partnerPicHtml}</div><p class="text-[9px] font-bold text-slate-500">${n}</p></div><div class="max-w-[85%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm border border-slate-100">${m.reply}</div></div>`; 
+                }
             });
-            document.getElementById('chatHistory').innerHTML = h; document.getElementById('chatHistory').scrollTop = document.getElementById('chatHistory').scrollHeight;
+            document.getElementById('chatHistory').innerHTML = h; 
+            document.getElementById('chatHistory').scrollTop = document.getElementById('chatHistory').scrollHeight;
         }
 
         function sendChatMessage() {
@@ -397,11 +423,14 @@
             fetchGAS({ action: "sendMessage", senderId: currentUser.id, senderName: currentUser.name, senderRoom: currentUser.assigned, senderPic: currentUser.pic, receiver: activeChatContact, message: msg }).then(() => { document.getElementById('chatInputMessage').value = ""; loadMessagesForChat(); });
         }
 
-        function loadMessagesForChat() { fetchGAS({ action: "getMessages", myId: currentUser.id, myName: currentUser.name, role: currentUser.role }).then(r => { if(r.status === "success") { cachedMessages = r.data; if(activeChatContact) openChat(activeChatContact); } }); }
+        function loadMessagesForChat() { 
+            fetchGAS({ action: "getMessages", myId: currentUser.id, myName: currentUser.name, role: currentUser.role })
+            .then(r => { if(r.status === "success") { cachedMessages = r.data; if(activeChatContact) openChat(activeChatContact); } }); 
+        }
 
         function renderMentorList() {
             let h = ""; mentors.forEach(c => {
-                h += `<div class="flex items-center justify-between group p-2 cursor-pointer hover:bg-slate-50 rounded-xl transition" onclick="nav('inbox'); openChat('${c.name}')"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full ${c.bgColor} flex items-center justify-center font-bold ${c.textColor} text-xs shadow-sm border border-white">${c.initials}</div><div><p class="text-xs lg:text-sm font-bold">${c.name}</p><p class="text-[9px] text-slate-400">Mentor</p></div></div><button class="bg-[#6d28d9] text-white px-3 py-1.5 rounded-full text-[9px] font-bold shadow-md">Chat</button></div>`;
+                h += `<div class="flex items-center justify-between group p-2 cursor-pointer hover:bg-slate-50 rounded-xl transition" onclick="nav('inbox'); openChat('${c.name}')"><div class="flex items-center gap-3"><div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor} flex items-center justify-center font-bold ${c.textColor} text-xs lg:text-sm shadow-sm border border-white">${c.initials}</div><div><p class="text-xs lg:text-sm font-bold">${c.name}</p><p class="text-[9px] text-slate-400">Instructor</p></div></div><button class="bg-[#6d28d9] text-white px-3 py-1.5 rounded-full text-[9px] font-bold shadow-md">Chat</button></div>`;
             });
             document.getElementById('mentorListUI').innerHTML = h;
         }
@@ -410,12 +439,9 @@
             const fullName = currentUser.name;
             const inits = getInitials(fullName);
             
-            // Desktop Sidebar
             document.getElementById('rightProfileFullName').innerText = fullName;
             document.getElementById('rightProfileId').innerText = "ID: " + currentUser.id;
             document.getElementById('rightProfileRoom').innerText = "Room: " + (currentUser.assigned || "-");
-            
-            // Header Mobile
             document.getElementById('mobileHeaderProfileInitials').innerText = inits;
             
             if(currentUser.pic) { 
@@ -447,14 +473,16 @@
             if(!e || !p) return Swal.fire('เตือน', 'กรุณากรอกอีเมลและเบอร์โทรศัพท์ให้ครบถ้วนก่อนบันทึกครับ', 'warning');
             Swal.fire({title:'กำลังบันทึก...', didOpen:()=>Swal.showLoading()});
             fetchGAS({action:"updateProfile", username:currentUser.id, pic:c, email:e, phone:p}).then(r => {
-                if(r.status === "success") { currentUser.pic = c; currentUser.email = e; currentUser.phone = p; sessionStorage.setItem('currentUser', JSON.stringify(currentUser)); updateProfileUI(); Swal.fire('สำเร็จ','บันทึกเรียบร้อย','success'); }
+                if(r.status === "success") { 
+                    currentUser.pic = c; currentUser.email = e; currentUser.phone = p; 
+                    sessionStorage.setItem('currentUser', JSON.stringify(currentUser)); 
+                    updateProfileUI(); 
+                    Swal.fire('สำเร็จ','บันทึกเรียบร้อย','success'); 
+                }
             });
         }
         
-        function toggleLanguage() { 
-            Swal.fire({ text: 'ระบบกำลังดำเนินการแปลภาษา...', icon: 'info', timer: 1000, showConfirmButton: false });
-        }
-        
+        function toggleLanguage() { Swal.fire({ text: 'ระบบกำลังดำเนินการแปลภาษา...', icon: 'info', timer: 1000, showConfirmButton: false }); }
         function logout() { sessionStorage.clear(); window.location.replace('index.html'); }
     </script>
 </body>
