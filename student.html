@@ -159,8 +159,8 @@
                     </div>
                     <div class="p-4 lg:p-5 border-b flex items-center justify-between bg-white z-0" id="chatHeader">
                         <div class="flex items-center gap-3 lg:gap-4">
-                            <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shadow-sm bg-slate-200" id="chatHeaderAvatar"></div>
-                            <div><h3 class="font-bold text-sm lg:text-lg text-slate-800" id="chatHeaderName">Name</h3><p class="text-[10px] text-emerald-500 font-bold">กำลังออนไลน์</p></div>
+                            <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shadow-sm bg-slate-200 flex items-center justify-center font-bold text-indigo-600" id="chatHeaderAvatar"></div>
+                            <div><h3 class="font-bold text-sm lg:text-lg text-slate-800 mt-1" id="chatHeaderName">Name</h3></div>
                         </div>
                         <button onclick="forceRefreshChat()" class="text-slate-400 hover:text-[#6d28d9] transition"><i class="fa-solid fa-rotate-right text-lg"></i></button>
                     </div>
@@ -215,9 +215,9 @@
                 </div>
             </div>
 
-            <h4 class="font-bold text-slate-800 font-prompt text-sm mb-5 uppercase tracking-widest mt-6">TEACHER</h4>
+            <h4 class="font-bold text-slate-800 font-prompt text-sm mb-5 uppercase tracking-widest mt-8">TEACHER</h4>
             <div class="space-y-3" id="mentorListUI">
-                <div class="text-[10px] text-slate-400 text-center py-4 bg-slate-50 rounded-xl border border-dashed">กำลังโหลดข้อมูลอาจารย์...<br>(ตรวจสอบ Sheet Users)</div>
+                <div class="text-xs text-slate-400 text-center py-6 bg-slate-50 rounded-2xl border border-dashed">กำลังโหลดข้อมูลอาจารย์...<br><span class="text-[9px] mt-1 block text-slate-300">(ระบบกำลังเชื่อมต่อ)</span></div>
             </div>
         </div>
     </aside>
@@ -304,14 +304,19 @@
                             room: u.assigned || u.room || u.Room || "-",
                             bgColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "bg-rose-100" : "bg-indigo-100",
                             textColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "text-rose-600" : "text-indigo-600"
-                        }));
+                        })).sort((a, b) => {
+                            // จัดลำดับ Admin ไว้ล่างสุด
+                            if (a.role === 'Admin' && b.role !== 'Admin') return 1;
+                            if (a.role !== 'Admin' && b.role === 'Admin') return -1;
+                            return 0;
+                        });
                     }
 
                     document.getElementById('loadingLessons_student').style.display = 'none';
                     let sH = ""; allSubjects.forEach(s => { sH += `<div class="bg-white rounded-2xl p-4 border border-slate-100 flex items-center min-w-[160px] cursor-pointer hover:border-purple-300 hover:shadow-md shadow-sm transition active:scale-95 group" onclick="selectSubject('${s}')"><div class="w-10 h-10 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center mr-3 shadow-inner group-hover:bg-purple-600 group-hover:text-white transition"><i class="fa-solid fa-layer-group text-xs"></i></div><p class="font-bold text-[11px] truncate text-slate-700">${s}</p></div>`; });
                     document.getElementById('subjectGrid').innerHTML = sH; document.getElementById('allSubjectGrid').innerHTML = sH;
                     
-                    renderHomeLessons(); renderHomeFavorites(); renderStudentLessons(); updateProfileUI(); renderMentorList();
+                    renderHomeLessons(); renderHomeFavorites(); renderStudentLessons(); renderChatContacts();
                     
                     let unread = cachedMessages.filter(m => m.reply && m.reply.trim() !== "").length - parseInt(localStorage.getItem('readReplies_'+currentUser.id)||'0');
                     document.querySelectorAll('.inbox-badge').forEach(b => { if(unread > 0) { b.innerText = unread; b.classList.remove('hidden'); } else { b.classList.add('hidden'); } });
@@ -438,10 +443,10 @@
                          if(unreadCount < 0) unreadCount = 0;
                     }
 
-                    // วิชาที่สอน เป็น Tag (ดึงจากคอลัมน์ Room ของอาจารย์)
-                    let subjectBadge = c.room && c.room !== "-" ? `<p class="text-[9px] text-slate-500 mt-1 bg-slate-50 px-2 py-0.5 rounded-md w-max border border-slate-200"><i class="fa-solid fa-book mr-1 text-slate-400"></i> วิชา: ${c.room}</p>` : '';
+                    // วิชาที่สอน เป็น Tag (ถ้าเป็น Admin จะไม่แสดง)
+                    let subjectBadge = c.room && c.room !== "-" && c.role !== 'Admin' ? `<p class="text-[9px] text-slate-500 mt-1 bg-slate-50 px-2 py-0.5 rounded-md w-max border border-slate-200"><i class="fa-solid fa-book mr-1 text-slate-400"></i> วิชา: ${c.room}</p>` : '';
 
-                    // วาดการ์ดแสดงผลในแถบขวา (TEACHER) สามารถคลิกปุ่มแชทไปหน้าข้อความได้เลย
+                    // วาดการ์ดแสดงผลในแถบขวา (TEACHER)
                     htmlRightSidebar += `
                     <div class="flex items-center justify-between group p-3 rounded-2xl border border-slate-100 hover:border-purple-200 shadow-sm transition mb-3 bg-white">
                         <div class="flex items-start gap-3">
@@ -467,7 +472,7 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <h4 class="font-bold text-xs lg:text-sm truncate text-slate-800">${c.name}</h4>
-                            <p class="text-[10px] text-slate-400">สนทนาตอนนี้</p>
+                            <p class="text-[10px] text-slate-400">คลิกเพื่อสนทนา</p>
                         </div>
                     </div>`;
                 });
@@ -529,7 +534,11 @@
                         allUsersData = r.users;
                         mentors = allUsersData.filter(u => u.role && ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({
                             name: u.name || u.Name || "", role: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher', initials: getInitials(u.name || u.Name || "A"), pic: u.pic || u.ProfilePic || "", room: u.assigned || u.room || u.Room || "-", bgColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "bg-rose-100" : "bg-indigo-100", textColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "text-rose-600" : "text-indigo-600"
-                        }));
+                        })).sort((a, b) => {
+                            if (a.role === 'Admin' && b.role !== 'Admin') return 1;
+                            if (a.role !== 'Admin' && b.role === 'Admin') return -1;
+                            return 0;
+                        });
                     }
                     cachedMessages = r.data || []; 
                     if(activeChatContact) openChat(activeChatContact); 
@@ -551,7 +560,11 @@
                             allUsersData = r.users;
                             mentors = allUsersData.filter(u => u.role && ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({
                                 name: u.name || u.Name || "", role: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher', initials: getInitials(u.name || u.Name || "A"), pic: u.pic || u.ProfilePic || "", room: u.assigned || u.room || u.Room || "-", bgColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "bg-rose-100" : "bg-indigo-100", textColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "text-rose-600" : "text-indigo-600"
-                            }));
+                            })).sort((a, b) => {
+                                if (a.role === 'Admin' && b.role !== 'Admin') return 1;
+                                if (a.role !== 'Admin' && b.role === 'Admin') return -1;
+                                return 0;
+                            });
                         }
                         cachedMessages = r.data || []; 
                         if(activeChatContact) openChat(activeChatContact); 
@@ -559,10 +572,6 @@
                     }
                 } 
             }); 
-        }
-
-        function renderMentorList() {
-            renderChatContacts();
         }
 
         // =====================================
