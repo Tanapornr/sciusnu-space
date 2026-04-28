@@ -155,11 +155,11 @@
                 <div class="w-full lg:w-2/3 bg-white rounded-2xl lg:rounded-3xl border border-slate-100 flex flex-col overflow-hidden shadow-sm relative lg:h-full h-2/3">
                     <div id="chatPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-50 z-10 text-slate-400">
                         <div class="w-20 h-20 bg-purple-100 text-purple-400 rounded-full flex items-center justify-center text-3xl mb-4 shadow-inner"><i class="fa-regular fa-comment"></i></div>
-                        <p class="font-bold">เลือกคุณครูเพื่อเริ่มสนทนา</p>
+                        <p class="font-bold text-slate-500">เลือกคุณครูเพื่อเริ่มสนทนา</p>
                     </div>
                     <div class="p-4 lg:p-5 border-b flex items-center justify-between bg-white z-0" id="chatHeader">
                         <div class="flex items-center gap-3 lg:gap-4">
-                            <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shadow-sm bg-slate-200" id="chatHeaderAvatar"></div>
+                            <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shadow-sm bg-slate-200 flex items-center justify-center font-bold text-indigo-600" id="chatHeaderAvatar"></div>
                             <div><h3 class="font-bold text-sm lg:text-lg text-slate-800" id="chatHeaderName">Name</h3><p class="text-[10px] text-emerald-500 font-bold">กำลังออนไลน์</p></div>
                         </div>
                         <button onclick="forceRefreshChat()" class="text-slate-400 hover:text-[#6d28d9] transition"><i class="fa-solid fa-rotate-right text-lg"></i></button>
@@ -198,25 +198,26 @@
         </div>
     </main>
 
-    <aside id="rightSidebar" class="w-72 bg-white border-l border-slate-200 flex-shrink-0 hidden lg:flex flex-col h-full shadow-sm">
-        <div class="p-8 overflow-y-auto flex-1 hide-scroll">
+    <aside id="rightSidebar" class="w-72 bg-white border-l border-slate-200 flex-shrink-0 hidden lg:flex flex-col h-full shadow-sm relative">
+        <div class="p-8 overflow-y-auto flex-1 hide-scroll pb-24">
             <div class="text-right lg:hidden mb-4"><button onclick="document.getElementById('rightSidebar').classList.add('hidden')" class="text-slate-400 bg-slate-100 w-8 h-8 rounded-full"><i class="fa-solid fa-xmark"></i></button></div>
-            <div class="flex justify-between items-center mb-8"><h3 class="font-bold text-slate-800 text-sm font-prompt uppercase text-slate-400 tracking-widest">Student Profile</h3></div>
-            <div class="text-center mb-8">
-                <div class="relative w-24 h-24 mx-auto mb-4 border-4 border-white shadow-xl rounded-full overflow-hidden">
+            <div class="flex justify-between items-center mb-8"><h3 class="font-bold text-slate-800 text-sm font-prompt uppercase tracking-widest">STUDENT PROFILE</h3></div>
+            
+            <div class="text-center mb-10">
+                <div class="relative w-28 h-28 mx-auto mb-5 border-[5px] border-white shadow-xl rounded-full overflow-hidden bg-purple-50 flex items-center justify-center">
                     <img id="rightProfileImage" src="" class="w-full h-full object-cover hidden">
-                    <div id="rightProfileInitials" class="w-full h-full flex items-center justify-center text-3xl font-bold text-purple-600 bg-purple-100">A</div>
+                    <div id="rightProfileInitials" class="w-full h-full flex items-center justify-center text-4xl font-bold text-purple-600 bg-purple-100">A</div>
                 </div>
-                <h3 class="font-bold text-lg font-prompt text-slate-800 mb-1" id="rightProfileFullName">-</h3>
-                <div class="flex justify-center gap-2 mt-4 items-center">
-                    <span class="bg-purple-100 text-purple-700 font-bold px-3 py-1 rounded-full text-[10px] shadow-sm" id="rightProfileId">ID: -</span>
-                    <span class="bg-indigo-100 text-indigo-700 font-bold px-3 py-1 rounded-full text-[10px] shadow-sm" id="rightProfileClass">Class: -</span>
+                <h3 class="font-bold text-xl font-prompt text-slate-800 mb-3" id="rightProfileFullName">-</h3>
+                <div class="flex justify-center gap-2 mt-2 items-center">
+                    <span class="bg-purple-100 text-purple-700 font-bold px-3 py-1.5 rounded-full text-[11px] shadow-sm" id="rightProfileId">ID: -</span>
+                    <span class="bg-indigo-100 text-indigo-700 font-bold px-3 py-1.5 rounded-full text-[11px] shadow-sm" id="rightProfileClass">Class: -</span>
                 </div>
             </div>
-            
-            <h4 class="font-bold text-slate-800 font-prompt text-xs mb-5 uppercase tracking-widest text-slate-400 mt-6">TEACHER</h4>
-            <div class="space-y-4" id="mentorListUI">
-                <div class="text-[10px] text-slate-400 text-center py-4 bg-slate-50 rounded-xl border border-dashed">กำลังโหลดข้อมูลอาจารย์...<br>(ตรวจสอบ Sheet Users)</div>
+
+            <h4 class="font-bold text-slate-800 font-prompt text-sm mb-5 uppercase tracking-widest mt-8">TEACHER</h4>
+            <div class="space-y-3" id="mentorListUI">
+                <div class="text-xs text-slate-400 text-center py-6 bg-slate-50 rounded-2xl border border-dashed">กำลังโหลดข้อมูลอาจารย์...<br><span class="text-[9px] mt-1 block text-slate-300">(ระบบกำลังเชื่อมต่อ)</span></div>
             </div>
         </div>
     </aside>
@@ -228,7 +229,7 @@
 
         let allSubjects = [], allLessons = [], cachedMessages = [], allUsersData = [], currentSubject = "", currentLesson = null, uploadedImageBase64 = "", activeChatContact = null;
         let chatTimer = null;
-        let mentors = []; // ดึงข้อมูลจาก Database ล้วนๆ
+        let mentors = []; 
 
         function fetchGAS(payload) { return fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r => r.json()); }
         function getInitials(n) { let p = n.trim().split(/\s+/); return p.length >= 2 ? (p[0][0] + p[1][0]).toUpperCase() : n.substring(0, 2).toUpperCase(); }
@@ -241,7 +242,7 @@
         function toggleSidebar() { document.getElementById('mainSidebar').classList.toggle('active'); document.getElementById('sidebarOverlay').classList.toggle('active'); }
         function toggleRightSidebar() {
             const rs = document.getElementById('rightSidebar'); rs.classList.toggle('hidden');
-            if(!rs.classList.contains('hidden')) { rs.style.position = 'fixed'; rs.style.right = '0'; rs.style.top = '0'; rs.style.zIndex = '100'; rs.style.height = '100vh'; rs.style.width = '280px'; Swal.fire({ html: 'แตะที่ว่างเพื่อปิดโปรไฟล์', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 }); }
+            if(!rs.classList.contains('hidden')) { rs.style.position = 'fixed'; rs.style.right = '0'; rs.style.top = '0'; rs.style.zIndex = '100'; rs.style.height = '100vh'; rs.style.width = '300px'; Swal.fire({ html: 'แตะที่ว่างเพื่อปิดโปรไฟล์', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 }); }
         }
 
         window.onload = () => { 
@@ -291,38 +292,26 @@
                     allLessons = r.lessons || []; 
                     cachedMessages = r.messages || [];
                     
-                    // ดึงรายชื่ออาจารย์จากฐานข้อมูลโดยตรง โดยสแกนหาเฉพาะคนที่มี Role เป็น Teacher หรือ Admin
+                    // ดึงรายชื่ออาจารย์ (Teacher + Admin) อัตโนมัติจากฐานข้อมูล Users ตามที่สั่ง
                     let rawUsers = r.users || r.teachers || r.data || [];
                     if(rawUsers.length > 0) {
                         allUsersData = rawUsers;
-                        mentors = allUsersData.filter(u => u.role && ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({
-                            name: u.name,
-                            role: String(u.role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher',
-                            initials: getInitials(u.name),
-                            pic: u.pic || "",
-                            room: u.assigned || u.room || "-", // รองรับทั้งชื่อคอลัมน์ assigned หรือ room
-                            bgColor: String(u.role).toLowerCase().trim() === 'admin' ? "bg-rose-100" : "bg-indigo-100",
-                            textColor: String(u.role).toLowerCase().trim() === 'admin' ? "text-rose-600" : "text-indigo-600"
+                        mentors = allUsersData.filter(u => u.role && u.name && ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({
+                            name: u.name || u.Name || "",
+                            role: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher',
+                            initials: getInitials(u.name || u.Name || "A"),
+                            pic: u.pic || u.ProfilePic || "",
+                            room: u.assigned || u.room || u.Room || "-",
+                            bgColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "bg-rose-100" : "bg-indigo-100",
+                            textColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "text-rose-600" : "text-indigo-600"
                         }));
-                    } else {
-                        // Fallback ดึงรายชื่อจากแชทเก่า ถ้าหลังบ้านไม่ได้ส่ง users มา
-                        let fbMentors = {};
-                        cachedMessages.forEach(m => {
-                            let partner = (m.senderName === currentUser.name) ? m.receiver : m.senderName;
-                            if(!fbMentors[partner]) {
-                                fbMentors[partner] = { name: partner, role: "Teacher", initials: getInitials(partner), pic: "", room: "-", bgColor: "bg-indigo-100", textColor: "text-indigo-600" };
-                            }
-                            if(m.senderName === partner && m.senderPic) fbMentors[partner].pic = m.senderPic;
-                            if(m.receiver === partner && m.receiverPic) fbMentors[partner].pic = m.receiverPic;
-                        });
-                        mentors = Object.values(fbMentors);
                     }
 
                     document.getElementById('loadingLessons_student').style.display = 'none';
                     let sH = ""; allSubjects.forEach(s => { sH += `<div class="bg-white rounded-2xl p-4 border border-slate-100 flex items-center min-w-[160px] cursor-pointer hover:border-purple-300 hover:shadow-md shadow-sm transition active:scale-95 group" onclick="selectSubject('${s}')"><div class="w-10 h-10 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center mr-3 shadow-inner group-hover:bg-purple-600 group-hover:text-white transition"><i class="fa-solid fa-layer-group text-xs"></i></div><p class="font-bold text-[11px] truncate text-slate-700">${s}</p></div>`; });
                     document.getElementById('subjectGrid').innerHTML = sH; document.getElementById('allSubjectGrid').innerHTML = sH;
                     
-                    renderHomeLessons(); renderHomeFavorites(); renderStudentLessons(); updateStats(); renderMentorList();
+                    renderHomeLessons(); renderHomeFavorites(); renderStudentLessons(); updateStats(); renderChatContacts();
                     
                     let unread = cachedMessages.filter(m => m.reply && m.reply.trim() !== "").length - parseInt(localStorage.getItem('readReplies_'+currentUser.id)||'0');
                     document.querySelectorAll('.inbox-badge').forEach(b => { if(unread > 0) { b.innerText = unread; b.classList.remove('hidden'); } else { b.classList.add('hidden'); } });
@@ -331,7 +320,7 @@
         }
 
         function updateStats() {
-            // ฟังก์ชันนี้ไม่ได้ใช้แสดงผลสถิติบนหน้าจอแล้ว แต่เก็บไว้สำหรับอัปเดตชื่อโปรไฟล์ได้
+            // โชว์ข้อมูลตรง Sidebar
             document.getElementById('rightProfileFullName').innerText = currentUser.name;
             document.getElementById('rightProfileId').innerText = "ID: " + currentUser.id;
             document.getElementById('rightProfileClass').innerText = "Class: " + (currentUser.assigned || "-");
@@ -433,15 +422,15 @@
         }
 
         // =====================================
-        // ระบบ CHAT นักเรียน -> ครู (ซิงค์รูปอัตโนมัติ)
+        // ระบบ CHAT นักเรียน -> ครู (ซิงค์รูปอัตโนมัติ 100%)
         // =====================================
         function renderChatContacts() {
-            let html = ""; 
-            let chatListHtml = `<p class="px-4 text-[10px] font-bold text-slate-400 mb-3 uppercase tracking-widest mt-2">รายชื่ออาจารย์</p>`;
+            let htmlRightSidebar = ""; 
+            let htmlInboxList = `<p class="px-4 text-[10px] font-bold text-slate-400 mb-3 uppercase tracking-widest mt-2">รายชื่ออาจารย์</p>`;
             
             if(mentors.length === 0) {
-                html = '<div class="text-[10px] text-slate-400 text-center py-4 bg-slate-50 rounded-xl border border-dashed mx-2">ยังไม่มีข้อมูลอาจารย์ในระบบ</div>';
-                chatListHtml += '<div class="text-center p-4 text-xs text-slate-400 border-2 border-dashed rounded-xl mx-4">ไม่มีผู้ติดต่อ</div>';
+                htmlRightSidebar = '<div class="text-xs text-slate-400 text-center py-4 border-2 border-dashed border-slate-100 rounded-2xl mx-2">กำลังรอข้อมูล...</div>';
+                htmlInboxList += '<div class="text-center p-4 text-xs text-slate-400 border-2 border-dashed rounded-xl mx-4">ไม่มีข้อมูลอาจารย์</div>';
             } else {
                 mentors.forEach(c => {
                     let isActive = activeChatContact === c.name ? "active" : "";
@@ -456,26 +445,30 @@
                          if(unreadCount < 0) unreadCount = 0;
                     }
 
-                    // สร้าง HTML สำหรับแถบ Right Sidebar
-                    html += `
-                    <div class="chat-contact ${isActive} flex items-start justify-between group p-3 rounded-xl cursor-pointer hover:bg-slate-50 transition mb-2 border border-slate-100 hover:border-purple-200 shadow-sm" onclick="openChat('${c.name}')">
-                        <div class="flex items-start gap-3">
-                            <div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm border-2 border-white shrink-0">${pPic}
+                    let subjectBadge = c.room && c.room !== "-" ? `<p class="text-[9px] text-slate-500 mt-1 bg-slate-50 px-2 py-0.5 rounded-md w-max border border-slate-200"><i class="fa-solid fa-book mr-1 text-slate-400"></i> วิชา: ${c.room}</p>` : '';
+
+                    // วาดการ์ดแสดงผลในแถบขวา (TEACHER)
+                    htmlRightSidebar += `
+                    <div class="flex items-center justify-between group p-3 rounded-2xl border border-slate-100 hover:border-purple-200 shadow-sm transition mb-3 bg-white">
+                        <div class="flex items-center gap-3">
+                            <div class="relative w-12 h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm shrink-0 flex items-center justify-center border border-white">${pPic}
                                 ${unreadCount>0?`<div class="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 rounded-full flex items-center justify-center text-white text-[8px] font-bold shadow-sm border-2 border-white">${unreadCount}</div>`:''}
                             </div>
                             <div class="flex flex-col">
-                                <p class="text-xs lg:text-sm font-bold text-slate-800 leading-tight">${c.name}</p>
-                                <p class="text-[9px] font-bold ${c.textColor} uppercase tracking-widest mt-1">${c.role}</p>
-                                <p class="text-[10px] text-slate-500 mt-1 bg-slate-100 px-2 py-0.5 rounded-md w-max border border-slate-200"><i class="fa-solid fa-door-open mr-1"></i> Room: ${c.room}</p>
+                                <p class="text-sm font-bold text-slate-800 leading-tight">${c.name}</p>
+                                <p class="text-[9px] font-bold ${c.textColor} uppercase tracking-widest mt-0.5">${c.role}</p>
+                                ${subjectBadge}
                             </div>
                         </div>
-                        <button class="bg-white text-purple-600 border border-purple-200 px-3 py-1.5 rounded-full text-[10px] font-bold shadow-sm shrink-0 mt-2 group-hover:bg-[#6d28d9] group-hover:text-white transition"><i class="fa-regular fa-comment-dots"></i></button>
+                        <button onclick="nav('inbox'); openChat('${c.name}')" class="w-9 h-9 rounded-full border border-purple-100 text-purple-600 flex items-center justify-center hover:bg-[#6d28d9] hover:text-white transition shadow-sm shrink-0">
+                            <i class="fa-regular fa-comment-dots text-sm pointer-events-none"></i>
+                        </button>
                     </div>`;
 
-                    // สร้าง HTML สำหรับหน้าต่าง Inbox ฝั่งซ้าย
-                    chatListHtml += `
+                    // วาดการ์ดแสดงผลในหน้า Inbox
+                    htmlInboxList += `
                     <div class="chat-contact ${isActive} flex items-center gap-3 p-3 lg:p-4 rounded-xl cursor-pointer hover:bg-slate-50 transition mb-1 border border-transparent shadow-sm" onclick="openChat('${c.name}')">
-                        <div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm border border-white shrink-0">${pPic}
+                        <div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm border border-white shrink-0 flex items-center justify-center">${pPic}
                             ${unreadCount>0?`<div class="absolute -bottom-1 -right-1 w-4 h-4 bg-rose-500 rounded-full flex items-center justify-center text-white text-[8px] font-bold shadow-sm border-2 border-white">${unreadCount}</div>`:''}
                         </div>
                         <div class="flex-1 min-w-0">
@@ -485,9 +478,9 @@
                     </div>`;
                 });
             }
-            document.getElementById('mentorListUI').innerHTML = html;
+            document.getElementById('mentorListUI').innerHTML = htmlRightSidebar;
             let chatList = document.getElementById('chatContactList');
-            if(chatList) chatList.innerHTML = chatListHtml;
+            if(chatList) chatList.innerHTML = htmlInboxList;
         }
 
         function openChat(n) {
@@ -540,8 +533,8 @@
                 if(r.status === "success") { 
                     if(r.users && r.users.length > 0) {
                         allUsersData = r.users;
-                        mentors = allUsersData.filter(u => ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({
-                            name: u.name, role: String(u.role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher', initials: getInitials(u.name), pic: u.pic || "", room: u.assigned || u.room || "-", bgColor: String(u.role).toLowerCase().trim() === 'admin' ? "bg-rose-100" : "bg-indigo-100", textColor: String(u.role).toLowerCase().trim() === 'admin' ? "text-rose-600" : "text-indigo-600"
+                        mentors = allUsersData.filter(u => u.role && ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({
+                            name: u.name || u.Name || "", role: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher', initials: getInitials(u.name || u.Name || "A"), pic: u.pic || u.ProfilePic || "", room: u.assigned || u.room || u.Room || "-", bgColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "bg-rose-100" : "bg-indigo-100", textColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "text-rose-600" : "text-indigo-600"
                         }));
                     }
                     cachedMessages = r.data || []; 
@@ -562,8 +555,8 @@
                     if(isChanged) {
                         if(r.users && r.users.length > 0) {
                             allUsersData = r.users;
-                            mentors = allUsersData.filter(u => ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({
-                                name: u.name, role: String(u.role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher', initials: getInitials(u.name), pic: u.pic || "", room: u.assigned || u.room || "-", bgColor: String(u.role).toLowerCase().trim() === 'admin' ? "bg-rose-100" : "bg-indigo-100", textColor: String(u.role).toLowerCase().trim() === 'admin' ? "text-rose-600" : "text-indigo-600"
+                            mentors = allUsersData.filter(u => u.role && ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({
+                                name: u.name || u.Name || "", role: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher', initials: getInitials(u.name || u.Name || "A"), pic: u.pic || u.ProfilePic || "", room: u.assigned || u.room || u.Room || "-", bgColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "bg-rose-100" : "bg-indigo-100", textColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "text-rose-600" : "text-indigo-600"
                             }));
                         }
                         cachedMessages = r.data || []; 
@@ -572,10 +565,6 @@
                     }
                 } 
             }); 
-        }
-
-        function renderMentorList() {
-            renderChatContacts();
         }
 
         // =====================================
