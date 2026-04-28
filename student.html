@@ -18,7 +18,6 @@
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* ระบบ Sidebar บนมือถือ */
         #mainSidebar { transition: transform 0.3s ease-in-out; }
         @media (max-width: 1024px) {
             #mainSidebar { position: fixed; top: 0; left: 0; height: 100vh; transform: translateX(-100%); z-index: 50; }
@@ -155,12 +154,12 @@
                 <div class="w-full lg:w-2/3 bg-white rounded-2xl lg:rounded-3xl border border-slate-100 flex flex-col overflow-hidden shadow-sm relative lg:h-full h-2/3">
                     <div id="chatPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-50 z-10 text-slate-400">
                         <div class="w-20 h-20 bg-purple-100 text-purple-400 rounded-full flex items-center justify-center text-3xl mb-4 shadow-inner"><i class="fa-regular fa-comment"></i></div>
-                        <p class="font-bold text-slate-500">เลือกคุณครูเพื่อเริ่มสนทนา</p>
+                        <p class="font-bold">เลือกที่ปรึกษาเพื่อเริ่มสนทนา</p>
                     </div>
                     <div class="p-4 lg:p-5 border-b flex items-center justify-between bg-white z-0" id="chatHeader">
                         <div class="flex items-center gap-3 lg:gap-4">
-                            <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shadow-sm bg-slate-200 flex items-center justify-center font-bold text-indigo-600" id="chatHeaderAvatar"></div>
-                            <div><h3 class="font-bold text-sm lg:text-lg text-slate-800 mt-1" id="chatHeaderName">Name</h3></div>
+                            <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shadow-sm bg-slate-200" id="chatHeaderAvatar"></div>
+                            <div><h3 class="font-bold text-sm lg:text-lg text-slate-800" id="chatHeaderName">Name</h3></div>
                         </div>
                     </div>
                     <div class="flex-1 overflow-y-auto p-4 lg:p-6 bg-[#f8fafc] flex flex-col space-y-4 hide-scroll z-0" id="chatHistory"></div>
@@ -214,7 +213,7 @@
                 </div>
             </div>
 
-            <h4 class="font-bold text-slate-800 font-prompt text-sm mb-5 uppercase tracking-widest mt-8">TEACHER</h4>
+            <h4 class="font-bold text-slate-800 font-prompt text-sm mb-5 uppercase tracking-widest mt-6">TEACHER</h4>
             <div class="space-y-3" id="mentorListUI">
                 <div class="text-[10px] text-slate-400 text-center py-4 bg-slate-50 rounded-xl border border-dashed">กำลังโหลดข้อมูลอาจารย์...<br>(ตรวจสอบ Sheet Users)</div>
             </div>
@@ -255,7 +254,7 @@
                 <a onclick="clickMenuLessons()" id="nav_lessons" class="menu-item px-8 py-4 flex items-center relative"><i class="fa-solid fa-book-open w-6 mr-3 text-lg"></i> <span>บทเรียน</span></a>
                 <a onclick="nav('inbox')" id="nav_inbox" class="menu-item px-8 py-4 flex items-center relative"><i class="fa-solid fa-inbox w-6 mr-3 text-lg"></i> <span>ข้อความ</span><span class="inbox-badge hidden absolute right-6 bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">0</span></a>
             `;
-            updateUnreadBadges(); // สั่งรีเฟรชแจ้งเตือนเมื่อโหลดเมนู
+            updateUnreadBadges(); 
         }
 
         function clickMenuLessons() { currentSubject = ""; document.getElementById('allSubjectTitle').innerText = "บทเรียนทั้งหมด"; nav('lessons'); }
@@ -282,15 +281,15 @@
             document.getElementById('mainScrollArea').scrollTop = 0;
         }
 
-        // --- ฟังก์ชันนับข้อความเพื่อแสดงแจ้งเตือนวงกลมสีแดง ---
+        // --- ฟังก์ชันนับข้อความเพื่อแสดงแจ้งเตือนวงกลมสีแดงแบบ Facebook ---
         function countTeacherMessages(teacherName) {
             let count = 0;
             cachedMessages.forEach(m => {
-                // นับข้อความที่อาจารย์ส่งตรงมาหาเรา
+                // ครูทักมาโดยตรง
                 if (m.senderName === teacherName && m.receiver === currentUser.name && m.message && m.message.trim() !== "") {
                     count += 1;
                 }
-                // นับข้อความที่อาจารย์ reply ตอบกลับเรา (นับตามจำนวนรอบที่ตอบ)
+                // ครูตอบกลับแชทนักเรียน
                 if (m.senderName === currentUser.name && m.receiver === teacherName && m.reply && m.reply.trim() !== "") {
                     let replies = m.reply.split('<br><br>').filter(x => x.trim() !== "");
                     count += replies.length;
@@ -455,7 +454,7 @@
         }
 
         // =====================================
-        // วาดรายชื่อครูและแจ้งเตือนแชท
+        // สร้างการ์ดแชทและอัปเดตแจ้งเตือนสีแดง (แยกหมวดหมู่)
         // =====================================
         function buildContactCard(c, type) {
             let isActive = activeChatContact === c.name ? "active" : "";
@@ -491,16 +490,16 @@
                     }
                 }
             } else {
-                latestText = (c.room && c.room !== '-' && c.role === 'Teacher') ? 'วิชา: ' + c.room : 'เริ่มการสนทนา...';
+                latestText = "เริ่มการสนทนา...";
             }
             
             let tmp = document.createElement("DIV");
             tmp.innerHTML = latestText;
             latestText = tmp.textContent || tmp.innerText || "";
-            if(latestText.length > 25) latestText = latestText.substring(0, 25) + "...";
+
+            let subjectBadge = (c.room && c.room !== "-" && c.role === 'Teacher') ? ` <span class="text-[10px] text-slate-400 font-normal ml-1 whitespace-nowrap">(วิชา: ${c.room})</span>` : '';
 
             if (type === "sidebar") {
-                let subjectBadge = c.room && c.room !== "-" && c.role === 'Teacher' ? `<p class="text-[9px] text-slate-500 mt-1 bg-slate-50 px-2 py-0.5 rounded-md w-max border border-slate-200"><i class="fa-solid fa-book mr-1 text-slate-400"></i> วิชา: ${c.room}</p>` : '';
                 return `
                 <div class="flex items-center justify-between group p-3 rounded-2xl border border-slate-100 hover:border-purple-200 shadow-sm transition mb-3 bg-white cursor-pointer" onclick="nav('inbox'); openChat('${c.name}')">
                     <div class="flex items-start gap-3">
@@ -508,9 +507,8 @@
                             ${badgeHtml}
                         </div>
                         <div class="flex flex-col max-w-[130px] lg:max-w-[150px]">
-                            <p class="text-sm font-bold text-slate-800 leading-tight truncate">${c.name}</p>
+                            <p class="text-sm font-bold text-slate-800 leading-tight truncate">${c.name}${subjectBadge}</p>
                             <p class="text-[10px] text-slate-500 truncate mt-0.5 ${unreadCount > 0 ? 'font-bold text-slate-800' : ''}" title="${latestText}">${latestText}</p>
-                            ${subjectBadge}
                         </div>
                     </div>
                     <button class="w-9 h-9 rounded-full border border-purple-100 text-purple-600 flex items-center justify-center hover:bg-[#6d28d9] hover:text-white transition shadow-sm shrink-0">
@@ -521,10 +519,10 @@
                 return `
                 <div class="chat-contact ${isActive} flex items-center gap-3 p-3 lg:p-4 rounded-xl cursor-pointer hover:bg-slate-50 transition mb-1 border border-transparent shadow-sm" onclick="openChat('${c.name}')">
                     <div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm border border-white shrink-0 flex items-center justify-center">${pPic}
-                        ${unreadCount>0?`<div class="absolute -bottom-1 -right-1 w-4 h-4 bg-rose-500 rounded-full flex items-center justify-center text-white text-[8px] font-bold shadow-sm border-2 border-white">${unreadCount}</div>`:''}
+                        ${badgeHtml}
                     </div>
                     <div class="flex-1 min-w-0">
-                        <h4 class="font-bold text-xs lg:text-sm truncate text-slate-800">${c.name}</h4>
+                        <h4 class="font-bold text-xs lg:text-sm truncate text-slate-800">${c.name}${subjectBadge}</h4>
                         <p class="text-[10px] text-slate-400 truncate ${unreadCount > 0 ? 'font-bold text-slate-800' : ''}" title="${latestText}">${latestText}</p>
                     </div>
                 </div>`;
@@ -571,7 +569,7 @@
         function openChat(n) {
             activeChatContact = n; document.getElementById('chatPlaceholder').classList.add('hidden'); 
             
-            // อ่านปุ๊บ แจ้งเตือนหายปั๊บ (บันทึกลง Local Storage)
+            // อ่านแล้วแจ้งเตือนหายทันที
             let totalMsgs = countTeacherMessages(n);
             localStorage.setItem('readMsgs_' + currentUser.id + '_' + n, totalMsgs);
             renderChatContacts(); 
@@ -579,7 +577,8 @@
             let contactInfo = mentors.find(x => x.name === n);
             let partnerPicHtml = (contactInfo && contactInfo.pic) ? `<img src="${contactInfo.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-sm">${getInitials(n)}</div>`;
 
-            document.getElementById('chatHeaderName').innerText = n; 
+            let subjectBadgeHeader = (contactInfo && contactInfo.room && contactInfo.room !== "-" && contactInfo.role === 'Teacher') ? ` <span class="text-xs text-slate-400 font-normal ml-2">(วิชา: ${contactInfo.room})</span>` : '';
+            document.getElementById('chatHeaderName').innerHTML = `${n}${subjectBadgeHeader}`; 
             document.getElementById('chatHeaderAvatar').innerHTML = partnerPicHtml;
             
             let msgs = cachedMessages.filter(m => (m.senderName === currentUser.name && m.receiver === n) || (m.senderName === n && m.receiver === currentUser.name));
@@ -590,17 +589,22 @@
             
             sortedMsgs.forEach(m => {
                 let d = new Date(m.date).toLocaleString('th-TH', { hour:'2-digit', minute:'2-digit' });
+                let sPicHtml = partnerPicHtml.replace('text-sm', 'text-[8px]');
                 
                 if(m.senderName === currentUser.name) {
-                    h += `<div class="flex flex-col items-end w-full mb-4"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400">${d} • คุณ</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${m.message}</div></div>`;
+                    if (m.message && m.message.trim() !== "") {
+                        h += `<div class="flex flex-col items-end w-full mb-4"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400">${d} • คุณ</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${m.message}</div></div>`;
+                    }
                     if(m.reply && m.reply.trim() !== "") { 
                         let reps = m.reply.split('<br><br>').filter(x => x.trim() !== "");
                         reps.forEach(rep => {
-                            h += `<div class="flex flex-col items-start w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${partnerPicHtml}</div><p class="text-[9px] font-bold text-slate-500">${n}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm border border-slate-100">${rep}</div></div>`; 
+                            h += `<div class="flex flex-col items-start w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${sPicHtml}</div><p class="text-[9px] font-bold text-slate-500">${n}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm border border-slate-100">${rep}</div></div>`; 
                         });
                     }
                 } else {
-                    h += `<div class="flex flex-col items-start w-full mb-4"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${partnerPicHtml}</div><p class="text-[9px] font-bold text-slate-500">${n} • ${d}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm border border-slate-100">${m.message}</div></div>`;
+                    if (m.message && m.message.trim() !== "") {
+                        h += `<div class="flex flex-col items-start w-full mb-4"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${sPicHtml}</div><p class="text-[9px] font-bold text-slate-500">${n} • ${d}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm border border-slate-100">${m.message}</div></div>`;
+                    }
                     if(m.reply && m.reply.trim() !== "") { 
                         let reps = m.reply.split('<br><br>').filter(x => x.trim() !== "");
                         reps.forEach(rep => {
@@ -618,7 +622,7 @@
             
             let cHist = document.getElementById('chatHistory');
             let myPicHtml = currentUser.pic ? `<img src="${currentUser.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-purple-100 text-purple-600 font-bold text-[8px]">${getInitials(currentUser.name)}</div>`;
-            cHist.innerHTML += `<div class="flex flex-col items-end w-full mb-4 opacity-50"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400">กำลังส่ง...</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${msg}</div></div>`;
+            cHist.innerHTML += `<div class="flex flex-col items-end w-full mb-4 mt-2 opacity-50"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400">กำลังส่ง...</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${msg}</div></div>`;
             cHist.scrollTop = cHist.scrollHeight;
             document.getElementById('chatInputMessage').value = "";
 
@@ -630,21 +634,13 @@
             fetchGAS({ action: "getMessages", myId: currentUser.id, myName: currentUser.name, role: currentUser.role })
             .then(r => { 
                 if(r.status === "success") { 
+                    if(r.users) allUsersData = r.users;
+                    
                     let isChanged = false;
                     if(JSON.stringify(cachedMessages) !== JSON.stringify(r.data)) isChanged = true;
                     if(!isChanged && r.users) isChanged = true; 
 
                     if(isChanged) {
-                        if(r.users && r.users.length > 0) {
-                            allUsersData = r.users;
-                            mentors = allUsersData.filter(u => u.role && ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({
-                                name: u.name || u.Name || "", role: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher', initials: getInitials(u.name || u.Name || "A"), pic: u.pic || u.ProfilePic || "", room: u.assigned || u.room || u.Room || "-", bgColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "bg-rose-100" : "bg-indigo-100", textColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "text-rose-600" : "text-indigo-600"
-                            })).sort((a, b) => {
-                                if (a.role === 'Admin' && b.role !== 'Admin') return 1;
-                                if (a.role !== 'Admin' && b.role === 'Admin') return -1;
-                                return 0;
-                            });
-                        }
                         cachedMessages = r.data || []; 
                         if(activeChatContact) openChat(activeChatContact); 
                         else renderChatContacts(); 
@@ -717,13 +713,13 @@
                     sessionStorage.setItem('currentUser', JSON.stringify(currentUser)); 
                     updateProfileUI(); 
                     
-                    if(document.getElementById('view_inbox').style.display !== 'none') { forceRefreshChat(); }
+                    if(document.getElementById('view_inbox').style.display !== 'none') { loadMessagesForChat(); }
                     
                     Swal.fire('สำเร็จ','บันทึกข้อมูลโปรไฟล์เรียบร้อยแล้ว','success'); 
                 }
             });
         }
-        
+
         function toggleLanguage() { Swal.fire({ text: 'ระบบกำลังดำเนินการแปลภาษา...', icon: 'info', timer: 1000, showConfirmButton: false }); }
         function logout() { sessionStorage.clear(); window.location.replace('index.html'); }
     </script>
