@@ -102,7 +102,6 @@
                 <h3 class="text-xl lg:text-2xl font-bold mb-5 font-prompt text-slate-800">แนะนำสำหรับคุณ</h3>
                 <div id="lessonGrid_home" class="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8 mb-10"></div>
 
-                <!-- หมวดหมู่: เรียนต่อจากที่ค้างไว้ -->
                 <div id="continueWatchingSection" class="hidden border-t border-slate-100 pt-8 mt-4 mb-10">
                     <div class="flex items-center justify-between mb-5">
                         <h3 class="text-xl lg:text-2xl font-bold font-prompt text-slate-800 flex items-center">
@@ -112,7 +111,6 @@
                     <div id="lessonGrid_continue" class="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8"></div>
                 </div>
 
-                <!-- หมวดหมู่: รายการโปรด -->
                 <div id="favHomeSection" class="hidden border-t border-slate-100 pt-8 mt-4">
                     <div class="flex items-center justify-between mb-5">
                         <h3 class="text-xl lg:text-2xl font-bold font-prompt text-slate-800 flex items-center">
@@ -246,7 +244,7 @@
         let ytPlayer = null; 
         let ytProgressTimer = null; 
         let showFavoritesOnly = false; 
-        let hasShownPopup = false; // ตัวแปรสำหรับเช็คว่าเด้งคำถามไปหรือยัง
+        let hasShownPopup = false; 
 
         function fetchGAS(payload) { return fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r => r.json()); }
         function getInitials(n) { let p = n.trim().split(/\s+/); return p.length >= 2 ? (p[0][0] + p[1][0]).toUpperCase() : n.substring(0, 2).toUpperCase(); }
@@ -516,7 +514,7 @@
         }
 
         // =====================================
-        // ระบบ YouTube API (จำเวลาค้าง + Attention Check)
+        // ระบบ YouTube API (จำเวลาค้าง + Attention Check แบบ 1 นาทีเพื่อทดสอบ)
         // =====================================
         function showRandomQuestionPopup() {
             let vQs = (currentLesson.questions || []).filter(q => q.q);
@@ -541,7 +539,7 @@
             Swal.fire({
                 title: '📌 คำถามคั่นเวลา!',
                 html: html,
-                timer: 90000, // จับเวลา 1 นาที 30 วิ (90000 ms)
+                timer: 90000, 
                 timerProgressBar: true,
                 showCancelButton: false,
                 confirmButtonText: 'ส่งคำตอบ',
@@ -587,8 +585,8 @@
                         if (duration > 0) {
                             let pct = (currentTime / duration) * 100;
 
-                            // ระบบเด้งคำถามเมื่อถึง 50% ของคลิป
-                            if (pct >= 50 && !hasShownPopup) {
+                            // ระบบเด้งคำถามเมื่อดูคลิปไปแล้ว 1 นาที (60 วินาที) สำหรับทดสอบ
+                            if (currentTime >= 60 && !hasShownPopup) {
                                 hasShownPopup = true;
                                 showRandomQuestionPopup();
                             }
@@ -611,7 +609,7 @@
 
         function openLesson(idx) {
             currentLesson = allLessons[idx]; 
-            hasShownPopup = false; // รีเซ็ตการแสดงคำถามเมื่อเปิดคลิปใหม่
+            hasShownPopup = false; 
             nav('lesson_detail');
             
             if (ytPlayer) { ytPlayer.destroy(); ytPlayer = null; }
@@ -656,9 +654,6 @@
             fetchGAS({ action: "quiz", username: currentUser.id, name: currentUser.name, room: currentUser.assigned, subject: currentLesson.subject, lessonName: currentLesson.title, score: sc }).then(() => { currentLesson.studentScore = sc; openLesson(allLessons.indexOf(currentLesson)); loadDashboardData(); Swal.fire({ icon: 'success', title: 'สำเร็จ', text: `บันทึกคะแนนเรียบร้อย` }); });
         }
 
-        // =====================================
-        // ฟังก์ชันวาดรายชื่อครูและแจ้งเตือนแชท
-        // =====================================
         function buildContactCard(c, type) {
             let isActive = activeChatContact === c.name ? "active" : "";
             let pPic = c.pic ? `<img src="${c.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center font-bold text-xs lg:text-sm">${c.initials}</div>`;
