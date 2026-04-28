@@ -88,7 +88,13 @@
             <div id="view_manage" class="hidden max-w-5xl mx-auto">
                 <h2 class="text-2xl lg:text-3xl font-bold font-prompt text-slate-800 mb-6 lg:mb-8">จัดการเนื้อหาบทเรียน</h2>
                 
-                <div class="bg-white rounded-[1.5rem] lg:rounded-[2rem] p-6 lg:p-10 shadow-sm border border-slate-100 mb-8 lg:mb-10">
+                <div class="mb-10 lg:mb-12">
+                    <h3 class="text-xl lg:text-2xl font-bold font-prompt text-slate-800 mb-6">บทเรียนที่สร้างแล้ว</h3>
+                    <div id="loadingLessons_teacher" class="text-purple-500 font-bold flex items-center py-6 justify-center"><i class="fa-solid fa-circle-notch fa-spin mr-3 text-xl"></i> กำลังโหลด...</div>
+                    <div id="lessonGrid_teacher" class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6"></div>
+                </div>
+
+                <div id="lessonFormCard" class="bg-white rounded-[1.5rem] lg:rounded-[2rem] p-6 lg:p-10 shadow-sm border border-slate-100 mb-8 lg:mb-10">
                     <div class="flex justify-between items-center mb-6 lg:mb-8">
                         <h3 id="formActionTitle" class="text-lg lg:text-xl font-bold text-[#6d28d9] font-prompt"><i class="fa-solid fa-plus-circle mr-2"></i> สร้างบทเรียนใหม่</h3>
                         <button type="button" onclick="resetTeacherForm()" id="cancelEditBtn" class="hidden bg-slate-100 text-slate-600 px-4 py-2 rounded-full font-bold hover:bg-slate-200 transition text-xs lg:text-sm">ยกเลิกแก้ไข</button>
@@ -120,10 +126,6 @@
                         <button type="button" onclick="saveLesson()" class="w-full bg-[#6d28d9] text-white font-bold py-4 rounded-xl lg:rounded-2xl shadow-lg hover:bg-purple-800 transition text-base lg:text-xl font-prompt">บันทึกบทเรียน</button>
                     </form>
                 </div>
-                
-                <h3 class="text-xl lg:text-2xl font-bold font-prompt text-slate-800 mb-6">บทเรียนที่สร้างแล้ว</h3>
-                <div id="loadingLessons_teacher" class="text-purple-500 font-bold flex items-center py-6 justify-center"><i class="fa-solid fa-circle-notch fa-spin mr-3 text-xl"></i> กำลังโหลด...</div>
-                <div id="lessonGrid_teacher" class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6"></div>
             </div>
 
             <div id="view_stats" class="hidden max-w-5xl mx-auto">
@@ -157,10 +159,10 @@
                     </div>
                     <div class="p-3 lg:p-5 border-b flex items-center justify-between bg-white z-0" id="chatHeader">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden border border-slate-200 bg-indigo-100 flex items-center justify-center font-bold text-indigo-600 shadow-sm" id="chatHeaderAvatar"></div>
-                            <div><h3 class="font-bold text-sm lg:text-lg text-slate-800 mt-1" id="chatHeaderName">Name</h3></div>
+                            <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shadow-sm border border-white" id="chatHeaderAvatar"></div>
+                            <div><h3 class="font-bold text-sm lg:text-lg text-slate-800" id="chatHeaderName">Name</h3></div>
                         </div>
-                        </div>
+                    </div>
                     <div class="flex-1 overflow-y-auto p-4 lg:p-6 bg-[#f8fafc] flex flex-col space-y-4 hide-scroll z-0" id="chatHistory"></div>
                     <div class="p-3 lg:p-5 border-t bg-white flex items-center gap-2 lg:gap-3 z-0">
                         <input type="text" id="chatInputMessage" placeholder="พิมพ์ข้อความตอบกลับ..." class="flex-1 px-4 lg:px-6 py-3 lg:py-4 bg-slate-50 border border-slate-200 rounded-full outline-none focus:ring-2 focus:ring-purple-300 text-sm lg:text-base">
@@ -181,8 +183,10 @@
                                 <input type="file" class="hidden" accept="image/*" onchange="handleImageUpload(event)">
                             </label>
                         </div>
-                        <h3 class="font-bold text-2xl lg:text-3xl font-prompt text-slate-800 mt-4" id="settingNameDisplay">-</h3>
-                        <p class="text-xs font-bold text-[#6d28d9] bg-purple-50 px-3 py-1 rounded-full uppercase tracking-wider mt-2">INSTRUCTOR</p>
+                        <div class="text-center md:text-left">
+                            <h3 class="font-bold text-2xl lg:text-3xl font-prompt text-slate-800 mb-1" id="settingNameDisplay">-</h3>
+                            <p class="text-xs font-bold text-[#6d28d9] bg-purple-50 px-3 py-1 rounded-full uppercase tracking-wider mt-2">INSTRUCTOR</p>
+                        </div>
                     </div>
                     <form id="profileForm" class="space-y-5">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -197,8 +201,8 @@
         </div>
     </main>
 
-    <aside id="rightSidebar" class="w-72 bg-white border-l border-slate-200 flex-shrink-0 hidden lg:flex flex-col h-full shadow-sm">
-        <div class="p-8 overflow-y-auto flex-1 hide-scroll">
+    <aside id="rightSidebar" class="w-72 bg-white border-l border-slate-200 flex-shrink-0 hidden lg:flex flex-col h-full shadow-sm relative">
+        <div class="p-8 overflow-y-auto flex-1 hide-scroll pb-24">
             <div class="text-right lg:hidden mb-4"><button onclick="document.getElementById('rightSidebar').classList.add('hidden')" class="text-slate-400 bg-slate-100 w-8 h-8 rounded-full"><i class="fa-solid fa-xmark"></i></button></div>
             <h3 class="font-bold text-xs mb-8 font-prompt uppercase text-slate-400 tracking-widest">Instructor Overview</h3>
             
@@ -380,13 +384,24 @@
             fetchGAS(req).then(r => { if(r.status==="success") { Swal.fire('สำเร็จ','','success'); resetTeacherForm(); loadDashboardData(); }});
         }
         function resetTeacherForm() { document.getElementById('teacherForm').reset(); document.getElementById('t_mode').value="add"; document.getElementById('t_quizFields').innerHTML=""; document.getElementById('cancelEditBtn').classList.add('hidden'); document.getElementById('formActionTitle').innerHTML='<i class="fa-solid fa-plus-circle mr-2"></i> สร้างบทเรียนใหม่'; }
-        function editLessonSetup(idx) { let l = allLessons[idx]; document.getElementById('t_mode').value="edit"; document.getElementById('t_oldTitle').value=l.title; document.getElementById('t_subject').value=l.subject; document.getElementById('t_ep').value=l.ep; document.getElementById('t_title').value=l.title; let yt = (l.content||"").match(/\[YT:(.*?)\]/); document.getElementById('t_youtube').value = yt ? yt[1] : ""; document.getElementById('t_content').value = (l.content||"").replace(/\[YT:.*?\]\n?/, ""); document.getElementById('t_quizFields').innerHTML=""; (l.questions||[]).filter(q=>q.q).forEach(q=>addTeacherQuizField(q)); document.getElementById('cancelEditBtn').classList.remove('hidden'); document.getElementById('formActionTitle').innerHTML='<i class="fa-solid fa-pen mr-2 text-amber-500"></i> กำลังแก้ไข'; document.getElementById('view_manage').scrollIntoView(); }
+        function editLessonSetup(idx) { 
+            let l = allLessons[idx]; 
+            document.getElementById('t_mode').value="edit"; 
+            document.getElementById('t_oldTitle').value=l.title; 
+            document.getElementById('t_subject').value=l.subject; 
+            document.getElementById('t_ep').value=l.ep; 
+            document.getElementById('t_title').value=l.title; 
+            let yt = (l.content||"").match(/\[YT:(.*?)\]/); 
+            document.getElementById('t_youtube').value = yt ? yt[1] : ""; 
+            document.getElementById('t_content').value = (l.content||"").replace(/\[YT:.*?\]\n?/, ""); 
+            document.getElementById('t_quizFields').innerHTML=""; 
+            (l.questions||[]).filter(q=>q.q).forEach(q=>addTeacherQuizField(q)); 
+            document.getElementById('cancelEditBtn').classList.remove('hidden'); 
+            document.getElementById('formActionTitle').innerHTML='<i class="fa-solid fa-pen mr-2 text-amber-500"></i> กำลังแก้ไข'; 
+            document.getElementById('lessonFormCard').scrollIntoView({ behavior: 'smooth', block: 'start' }); 
+        }
         function deleteLesson(t) { Swal.fire({title:'ลบ?', text: 'แน่ใจหรือไม่?', icon:'warning', showCancelButton:true}).then(r=>{if(r.isConfirmed) { Swal.fire({title:'Deleting...',didOpen:()=>Swal.showLoading()}); fetchGAS({action:"deleteLesson", title:t}).then(()=>loadDashboardData()); }}); }
 
-        // ==========================================
-        // ระบบ CHAT (ลบคำว่า "ห้อง" ออก และซิงค์รูป)
-        // ==========================================
-        
         function renderChatContacts() {
             let studentsMap = {}; 
             
@@ -395,11 +410,9 @@
                 if(sName === currentUser.name) sName = m.receiver;
                 
                 if(!studentsMap[sName]) { 
-                    // เก็บ room (assigned ของนักเรียน) ไว้
                     studentsMap[sName] = { name: sName, room: m.senderRoom || "-", pic: "", msgs: [] }; 
                 }
                 
-                // ดึงรูปล่าสุดจากแชท
                 if (m.senderName === sName && m.senderPic && m.senderPic.trim() !== "") {
                     studentsMap[sName].pic = m.senderPic;
                 }
@@ -419,10 +432,8 @@
             if(students.length === 0) html += `<div class="text-center p-4 text-xs text-slate-400 border-2 border-dashed rounded-xl mx-4">ไม่มีข้อความ</div>`;
             
             students.forEach(s => {
-                // ดึงรูปล่าสุดจากตารางผู้ใช้โดยตรง (ถ้ามี)
                 let userObj = allUsersData.find(u => u.name === s.name);
                 if (userObj && userObj.pic && userObj.pic.trim() !== "") s.pic = userObj.pic;
-                // อัปเดตห้องจากตารางผู้ใช้โดยตรง (ถ้ามี)
                 if (userObj && userObj.assigned && userObj.assigned.trim() !== "") s.room = userObj.assigned;
 
                 let isActive = activeChatContact === s.name ? "active" : "";
@@ -456,7 +467,6 @@
                 }
             });
 
-            // ดึงจาก user database เป็น Prioriy สูงสุด (อัปเดตแบบเป๊ะๆ)
             let userObj = allUsersData.find(u => u.name === n);
             if (userObj) {
                 if(userObj.pic && userObj.pic.trim() !== "") latestStudentPic = userObj.pic;
@@ -464,7 +474,7 @@
             }
 
             let hName = document.getElementById('chatHeaderName');
-            if(hName) hName.innerText = n + " (" + studentRoom + ")"; // เอาคำว่า ห้อง ออกตามคำสั่ง
+            if(hName) hName.innerText = n + " (" + studentRoom + ")";
             
             let headerPicHtml = latestStudentPic ? `<img src="${latestStudentPic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center font-bold text-indigo-600 bg-indigo-100 text-xs lg:text-sm">${getInitials(n)}</div>`; 
             let hAv = document.getElementById('chatHeaderAvatar');
@@ -477,12 +487,10 @@
                 let d = new Date(m.date).toLocaleString('th-TH', { hour:'2-digit', minute:'2-digit' });
                 let sPicHtml = latestStudentPic ? `<img src="${latestStudentPic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-indigo-100 text-indigo-600 font-bold text-[8px]">${getInitials(n)}</div>`;
                 
-                // ฝั่งนักเรียนส่งมา (ข้อความหลัก) ให้ขึ้นฝั่งซ้ายเสมอ
                 if(m.senderName === n && m.message && m.message.trim() !== "") {
                     h += `<div class="flex flex-col items-start w-full mb-4"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${sPicHtml}</div><p class="text-[9px] font-bold text-slate-400">${n} • ${d}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm">${m.message}</div></div>`;
                 }
                 
-                // ฝั่งครูตอบกลับ ให้ขึ้นขวาเสมอ
                 if(m.reply && m.reply.trim()!=="") { 
                     h += `<div class="flex flex-col items-end w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400">คุณตอบแล้ว</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${m.reply}</div></div>`; 
                 }
@@ -492,7 +500,6 @@
             if(cHist) { cHist.innerHTML = h; cHist.scrollTop = cHist.scrollHeight; }
         }
 
-        // ฟังก์ชันโหลดข้อความและระบบป้องกันจอกระตุก
         function loadMessagesForChat() { 
             fetchGAS({ action: "getMessages", myId: currentUser.id, myName: currentUser.name, role: currentUser.role })
             .then(r => { 
@@ -517,7 +524,6 @@
             let targetMsg = cachedMessages.filter(m => m.senderName === activeChatContact).find(m => !m.reply || m.reply.trim()==="");
             if(!targetMsg) return Swal.fire('ข้อมูล', 'ไม่มีข้อความใหม่ที่ค้างตอบครับ', 'info');
             
-            // รอส่ง (Optimistic UI)
             let cHist = document.getElementById('chatHistory');
             let myPicHtml = currentUser.pic ? `<img src="${currentUser.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-purple-100 text-purple-600 font-bold text-[8px]">${getInitials(currentUser.name)}</div>`;
             cHist.innerHTML += `<div class="flex flex-col items-end w-full mb-4 mt-2 opacity-50"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400">กำลังส่ง...</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${msg}</div></div>`;
@@ -525,7 +531,6 @@
             document.getElementById('chatInputMessage').value = "";
 
             fetchGAS({ action: "replyMessage", row: targetMsg.row, replyText: msg });
-            // โหลดแชทใหม่แบบทันทีโดยไม่ให้กระตุก
             setTimeout(loadMessagesForChat, 1000);
         }
 
