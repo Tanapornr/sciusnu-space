@@ -157,20 +157,21 @@
                     </div>
                     <div class="p-3 lg:p-5 border-b flex items-center justify-between bg-white z-0" id="chatHeader">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shadow-sm border border-white" id="chatHeaderAvatar"></div>
+                            <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shadow-sm border border-slate-200 bg-indigo-100 flex items-center justify-center text-indigo-600" id="chatHeaderAvatar"></div>
                             <div><h3 class="font-bold text-sm lg:text-lg text-slate-800" id="chatHeaderName">Name</h3><p class="text-[10px] text-emerald-500 font-bold">นักเรียน</p></div>
                         </div>
-                        <button onclick="forceRefreshChat()" class="text-slate-400 hover:text-purple-600 p-2"><i class="fa-solid fa-rotate-right text-lg"></i></button>
+                        <button onclick="forceRefreshChat()" class="text-slate-400 hover:text-purple-600 p-2 transition"><i class="fa-solid fa-rotate-right text-lg"></i></button>
                     </div>
                     <div class="flex-1 overflow-y-auto p-4 lg:p-6 bg-[#f8fafc] flex flex-col space-y-4 hide-scroll z-0" id="chatHistory"></div>
                     <div class="p-3 lg:p-5 border-t bg-white flex items-center gap-2 lg:gap-3 z-0">
                         <input type="text" id="chatInputMessage" placeholder="พิมพ์ข้อความตอบกลับ..." class="flex-1 px-4 lg:px-6 py-3 lg:py-4 bg-slate-50 border border-slate-200 rounded-full outline-none focus:ring-2 focus:ring-purple-300 text-sm lg:text-base">
-                        <button onclick="sendChatMessage()" class="w-12 h-12 lg:w-14 lg:h-14 bg-[#6d28d9] text-white rounded-full flex items-center justify-center shadow-lg"><i class="fa-solid fa-paper-plane text-lg"></i></button>
+                        <button onclick="sendChatMessage()" class="w-12 h-12 lg:w-14 lg:h-14 bg-[#6d28d9] text-white rounded-full flex items-center justify-center shadow-lg hover:bg-purple-800 transition"><i class="fa-solid fa-paper-plane text-lg"></i></button>
                     </div>
                 </div>
             </div>
 
             <div id="view_settings" class="hidden max-w-3xl mx-auto">
+                <h2 class="text-2xl lg:text-3xl font-bold font-prompt text-slate-800 mb-6 lg:mb-8">ตั้งค่าโปรไฟล์</h2>
                 <div class="bg-white rounded-2xl lg:rounded-[2rem] p-6 lg:p-10 border shadow-sm">
                     <div class="flex flex-col md:flex-row items-center gap-6 lg:gap-10 mb-8 border-b pb-8">
                         <div class="relative w-24 h-24 lg:w-32 lg:h-32 rounded-full bg-slate-100 overflow-hidden border-4 border-white shadow-lg group">
@@ -183,13 +184,13 @@
                         </div>
                         <div class="text-center md:text-left">
                             <h3 class="font-bold text-2xl lg:text-3xl font-prompt text-slate-800 mb-1" id="settingNameDisplay">-</h3>
-                            <p class="text-xs font-bold text-[#6d28d9] bg-purple-50 px-3 py-1 rounded-full uppercase">TEACHER</p>
+                            <p class="text-xs font-bold text-[#6d28d9] bg-purple-50 px-3 py-1 rounded-full uppercase tracking-wider mt-2">INSTRUCTOR</p>
                         </div>
                     </div>
                     <form id="profileForm" class="space-y-5">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <div><label class="block text-xs font-bold text-slate-500 mb-2 uppercase">Email *</label><input type="email" id="set_email" class="w-full px-4 py-3 bg-slate-50 border rounded-xl outline-none focus:ring-2 focus:ring-[#6d28d9] text-sm" required></div>
-                            <div><label class="block text-xs font-bold text-slate-500 mb-2 uppercase">Phone *</label><input type="tel" id="set_phone" class="w-full px-4 py-3 bg-slate-50 border rounded-xl outline-none focus:ring-2 focus:ring-[#6d28d9] text-sm" required></div>
+                            <div><label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-widest">Email *</label><input type="email" id="set_email" class="w-full px-4 py-3 bg-slate-50 border rounded-xl outline-none focus:ring-2 focus:ring-[#6d28d9] text-sm" required></div>
+                            <div><label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-widest">Phone *</label><input type="tel" id="set_phone" class="w-full px-4 py-3 bg-slate-50 border rounded-xl outline-none focus:ring-2 focus:ring-[#6d28d9] text-sm" required></div>
                         </div>
                         <button type="button" onclick="saveProfile()" class="w-full bg-[#6d28d9] text-white font-bold py-4 rounded-xl shadow-lg mt-4 active:scale-[0.98] transition font-prompt text-sm tracking-widest hover:bg-purple-800">อัปเดตข้อมูล</button>
                     </form>
@@ -225,13 +226,13 @@
         let currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
         if (!currentUser || String(currentUser.role).toLowerCase().trim() !== 'teacher') { window.location.replace('index.html'); }
 
-        let allLessons = [], cachedMessages = [], globalStatData = { students: [], scores: [], logs: [] }, activeChatContact = null, uploadedImageBase64 = "";
+        // เพิ่ม allUsersData เพื่อเก็บข้อมูลโปรไฟล์ล่าสุดของทุกคน
+        let allLessons = [], cachedMessages = [], allUsersData = [], globalStatData = { students: [], scores: [], logs: [] }, activeChatContact = null, uploadedImageBase64 = "";
         let chatTimer = null;
 
         function fetchGAS(payload) { return fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r => r.json()); }
         function getInitials(n) { let p = n.trim().split(/\s+/); return p.length >= 2 ? (p[0][0] + p[1][0]).toUpperCase() : n.substring(0, 2).toUpperCase(); }
 
-        // Mobile Toggle Sidebars
         function toggleSidebar() { document.getElementById('mainSidebar').classList.toggle('active'); document.getElementById('sidebarOverlay').classList.toggle('active'); }
         function toggleRightSidebar() {
             const rs = document.getElementById('rightSidebar'); rs.classList.toggle('hidden');
@@ -250,36 +251,36 @@
             
             if(window.innerWidth < 1024) { document.getElementById('mainSidebar').classList.remove('active'); document.getElementById('sidebarOverlay').classList.remove('active'); }
             
+            if(target !== 'inbox' && chatTimer) { clearInterval(chatTimer); chatTimer = null; }
+
             if(target === 'inbox') {
                 renderChatContacts();
                 document.querySelectorAll('.inbox-badge').forEach(b => b.classList.add('hidden'));
                 if(!chatTimer) chatTimer = setInterval(loadMessagesForChat, 5000);
-            } else if(chatTimer) { clearInterval(chatTimer); chatTimer = null; }
+            }
 
             if(target === 'stats') loadAnalytics();
+            if(target === 'settings') { updateProfileUI(); }
             
-            if(target === 'settings') {
-                document.getElementById('settingNameDisplay').innerText = currentUser.name;
-                document.getElementById('set_email').value = currentUser.email || "";
-                document.getElementById('set_phone').value = currentUser.phone || "";
-                if(currentUser.pic) { 
-                    document.getElementById('previewSettingPic').src = currentUser.pic; 
-                    document.getElementById('previewSettingPic').classList.remove('hidden'); 
-                    document.getElementById('previewSettingInitials').classList.add('hidden'); 
-                }
-            }
             document.getElementById('mainScrollArea').scrollTop = 0;
         }
 
         function loadDashboardData() {
             fetchGAS({ action: "getDashboardData", myId: currentUser.id, myName: currentUser.name, role: currentUser.role }).then(r => {
                 if(r.status === "success") {
-                    allLessons = r.lessons; cachedMessages = r.messages;
-                    document.getElementById('loadingLessons_teacher').style.display = 'none';
+                    allLessons = r.lessons || []; 
+                    cachedMessages = r.messages || [];
+                    if(r.users) allUsersData = r.users; // เก็บรายชื่อและรูปล่าสุดจากฐานข้อมูลโดยตรง
+
+                    let loader = document.getElementById('loadingLessons_teacher');
+                    if(loader) loader.style.display = 'none';
                     
-                    let ts = document.getElementById('t_subject'); ts.innerHTML = '<option value="">-- เลือกวิชา --</option>';
-                    let myS = currentUser.assigned ? currentUser.assigned.split(',').map(s=>s.trim()) : [];
-                    myS.forEach(s => ts.innerHTML += `<option value="${s}">${s}</option>`);
+                    let ts = document.getElementById('t_subject'); 
+                    if(ts) {
+                        ts.innerHTML = '<option value="">-- เลือกวิชา --</option>';
+                        let myS = currentUser.assigned ? currentUser.assigned.split(',').map(s=>s.trim()).filter(s=>s) : [];
+                        myS.forEach(s => ts.innerHTML += `<option value="${s}">${s}</option>`);
+                    }
                     
                     renderTeacherLessons(); updateRightSidebar();
                     
@@ -292,7 +293,7 @@
         }
 
         function renderTeacherLessons() {
-            let h = ""; let sel = document.getElementById('statLessonSelect'); sel.innerHTML = '<option value="">-- เลือกบทเรียน --</option>';
+            let h = ""; let sel = document.getElementById('statLessonSelect'); if(sel) sel.innerHTML = '<option value="">-- เลือกบทเรียน --</option>';
             let myS = currentUser.assigned ? currentUser.assigned.split(',').map(s=>s.trim()) : [];
             let f = allLessons.filter(l => myS.includes(l.subject));
             
@@ -300,26 +301,69 @@
             
             f.forEach((l, i) => {
                 h += `<div class="bg-white rounded-2xl lg:rounded-3xl p-5 lg:p-6 border flex flex-col justify-between shadow-sm hover:shadow-md transition"><div><div class="flex justify-between mb-4"><span class="bg-purple-50 text-purple-700 px-3 py-1 rounded-lg text-[10px] lg:text-xs font-bold border border-purple-100">${l.subject} | EP.${l.ep}</span><span class="text-[10px] lg:text-xs text-slate-500 font-bold bg-slate-50 px-2 py-1 rounded-md"><i class="fa-solid fa-eye text-sky-500"></i> ${l.views}</span></div><h3 class="font-bold text-sm lg:text-lg mb-6 line-clamp-2">${l.title}</h3></div><div class="flex gap-2 lg:gap-3"><button onclick="editLessonSetup(${allLessons.indexOf(l)})" class="flex-1 bg-slate-50 py-2.5 lg:py-3 rounded-xl text-xs lg:text-sm font-bold border hover:bg-purple-600 hover:text-white transition shadow-sm"><i class="fa-solid fa-pen mr-1"></i> แก้ไข</button><button onclick="deleteLesson('${l.title}')" class="flex-1 bg-rose-50 text-rose-600 py-2.5 lg:py-3 rounded-xl text-xs lg:text-sm font-bold border border-rose-100 hover:bg-rose-600 hover:text-white transition shadow-sm"><i class="fa-solid fa-trash mr-1"></i> ลบ</button></div></div>`;
-                sel.innerHTML += `<option value="${l.title}">[${l.subject}] ${l.title}</option>`;
+                if(sel) sel.innerHTML += `<option value="${l.title}">[${l.subject}] ${l.title}</option>`;
             });
-            document.getElementById('lessonGrid_teacher').innerHTML = h;
+            let grid = document.getElementById('lessonGrid_teacher');
+            if(grid) grid.innerHTML = h;
+        }
+
+        function updateProfileUI() {
+            if(!currentUser) return;
+            const fullName = currentUser.name || "-";
+            const inits = getInitials(fullName);
+
+            let setDisplay = document.getElementById('settingNameDisplay');
+            if(setDisplay) setDisplay.innerText = fullName;
+            let setEmail = document.getElementById('set_email');
+            if(setEmail) setEmail.value = currentUser.email || "";
+            let setPhone = document.getElementById('set_phone');
+            if(setPhone) setPhone.value = currentUser.phone || "";
+
+            let setPic = document.getElementById('previewSettingPic');
+            let setInit = document.getElementById('previewSettingInitials');
+            let mobPic = document.getElementById('mobileHeaderProfileImg');
+            let mobInit = document.getElementById('mobileHeaderProfileInitials');
+
+            if(currentUser.pic && currentUser.pic.trim() !== "") {
+                if(setPic) { setPic.src = currentUser.pic; setPic.classList.remove('hidden'); }
+                if(setInit) setInit.classList.add('hidden');
+                if(mobPic) { mobPic.src = currentUser.pic; mobPic.classList.remove('hidden'); }
+                if(mobInit) mobInit.classList.add('hidden');
+            } else {
+                if(setInit) { setInit.innerText = inits; setInit.classList.remove('hidden'); }
+                if(setPic) setPic.classList.add('hidden');
+                if(mobInit) { mobInit.innerText = inits; mobInit.classList.remove('hidden'); }
+                if(mobPic) mobPic.classList.add('hidden');
+            }
         }
 
         function updateRightSidebar() {
-            document.getElementById('rightProfileFullName').innerText = currentUser.name;
-            if(currentUser.pic) { 
-                document.getElementById('rightProfileImage').src = currentUser.pic; document.getElementById('rightProfileImage').classList.remove('hidden'); document.getElementById('rightProfileInitials').classList.add('hidden'); 
-                document.getElementById('mobileHeaderProfileImg').src = currentUser.pic; document.getElementById('mobileHeaderProfileImg').classList.remove('hidden'); document.getElementById('mobileHeaderProfileInitials').classList.add('hidden');
+            let rightName = document.getElementById('rightProfileFullName');
+            if(rightName) rightName.innerText = currentUser.name || "-";
+            
+            let rightPic = document.getElementById('rightProfileImage');
+            let rightInit = document.getElementById('rightProfileInitials');
+
+            if(currentUser.pic && currentUser.pic.trim() !== "") { 
+                if(rightPic) { rightPic.src = currentUser.pic; rightPic.classList.remove('hidden'); }
+                if(rightInit) rightInit.classList.add('hidden'); 
             } else {
-                let inits = getInitials(currentUser.name);
-                document.getElementById('rightProfileInitials').innerText = inits;
-                document.getElementById('mobileHeaderProfileInitials').innerText = inits;
+                if(rightInit) { rightInit.innerText = getInitials(currentUser.name); rightInit.classList.remove('hidden'); }
+                if(rightPic) rightPic.classList.add('hidden');
             }
-            let myS = currentUser.assigned ? currentUser.assigned.split(',').map(s=>s.trim()) : [];
+            
+            let myS = currentUser.assigned ? currentUser.assigned.split(',').map(s=>s.trim()).filter(s=>s) : [];
             let myL = allLessons.filter(l => myS.includes(l.subject));
-            document.getElementById('statMyLessons').innerText = myL.length;
-            document.getElementById('statTotalViews').innerText = myL.reduce((a,b) => a + (b.views||0), 0);
-            document.getElementById('rightProfileSubjects').innerHTML = myS.map(s => `<span class="bg-purple-50 text-purple-700 font-bold px-2 py-1 rounded border border-purple-100 text-[9px]">${s}</span>`).join('');
+            
+            let statL = document.getElementById('statMyLessons');
+            if(statL) statL.innerText = myL.length;
+            let statV = document.getElementById('statTotalViews');
+            if(statV) statV.innerText = myL.reduce((a,b) => a + (b.views||0), 0);
+            
+            let subUI = document.getElementById('rightProfileSubjects');
+            if(subUI) {
+                subUI.innerHTML = myS.length > 0 ? myS.map(s => `<span class="bg-purple-50 text-purple-700 font-bold px-3 py-1 rounded-full border border-purple-100 text-[10px] shadow-sm">${s}</span>`).join('') : `<span class="text-xs text-slate-400">ยังไม่มีวิชาที่สอน</span>`;
+            }
         }
 
         function addTeacherQuizField() {
@@ -348,20 +392,29 @@
         
         function renderChatContacts() {
             let studentsMap = {}; 
-            // รวมแชท และ อัปเดตให้ได้รูปล่าสุดของนักเรียนเสมอ (Real-time scan)
-            cachedMessages.forEach(m => { 
+            
+            // เรียงลำดับจากเก่าไปใหม่ เพื่อให้ข้อมูลล่าสุดเซฟทับเสนอ (กันข้อมูลสลับที่)
+            let sortedMsgs = [...cachedMessages].sort((a,b) => new Date(a.date) - new Date(b.date));
+
+            sortedMsgs.forEach(m => { 
                 let sName = m.senderName;
-                if(sName === currentUser.name) sName = m.receiver; // กรณีครูทักไปก่อน
+                if(sName === currentUser.name) sName = m.receiver;
                 
                 if(!studentsMap[sName]) { 
                     studentsMap[sName] = { name: sName, room: m.senderRoom || "-", pic: "", msgs: [] }; 
                 }
                 
-                // สแกนหารูปใหม่ล่าสุดของนักเรียนมาเซฟทับไว้
+                // ดึงรูปล่าสุดจากแชท
                 if (m.senderName === sName && m.senderPic && m.senderPic.trim() !== "") {
                     studentsMap[sName].pic = m.senderPic;
                 }
-                
+                if (m.receiver === sName && m.receiverPic && m.receiverPic.trim() !== "") {
+                    studentsMap[sName].pic = m.receiverPic;
+                }
+                if (m.senderName === sName && m.senderRoom && m.senderRoom.trim() !== "") {
+                    studentsMap[sName].room = m.senderRoom;
+                }
+
                 studentsMap[sName].msgs.push(m); 
             });
             
@@ -371,6 +424,10 @@
             if(students.length === 0) html += `<div class="text-center p-4 text-xs text-slate-400 border-2 border-dashed rounded-xl mx-4">ไม่มีข้อความ</div>`;
             
             students.forEach(s => {
+                // ดึงรูปล่าสุดจากตารางผู้ใช้โดยตรง (ถ้ามี) ทำให้ได้รูปอัปเดตแบบ 100% แม้ยังไม่ได้คุย
+                let userObj = allUsersData.find(u => u.name === s.name);
+                if (userObj && userObj.pic && userObj.pic.trim() !== "") s.pic = userObj.pic;
+
                 let isActive = activeChatContact === s.name ? "active" : "";
                 let unreadCount = s.msgs.filter(m => m.senderName === s.name && (!m.reply || m.reply.trim() === "")).length; 
                 let picHtml = s.pic ? `<img src="${s.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center font-bold text-indigo-600 bg-indigo-100 text-xs">${getInitials(s.name)}</div>`;
@@ -389,15 +446,23 @@
             renderChatContacts();
             let msgs = cachedMessages.filter(m => m.senderName === n || m.receiver === n);
             
-            // แสกนหารูปล่าสุดของนักเรียนคนนี้ 
+            // จัดเรียงก่อนหา
+            let sortedMsgs = [...msgs].sort((a,b) => new Date(a.date) - new Date(b.date));
+
             let latestStudentPic = null;
             let studentRoom = "-";
-            msgs.forEach(m => {
+            sortedMsgs.forEach(m => {
                 if(m.senderName === n) {
                     if(m.senderPic && m.senderPic.trim() !== "") latestStudentPic = m.senderPic;
                     if(m.senderRoom) studentRoom = m.senderRoom;
+                } else if(m.receiver === n) {
+                    if(m.receiverPic && m.receiverPic.trim() !== "") latestStudentPic = m.receiverPic;
                 }
             });
+
+            // ดึงจาก user database เป็น Prioriy สูงสุด (อัปเดตแบบเป๊ะๆ)
+            let userObj = allUsersData.find(u => u.name === n);
+            if (userObj && userObj.pic && userObj.pic.trim() !== "") latestStudentPic = userObj.pic;
 
             let hName = document.getElementById('chatHeaderName');
             if(hName) hName.innerText = n + " (ห้อง " + studentRoom + ")";
@@ -409,33 +474,18 @@
             let h = "";
             let myPicHtml = currentUser.pic ? `<img src="${currentUser.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-purple-100 text-purple-600 font-bold text-[8px]">${getInitials(currentUser.name)}</div>`;
             
-            // วนลูปข้อความ: นักเรียนส่งมา (m.message) อยู่ซ้าย, ครูตอบกลับ (m.reply) อยู่ขวา
-            msgs.forEach(m => {
+            sortedMsgs.forEach(m => {
                 let d = new Date(m.date).toLocaleString('th-TH', { hour:'2-digit', minute:'2-digit' });
                 let sPicHtml = latestStudentPic ? `<img src="${latestStudentPic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-indigo-100 text-indigo-600 font-bold text-[8px]">${getInitials(n)}</div>`;
                 
-                // ฝั่งนักเรียน (ซ้าย)
-                if(m.message && m.message.trim() !== "") {
-                    h += `
-                    <div class="flex flex-col items-start w-full mb-4">
-                        <div class="flex items-center gap-2 mb-1 ml-2">
-                            <div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${sPicHtml}</div>
-                            <p class="text-[9px] font-bold text-slate-400">${n} • ${d}</p>
-                        </div>
-                        <div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm">${m.message}</div>
-                    </div>`;
+                // ฝั่งนักเรียนส่งมา (ข้อความหลัก) ให้ขึ้นฝั่งซ้ายเสมอ
+                if(m.senderName === n) {
+                    h += `<div class="flex flex-col items-start w-full mb-4"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${sPicHtml}</div><p class="text-[9px] font-bold text-slate-400">${n} • ${d}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm">${m.message}</div></div>`;
                 }
                 
-                // ฝั่งครูตอบกลับ (ขวา)
-                if(m.reply && m.reply.trim() !== "") { 
-                    h += `
-                    <div class="flex flex-col items-end w-full mb-4 mt-2">
-                        <div class="flex items-center gap-2 mb-1 mr-2">
-                            <p class="text-[9px] font-bold text-slate-400">คุณตอบกลับแล้ว</p>
-                            <div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${myPicHtml}</div>
-                        </div>
-                        <div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${m.reply}</div>
-                    </div>`; 
+                // ฝั่งครูตอบกลับ ให้ขึ้นขวาเสมอ
+                if(m.reply && m.reply.trim()!=="") { 
+                    h += `<div class="flex flex-col items-end w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400">คุณตอบแล้ว</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${m.reply}</div></div>`; 
                 }
             });
             
@@ -448,11 +498,16 @@
             fetchGAS({ action: "getMessages", myId: currentUser.id, myName: currentUser.name, role: currentUser.role })
             .then(r => { 
                 if(r.status === "success") { 
+                    if(r.users) allUsersData = r.users; // อัปเดตข้อมูลผู้ใช้ถ้าส่งมา
+                    
                     // ตรวจสอบการเปลี่ยนแปลง ถ้าข้อมูลไม่เปลี่ยนจะไม่กระตุกจอ
-                    let oldData = JSON.stringify(cachedMessages);
-                    let newData = JSON.stringify(r.data);
-                    if(oldData !== newData) {
-                        cachedMessages = r.data; 
+                    let isChanged = false;
+                    if(JSON.stringify(cachedMessages) !== JSON.stringify(r.data)) isChanged = true;
+                    // ตรวจสอบกรณีรูปโปรไฟล์ใน allUsersData เปลี่ยน
+                    if(!isChanged && r.users) isChanged = true; 
+
+                    if(isChanged) {
+                        cachedMessages = r.data || []; 
                         if(activeChatContact) openChat(activeChatContact); 
                         else renderChatContacts(); 
                     }
@@ -468,7 +523,8 @@
             .then(r => { 
                 if(btn) btn.classList.remove('fa-spin');
                 if(r.status === "success") { 
-                    cachedMessages = r.data; 
+                    if(r.users) allUsersData = r.users;
+                    cachedMessages = r.data || []; 
                     if(activeChatContact) openChat(activeChatContact); 
                     else renderChatContacts(); 
                 } 
@@ -478,9 +534,9 @@
         function sendChatMessage() {
             let msg = document.getElementById('chatInputMessage').value.trim(); if(!msg || !activeChatContact) return;
             let targetMsg = cachedMessages.filter(m => m.senderName === activeChatContact).find(m => !m.reply || m.reply.trim()==="");
-            if(!targetMsg) return Swal.fire('ข้อมูล', 'ไม่มีข้อความใหม่ที่ค้างตอบค่ะ', 'info');
+            if(!targetMsg) return Swal.fire('ข้อมูล', 'ไม่มีข้อความใหม่ที่ค้างตอบครับ', 'info');
             
-            // ทำตัวโหลดลางๆ ไว้รอ
+            // ทำตัวโหลดลางๆ ไว้รอ เพื่อให้ดูตอบสนองทันที (Optimistic UI)
             let cHist = document.getElementById('chatHistory');
             let myPicHtml = currentUser.pic ? `<img src="${currentUser.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-purple-100 text-purple-600 font-bold text-[8px]">${getInitials(currentUser.name)}</div>`;
             cHist.innerHTML += `<div class="flex flex-col items-end w-full mb-4 mt-2 opacity-50"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400">กำลังส่ง...</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${msg}</div></div>`;
@@ -511,7 +567,11 @@
                 let img = new Image(); img.onload = () => {
                     let c = document.createElement('canvas'), w = 200, s = w / img.width; c.width = w; c.height = img.height * s;
                     c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); uploadedImageBase64 = c.toDataURL('image/jpeg', 0.8);
-                    document.getElementById('previewSettingPic').src = uploadedImageBase64; document.getElementById('previewSettingPic').classList.remove('hidden'); document.getElementById('previewSettingInitials').classList.add('hidden');
+                    
+                    let prevPic = document.getElementById('previewSettingPic');
+                    let prevInit = document.getElementById('previewSettingInitials');
+                    if(prevPic) { prevPic.src = uploadedImageBase64; prevPic.classList.remove('hidden'); }
+                    if(prevInit) prevInit.classList.add('hidden');
                 }; img.src = ev.target.result;
             }; r.readAsDataURL(f);
         }
@@ -520,7 +580,8 @@
             let e = document.getElementById('set_email').value.trim();
             let p = document.getElementById('set_phone').value.trim();
             let c = uploadedImageBase64 || currentUser.pic;
-            if(!e || !p) return Swal.fire('เตือน', 'กรุณากรอกอีเมลและเบอร์โทรศัพท์ให้ครบถ้วนก่อนบันทึกค่ะ', 'warning');
+            if(!e || !p) return Swal.fire('เตือน', 'กรุณากรอกอีเมลและเบอร์โทรศัพท์ให้ครบถ้วนก่อนบันทึกครับ', 'warning');
+            
             Swal.fire({title:'กำลังบันทึก...', didOpen:()=>Swal.showLoading()});
             fetchGAS({action:"updateProfile", username:currentUser.id, pic:c, email:e, phone:p}).then(r => {
                 if(r.status === "success") { 
