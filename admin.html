@@ -8,7 +8,12 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;700&family=Sarabun:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style> body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; overflow: hidden; } h1, h2, h3, .font-prompt { font-family: 'Prompt', sans-serif; } .menu-item { transition: all 0.2s; border-left: 3px solid transparent; cursor: pointer; } .menu-item:hover, .menu-item.active { color: #6d28d9; background-color: #f5f3ff; border-left-color: #6d28d9; font-weight: bold; } </style>
+    <style> 
+        body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; overflow: hidden; } 
+        h1, h2, h3, .font-prompt { font-family: 'Prompt', sans-serif; } 
+        .menu-item { transition: all 0.2s; border-left: 3px solid transparent; cursor: pointer; } 
+        .menu-item:hover, .menu-item.active { color: #6d28d9; background-color: #f5f3ff; border-left-color: #6d28d9; font-weight: bold; } 
+    </style>
 </head>
 <body class="flex h-screen w-screen antialiased">
     
@@ -35,7 +40,7 @@
                         <h3 class="text-lg font-bold mb-6 font-prompt"><i class="fa-solid fa-layer-group text-purple-500 mr-2"></i> เพิ่มวิชาใหม่</h3>
                         <div class="space-y-4">
                             <input type="text" id="a_subName" placeholder="ชื่อรายวิชา" class="w-full px-4 py-3 bg-slate-50 border rounded-xl outline-none focus:ring-2 focus:ring-purple-300">
-                            <button onclick="adminAddSubject()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3.5 rounded-xl font-prompt">บันทึกรายวิชา</button>
+                            <button onclick="adminAddSubject()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3.5 rounded-xl font-prompt transition">บันทึกรายวิชา</button>
                         </div>
                     </div>
                     <div class="bg-white rounded-3xl p-8 shadow-sm border">
@@ -48,7 +53,7 @@
                                 <p class="font-bold text-slate-700 text-sm mb-2">วิชาที่รับผิดชอบ</p>
                                 <div id="a_subjectCheckboxes" class="flex flex-wrap gap-2"></div>
                             </div>
-                            <button onclick="adminAddTeacher()" class="w-full bg-[#6d28d9] hover:bg-purple-800 text-white font-bold py-3.5 rounded-xl mt-2 font-prompt">เพิ่มครูผู้สอน</button>
+                            <button onclick="adminAddTeacher()" class="w-full bg-[#6d28d9] hover:bg-purple-800 text-white font-bold py-3.5 rounded-xl mt-2 font-prompt transition">เพิ่มครูผู้สอน</button>
                         </div>
                     </div>
                 </div>
@@ -57,12 +62,19 @@
     </main>
 
     <script>
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbz22baIknv96tjyJYB_qiit6T-owv4qSSUpjA22cZMHXeZ02JnqcPxaQGVUyWzhTubQhA/exec';
-        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        if(!currentUser || currentUser.role !== 'admin') window.location.href = 'index.html'; // เตะกลับถ้าไม่ใช่แอดมิน
+        // อัปเดตลิงก์ GAS_URL เป็นตัวล่าสุด
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbzLMRP-0QxGIWBtmk2V1toXTfRnb5ACuABcSKGs2qqtxNKa07EeDAOHLFYzzyVS1MnWbA/exec';
+        
+        // เปลี่ยนจาก localStorage เป็น sessionStorage และเช็ค role ให้รัดกุมขึ้น
+        let currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+        if(!currentUser || String(currentUser.role).toLowerCase().trim() !== 'admin') {
+            window.location.replace('index.html');
+        }
 
         function fetchGAS(payload) { return fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r=>r.json()); }
-        function logout() { localStorage.removeItem('currentUser'); window.location.href = 'index.html'; }
+        
+        // แก้ไขฟังก์ชัน logout ให้เคลียร์ sessionStorage
+        function logout() { sessionStorage.clear(); window.location.replace('index.html'); }
 
         window.onload = () => { loadSubjects(); };
 
@@ -70,24 +82,38 @@
             fetchGAS({ action: "getDashboardData", myId: currentUser.id, myName: currentUser.name, role: currentUser.role }).then(r => {
                 if(r.status === "success") {
                     let chkHtml = "";
-                    r.subjects.forEach(sub => { chkHtml += `<label class="flex items-center bg-slate-50 border px-3 py-2 rounded-lg cursor-pointer text-sm"><input type="checkbox" value="${sub}" class="t-cb mr-2"> ${sub}</label>`; });
+                    r.subjects.forEach(sub => { chkHtml += `<label class="flex items-center bg-slate-50 border px-3 py-2 rounded-lg cursor-pointer text-sm hover:border-purple-300 transition"><input type="checkbox" value="${sub}" class="t-cb mr-2 text-purple-600 focus:ring-purple-500"> ${sub}</label>`; });
                     document.getElementById('a_subjectCheckboxes').innerHTML = chkHtml;
                 }
             });
         }
 
         function adminAddSubject() { 
-            let sub = document.getElementById('a_subName').value.trim(); if(!sub) return; 
+            let sub = document.getElementById('a_subName').value.trim(); if(!sub) return Swal.fire('เตือน', 'กรุณากรอกชื่อรายวิชา', 'warning'); 
             Swal.fire({title:'กำลังบันทึก...', didOpen:()=>Swal.showLoading()}); 
-            fetchGAS({action:"addSubject", subjectName:sub}).then(r => { if(r.status==="success") { Swal.fire('สำเร็จ','','success'); document.getElementById('a_subName').value=""; loadSubjects(); }}); 
+            fetchGAS({action:"addSubject", subjectName:sub}).then(r => { 
+                if(r.status==="success") { 
+                    Swal.fire('สำเร็จ','เพิ่มวิชาเรียบร้อยแล้ว','success'); 
+                    document.getElementById('a_subName').value=""; 
+                    loadSubjects(); 
+                }
+            }); 
         }
 
         function adminAddTeacher() { 
             let u = document.getElementById('a_tUser').value.trim(), p = document.getElementById('a_tPass').value.trim(), n = document.getElementById('a_tName').value.trim(); 
-            let cbs = document.querySelectorAll('.t-cb:checked'); let subs = Array.from(cbs).map(cb => cb.value).join(','); 
-            if(!u || !p || !n) return Swal.fire('เตือน','กรอกให้ครบ','warning'); 
+            let cbs = document.querySelectorAll('.t-cb:checked'); let subs = Array.from(cbs).map(cb => cb.value).join(', '); 
+            if(!u || !p || !n) return Swal.fire('เตือน','กรุณากรอกข้อมูลให้ครบถ้วน','warning'); 
             Swal.fire({title:'กำลังบันทึก...', didOpen:()=>Swal.showLoading()}); 
-            fetchGAS({action:"addTeacher", t_username:u, t_password:p, t_name:n, t_subjects:subs}).then(r => { if(r.status==="success") { Swal.fire('สำเร็จ','','success'); document.getElementById('a_tUser').value=""; document.getElementById('a_tPass').value=""; document.getElementById('a_tName').value=""; Array.from(cbs).forEach(cb=>cb.checked=false); }}); 
+            fetchGAS({action:"addTeacher", t_username:u, t_password:p, t_name:n, t_subjects:subs}).then(r => { 
+                if(r.status==="success") { 
+                    Swal.fire('สำเร็จ','ลงทะเบียนครูผู้สอนเรียบร้อยแล้ว','success'); 
+                    document.getElementById('a_tUser').value=""; 
+                    document.getElementById('a_tPass').value=""; 
+                    document.getElementById('a_tName').value=""; 
+                    Array.from(cbs).forEach(cb=>cb.checked=false); 
+                }
+            }); 
         }
     </script>
 </body>
