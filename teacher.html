@@ -183,10 +183,8 @@
                                 <input type="file" class="hidden" accept="image/*" onchange="handleImageUpload(event)">
                             </label>
                         </div>
-                        <div class="text-center md:text-left">
-                            <h3 class="font-bold text-2xl lg:text-3xl font-prompt text-slate-800 mb-1" id="settingNameDisplay">-</h3>
-                            <p class="text-xs font-bold text-[#6d28d9] bg-purple-50 px-3 py-1 rounded-full uppercase tracking-wider mt-2">INSTRUCTOR</p>
-                        </div>
+                        <h3 class="font-bold text-2xl lg:text-3xl font-prompt text-slate-800 mt-4" id="settingNameDisplay">-</h3>
+                        <p class="text-xs font-bold text-[#6d28d9] bg-purple-50 px-3 py-1 rounded-full uppercase tracking-wider mt-2">INSTRUCTOR</p>
                     </div>
                     <form id="profileForm" class="space-y-5">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -201,8 +199,8 @@
         </div>
     </main>
 
-    <aside id="rightSidebar" class="w-72 bg-white border-l border-slate-200 flex-shrink-0 hidden lg:flex flex-col h-full shadow-sm relative">
-        <div class="p-8 overflow-y-auto flex-1 hide-scroll pb-24">
+    <aside id="rightSidebar" class="w-72 bg-white border-l border-slate-200 flex-shrink-0 hidden lg:flex flex-col h-full shadow-sm">
+        <div class="p-8 overflow-y-auto flex-1 hide-scroll">
             <div class="text-right lg:hidden mb-4"><button onclick="document.getElementById('rightSidebar').classList.add('hidden')" class="text-slate-400 bg-slate-100 w-8 h-8 rounded-full"><i class="fa-solid fa-xmark"></i></button></div>
             <h3 class="font-bold text-xs mb-8 font-prompt uppercase text-slate-400 tracking-widest">Instructor Overview</h3>
             
@@ -402,6 +400,10 @@
         }
         function deleteLesson(t) { Swal.fire({title:'ลบ?', text: 'แน่ใจหรือไม่?', icon:'warning', showCancelButton:true}).then(r=>{if(r.isConfirmed) { Swal.fire({title:'Deleting...',didOpen:()=>Swal.showLoading()}); fetchGAS({action:"deleteLesson", title:t}).then(()=>loadDashboardData()); }}); }
 
+        // ==========================================
+        // ระบบ CHAT (ลบคำว่า "ห้อง" ออก และเชื่อมแชทแบบตอบโต้หลายครั้ง)
+        // ==========================================
+        
         function renderChatContacts() {
             let studentsMap = {}; 
             
@@ -410,9 +412,11 @@
                 if(sName === currentUser.name) sName = m.receiver;
                 
                 if(!studentsMap[sName]) { 
+                    // เก็บ room (assigned ของนักเรียน) ไว้
                     studentsMap[sName] = { name: sName, room: m.senderRoom || "-", pic: "", msgs: [] }; 
                 }
                 
+                // ดึงรูปล่าสุดจากแชท
                 if (m.senderName === sName && m.senderPic && m.senderPic.trim() !== "") {
                     studentsMap[sName].pic = m.senderPic;
                 }
@@ -432,6 +436,7 @@
             if(students.length === 0) html += `<div class="text-center p-4 text-xs text-slate-400 border-2 border-dashed rounded-xl mx-4">ไม่มีข้อความ</div>`;
             
             students.forEach(s => {
+                // ดึงรูปล่าสุดจากตารางผู้ใช้โดยตรง (ถ้ามี)
                 let userObj = allUsersData.find(u => u.name === s.name);
                 if (userObj && userObj.pic && userObj.pic.trim() !== "") s.pic = userObj.pic;
                 if (userObj && userObj.assigned && userObj.assigned.trim() !== "") s.room = userObj.assigned;
@@ -467,6 +472,7 @@
                 }
             });
 
+            // ดึงจาก user database เป็น Prioriy สูงสุด (อัปเดตแบบเป๊ะๆ)
             let userObj = allUsersData.find(u => u.name === n);
             if (userObj) {
                 if(userObj.pic && userObj.pic.trim() !== "") latestStudentPic = userObj.pic;
@@ -474,7 +480,7 @@
             }
 
             let hName = document.getElementById('chatHeaderName');
-            if(hName) hName.innerText = n + " (" + studentRoom + ")";
+            if(hName) hName.innerText = n + " (" + studentRoom + ")"; // เอาคำว่า ห้อง ออกตามคำสั่ง
             
             let headerPicHtml = latestStudentPic ? `<img src="${latestStudentPic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center font-bold text-indigo-600 bg-indigo-100 text-xs lg:text-sm">${getInitials(n)}</div>`; 
             let hAv = document.getElementById('chatHeaderAvatar');
@@ -487,12 +493,19 @@
                 let d = new Date(m.date).toLocaleString('th-TH', { hour:'2-digit', minute:'2-digit' });
                 let sPicHtml = latestStudentPic ? `<img src="${latestStudentPic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-indigo-100 text-indigo-600 font-bold text-[8px]">${getInitials(n)}</div>`;
                 
+                // ฝั่งนักเรียนส่งมา (ข้อความหลัก) ให้ขึ้นฝั่งซ้ายเสมอ
                 if(m.senderName === n && m.message && m.message.trim() !== "") {
                     h += `<div class="flex flex-col items-start w-full mb-4"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${sPicHtml}</div><p class="text-[9px] font-bold text-slate-400">${n} • ${d}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm">${m.message}</div></div>`;
                 }
                 
+                // ฝั่งครูตอบกลับ ให้ขึ้นขวาเสมอ (แยกระบบพิมพ์ได้หลายครั้งด้วย <br><br>)
                 if(m.reply && m.reply.trim()!=="") { 
-                    h += `<div class="flex flex-col items-end w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400">คุณตอบแล้ว</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${m.reply}</div></div>`; 
+                    let reps = m.reply.split('<br><br>');
+                    reps.forEach(rep => {
+                        if(rep.trim() !== "") {
+                            h += `<div class="flex flex-col items-end w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400">คุณตอบแล้ว</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${rep}</div></div>`; 
+                        }
+                    });
                 }
             });
             
@@ -500,6 +513,7 @@
             if(cHist) { cHist.innerHTML = h; cHist.scrollTop = cHist.scrollHeight; }
         }
 
+        // ระบบ Refresh ข้อความอัจฉริยะ 
         function loadMessagesForChat() { 
             fetchGAS({ action: "getMessages", myId: currentUser.id, myName: currentUser.name, role: currentUser.role })
             .then(r => { 
@@ -521,17 +535,33 @@
 
         function sendChatMessage() {
             let msg = document.getElementById('chatInputMessage').value.trim(); if(!msg || !activeChatContact) return;
-            let targetMsg = cachedMessages.filter(m => m.senderName === activeChatContact).find(m => !m.reply || m.reply.trim()==="");
-            if(!targetMsg) return Swal.fire('ข้อมูล', 'ไม่มีข้อความใหม่ที่ค้างตอบครับ', 'info');
             
+            // หาข้อความล่าสุดที่นักเรียนเป็นคนเริ่มแชทมา
+            let msgs = cachedMessages.filter(m => m.senderName === activeChatContact || m.receiver === activeChatContact);
+            let targetMsg = msgs.filter(m => m.senderName === activeChatContact).pop();
+            
+            if(!targetMsg) return Swal.fire('ข้อมูล', 'ต้องรอให้นักเรียนทักมาก่อนเพื่อเริ่มสนทนาครับ', 'info');
+            
+            // ทำระบบตอบกลับหลายครั้งได้ในแถวเดิม
+            let newReply = msg;
+            if(targetMsg.reply && targetMsg.reply.trim() !== "") {
+                newReply = targetMsg.reply + "<br><br>" + msg;
+            }
+
+            // แสดงหน้าจอ Optimistic UI (ทำให้ดูเหมือนส่งทันที)
             let cHist = document.getElementById('chatHistory');
             let myPicHtml = currentUser.pic ? `<img src="${currentUser.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-purple-100 text-purple-600 font-bold text-[8px]">${getInitials(currentUser.name)}</div>`;
             cHist.innerHTML += `<div class="flex flex-col items-end w-full mb-4 mt-2 opacity-50"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400">กำลังส่ง...</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${msg}</div></div>`;
             cHist.scrollTop = cHist.scrollHeight;
             document.getElementById('chatInputMessage').value = "";
 
-            fetchGAS({ action: "replyMessage", row: targetMsg.row, replyText: msg });
-            setTimeout(loadMessagesForChat, 1000);
+            // เซฟใส่ Local ป้องกันส่งเบิ้ล
+            targetMsg.reply = newReply;
+
+            // ส่งข้อมูลกลับไปที่ GAS
+            fetchGAS({ action: "replyMessage", row: targetMsg.row, replyText: newReply });
+            // แอบรีเฟรชให้แน่ใจว่าสำเร็จ
+            setTimeout(loadMessagesForChat, 1500);
         }
 
         function loadAnalytics() { fetchGAS({action:"getAnalytics"}).then(r => { if(r.status === "success"){ globalStatData = r; renderTeacherTables(); } }); }
