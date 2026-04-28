@@ -7,6 +7,8 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -18,7 +20,6 @@
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* ระบบ Sidebar บนมือถือ */
         #mainSidebar { transition: transform 0.3s ease-in-out; }
         @media (max-width: 1024px) {
             #mainSidebar { position: fixed; top: 0; left: 0; height: 100vh; transform: translateX(-100%); z-index: 50; }
@@ -44,7 +45,7 @@
 
     <div id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
-    <aside id="mainSidebar" class="w-72 lg:w-64 bg-white border-r border-slate-200 flex flex-col flex-shrink-0">
+    <aside id="mainSidebar" class="w-72 lg:w-64 bg-white border-r border-slate-200 flex flex-col flex-shrink-0 z-50">
         <div class="h-20 lg:h-24 flex items-center px-8 border-b border-slate-100 cursor-pointer" onclick="nav('home')">
             <div class="w-8 h-8 bg-[#6d28d9] text-white rounded-full flex items-center justify-center text-sm shadow-md mr-3"><i class="fa-solid fa-sparkles"></i></div>
             <h1 class="text-xl font-black font-prompt text-[#6d28d9] uppercase">Coursue</h1>
@@ -126,7 +127,9 @@
             <div id="view_lesson_detail" class="hidden max-w-4xl mx-auto">
                 <button onclick="nav('lessons')" class="mb-4 lg:mb-6 flex items-center bg-white px-4 py-2 rounded-full shadow-sm text-sm font-bold text-slate-500 border hover:bg-slate-50 transition"><i class="fa-solid fa-arrow-left mr-2"></i> กลับ</button>
                 <div class="bg-white rounded-[1.5rem] lg:rounded-[2rem] p-4 lg:p-8 border border-slate-100 mb-6 shadow-sm">
-                    <div id="det_video_container" class="w-full aspect-video bg-slate-900 rounded-xl lg:rounded-[1.5rem] mb-6 overflow-hidden hidden shadow-inner"></div>
+                    <div id="det_video_container" class="w-full aspect-video bg-slate-900 rounded-xl lg:rounded-[1.5rem] mb-6 overflow-hidden hidden shadow-inner relative">
+                        <div id="ytplayer_div" class="w-full h-full absolute inset-0"></div>
+                    </div>
                     <div id="det_image_container" class="w-full h-48 lg:h-80 bg-slate-900 rounded-xl lg:rounded-[1.5rem] mb-6 overflow-hidden relative">
                         <img id="det_img_src" src="" class="w-full h-full object-cover opacity-60">
                         <div class="absolute bottom-4 left-4 lg:bottom-8 lg:left-8 text-white">
@@ -155,11 +158,11 @@
                 <div class="w-full lg:w-2/3 bg-white rounded-2xl lg:rounded-3xl border border-slate-100 flex flex-col overflow-hidden shadow-sm relative lg:h-full h-2/3">
                     <div id="chatPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-50 z-10 text-slate-400">
                         <div class="w-20 h-20 bg-purple-100 text-purple-400 rounded-full flex items-center justify-center text-3xl mb-4 shadow-inner"><i class="fa-regular fa-comment"></i></div>
-                        <p class="font-bold text-slate-500 text-sm lg:text-base">เลือกบุคคลเพื่อเริ่มสนทนา</p>
+                        <p class="font-bold text-slate-500 text-sm lg:text-base">เลือกที่ปรึกษาเพื่อเริ่มสนทนา</p>
                     </div>
-                    <div class="p-3 lg:p-5 border-b flex items-center justify-between bg-white z-0" id="chatHeader">
+                    <div class="p-4 lg:p-5 border-b flex items-center justify-between bg-white z-0" id="chatHeader">
                         <div class="flex items-center gap-3 lg:gap-4">
-                            <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shadow-sm border border-slate-200 bg-indigo-100 flex items-center justify-center font-bold text-indigo-600" id="chatHeaderAvatar"></div>
+                            <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shadow-sm bg-slate-200 flex items-center justify-center font-bold text-indigo-600" id="chatHeaderAvatar"></div>
                             <div><h3 class="font-bold text-sm lg:text-lg text-slate-800 mt-1 flex items-center" id="chatHeaderName">Name</h3></div>
                         </div>
                     </div>
@@ -187,8 +190,8 @@
                     </div>
                     <form id="profileForm" class="space-y-5">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <div><label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-widest">Email</label><input type="email" id="set_email" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-[#6d28d9] text-sm"></div>
-                            <div><label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-widest">Phone</label><input type="tel" id="set_phone" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-[#6d28d9] text-sm"></div>
+                            <div><label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-widest">Email *</label><input type="email" id="set_email" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-[#6d28d9] text-sm" required></div>
+                            <div><label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-widest">Phone *</label><input type="tel" id="set_phone" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-[#6d28d9] text-sm" required></div>
                         </div>
                         <button type="button" onclick="saveProfile()" class="w-full bg-[#6d28d9] text-white font-bold py-4 rounded-xl shadow-lg mt-4 active:scale-[0.98] transition font-prompt uppercase text-sm tracking-widest hover:bg-purple-800">Update Profile</button>
                     </form>
@@ -216,19 +219,21 @@
 
             <h4 class="font-bold text-slate-800 font-prompt text-sm mb-5 uppercase tracking-widest mt-8">TEACHER</h4>
             <div class="space-y-3" id="mentorListUI">
-                <div class="text-[10px] text-slate-400 text-center py-4 bg-slate-50 rounded-xl border border-dashed">กำลังโหลดข้อมูลอาจารย์...<br>(ตรวจสอบ Sheet Users)</div>
+                <div class="text-[10px] text-slate-400 text-center py-4 bg-slate-50 rounded-xl border border-dashed">กำลังโหลดข้อมูลอาจารย์...</div>
             </div>
         </div>
     </aside>
 
     <script>
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbze1x9SSRsoZSE__Cm6iMzLv9A45ry3eTHB2fkJNktUmRs4yyLgh96s7wUdaPBPSzgIew/exec';
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbzLMRP-0QxGIWBtmk2V1toXTfRnb5ACuABcSKGs2qqtxNKa07EeDAOHLFYzzyVS1MnWbA/exec';
         let currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
         if (!currentUser || String(currentUser.role).toLowerCase().trim() !== 'student') { window.location.replace('index.html'); }
 
         let allSubjects = [], allLessons = [], cachedMessages = [], allUsersData = [], currentSubject = "", currentLesson = null, uploadedImageBase64 = "", activeChatContact = null;
         let chatTimer = null;
         let mentors = []; 
+        let ytPlayer = null; // ตัวแปรสำหรับคุม YouTube
+        let ytProgressTimer = null; // ตัวแปรสำหรับนับเวลา YouTube
 
         function fetchGAS(payload) { return fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r => r.json()); }
         function getInitials(n) { let p = n.trim().split(/\s+/); return p.length >= 2 ? (p[0][0] + p[1][0]).toUpperCase() : n.substring(0, 2).toUpperCase(); }
@@ -261,6 +266,14 @@
         function clickMenuLessons() { currentSubject = ""; document.getElementById('allSubjectTitle').innerText = "บทเรียนทั้งหมด"; nav('lessons'); }
 
         function nav(target) {
+            // ถ้านำทางออกจากหน้าบทเรียน ให้หยุดเล่นวิดีโอทันที ป้องกันเสียงค้าง
+            if (target !== 'lesson_detail') {
+                if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
+                    ytPlayer.pauseVideo();
+                }
+                if (ytProgressTimer) { clearInterval(ytProgressTimer); ytProgressTimer = null; }
+            }
+
             ['view_home', 'view_lessons', 'view_lesson_detail', 'view_inbox', 'view_settings'].forEach(id => document.getElementById(id).style.display = 'none');
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active')); 
             let tab = document.getElementById('nav_' + target); if(tab) tab.classList.add('active');
@@ -282,16 +295,12 @@
             document.getElementById('mainScrollArea').scrollTop = 0;
         }
 
-        // --- ระบบนับแจ้งเตือนข้อความ ---
-        // เปลี่ยนระบบนับใหม่ทั้งหมดให้นับจำนวนข้อความที่ครู/แอดมินส่งมาโดยตรง หรือ ตอบกลับ
         function countTeacherMessages(teacherName) {
             let count = 0;
             cachedMessages.forEach(m => {
-                // ครูทักตรงมาหานักเรียน (1 แถว = 1 ข้อความ)
                 if (m.senderName === teacherName && m.receiver === currentUser.name && m.message && m.message.trim() !== "") {
                     count += 1;
                 }
-                // นักเรียนทักไป แล้วครูตอบกลับ (ครูตอบหลายครั้งจะถูกแยกด้วย <br><br> ในแถวเดียว)
                 if (m.senderName === currentUser.name && m.receiver === teacherName && m.reply && m.reply.trim() !== "") {
                     let replies = m.reply.split('<br><br>').filter(x => x.trim() !== "");
                     count += replies.length;
@@ -304,7 +313,6 @@
             let globalUnread = 0;
             mentors.forEach(c => {
                 let totalMsgs = countTeacherMessages(c.name);
-                // เช็คว่านักเรียนเคยเปิดอ่านไปแล้วกี่ข้อความ (จำลง LocalStorage ของเครื่อง)
                 let readCount = parseInt(localStorage.getItem('readMsgs_' + currentUser.id + '_' + c.name) || '0');
                 let unreadCount = totalMsgs - readCount;
                 if(unreadCount > 0) globalUnread += unreadCount;
@@ -383,19 +391,36 @@
             document.getElementById('lessonGrid_student').innerHTML = filtered.length > 0 ? filtered.map(l => renderLessonCard(l, allLessons.indexOf(l))).join('') : '<div class="col-span-full py-20 text-center text-slate-400 font-bold border-2 border-dashed border-slate-200 rounded-[2rem]">ไม่พบสิ่งที่ค้นหา</div>';
         }
 
+        // แทรกแถบ Progress Bar "ดูค้างไว้" ในการ์ดบทเรียน
         function renderLessonCard(l, idx, isNew = false) {
             let isC = l.studentScore !== null;
             let favs = JSON.parse(localStorage.getItem('favs_'+currentUser.id)||'[]');
             let isF = favs.includes(l.title);
             let heartClass = isF ? 'fa-solid text-rose-500' : 'fa-regular text-slate-400 hover:text-rose-500';
 
+            // ตรวจสอบข้อมูลการดูวิดีโอค้างไว้จาก Local Storage
+            let progStatus = localStorage.getItem('ytProg_' + currentUser.id + '_' + l.title);
+            let progPct = localStorage.getItem('ytPct_' + currentUser.id + '_' + l.title) || 0;
+            let progressIndicator = '';
+            let newBadge = isNew ? `<div class="absolute top-3 left-3 bg-gradient-to-r from-rose-500 to-pink-500 text-white px-3 py-1 rounded-full text-[10px] font-bold shadow-md tracking-wider animate-pulse border border-white/20 z-10">NEW</div>` : '';
+
+            if (!isC && progStatus && progStatus !== "done") {
+                // เปลี่ยนป้าย New เป็นป้าย ดูค้างไว้ ถ้ามีประวัติการดู
+                newBadge = `<div class="absolute top-3 left-3 bg-amber-400 text-amber-900 px-2 py-0.5 rounded-md text-[9px] font-bold shadow-md z-10 flex items-center"><i class="fa-solid fa-clock-rotate-left mr-1"></i> ดูค้างไว้</div>`;
+                progressIndicator = `
+                <div class="absolute bottom-0 left-0 w-full h-1.5 bg-slate-200/50 z-20">
+                    <div class="h-full bg-amber-400" style="width: ${progPct}%"></div>
+                </div>`;
+            }
+
             return `
             <div class="course-card bg-white rounded-[2rem] p-4 lg:p-5 border border-slate-100 flex flex-col h-full shadow-sm hover:shadow-md transition relative" onclick="openLesson(${idx})">
                 <div class="h-32 lg:h-48 w-full rounded-[1.5rem] mb-4 lg:mb-5 relative overflow-hidden bg-slate-900 group">
                     <img src="${getImageUrl(l.title)}" class="w-full h-full object-cover opacity-90 transition duration-500 group-hover:scale-105 ${isC?'grayscale':''}">
-                    ${isNew ? `<div class="absolute top-3 left-3 bg-gradient-to-r from-rose-500 to-pink-500 text-white px-3 py-1 rounded-full text-[10px] font-bold shadow-md tracking-wider animate-pulse border border-white/20 z-10">NEW</div>` : ''}
+                    ${newBadge}
                     <div class="absolute top-3 right-3 w-8 h-8 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-sm z-10 transition hover:bg-white" onclick="toggleFavorite(event, '${l.title}')"><i class="${heartClass} fa-heart text-sm pointer-events-none"></i></div>
                     ${isC ? `<div class="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[1px]"><div class="bg-emerald-500 text-white px-3 py-1 rounded-lg text-[10px] font-bold shadow-md">Completed</div></div>` : ''}
+                    ${progressIndicator}
                 </div>
                 <div class="flex-1 flex flex-col justify-between px-1">
                     <div>
@@ -434,11 +459,83 @@
             if(document.getElementById('view_lessons').style.display !== 'none') { renderStudentLessons(); }
         }
 
+        // =====================================
+        // ระบบ YouTube API (จดจำเวลาดูค้างไว้)
+        // =====================================
+        function onYouTubePlayerReady(event) {
+            // เช็คว่ามีเวลาที่ดูค้างไว้หรือไม่
+            let savedTime = localStorage.getItem('ytProg_' + currentUser.id + '_' + currentLesson.title);
+            if (savedTime && parseFloat(savedTime) > 0 && savedTime !== "done") {
+                event.target.seekTo(parseFloat(savedTime), true);
+                Swal.fire({
+                    toast: true, position: 'top-end',
+                    text: 'กำลังเล่นต่อจากจุดเดิมที่คุณดูค้างไว้ ⏱️',
+                    icon: 'info', showConfirmButton: false, timer: 3000
+                });
+            }
+        }
+
+        function onYouTubePlayerStateChange(event) {
+            if (event.data == YT.PlayerState.PLAYING) {
+                // เริ่มจับเวลาบันทึกความคืบหน้าทุกๆ 3 วินาที
+                ytProgressTimer = setInterval(() => {
+                    if(ytPlayer && typeof ytPlayer.getCurrentTime === 'function') {
+                        let currentTime = ytPlayer.getCurrentTime();
+                        let duration = ytPlayer.getDuration();
+                        
+                        if (duration > 0) {
+                            // ถ้านักเรียนดูจนใกล้จบ (เหลือไม่ถึง 5 วินาที) ให้ตีว่าดูจบแล้ว
+                            if (duration - currentTime < 5) {
+                                localStorage.setItem('ytProg_' + currentUser.id + '_' + currentLesson.title, "done");
+                                localStorage.removeItem('ytPct_' + currentUser.id + '_' + currentLesson.title);
+                                clearInterval(ytProgressTimer);
+                                ytProgressTimer = null;
+                            } else {
+                                // บันทึกเวลาปัจจุบัน และ % เพื่อเอาไปทำ Progress Bar
+                                localStorage.setItem('ytProg_' + currentUser.id + '_' + currentLesson.title, currentTime);
+                                let pct = (currentTime / duration) * 100;
+                                localStorage.setItem('ytPct_' + currentUser.id + '_' + currentLesson.title, pct);
+                            }
+                        }
+                    }
+                }, 3000);
+            } else {
+                // ถ้าวิดีโอถูกหยุด หรือ โหลด ให้หยุดบันทึก
+                if (ytProgressTimer) { clearInterval(ytProgressTimer); ytProgressTimer = null; }
+            }
+        }
+
         function openLesson(idx) {
-            currentLesson = allLessons[idx]; nav('lesson_detail');
+            currentLesson = allLessons[idx]; 
+            nav('lesson_detail');
+            
+            // ล้างวิดีโอเก่าทิ้งก่อน ป้องกันเสียงตีกัน
+            if (ytPlayer) { ytPlayer.destroy(); ytPlayer = null; }
+            if (ytProgressTimer) { clearInterval(ytProgressTimer); ytProgressTimer = null; }
+
             let ytId = extractYouTubeID(currentLesson.content.match(/\[YT:(.*?)\]/)?.[1] || "");
-            if(ytId) { document.getElementById('det_video_container').innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${ytId}?rel=0" frameborder="0" allowfullscreen></iframe>`; document.getElementById('det_video_container').classList.remove('hidden'); document.getElementById('det_image_container').classList.add('hidden'); }
-            else { document.getElementById('det_video_container').classList.add('hidden'); document.getElementById('det_image_container').classList.remove('hidden'); document.getElementById('det_img_src').src = getImageUrl(currentLesson.title); }
+            
+            if(ytId) { 
+                document.getElementById('det_video_container').innerHTML = `<div id="ytplayer_div" class="w-full h-full absolute inset-0"></div>`; 
+                document.getElementById('det_video_container').classList.remove('hidden'); 
+                document.getElementById('det_image_container').classList.add('hidden'); 
+                
+                // สร้างตัวเล่น YouTube Iframe API แบบควบคุมได้
+                ytPlayer = new YT.Player('ytplayer_div', {
+                    videoId: ytId,
+                    playerVars: { 'rel': 0, 'playsinline': 1, 'modestbranding': 1 },
+                    events: {
+                        'onReady': onYouTubePlayerReady,
+                        'onStateChange': onYouTubePlayerStateChange
+                    }
+                });
+
+            } else { 
+                document.getElementById('det_video_container').classList.add('hidden'); 
+                document.getElementById('det_image_container').classList.remove('hidden'); 
+                document.getElementById('det_img_src').src = getImageUrl(currentLesson.title); 
+            }
+            
             document.getElementById('det_ep').innerText = "EP." + currentLesson.ep; document.getElementById('det_title').innerText = currentLesson.title; document.getElementById('det_content').innerHTML = formatContent(currentLesson.content);
             let vQs = (currentLesson.questions || []).filter(q => q.q);
             if(currentLesson.studentScore !== null) { document.getElementById('quizForm').classList.add('hidden'); document.getElementById('quizCompletedMsg').classList.remove('hidden'); document.getElementById('quizScoreResult').innerText = currentLesson.studentScore; }
@@ -453,9 +550,17 @@
         function submitQuiz(noQ = false, sc = 0) {
             let vQs = (currentLesson.questions || []).filter(q => q.q);
             if(!noQ) { for(let i=1; i<=vQs.length; i++) { let a = document.querySelector(`input[name="ans${i}"]:checked`); if(!a) return Swal.fire('เตือน', 'กรุณาทำข้อสอบให้ครบครับ', 'warning'); if(a.value === vQs[i-1].ans) sc++; } }
+            
+            // เมื่อสอบผ่านแล้ว ลบประวัติการดูทิ้ง เพราะถือว่าจบแล้ว
+            localStorage.removeItem('ytProg_' + currentUser.id + '_' + currentLesson.title);
+            localStorage.removeItem('ytPct_' + currentUser.id + '_' + currentLesson.title);
+
             fetchGAS({ action: "quiz", username: currentUser.id, name: currentUser.name, room: currentUser.assigned, subject: currentLesson.subject, lessonName: currentLesson.title, score: sc }).then(() => { currentLesson.studentScore = sc; openLesson(allLessons.indexOf(currentLesson)); loadDashboardData(); Swal.fire({ icon: 'success', title: 'สำเร็จ', text: `บันทึกคะแนนเรียบร้อย` }); });
         }
 
+        // =====================================
+        // ฟังก์ชันวาดรายชื่อครูและแจ้งเตือนแชท
+        // =====================================
         function buildContactCard(c, type) {
             let isActive = activeChatContact === c.name ? "active" : "";
             let pPic = c.pic ? `<img src="${c.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center font-bold text-xs lg:text-sm">${c.initials}</div>`;
@@ -569,7 +674,7 @@
         function openChat(n) {
             activeChatContact = n; document.getElementById('chatPlaceholder').classList.add('hidden'); 
             
-            // อ่านแล้วหายปั๊บ (อัปเดตแจ้งเตือนลง Storage)
+            // อ่านแล้วแจ้งเตือนหายทันที
             let totalMsgs = countTeacherMessages(n);
             localStorage.setItem('readMsgs_' + currentUser.id + '_' + n, totalMsgs);
             renderChatContacts(); 
@@ -626,21 +731,52 @@
             cHist.scrollTop = cHist.scrollHeight;
             document.getElementById('chatInputMessage').value = "";
 
-            fetchGAS({ action: "sendMessage", senderId: currentUser.id, senderName: currentUser.name, senderRoom: currentUser.assigned, senderPic: currentUser.pic, receiver: activeChatContact, message: msg });
-            setTimeout(loadMessagesForChat, 1000);
+            fetchGAS({ action: "sendMessage", senderId: currentUser.id, senderName: currentUser.name, senderRoom: currentUser.assigned, senderPic: currentUser.pic, receiver: activeChatContact, message: msg }).then(() => { forceRefreshChat(); });
+        }
+
+        function forceRefreshChat() {
+            let btn = document.querySelector('#chatHeader button i');
+            if(btn) btn.classList.add('fa-spin');
+            fetchGAS({ action: "getMessages", myId: currentUser.id, myName: currentUser.name, role: currentUser.role })
+            .then(r => { 
+                if(btn) btn.classList.remove('fa-spin');
+                if(r.status === "success") { 
+                    if(r.users && r.users.length > 0) {
+                        allUsersData = r.users;
+                        mentors = allUsersData.filter(u => u.role && ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({
+                            name: u.name || u.Name || "", role: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher', initials: getInitials(u.name || u.Name || "A"), pic: u.pic || u.ProfilePic || "", room: u.assigned || u.room || u.Room || "-", bgColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "bg-rose-100" : "bg-indigo-100", textColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "text-rose-600" : "text-indigo-600"
+                        })).sort((a, b) => {
+                            if (a.role === 'Admin' && b.role !== 'Admin') return 1;
+                            if (a.role !== 'Admin' && b.role === 'Admin') return -1;
+                            return 0;
+                        });
+                    }
+                    cachedMessages = r.data || []; 
+                    if(activeChatContact) openChat(activeChatContact); 
+                    else renderChatContacts(); 
+                } 
+            }); 
         }
 
         function loadMessagesForChat() { 
             fetchGAS({ action: "getMessages", myId: currentUser.id, myName: currentUser.name, role: currentUser.role })
             .then(r => { 
                 if(r.status === "success") { 
-                    if(r.users) allUsersData = r.users;
-                    
                     let isChanged = false;
                     if(JSON.stringify(cachedMessages) !== JSON.stringify(r.data)) isChanged = true;
                     if(!isChanged && r.users) isChanged = true; 
 
                     if(isChanged) {
+                        if(r.users && r.users.length > 0) {
+                            allUsersData = r.users;
+                            mentors = allUsersData.filter(u => u.role && ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({
+                                name: u.name || u.Name || "", role: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher', initials: getInitials(u.name || u.Name || "A"), pic: u.pic || u.ProfilePic || "", room: u.assigned || u.room || u.Room || "-", bgColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "bg-rose-100" : "bg-indigo-100", textColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "text-rose-600" : "text-indigo-600"
+                            })).sort((a, b) => {
+                                if (a.role === 'Admin' && b.role !== 'Admin') return 1;
+                                if (a.role !== 'Admin' && b.role === 'Admin') return -1;
+                                return 0;
+                            });
+                        }
                         cachedMessages = r.data || []; 
                         if(activeChatContact) openChat(activeChatContact); 
                         else renderChatContacts(); 
@@ -649,9 +785,6 @@
             }); 
         }
 
-        // =====================================
-        // ตั้งค่า PROFILE
-        // =====================================
         function updateProfileUI() {
             const fullName = currentUser.name; const inits = getInitials(fullName);
             
