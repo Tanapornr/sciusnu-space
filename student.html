@@ -215,12 +215,18 @@
             </div>
             
             <div class="grid grid-cols-2 gap-3 mb-8">
-                <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 text-center"><p class="text-[10px] text-slate-400 font-bold uppercase mb-1">ความคืบหน้า</p><p class="text-lg font-black text-slate-800" id="statCompleted">0/0</p></div>
-                <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 text-center"><p class="text-[10px] text-slate-400 font-bold uppercase mb-1">ผลประเมิน</p><p class="text-lg font-black text-slate-800" id="statAvgScore">0.0</p></div>
+                <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 flex flex-col items-center justify-center min-h-[80px]">
+                    <p class="text-2xl font-black text-slate-800" id="statCompleted">0/0</p>
+                </div>
+                <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 flex flex-col items-center justify-center min-h-[80px]">
+                    <p class="text-2xl font-black text-slate-800" id="statAvgScore">0.0</p>
+                </div>
             </div>
 
             <h4 class="font-bold text-slate-800 font-prompt text-xs mb-5 uppercase tracking-widest text-slate-400">Your Mentor</h4>
-            <div class="space-y-4" id="mentorListUI"></div>
+            <div class="space-y-4" id="mentorListUI">
+                <div class="text-[10px] text-slate-400 text-center py-4 bg-slate-50 rounded-xl border border-dashed">กำลังโหลดข้อมูลที่ปรึกษา...</div>
+            </div>
         </div>
     </aside>
 
@@ -231,7 +237,7 @@
 
         let allSubjects = [], allLessons = [], cachedMessages = [], allUsersData = [], currentSubject = "", currentLesson = null, uploadedImageBase64 = "", activeChatContact = null;
         let chatTimer = null;
-        let mentors = []; // ดึงข้อมูลจาก Database แทนการกำหนดตายตัว
+        let mentors = []; 
 
         function fetchGAS(payload) { return fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r => r.json()); }
         function getInitials(n) { let p = n.trim().split(/\s+/); return p.length >= 2 ? (p[0][0] + p[1][0]).toUpperCase() : n.substring(0, 2).toUpperCase(); }
@@ -281,7 +287,7 @@
             }
 
             if(target === 'lessons') { renderStudentLessons(); }
-            if(target === 'settings') { updateProfileUI(); } // ใช้ข้อมูลล่าสุดอัปเดตฟอร์มเสมอ
+            if(target === 'settings') { updateProfileUI(); } 
 
             document.getElementById('mainScrollArea').scrollTop = 0;
         }
@@ -294,14 +300,16 @@
                     allLessons = r.lessons || []; 
                     cachedMessages = r.messages || [];
                     
-                    if(r.users) {
-                        allUsersData = r.users;
-                        // ดึงรายชื่ออาจารย์ (Teacher + Admin) อัตโนมัติจากฐานข้อมูล
-                        mentors = allUsersData.filter(u => ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({
+                    // ดึงรายชื่ออาจารย์ (Teacher + Admin) อัตโนมัติ พร้อมดึงวิชาที่สอน (assigned)
+                    let rawUsers = r.users || r.teachers || r.data || [];
+                    if(rawUsers.length > 0) {
+                        allUsersData = rawUsers;
+                        mentors = allUsersData.filter(u => u.role && ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({
                             name: u.name,
                             role: u.role,
                             initials: getInitials(u.name),
                             pic: u.pic || "",
+                            subjects: u.assigned || "", 
                             bgColor: String(u.role).toLowerCase().trim() === 'admin' ? "bg-rose-100" : "bg-indigo-100",
                             textColor: String(u.role).toLowerCase().trim() === 'admin' ? "text-rose-600" : "text-indigo-600"
                         }));
@@ -425,22 +433,50 @@
         }
 
         // =====================================
-        // ระบบ CHAT นักเรียน -> ครู (ซิงค์รูปอัตโนมัติ)
+        // ระบบ CHAT (แก้ไขให้ดึงรูปโปรไฟล์ปัจจุบันตลอดเวลา)
         // =====================================
         function renderChatContacts() {
             let html = ""; 
-            mentors.forEach(c => {
-                let isActive = activeChatContact === c.name ? "active" : "";
-                let pPic = c.pic ? `<img src="${c.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center font-bold text-xs lg:text-sm">${c.initials}</div>`;
-                html += `<div class="chat-contact ${isActive} flex items-center gap-3 p-3 lg:p-4 rounded-xl cursor-pointer hover:bg-slate-50 transition mb-1 border border-transparent shadow-sm" onclick="openChat('${c.name}')"><div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm border border-white shrink-0">${pPic}</div><div class="flex-1 min-w-0"><h4 class="font-bold text-xs lg:text-sm truncate text-slate-700">${c.name}</h4><p class="text-[10px] text-slate-400">สนทนาตอนนี้</p></div></div>`;
-            });
-            document.getElementById('chatContactList').innerHTML = html;
+            if(mentors.length === 0) {
+                html = '<div class="text-[10px] text-slate-400 text-center py-4 bg-slate-50 rounded-xl border border-dashed mx-2">ไม่พบที่ปรึกษาในระบบ<br>(โปรดเช็คฝั่ง Apps Script)</div>';
+            } else {
+                mentors.forEach(c => {
+                    let isActive = activeChatContact === c.name ? "active" : "";
+                    let pPic = c.pic ? `<img src="${c.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center font-bold text-xs lg:text-sm">${c.initials}</div>`;
+                    
+                    // นำวิชาที่สอนมาแสดงเป็น Tag
+                    let subTags = "";
+                    if(c.subjects && String(c.role).toLowerCase() === 'teacher') {
+                        let subs = c.subjects.split(',').map(s=>s.trim()).filter(s=>s);
+                        subTags = `<div class="flex flex-wrap gap-1 mt-1">` + subs.map(s => `<span class="bg-purple-50 text-purple-600 px-1.5 py-0.5 rounded text-[8px] border border-purple-100">${s}</span>`).join('') + `</div>`;
+                    }
+                    
+                    let roleName = String(c.role).toLowerCase() === 'admin' ? 'Admin' : 'Instructor';
+
+                    html += `
+                    <div class="chat-contact ${isActive} flex items-start justify-between group p-2.5 rounded-xl cursor-pointer hover:bg-slate-50 transition mb-1 border border-transparent hover:border-slate-100 shadow-sm" onclick="openChat('${c.name}')">
+                        <div class="flex items-start gap-3">
+                            <div class="w-10 h-10 lg:w-11 lg:h-11 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm border border-white shrink-0 mt-0.5">${pPic}</div>
+                            <div class="flex flex-col">
+                                <p class="text-xs lg:text-sm font-bold text-slate-800 leading-tight">${c.name}</p>
+                                <p class="text-[9px] text-slate-400 uppercase tracking-widest">${roleName}</p>
+                                ${subTags}
+                            </div>
+                        </div>
+                        <button class="bg-[#6d28d9] text-white px-3 py-1.5 rounded-full text-[9px] font-bold shadow-md shrink-0 mt-1 group-hover:bg-purple-800 transition">Chat</button>
+                    </div>`;
+                });
+            }
+            document.getElementById('mentorListUI').innerHTML = html;
+            // ก็อปปี้ไปหน้า Inbox ฝั่งซ้ายด้วยเลย
+            let chatList = document.getElementById('chatContactList');
+            if(chatList) chatList.innerHTML = html;
         }
 
         function openChat(n) {
             activeChatContact = n; document.getElementById('chatPlaceholder').classList.add('hidden'); renderChatContacts();
             
-            // ดึงข้อมูลอาจารย์จาก allUsersData แทน เพื่อได้รูปล่าสุดเสมอ
+            // ดึงข้อมูลอาจารย์จาก mentors ปัจจุบัน
             let contactInfo = mentors.find(x => x.name === n);
             let partnerPicHtml = (contactInfo && contactInfo.pic) ? `<img src="${contactInfo.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-sm">${getInitials(n)}</div>`;
 
@@ -449,16 +485,16 @@
             
             let msgs = cachedMessages.filter(m => m.receiver === n); let h = "";
             
-            // ดึงรูปตัวเองปัจจุบันสุดๆ เสมอ (currentUser)
+            // ดึงรูปตัวเองล่าสุด (จาก currentUser) ไม่ใช้รูปเก่าในฐานข้อความ
             let myPicHtml = currentUser.pic ? `<img src="${currentUser.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-purple-100 text-purple-600 font-bold text-[8px]">${getInitials(currentUser.name)}</div>`;
             
             [...msgs].reverse().forEach(m => {
                 let d = new Date(m.date).toLocaleString('th-TH', { hour:'2-digit', minute:'2-digit' });
                 
-                // ฝั่งนักเรียนส่ง (ขวา) ใช้รูปนักเรียน
+                // ฝั่งซ้าย: นักเรียนพิมพ์
                 h += `<div class="flex flex-col items-end w-full mb-4"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400">${d} • คุณ</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${m.message}</div></div>`;
                 
-                // ฝั่งอาจารย์ตอบ (ซ้าย) ใช้รูปอาจารย์ล่าสุด
+                // ฝั่งขวา: ครูตอบกลับ (ใช้รูปล่าสุดของครู)
                 if(m.reply && m.reply.trim() !== "") { 
                     h += `<div class="flex flex-col items-start w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${partnerPicHtml}</div><p class="text-[9px] font-bold text-slate-500">${n}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm border border-slate-100">${m.reply}</div></div>`; 
                 }
@@ -470,7 +506,7 @@
             let msg = document.getElementById('chatInputMessage').value.trim(); if(!msg || !activeChatContact) return;
             if(!currentUser.pic || !currentUser.email) return Swal.fire({icon:'warning', title:'โปรไฟล์ไม่สมบูรณ์', text:'กรุณาตั้งค่ารูปภาพและอีเมลก่อนส่งข้อความ'}).then(r => { if(r.isConfirmed) nav('settings'); });
             
-            // รอส่ง (Optimistic UI)
+            // วาดฝั่งเราลางๆ ให้ดูไวๆ
             let cHist = document.getElementById('chatHistory');
             let myPicHtml = currentUser.pic ? `<img src="${currentUser.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-purple-100 text-purple-600 font-bold text-[8px]">${getInitials(currentUser.name)}</div>`;
             cHist.innerHTML += `<div class="flex flex-col items-end w-full mb-4 opacity-50"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400">กำลังส่ง...</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${msg}</div></div>`;
@@ -490,7 +526,7 @@
                     if(r.users) {
                         allUsersData = r.users;
                         mentors = allUsersData.filter(u => ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({
-                            name: u.name, role: u.role, initials: getInitials(u.name), pic: u.pic || "", bgColor: String(u.role).toLowerCase().trim() === 'admin' ? "bg-rose-100" : "bg-indigo-100", textColor: String(u.role).toLowerCase().trim() === 'admin' ? "text-rose-600" : "text-indigo-600"
+                            name: u.name, role: u.role, initials: getInitials(u.name), pic: u.pic || "", subjects: u.assigned || "", bgColor: String(u.role).toLowerCase().trim() === 'admin' ? "bg-rose-100" : "bg-indigo-100", textColor: String(u.role).toLowerCase().trim() === 'admin' ? "text-rose-600" : "text-indigo-600"
                         }));
                     }
                     cachedMessages = r.data || []; 
@@ -504,15 +540,16 @@
             fetchGAS({ action: "getMessages", myId: currentUser.id, myName: currentUser.name, role: currentUser.role })
             .then(r => { 
                 if(r.status === "success") { 
+                    // เช็คว่ามีข้อมูลไหนเปลี่ยนไหม ถ้าไม่เปลี่ยนไม่ต้องวาดใหม่
                     let isChanged = false;
                     if(JSON.stringify(cachedMessages) !== JSON.stringify(r.data)) isChanged = true;
-                    if(!isChanged && r.users) isChanged = true;
+                    if(!isChanged && r.users) isChanged = true; // ถ้ารายชื่อครูมาใหม่ก็อัปเดต
 
                     if(isChanged) {
                         if(r.users) {
                             allUsersData = r.users;
                             mentors = allUsersData.filter(u => ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({
-                                name: u.name, role: u.role, initials: getInitials(u.name), pic: u.pic || "", bgColor: String(u.role).toLowerCase().trim() === 'admin' ? "bg-rose-100" : "bg-indigo-100", textColor: String(u.role).toLowerCase().trim() === 'admin' ? "text-rose-600" : "text-indigo-600"
+                                name: u.name, role: u.role, initials: getInitials(u.name), pic: u.pic || "", subjects: u.assigned || "", bgColor: String(u.role).toLowerCase().trim() === 'admin' ? "bg-rose-100" : "bg-indigo-100", textColor: String(u.role).toLowerCase().trim() === 'admin' ? "text-rose-600" : "text-indigo-600"
                             }));
                         }
                         cachedMessages = r.data || []; 
@@ -524,22 +561,17 @@
         }
 
         function renderMentorList() {
-            let h = ""; 
-            if(mentors.length === 0) h = '<div class="text-xs text-slate-400">ยังไม่มีที่ปรึกษาในระบบ</div>';
-            mentors.forEach(c => {
-                let pPic = c.pic ? `<img src="${c.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center font-bold text-xs lg:text-sm">${c.initials}</div>`;
-                h += `<div class="flex items-center justify-between group p-2 cursor-pointer hover:bg-slate-50 rounded-xl transition" onclick="nav('inbox'); openChat('${c.name}')"><div class="flex items-center gap-3"><div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm border border-white shrink-0">${pPic}</div><div><p class="text-xs lg:text-sm font-bold text-slate-800">${c.name}</p><p class="text-[9px] text-slate-400 uppercase tracking-widest">Mentor</p></div></div><button class="bg-[#6d28d9] text-white px-3 py-1.5 rounded-full text-[9px] font-bold shadow-md">Chat</button></div>`;
-            });
-            document.getElementById('mentorListUI').innerHTML = h;
+            // ฟังก์ชันนี้ถูกแทนที่โดยการเรียกใช้ร่วมกับ renderChatContacts() ไปแล้ว
+            // แต่ใส่ไว้ให้ครบถ้วนเผื่อการเรียกใช้แยกครับ
+            renderChatContacts();
         }
 
         // =====================================
-        // ตั้งค่า PROFILE
+        // ตั้งค่า PROFILE (อัปเดตรูปตัวเอง)
         // =====================================
         function updateProfileUI() {
             const fullName = currentUser.name; const inits = getInitials(fullName);
             
-            // ตั้งค่าหน้า Settings
             let setDisplay = document.getElementById('settingNameDisplay');
             if(setDisplay) setDisplay.innerText = fullName;
             let setEmail = document.getElementById('set_email');
@@ -550,7 +582,6 @@
             let setPic = document.getElementById('previewSettingPic');
             let setInit = document.getElementById('previewSettingInitials');
             
-            // ตั้งค่าหน้าต่าง Sidebar & Header
             document.getElementById('rightProfileFullName').innerText = fullName;
             document.getElementById('rightProfileId').innerText = "ID: " + currentUser.id;
             document.getElementById('rightProfileClass').innerText = "Class: " + (currentUser.assigned || "-");
@@ -600,7 +631,6 @@
                     sessionStorage.setItem('currentUser', JSON.stringify(currentUser)); 
                     updateProfileUI(); 
                     
-                    // สั่งอัปเดตแชททันทีถ้าอยู่ที่หน้าแชท
                     if(document.getElementById('view_inbox').style.display !== 'none') { forceRefreshChat(); }
                     
                     Swal.fire('สำเร็จ','บันทึกข้อมูลโปรไฟล์เรียบร้อยแล้ว','success'); 
