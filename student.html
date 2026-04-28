@@ -137,6 +137,7 @@
                 <button onclick="nav('lessons')" class="mb-4 lg:mb-6 flex items-center bg-white px-4 py-2 rounded-full shadow-sm text-sm font-bold text-slate-500 border hover:bg-slate-50 transition"><i class="fa-solid fa-arrow-left mr-2"></i> กลับ</button>
                 <div class="bg-white rounded-[1.5rem] lg:rounded-[2rem] p-4 lg:p-8 border border-slate-100 mb-6 shadow-sm">
                     <div id="det_video_container" class="w-full aspect-video bg-slate-900 rounded-xl lg:rounded-[1.5rem] mb-6 overflow-hidden hidden shadow-inner relative">
+                        <!-- ระบบ YouTube IFrame API -->
                         <div id="ytplayer_div" class="w-full h-full absolute inset-0"></div>
                     </div>
                     <div id="det_image_container" class="w-full h-48 lg:h-80 bg-slate-900 rounded-xl lg:rounded-[1.5rem] mb-6 overflow-hidden relative">
@@ -149,7 +150,7 @@
                     <div id="det_content" class="rich-text whitespace-pre-wrap px-1 lg:px-2"></div>
                 </div>
                 <div class="bg-white rounded-[1.5rem] lg:rounded-[2rem] p-5 lg:p-8 border-t-8 border-[#6d28d9] shadow-md">
-                    <h3 id="quizSectionTitle" class="text-xl lg:text-2xl font-bold mb-6 border-b pb-4 font-prompt">แบบทดสอบ</h3>
+                    <h3 id="quizSectionTitle" class="text-xl lg:text-2xl font-bold mb-6 border-b pb-4 font-prompt">แบบทดสอบประจำบท</h3>
                     <div id="quizCompletedMsg" class="hidden bg-emerald-50 rounded-2xl p-8 lg:p-10 text-center border border-emerald-100">
                         <i class="fa-solid fa-circle-check text-5xl text-emerald-500 mb-4"></i>
                         <h4 class="text-xl font-bold text-emerald-900 mb-2 font-prompt">คุณทำคะแนนได้:</h4>
@@ -244,7 +245,11 @@
         let ytPlayer = null; 
         let ytProgressTimer = null; 
         let showFavoritesOnly = false; 
-        let hasShownPopup = false; 
+
+        // ตัวแปรสำหรับระบบคุมวิดีโอ (Anti-Skip & Questions)
+        let maxTimeWatched = 0;
+        let lastTime = 0;
+        let questionTriggers = []; 
 
         function fetchGAS(payload) { return fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r => r.json()); }
         function getInitials(n) { let p = n.trim().split(/\s+/); return p.length >= 2 ? (p[0][0] + p[1][0]).toUpperCase() : n.substring(0, 2).toUpperCase(); }
@@ -514,32 +519,27 @@
         }
 
         // =====================================
-        // ระบบ YouTube API (จำเวลาค้าง + Attention Check แบบ 1 นาทีเพื่อทดสอบ)
+        // ระบบ YouTube API (จำเวลาค้าง + Anti Skip + Multiple Questions)
         // =====================================
-        function showRandomQuestionPopup() {
-            let vQs = (currentLesson.questions || []).filter(q => q.q);
-            if (vQs.length === 0) return; 
-            
+        function showQuestionPopup(questionObj, qIndex) {
             if(ytPlayer && typeof ytPlayer.pauseVideo === 'function') ytPlayer.pauseVideo(); 
 
-            let rQ = vQs[Math.floor(Math.random() * vQs.length)]; 
-            
             let html = `
                 <div class="text-left font-prompt">
-                    <p class="font-bold text-lg mb-4 text-slate-800">${rQ.q}</p>
+                    <p class="font-bold text-lg mb-4 text-slate-800">${questionObj.q}</p>
                     <div class="space-y-2 text-sm">
-                        <label class="block p-3 bg-slate-50 border rounded-xl cursor-pointer hover:bg-purple-50 transition"><input type="radio" name="popupAns" value="1" class="mr-2"> ก. ${rQ.c1}</label>
-                        <label class="block p-3 bg-slate-50 border rounded-xl cursor-pointer hover:bg-purple-50 transition"><input type="radio" name="popupAns" value="2" class="mr-2"> ข. ${rQ.c2}</label>
-                        <label class="block p-3 bg-slate-50 border rounded-xl cursor-pointer hover:bg-purple-50 transition"><input type="radio" name="popupAns" value="3" class="mr-2"> ค. ${rQ.c3}</label>
-                        <label class="block p-3 bg-slate-50 border rounded-xl cursor-pointer hover:bg-purple-50 transition"><input type="radio" name="popupAns" value="4" class="mr-2"> ง. ${rQ.c4}</label>
+                        <label class="block p-3 bg-slate-50 border rounded-xl cursor-pointer hover:bg-purple-50 transition"><input type="radio" name="popupAns" value="1" class="mr-2"> ก. ${questionObj.c1}</label>
+                        <label class="block p-3 bg-slate-50 border rounded-xl cursor-pointer hover:bg-purple-50 transition"><input type="radio" name="popupAns" value="2" class="mr-2"> ข. ${questionObj.c2}</label>
+                        <label class="block p-3 bg-slate-50 border rounded-xl cursor-pointer hover:bg-purple-50 transition"><input type="radio" name="popupAns" value="3" class="mr-2"> ค. ${questionObj.c3}</label>
+                        <label class="block p-3 bg-slate-50 border rounded-xl cursor-pointer hover:bg-purple-50 transition"><input type="radio" name="popupAns" value="4" class="mr-2"> ง. ${questionObj.c4}</label>
                     </div>
                 </div>
             `;
 
             Swal.fire({
-                title: '📌 คำถามคั่นเวลา!',
+                title: `📌 คำถามที่ ${qIndex + 1} คั่นเวลา!`,
                 html: html,
-                timer: 90000, 
+                timer: 90000, // จับเวลา 90 วินาที
                 timerProgressBar: true,
                 showCancelButton: false,
                 confirmButtonText: 'ส่งคำตอบ',
@@ -552,9 +552,14 @@
                         Swal.showValidationMessage('กรุณาเลือกคำตอบก่อนไปต่อนะครับ');
                         return false;
                     }
-                    return { userAns: ans.value, correctAns: rQ.ans };
+                    return { userAns: ans.value, correctAns: questionObj.ans };
                 }
             }).then((result) => {
+                // บันทึกสถานะว่าตอบคำถามข้อนี้ไปแล้ว
+                let answeredList = JSON.parse(localStorage.getItem('ytAnsQs_' + currentUser.id + '_' + currentLesson.title) || '[]');
+                if(!answeredList.includes(qIndex)) answeredList.push(qIndex);
+                localStorage.setItem('ytAnsQs_' + currentUser.id + '_' + currentLesson.title, JSON.stringify(answeredList));
+
                 if (result.isConfirmed) {
                     let isCorrect = result.value.userAns === result.value.correctAns;
                     if(isCorrect) {
@@ -570,27 +575,79 @@
 
         function onYouTubePlayerReady(event) {
             let savedTime = localStorage.getItem('ytProg_' + currentUser.id + '_' + currentLesson.title);
+            maxTimeWatched = parseFloat(localStorage.getItem('ytMax_' + currentUser.id + '_' + currentLesson.title)) || 0;
+            
             if (savedTime && parseFloat(savedTime) > 0 && savedTime !== "done") {
                 event.target.seekTo(parseFloat(savedTime), true);
-                Swal.fire({ toast: true, position: 'top-end', text: 'กำลังเล่นต่อจากจุดเดิมที่คุณดูค้างไว้ ⏱️', icon: 'info', showConfirmButton: false, timer: 3000 });
+                lastTime = parseFloat(savedTime);
+                Swal.fire({ toast: true, position: 'top-end', text: 'เล่นต่อจากที่ค้างไว้ ⏱️', icon: 'info', showConfirmButton: false, timer: 3000 });
+            } else {
+                lastTime = 0;
+            }
+
+            // คำนวณจุดเด้งคำถามตามจำนวนข้อที่มี
+            calculateQuestionTriggers();
+        }
+
+        function calculateQuestionTriggers() {
+            questionTriggers = [];
+            if(!ytPlayer || typeof ytPlayer.getDuration !== 'function') return;
+            let duration = ytPlayer.getDuration();
+            let vQs = (currentLesson.questions || []).filter(q => q.q);
+            let answeredList = JSON.parse(localStorage.getItem('ytAnsQs_' + currentUser.id + '_' + currentLesson.title) || '[]');
+
+            if (duration > 0 && vQs.length > 0) {
+                let interval = duration / (vQs.length + 1);
+                for(let i=0; i<vQs.length; i++) {
+                    questionTriggers.push({ 
+                        time: interval * (i + 1), // กระจายให้เท่าๆ กัน (เช่น 3 ข้อ = 25%, 50%, 75%)
+                        question: vQs[i], 
+                        answered: answeredList.includes(i) // ถ้ารหัส i อยู่ใน Local แสดงว่าเคยตอบแล้ว
+                    });
+                }
             }
         }
 
         function onYouTubePlayerStateChange(event) {
             if (event.data == YT.PlayerState.PLAYING) {
+                
+                // ตรวจสอบและคำนวณ Trigger อีกครั้งเผื่อวิดีโอยังโหลดความยาวไม่เสร็จในตอนแรก
+                if(questionTriggers.length === 0) calculateQuestionTriggers();
+
                 ytProgressTimer = setInterval(() => {
                     if(ytPlayer && typeof ytPlayer.getCurrentTime === 'function') {
                         let currentTime = ytPlayer.getCurrentTime();
                         let duration = ytPlayer.getDuration();
+
+                        // 🚫 ระบบ Anti-Skip (ห้ามกรอข้าม)
+                        if (currentTime > maxTimeWatched && currentTime > lastTime + 3) {
+                            // ถ้านักเรียนพยายามข้ามเวลาเกิน 3 วินาทีไปยังจุดที่ยังไม่เคยดู
+                            ytPlayer.seekTo(maxTimeWatched, true);
+                            Swal.fire({ toast: true, position: 'top-end', text: '⚠️ ไม่อนุญาตให้ข้ามวิดีโอนะครับ', icon: 'warning', showConfirmButton: false, timer: 2000 });
+                            currentTime = maxTimeWatched; // บังคับเวลาให้กลับมาเท่าเดิม
+                        } else {
+                            // บันทึกเวลาที่ดูได้ไกลที่สุด
+                            if (currentTime > maxTimeWatched) {
+                                maxTimeWatched = currentTime;
+                                localStorage.setItem('ytMax_' + currentUser.id + '_' + currentLesson.title, maxTimeWatched);
+                            }
+                        }
+                        lastTime = currentTime;
+
                         if (duration > 0) {
                             let pct = (currentTime / duration) * 100;
 
-                            // ระบบเด้งคำถามเมื่อดูคลิปไปแล้ว 1 นาที (60 วินาที) สำหรับทดสอบ
-                            if (currentTime >= 60 && !hasShownPopup) {
-                                hasShownPopup = true;
-                                showRandomQuestionPopup();
+                            // 📝 เช็คจุดเด้งคำถามแบบเรียงตามคิว
+                            for (let i = 0; i < questionTriggers.length; i++) {
+                                let trigger = questionTriggers[i];
+                                if (currentTime >= trigger.time && !trigger.answered) {
+                                    trigger.answered = true; 
+                                    showQuestionPopup(trigger.question, i);
+                                    break; // เด้งแค่ข้อเดียวต่อการเช็ค 1 ครั้ง
+                                }
                             }
 
+                            // เช็คการจบวิดีโอ (เหลือไม่ถึง 5 วิ ถือว่าจบ)
                             if (duration - currentTime < 5) {
                                 localStorage.setItem('ytProg_' + currentUser.id + '_' + currentLesson.title, "done");
                                 localStorage.removeItem('ytPct_' + currentUser.id + '_' + currentLesson.title);
@@ -601,7 +658,7 @@
                             }
                         }
                     }
-                }, 3000);
+                }, 1000); // เช็คแบบวินาทีต่อวินาทีให้แม่นยำขึ้น
             } else {
                 if (ytProgressTimer) { clearInterval(ytProgressTimer); ytProgressTimer = null; }
             }
@@ -609,7 +666,6 @@
 
         function openLesson(idx) {
             currentLesson = allLessons[idx]; 
-            hasShownPopup = false; 
             nav('lesson_detail');
             
             if (ytPlayer) { ytPlayer.destroy(); ytPlayer = null; }
@@ -648,8 +704,11 @@
             let vQs = (currentLesson.questions || []).filter(q => q.q);
             if(!noQ) { for(let i=1; i<=vQs.length; i++) { let a = document.querySelector(`input[name="ans${i}"]:checked`); if(!a) return Swal.fire('เตือน', 'กรุณาทำข้อสอบให้ครบครับ', 'warning'); if(a.value === vQs[i-1].ans) sc++; } }
             
+            // ล้างประวัติการดูเมื่อทำสอบเสร็จ
             localStorage.removeItem('ytProg_' + currentUser.id + '_' + currentLesson.title);
             localStorage.removeItem('ytPct_' + currentUser.id + '_' + currentLesson.title);
+            localStorage.removeItem('ytMax_' + currentUser.id + '_' + currentLesson.title);
+            localStorage.removeItem('ytAnsQs_' + currentUser.id + '_' + currentLesson.title);
 
             fetchGAS({ action: "quiz", username: currentUser.id, name: currentUser.name, room: currentUser.assigned, subject: currentLesson.subject, lessonName: currentLesson.title, score: sc }).then(() => { currentLesson.studentScore = sc; openLesson(allLessons.indexOf(currentLesson)); loadDashboardData(); Swal.fire({ icon: 'success', title: 'สำเร็จ', text: `บันทึกคะแนนเรียบร้อย` }); });
         }
