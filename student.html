@@ -159,7 +159,7 @@
                     </div>
                     <div class="p-4 lg:p-5 border-b flex items-center justify-between bg-white z-0" id="chatHeader">
                         <div class="flex items-center gap-3 lg:gap-4">
-                            <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shadow-sm bg-slate-200 flex items-center justify-center font-bold text-indigo-600" id="chatHeaderAvatar"></div>
+                            <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shadow-sm bg-slate-200" id="chatHeaderAvatar"></div>
                             <div><h3 class="font-bold text-sm lg:text-lg text-slate-800" id="chatHeaderName">Name</h3><p class="text-[10px] text-emerald-500 font-bold">กำลังออนไลน์</p></div>
                         </div>
                         <button onclick="forceRefreshChat()" class="text-slate-400 hover:text-[#6d28d9] transition"><i class="fa-solid fa-rotate-right text-lg"></i></button>
@@ -215,9 +215,9 @@
                 </div>
             </div>
 
-            <h4 class="font-bold text-slate-800 font-prompt text-sm mb-5 uppercase tracking-widest mt-8">TEACHER</h4>
+            <h4 class="font-bold text-slate-800 font-prompt text-sm mb-5 uppercase tracking-widest mt-6">TEACHER</h4>
             <div class="space-y-3" id="mentorListUI">
-                <div class="text-xs text-slate-400 text-center py-6 bg-slate-50 rounded-2xl border border-dashed">กำลังโหลดข้อมูลอาจารย์...<br><span class="text-[9px] mt-1 block text-slate-300">(ระบบกำลังเชื่อมต่อ)</span></div>
+                <div class="text-[10px] text-slate-400 text-center py-4 bg-slate-50 rounded-xl border border-dashed">กำลังโหลดข้อมูลอาจารย์...<br>(ตรวจสอบ Sheet Users)</div>
             </div>
         </div>
     </aside>
@@ -296,7 +296,7 @@
                     let rawUsers = r.users || r.teachers || r.data || [];
                     if(rawUsers.length > 0) {
                         allUsersData = rawUsers;
-                        mentors = allUsersData.filter(u => u.role && u.name && ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({
+                        mentors = allUsersData.filter(u => u.role && ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({
                             name: u.name || u.Name || "",
                             role: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher',
                             initials: getInitials(u.name || u.Name || "A"),
@@ -311,19 +311,12 @@
                     let sH = ""; allSubjects.forEach(s => { sH += `<div class="bg-white rounded-2xl p-4 border border-slate-100 flex items-center min-w-[160px] cursor-pointer hover:border-purple-300 hover:shadow-md shadow-sm transition active:scale-95 group" onclick="selectSubject('${s}')"><div class="w-10 h-10 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center mr-3 shadow-inner group-hover:bg-purple-600 group-hover:text-white transition"><i class="fa-solid fa-layer-group text-xs"></i></div><p class="font-bold text-[11px] truncate text-slate-700">${s}</p></div>`; });
                     document.getElementById('subjectGrid').innerHTML = sH; document.getElementById('allSubjectGrid').innerHTML = sH;
                     
-                    renderHomeLessons(); renderHomeFavorites(); renderStudentLessons(); updateStats(); renderChatContacts();
+                    renderHomeLessons(); renderHomeFavorites(); renderStudentLessons(); updateProfileUI(); renderMentorList();
                     
                     let unread = cachedMessages.filter(m => m.reply && m.reply.trim() !== "").length - parseInt(localStorage.getItem('readReplies_'+currentUser.id)||'0');
                     document.querySelectorAll('.inbox-badge').forEach(b => { if(unread > 0) { b.innerText = unread; b.classList.remove('hidden'); } else { b.classList.add('hidden'); } });
                 }
             });
-        }
-
-        function updateStats() {
-            // โชว์ข้อมูลตรง Sidebar
-            document.getElementById('rightProfileFullName').innerText = currentUser.name;
-            document.getElementById('rightProfileId').innerText = "ID: " + currentUser.id;
-            document.getElementById('rightProfileClass').innerText = "Class: " + (currentUser.assigned || "-");
         }
 
         function selectSubject(s) { 
@@ -429,8 +422,8 @@
             let htmlInboxList = `<p class="px-4 text-[10px] font-bold text-slate-400 mb-3 uppercase tracking-widest mt-2">รายชื่ออาจารย์</p>`;
             
             if(mentors.length === 0) {
-                htmlRightSidebar = '<div class="text-xs text-slate-400 text-center py-4 border-2 border-dashed border-slate-100 rounded-2xl mx-2">กำลังรอข้อมูล...</div>';
-                htmlInboxList += '<div class="text-center p-4 text-xs text-slate-400 border-2 border-dashed rounded-xl mx-4">ไม่มีข้อมูลอาจารย์</div>';
+                htmlRightSidebar = '<div class="text-xs text-slate-400 text-center py-4 border-2 border-dashed border-slate-100 rounded-2xl mx-2">ไม่มีข้อมูลอาจารย์</div>';
+                htmlInboxList += '<div class="text-center p-4 text-xs text-slate-400 border-2 border-dashed rounded-xl mx-4">ไม่มีผู้ติดต่อ</div>';
             } else {
                 mentors.forEach(c => {
                     let isActive = activeChatContact === c.name ? "active" : "";
@@ -445,12 +438,13 @@
                          if(unreadCount < 0) unreadCount = 0;
                     }
 
+                    // วิชาที่สอน เป็น Tag (ดึงจากคอลัมน์ Room ของอาจารย์)
                     let subjectBadge = c.room && c.room !== "-" ? `<p class="text-[9px] text-slate-500 mt-1 bg-slate-50 px-2 py-0.5 rounded-md w-max border border-slate-200"><i class="fa-solid fa-book mr-1 text-slate-400"></i> วิชา: ${c.room}</p>` : '';
 
-                    // วาดการ์ดแสดงผลในแถบขวา (TEACHER)
+                    // วาดการ์ดแสดงผลในแถบขวา (TEACHER) สามารถคลิกปุ่มแชทไปหน้าข้อความได้เลย
                     htmlRightSidebar += `
                     <div class="flex items-center justify-between group p-3 rounded-2xl border border-slate-100 hover:border-purple-200 shadow-sm transition mb-3 bg-white">
-                        <div class="flex items-center gap-3">
+                        <div class="flex items-start gap-3">
                             <div class="relative w-12 h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm shrink-0 flex items-center justify-center border border-white">${pPic}
                                 ${unreadCount>0?`<div class="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 rounded-full flex items-center justify-center text-white text-[8px] font-bold shadow-sm border-2 border-white">${unreadCount}</div>`:''}
                             </div>
@@ -465,7 +459,7 @@
                         </button>
                     </div>`;
 
-                    // วาดการ์ดแสดงผลในหน้า Inbox
+                    // วาดการ์ดแสดงผลในหน้า Inbox ด้านซ้าย
                     htmlInboxList += `
                     <div class="chat-contact ${isActive} flex items-center gap-3 p-3 lg:p-4 rounded-xl cursor-pointer hover:bg-slate-50 transition mb-1 border border-transparent shadow-sm" onclick="openChat('${c.name}')">
                         <div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm border border-white shrink-0 flex items-center justify-center">${pPic}
@@ -565,6 +559,10 @@
                     }
                 } 
             }); 
+        }
+
+        function renderMentorList() {
+            renderChatContacts();
         }
 
         // =====================================
