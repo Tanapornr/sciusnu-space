@@ -245,7 +245,8 @@
         let mentors = []; 
         let ytPlayer = null; 
         let ytProgressTimer = null; 
-        let showFavoritesOnly = false; // ตัวแปรคุมโหมดกรองรายการโปรด
+        let showFavoritesOnly = false; 
+        let hasShownPopup = false; // ตัวแปรสำหรับเช็คว่าเด้งคำถามไปหรือยัง
 
         function fetchGAS(payload) { return fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r => r.json()); }
         function getInitials(n) { let p = n.trim().split(/\s+/); return p.length >= 2 ? (p[0][0] + p[1][0]).toUpperCase() : n.substring(0, 2).toUpperCase(); }
@@ -275,10 +276,9 @@
             updateUnreadBadges(); 
         }
 
-        // กดปุ่มเข้าเมนูบทเรียน (เคลียร์ค่าเดิมทั้งหมด)
         function clickMenuLessons() { 
             currentSubject = ""; 
-            showFavoritesOnly = false; // ปิดโหมดกรอง
+            showFavoritesOnly = false; 
             let btn = document.getElementById('favFilterBtn');
             if(btn) {
                 btn.className = "bg-white border border-slate-200 px-5 py-2.5 rounded-full text-sm font-bold text-slate-600 shadow-sm active:bg-slate-50 transition";
@@ -288,7 +288,6 @@
             nav('lessons'); 
         }
 
-        // ฟังก์ชันกดเปิด-ปิด โหมดดูรายการโปรด (Filter)
         function toggleShowFavorites() {
             showFavoritesOnly = !showFavoritesOnly;
             let btn = document.getElementById('favFilterBtn');
@@ -402,21 +401,17 @@
             nav('lessons'); 
         }
 
-        // ระบบกรองบทเรียนหลัก (รองรับโหมดดูเฉพาะรายการโปรด)
         function renderStudentLessons() {
             let filtered = allLessons;
             let favs = JSON.parse(localStorage.getItem('favs_'+currentUser.id)||'[]');
 
-            // กรองตามวิชา (ถ้ามี)
             if(currentSubject !== "") {
                 filtered = filtered.filter(l => String(l.subject).trim() === String(currentSubject).trim());
             } else if(!showFavoritesOnly) {
-                // ถ้าไม่ได้เลือกวิชา และ ไม่ได้เปิดโหมดรายการโปรด ให้โชว์กล่องเปล่าๆ ให้เลือกวิชา
                 document.getElementById('lessonGrid_student').innerHTML = '<div class="col-span-full py-10 lg:py-20 text-center text-slate-400 font-bold border-2 border-dashed border-slate-200 rounded-[2rem] text-sm px-4"><i class="fa-solid fa-arrow-up block text-3xl mb-4 text-purple-200"></i> กรุณาเลือก "รายวิชา" ด้านบน เพื่อดูบทเรียน</div>';
                 return;
             }
 
-            // ถ้ากดปุ่มกรอง "รายการโปรด" ไว้
             if(showFavoritesOnly) {
                 filtered = filtered.filter(l => favs.includes(l.title));
                 document.getElementById('allSubjectTitle').innerText = currentSubject !== "" ? "วิชา: " + currentSubject + " (เฉพาะรายการโปรด)" : "รายการโปรดทั้งหมด";
@@ -435,7 +430,6 @@
             
             let filtered = allLessons.filter(l => l.title.toLowerCase().includes(q) || l.subject.toLowerCase().includes(q));
             
-            // ให้การค้นหาสนใจโหมดรายการโปรดด้วย
             if (showFavoritesOnly) {
                 let favs = JSON.parse(localStorage.getItem('favs_'+currentUser.id)||'[]');
                 filtered = filtered.filter(l => favs.includes(l.title));
@@ -521,6 +515,61 @@
             if(document.getElementById('view_lessons').style.display !== 'none') { renderStudentLessons(); }
         }
 
+        // =====================================
+        // ระบบ YouTube API (จำเวลาค้าง + Attention Check)
+        // =====================================
+        function showRandomQuestionPopup() {
+            let vQs = (currentLesson.questions || []).filter(q => q.q);
+            if (vQs.length === 0) return; 
+            
+            if(ytPlayer && typeof ytPlayer.pauseVideo === 'function') ytPlayer.pauseVideo(); 
+
+            let rQ = vQs[Math.floor(Math.random() * vQs.length)]; 
+            
+            let html = `
+                <div class="text-left font-prompt">
+                    <p class="font-bold text-lg mb-4 text-slate-800">${rQ.q}</p>
+                    <div class="space-y-2 text-sm">
+                        <label class="block p-3 bg-slate-50 border rounded-xl cursor-pointer hover:bg-purple-50 transition"><input type="radio" name="popupAns" value="1" class="mr-2"> ก. ${rQ.c1}</label>
+                        <label class="block p-3 bg-slate-50 border rounded-xl cursor-pointer hover:bg-purple-50 transition"><input type="radio" name="popupAns" value="2" class="mr-2"> ข. ${rQ.c2}</label>
+                        <label class="block p-3 bg-slate-50 border rounded-xl cursor-pointer hover:bg-purple-50 transition"><input type="radio" name="popupAns" value="3" class="mr-2"> ค. ${rQ.c3}</label>
+                        <label class="block p-3 bg-slate-50 border rounded-xl cursor-pointer hover:bg-purple-50 transition"><input type="radio" name="popupAns" value="4" class="mr-2"> ง. ${rQ.c4}</label>
+                    </div>
+                </div>
+            `;
+
+            Swal.fire({
+                title: '📌 คำถามคั่นเวลา!',
+                html: html,
+                timer: 90000, // จับเวลา 1 นาที 30 วิ (90000 ms)
+                timerProgressBar: true,
+                showCancelButton: false,
+                confirmButtonText: 'ส่งคำตอบ',
+                confirmButtonColor: '#6d28d9',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                preConfirm: () => {
+                    let ans = document.querySelector('input[name="popupAns"]:checked');
+                    if (!ans) {
+                        Swal.showValidationMessage('กรุณาเลือกคำตอบก่อนไปต่อนะครับ');
+                        return false;
+                    }
+                    return { userAns: ans.value, correctAns: rQ.ans };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let isCorrect = result.value.userAns === result.value.correctAns;
+                    if(isCorrect) {
+                        Swal.fire({icon: 'success', title: 'เก่งมาก! ตอบถูกครับ 🎉', timer: 2000, showConfirmButton: false}).then(() => { if(ytPlayer) ytPlayer.playVideo(); });
+                    } else {
+                        Swal.fire({icon: 'error', title: 'อ๊ะ! ยังไม่ถูกนะ 😅', text: 'ไม่เป็นไร ลองตั้งใจฟังเนื้อหาต่อดูนะครับ', timer: 2500, showConfirmButton: false}).then(() => { if(ytPlayer) ytPlayer.playVideo(); });
+                    }
+                } else if (result.dismiss === Swal.DismissReason.timer) {
+                    Swal.fire({icon: 'warning', title: 'หมดเวลา! ⏱️', text: 'ตั้งใจดูวิดีโอต่อนะครับ', timer: 2000, showConfirmButton: false}).then(() => { if(ytPlayer) ytPlayer.playVideo(); });
+                }
+            });
+        }
+
         function onYouTubePlayerReady(event) {
             let savedTime = localStorage.getItem('ytProg_' + currentUser.id + '_' + currentLesson.title);
             if (savedTime && parseFloat(savedTime) > 0 && savedTime !== "done") {
@@ -536,13 +585,20 @@
                         let currentTime = ytPlayer.getCurrentTime();
                         let duration = ytPlayer.getDuration();
                         if (duration > 0) {
+                            let pct = (currentTime / duration) * 100;
+
+                            // ระบบเด้งคำถามเมื่อถึง 50% ของคลิป
+                            if (pct >= 50 && !hasShownPopup) {
+                                hasShownPopup = true;
+                                showRandomQuestionPopup();
+                            }
+
                             if (duration - currentTime < 5) {
                                 localStorage.setItem('ytProg_' + currentUser.id + '_' + currentLesson.title, "done");
                                 localStorage.removeItem('ytPct_' + currentUser.id + '_' + currentLesson.title);
                                 clearInterval(ytProgressTimer); ytProgressTimer = null;
                             } else {
                                 localStorage.setItem('ytProg_' + currentUser.id + '_' + currentLesson.title, currentTime);
-                                let pct = (currentTime / duration) * 100;
                                 localStorage.setItem('ytPct_' + currentUser.id + '_' + currentLesson.title, pct);
                             }
                         }
@@ -554,7 +610,9 @@
         }
 
         function openLesson(idx) {
-            currentLesson = allLessons[idx]; nav('lesson_detail');
+            currentLesson = allLessons[idx]; 
+            hasShownPopup = false; // รีเซ็ตการแสดงคำถามเมื่อเปิดคลิปใหม่
+            nav('lesson_detail');
             
             if (ytPlayer) { ytPlayer.destroy(); ytPlayer = null; }
             if (ytProgressTimer) { clearInterval(ytProgressTimer); ytProgressTimer = null; }
@@ -598,6 +656,9 @@
             fetchGAS({ action: "quiz", username: currentUser.id, name: currentUser.name, room: currentUser.assigned, subject: currentLesson.subject, lessonName: currentLesson.title, score: sc }).then(() => { currentLesson.studentScore = sc; openLesson(allLessons.indexOf(currentLesson)); loadDashboardData(); Swal.fire({ icon: 'success', title: 'สำเร็จ', text: `บันทึกคะแนนเรียบร้อย` }); });
         }
 
+        // =====================================
+        // ฟังก์ชันวาดรายชื่อครูและแจ้งเตือนแชท
+        // =====================================
         function buildContactCard(c, type) {
             let isActive = activeChatContact === c.name ? "active" : "";
             let pPic = c.pic ? `<img src="${c.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center font-bold text-xs lg:text-sm">${c.initials}</div>`;
