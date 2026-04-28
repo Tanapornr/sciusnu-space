@@ -18,6 +18,7 @@
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
+        /* ระบบ Sidebar บนมือถือ */
         #mainSidebar { transition: transform 0.3s ease-in-out; }
         @media (max-width: 1024px) {
             #mainSidebar { position: fixed; top: 0; left: 0; height: 100vh; transform: translateX(-100%); z-index: 50; }
@@ -154,12 +155,12 @@
                 <div class="w-full lg:w-2/3 bg-white rounded-2xl lg:rounded-3xl border border-slate-100 flex flex-col overflow-hidden shadow-sm relative lg:h-full h-2/3">
                     <div id="chatPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-50 z-10 text-slate-400">
                         <div class="w-20 h-20 bg-purple-100 text-purple-400 rounded-full flex items-center justify-center text-3xl mb-4 shadow-inner"><i class="fa-regular fa-comment"></i></div>
-                        <p class="font-bold">เลือกที่ปรึกษาเพื่อเริ่มสนทนา</p>
+                        <p class="font-bold text-slate-500 text-sm lg:text-base">เลือกบุคคลเพื่อเริ่มสนทนา</p>
                     </div>
-                    <div class="p-4 lg:p-5 border-b flex items-center justify-between bg-white z-0" id="chatHeader">
+                    <div class="p-3 lg:p-5 border-b flex items-center justify-between bg-white z-0" id="chatHeader">
                         <div class="flex items-center gap-3 lg:gap-4">
-                            <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shadow-sm bg-slate-200" id="chatHeaderAvatar"></div>
-                            <div><h3 class="font-bold text-sm lg:text-lg text-slate-800" id="chatHeaderName">Name</h3></div>
+                            <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shadow-sm border border-slate-200 bg-indigo-100 flex items-center justify-center font-bold text-indigo-600" id="chatHeaderAvatar"></div>
+                            <div><h3 class="font-bold text-sm lg:text-lg text-slate-800 mt-1 flex items-center" id="chatHeaderName">Name</h3></div>
                         </div>
                     </div>
                     <div class="flex-1 overflow-y-auto p-4 lg:p-6 bg-[#f8fafc] flex flex-col space-y-4 hide-scroll z-0" id="chatHistory"></div>
@@ -186,8 +187,8 @@
                     </div>
                     <form id="profileForm" class="space-y-5">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <div><label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-widest">Email *</label><input type="email" id="set_email" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-[#6d28d9] text-sm" required></div>
-                            <div><label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-widest">Phone *</label><input type="tel" id="set_phone" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-[#6d28d9] text-sm" required></div>
+                            <div><label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-widest">Email</label><input type="email" id="set_email" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-[#6d28d9] text-sm"></div>
+                            <div><label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-widest">Phone</label><input type="tel" id="set_phone" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-[#6d28d9] text-sm"></div>
                         </div>
                         <button type="button" onclick="saveProfile()" class="w-full bg-[#6d28d9] text-white font-bold py-4 rounded-xl shadow-lg mt-4 active:scale-[0.98] transition font-prompt uppercase text-sm tracking-widest hover:bg-purple-800">Update Profile</button>
                     </form>
@@ -213,7 +214,7 @@
                 </div>
             </div>
 
-            <h4 class="font-bold text-slate-800 font-prompt text-sm mb-5 uppercase tracking-widest mt-6">TEACHER</h4>
+            <h4 class="font-bold text-slate-800 font-prompt text-sm mb-5 uppercase tracking-widest mt-8">TEACHER</h4>
             <div class="space-y-3" id="mentorListUI">
                 <div class="text-[10px] text-slate-400 text-center py-4 bg-slate-50 rounded-xl border border-dashed">กำลังโหลดข้อมูลอาจารย์...<br>(ตรวจสอบ Sheet Users)</div>
             </div>
@@ -281,15 +282,16 @@
             document.getElementById('mainScrollArea').scrollTop = 0;
         }
 
-        // --- ฟังก์ชันนับข้อความเพื่อแสดงแจ้งเตือนวงกลมสีแดงแบบ Facebook ---
+        // --- ระบบนับแจ้งเตือนข้อความ ---
+        // เปลี่ยนระบบนับใหม่ทั้งหมดให้นับจำนวนข้อความที่ครู/แอดมินส่งมาโดยตรง หรือ ตอบกลับ
         function countTeacherMessages(teacherName) {
             let count = 0;
             cachedMessages.forEach(m => {
-                // ครูทักมาโดยตรง
+                // ครูทักตรงมาหานักเรียน (1 แถว = 1 ข้อความ)
                 if (m.senderName === teacherName && m.receiver === currentUser.name && m.message && m.message.trim() !== "") {
                     count += 1;
                 }
-                // ครูตอบกลับแชทนักเรียน
+                // นักเรียนทักไป แล้วครูตอบกลับ (ครูตอบหลายครั้งจะถูกแยกด้วย <br><br> ในแถวเดียว)
                 if (m.senderName === currentUser.name && m.receiver === teacherName && m.reply && m.reply.trim() !== "") {
                     let replies = m.reply.split('<br><br>').filter(x => x.trim() !== "");
                     count += replies.length;
@@ -302,6 +304,7 @@
             let globalUnread = 0;
             mentors.forEach(c => {
                 let totalMsgs = countTeacherMessages(c.name);
+                // เช็คว่านักเรียนเคยเปิดอ่านไปแล้วกี่ข้อความ (จำลง LocalStorage ของเครื่อง)
                 let readCount = parseInt(localStorage.getItem('readMsgs_' + currentUser.id + '_' + c.name) || '0');
                 let unreadCount = totalMsgs - readCount;
                 if(unreadCount > 0) globalUnread += unreadCount;
@@ -453,9 +456,6 @@
             fetchGAS({ action: "quiz", username: currentUser.id, name: currentUser.name, room: currentUser.assigned, subject: currentLesson.subject, lessonName: currentLesson.title, score: sc }).then(() => { currentLesson.studentScore = sc; openLesson(allLessons.indexOf(currentLesson)); loadDashboardData(); Swal.fire({ icon: 'success', title: 'สำเร็จ', text: `บันทึกคะแนนเรียบร้อย` }); });
         }
 
-        // =====================================
-        // สร้างการ์ดแชทและอัปเดตแจ้งเตือนสีแดง (แยกหมวดหมู่)
-        // =====================================
         function buildContactCard(c, type) {
             let isActive = activeChatContact === c.name ? "active" : "";
             let pPic = c.pic ? `<img src="${c.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center font-bold text-xs lg:text-sm">${c.initials}</div>`;
@@ -467,7 +467,6 @@
 
             let badgeHtml = unreadCount > 0 ? `<div class="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 rounded-full flex items-center justify-center text-white text-[8px] font-bold shadow-sm border-2 border-white">${unreadCount}</div>` : '';
 
-            // ดึงข้อความพรีวิวล่าสุด
             let latestText = "";
             let contactMsgs = cachedMessages.filter(m => (m.senderName === currentUser.name && m.receiver === c.name) || (m.senderName === c.name && m.receiver === currentUser.name));
             if(contactMsgs.length > 0) {
@@ -496,10 +495,10 @@
             let tmp = document.createElement("DIV");
             tmp.innerHTML = latestText;
             latestText = tmp.textContent || tmp.innerText || "";
-
-            let subjectBadge = (c.room && c.room !== "-" && c.role === 'Teacher') ? ` <span class="text-[10px] text-slate-400 font-normal ml-1 whitespace-nowrap">(วิชา: ${c.room})</span>` : '';
+            if(latestText.length > 25) latestText = latestText.substring(0, 25) + "...";
 
             if (type === "sidebar") {
+                let subjectBadge = c.room && c.room !== "-" && c.role === 'Teacher' ? `<p class="text-[9px] text-slate-500 mt-1 bg-slate-50 px-2 py-0.5 rounded-md w-max border border-slate-200"><i class="fa-solid fa-book mr-1 text-slate-400"></i> วิชา: ${c.room}</p>` : '';
                 return `
                 <div class="flex items-center justify-between group p-3 rounded-2xl border border-slate-100 hover:border-purple-200 shadow-sm transition mb-3 bg-white cursor-pointer" onclick="nav('inbox'); openChat('${c.name}')">
                     <div class="flex items-start gap-3">
@@ -507,8 +506,9 @@
                             ${badgeHtml}
                         </div>
                         <div class="flex flex-col max-w-[130px] lg:max-w-[150px]">
-                            <p class="text-sm font-bold text-slate-800 leading-tight truncate">${c.name}${subjectBadge}</p>
+                            <p class="text-sm font-bold text-slate-800 leading-tight truncate">${c.name}</p>
                             <p class="text-[10px] text-slate-500 truncate mt-0.5 ${unreadCount > 0 ? 'font-bold text-slate-800' : ''}" title="${latestText}">${latestText}</p>
+                            ${subjectBadge}
                         </div>
                     </div>
                     <button class="w-9 h-9 rounded-full border border-purple-100 text-purple-600 flex items-center justify-center hover:bg-[#6d28d9] hover:text-white transition shadow-sm shrink-0">
@@ -522,7 +522,7 @@
                         ${badgeHtml}
                     </div>
                     <div class="flex-1 min-w-0">
-                        <h4 class="font-bold text-xs lg:text-sm truncate text-slate-800">${c.name}${subjectBadge}</h4>
+                        <h4 class="font-bold text-xs lg:text-sm truncate text-slate-800">${c.name}</h4>
                         <p class="text-[10px] text-slate-400 truncate ${unreadCount > 0 ? 'font-bold text-slate-800' : ''}" title="${latestText}">${latestText}</p>
                     </div>
                 </div>`;
@@ -569,7 +569,7 @@
         function openChat(n) {
             activeChatContact = n; document.getElementById('chatPlaceholder').classList.add('hidden'); 
             
-            // อ่านแล้วแจ้งเตือนหายทันที
+            // อ่านแล้วหายปั๊บ (อัปเดตแจ้งเตือนลง Storage)
             let totalMsgs = countTeacherMessages(n);
             localStorage.setItem('readMsgs_' + currentUser.id + '_' + n, totalMsgs);
             renderChatContacts(); 
@@ -713,13 +713,13 @@
                     sessionStorage.setItem('currentUser', JSON.stringify(currentUser)); 
                     updateProfileUI(); 
                     
-                    if(document.getElementById('view_inbox').style.display !== 'none') { loadMessagesForChat(); }
+                    if(document.getElementById('view_inbox').style.display !== 'none') { forceRefreshChat(); }
                     
                     Swal.fire('สำเร็จ','บันทึกข้อมูลโปรไฟล์เรียบร้อยแล้ว','success'); 
                 }
             });
         }
-
+        
         function toggleLanguage() { Swal.fire({ text: 'ระบบกำลังดำเนินการแปลภาษา...', icon: 'info', timer: 1000, showConfirmButton: false }); }
         function logout() { sessionStorage.clear(); window.location.replace('index.html'); }
     </script>
