@@ -1,883 +1,442 @@
 <!DOCTYPE html>
-
 <html lang="th">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
     <title>Teacher Portal - SCiUS</title>
-
     
-
     <script src="https://cdn.tailwindcss.com"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
     
-
     <style>
-
         body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; color: #334155; margin: 0; overflow-x: hidden; }
-
         h1, h2, h3, h4, h5, .font-prompt { font-family: 'Prompt', sans-serif; }
-
         ::-webkit-scrollbar { width: 4px; height: 4px; }
-
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-
         .hide-scroll::-webkit-scrollbar { display: none; }
-
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
-
-
         /* ระบบ Sidebar บนมือถือ */
-
         #mainSidebar { transition: transform 0.3s ease-in-out; }
-
         @media (max-width: 1024px) {
-
             #mainSidebar { position: fixed; top: 0; left: 0; height: 100vh; transform: translateX(-100%); z-index: 50; }
-
             #mainSidebar.active { transform: translateX(0); }
-
             #sidebarOverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 40; backdrop-filter: blur(2px); }
-
             #sidebarOverlay.active { display: block; }
-
         }
 
-
-
         .menu-item { transition: all 0.2s ease-in-out; border-left: 4px solid transparent; cursor: pointer; }
-
         .menu-item:hover { color: #6d28d9; background-color: #f3f4f6; border-left-color: #c4b5fd; }
-
         .menu-item.active { color: #6d28d9; font-weight: 700; border-left-color: #6d28d9; background-color: #f5f3ff; }
-
         
-
         .chat-contact.active { background-color: #f8fafc; border-right: 4px solid #6d28d9; }
-
         .chat-bubble-sent { background: linear-gradient(135deg, #6d28d9 0%, #8b5cf6 100%); color: white; border-radius: 18px 18px 4px 18px; }
-
         .chat-bubble-received { background-color: #f1f5f9; color: #334155; border-radius: 18px 18px 18px 4px; border: 1px solid #e2e8f0; }
-
         
-
         .profile-upload-overlay { opacity: 0; transition: opacity 0.3s; background: rgba(0,0,0,0.5); }
-
         .group:hover .profile-upload-overlay { opacity: 1; }
-
     </style>
-
 </head>
-
 <body class="flex h-screen w-screen overflow-hidden antialiased">
-
-
 
     <div id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
-
-
     <aside id="mainSidebar" class="w-72 lg:w-64 bg-white border-r border-slate-200 flex flex-col flex-shrink-0">
-
         <div class="h-20 lg:h-24 flex items-center px-8 border-b border-slate-100 cursor-pointer" onclick="location.reload()">
-
             <div class="w-8 h-8 bg-[#6d28d9] text-white rounded-full flex items-center justify-center text-sm shadow-md mr-3"><i class="fa-solid fa-sparkles"></i></div>
-
             <h1 class="text-xl font-black font-prompt text-[#6d28d9] uppercase">Coursue</h1>
-
         </div>
-
-
 
         <div class="flex-1 overflow-y-auto py-6 hide-scroll flex flex-col gap-6">
-
             <nav class="flex flex-col font-prompt text-slate-500 font-medium text-sm" id="sidebarMenu">
-
                 <a onclick="nav('manage')" id="nav_manage" class="menu-item px-8 py-4 flex items-center active"><i class="fa-solid fa-pen-ruler w-6 mr-3 text-lg"></i> <span>จัดการเนื้อหา</span></a>
-
                 <a onclick="nav('stats')" id="nav_stats" class="menu-item px-8 py-4 flex items-center relative"><i class="fa-solid fa-chart-pie w-6 mr-3 text-lg"></i> <span>สถิติการเรียน</span></a>
-
                 <a onclick="nav('inbox')" id="nav_inbox" class="menu-item px-8 py-4 flex items-center relative"><i class="fa-solid fa-inbox w-6 mr-3 text-lg"></i> <span>กล่องข้อความ</span><span class="inbox-badge hidden absolute right-6 bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">0</span></a>
-
             </nav>
-
         </div>
-
-
 
         <div class="p-6 border-t border-slate-100">
-
             <div class="flex flex-col font-prompt text-sm">
-
                 <a onclick="nav('settings')" id="nav_settings" class="menu-item px-8 py-4 flex items-center text-slate-500"><i class="fa-solid fa-user-gear w-6 mr-3 text-lg"></i> <span>ตั้งค่าโปรไฟล์</span></a>
-
                 <a onclick="logout()" class="menu-item px-8 py-4 flex items-center text-rose-500 hover:bg-rose-50"><i class="fa-solid fa-arrow-right-from-bracket w-6 mr-3 text-lg"></i> <span>ออกจากระบบ</span></a>
-
             </div>
-
         </div>
-
     </aside>
-
-
 
     <main class="flex-1 flex flex-col overflow-hidden relative bg-[#f8fafc]">
-
         
-
         <header class="h-20 lg:h-24 flex items-center justify-between px-4 lg:px-10 border-b bg-white/95 backdrop-blur-md z-30 shrink-0 shadow-sm lg:shadow-none">
-
             <div class="flex items-center gap-3">
-
                 <button onclick="toggleSidebar()" class="lg:hidden w-10 h-10 flex items-center justify-center text-slate-600 bg-slate-100 rounded-xl"><i class="fa-solid fa-bars-staggered text-xl"></i></button>
-
                 <div class="hidden lg:flex items-center font-bold text-[#6d28d9] bg-purple-50 px-5 py-2.5 rounded-full border border-purple-100 text-sm shadow-sm"><i class="fa-solid fa-chalkboard-user mr-2"></i> โหมดอาจารย์ผู้สอน</div>
-
                 <div class="lg:hidden font-black font-prompt text-[#6d28d9] text-xl">COURSUE</div>
-
             </div>
-
-
 
             <div class="flex items-center gap-3 ml-auto">
-
                 <button onclick="toggleLanguage()" class="px-3 py-1.5 bg-slate-100 text-slate-600 rounded-lg text-xs font-bold uppercase" id="langToggleBtn">EN</button>
-
                 <button onclick="toggleRightSidebar()" class="lg:hidden w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm">
-
                     <img id="mobileHeaderProfileImg" src="" class="w-full h-full object-cover hidden">
-
                     <div id="mobileHeaderProfileInitials" class="w-full h-full bg-purple-100 text-purple-600 flex items-center justify-center text-xs font-bold">A</div>
-
                 </button>
-
             </div>
-
         </header>
 
-
-
         <div class="flex-1 overflow-y-auto p-4 md:p-8 lg:p-10 hide-scroll" id="mainScrollArea">
-
             
-
             <div id="view_manage" class="hidden max-w-5xl mx-auto">
-
                 <h2 class="text-2xl lg:text-3xl font-bold font-prompt text-slate-800 mb-6 lg:mb-8">จัดการเนื้อหาบทเรียน</h2>
-
                 
-
                 <div class="bg-white rounded-[1.5rem] lg:rounded-[2rem] p-6 lg:p-10 shadow-sm border border-slate-100 mb-8 lg:mb-10">
-
                     <div class="flex justify-between items-center mb-6 lg:mb-8">
-
                         <h3 id="formActionTitle" class="text-lg lg:text-xl font-bold text-[#6d28d9] font-prompt"><i class="fa-solid fa-plus-circle mr-2"></i> สร้างบทเรียนใหม่</h3>
-
                         <button type="button" onclick="resetTeacherForm()" id="cancelEditBtn" class="hidden bg-slate-100 text-slate-600 px-4 py-2 rounded-full font-bold hover:bg-slate-200 transition text-xs lg:text-sm">ยกเลิกแก้ไข</button>
-
                     </div>
-
                     
-
                     <form id="teacherForm">
-
                         <input type="hidden" id="t_mode" value="add"><input type="hidden" id="t_oldTitle" value="">
-
                         <div class="bg-slate-50 p-5 lg:p-8 rounded-2xl lg:rounded-3xl border border-slate-100 mb-6 shadow-inner">
-
                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 mb-4 lg:mb-6">
-
                                 <div><label class="block font-bold text-slate-700 mb-2 text-xs lg:text-sm">รายวิชา</label><select id="t_subject" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-purple-400 shadow-sm text-sm" required></select></div>
-
                                 <div><label class="block font-bold text-slate-700 mb-2 text-xs lg:text-sm">EP.</label><input type="text" id="t_ep" class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-purple-400 shadow-sm text-sm" required></div>
-
                             </div>
-
                             <div class="mb-4 lg:mb-6"><label class="block font-bold text-slate-700 mb-2 text-xs lg:text-sm">ชื่อเรื่อง</label><input type="text" id="t_title" class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-purple-400 shadow-sm text-sm" required></div>
-
                             <div class="mb-4 lg:mb-6"><label class="block font-bold text-slate-700 mb-2 text-xs lg:text-sm">YouTube Link (ถ้ามี)</label><input type="url" id="t_youtube" class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-purple-400 shadow-sm text-sm" placeholder="https://www.youtube.com/watch?v=..."></div>
-
                             <div>
-
                                 <label class="block font-bold text-slate-700 mb-2 text-xs lg:text-sm">เนื้อหา</label>
-
                                 <textarea id="t_content" rows="6" class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-purple-400 shadow-sm text-sm leading-relaxed"></textarea>
-
                             </div>
-
                         </div>
-
-
 
                         <div class="bg-slate-50 p-5 lg:p-8 rounded-2xl lg:rounded-3xl border border-slate-100 mb-6 lg:mb-8 shadow-inner">
-
                             <div class="flex justify-between items-center mb-4 lg:mb-6 border-b border-slate-200 pb-3">
-
                                 <h4 class="font-bold text-slate-700 text-sm lg:text-base font-prompt">แบบทดสอบ (สูงสุด 5 ข้อ)</h4>
-
                                 <button type="button" onclick="addTeacherQuizField()" class="bg-purple-100 text-purple-700 px-3 py-1.5 rounded-full font-bold text-[10px] lg:text-xs shadow-sm">+ เพิ่มคำถาม</button>
-
                             </div>
-
                             <div id="t_quizFields" class="space-y-4"></div>
-
                         </div>
-
-
 
                         <button type="button" onclick="saveLesson()" class="w-full bg-[#6d28d9] text-white font-bold py-4 rounded-xl lg:rounded-2xl shadow-lg hover:bg-purple-800 transition text-base lg:text-xl font-prompt">บันทึกบทเรียน</button>
-
                     </form>
-
                 </div>
-
                 
-
                 <h3 class="text-xl lg:text-2xl font-bold font-prompt text-slate-800 mb-6">บทเรียนที่สร้างแล้ว</h3>
-
                 <div id="loadingLessons_teacher" class="text-purple-500 font-bold flex items-center py-6 justify-center"><i class="fa-solid fa-circle-notch fa-spin mr-3 text-xl"></i> กำลังโหลด...</div>
-
                 <div id="lessonGrid_teacher" class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6"></div>
-
             </div>
-
-
 
             <div id="view_stats" class="hidden max-w-5xl mx-auto">
-
                 <h2 class="text-2xl lg:text-3xl font-bold font-prompt text-slate-800 mb-6 lg:mb-8">สถิติการเรียน</h2>
-
                 <div class="bg-white rounded-[1.5rem] lg:rounded-[2rem] p-5 lg:p-8 border shadow-sm mb-6 lg:mb-8 flex flex-col md:flex-row gap-4 lg:gap-5 items-stretch md:items-center">
-
                     <select id="statLessonSelect" onchange="renderTeacherTables()" class="w-full md:flex-1 px-4 py-3 border border-slate-200 rounded-xl font-bold text-purple-700 bg-slate-50 outline-none shadow-inner text-sm"></select>
-
                     <button onclick="loadAnalytics()" class="w-full md:w-auto bg-slate-800 text-white px-6 py-3 rounded-xl font-bold shadow-md text-sm"><i class="fa-solid fa-rotate mr-2"></i> รีเฟรช</button>
-
                 </div>
-
                 
-
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-
                     <div class="bg-white rounded-[1.5rem] lg:rounded-[2rem] p-5 lg:p-8 border shadow-sm">
-
                         <h3 class="font-bold text-lg mb-4 border-b pb-2 text-slate-800 font-prompt"><i class="fa-solid fa-eye text-sky-500 mr-2"></i> การเข้าชม</h3>
-
                         <div class="overflow-x-auto hide-scroll"><table class="w-full text-xs lg:text-sm text-left"><tbody id="logTableBody" class="divide-y divide-slate-100"></tbody></table></div>
-
                     </div>
-
                     <div class="bg-white rounded-[1.5rem] lg:rounded-[2rem] p-5 lg:p-8 border shadow-sm">
-
                         <h3 class="font-bold text-lg mb-4 border-b pb-2 text-slate-800 font-prompt"><i class="fa-solid fa-ranking-star text-purple-500 mr-2"></i> คะแนนสอบ</h3>
-
                         <div class="overflow-x-auto hide-scroll"><table class="w-full text-xs lg:text-sm text-left"><tbody id="statTableBody" class="divide-y divide-slate-100"></tbody></table></div>
-
                     </div>
-
                 </div>
-
             </div>
-
-
 
             <div id="view_inbox" class="hidden h-[calc(100vh-120px)] w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-4 lg:gap-6">
-
                 <div class="w-full lg:w-1/3 bg-white rounded-2xl lg:rounded-3xl border flex flex-col overflow-hidden shadow-sm h-[35%] lg:h-full shrink-0">
-
                     <div class="p-4 lg:p-6 border-b"><h2 class="text-lg lg:text-2xl font-bold font-prompt text-slate-800">กล่องข้อความ</h2></div>
-
                     <div class="flex-1 overflow-y-auto p-2 lg:p-4 hide-scroll" id="chatContactList"></div>
-
                 </div>
-
                 <div class="w-full lg:w-2/3 bg-white rounded-2xl lg:rounded-3xl border flex flex-col overflow-hidden shadow-sm relative h-[65%] lg:h-full">
-
                     <div id="chatPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-50 z-10 text-slate-400">
-
                         <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center text-2xl text-purple-400 mb-3"><i class="fa-regular fa-comment"></i></div>
-
                         <p class="text-sm font-bold">เลือกแชทนักเรียนเพื่อตอบกลับ</p>
-
                     </div>
-
                     <div class="p-3 lg:p-5 border-b flex items-center justify-between bg-white z-0" id="chatHeader">
-
                         <div class="flex items-center gap-3">
-
                             <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden bg-indigo-100 flex items-center justify-center font-bold text-indigo-600 shadow-sm" id="chatHeaderAvatar"></div>
-
                             <div><h3 class="font-bold text-sm lg:text-lg text-slate-800" id="chatHeaderName">Name</h3><p class="text-[10px] text-emerald-500 font-bold">นักเรียน</p></div>
-
                         </div>
-
                         <button onclick="loadMessagesForChat()" class="text-slate-400 hover:text-purple-600 p-2"><i class="fa-solid fa-rotate-right text-lg"></i></button>
-
                     </div>
-
                     <div class="flex-1 overflow-y-auto p-4 lg:p-6 bg-[#f8fafc] flex flex-col space-y-4 hide-scroll z-0" id="chatHistory"></div>
-
                     <div class="p-3 lg:p-5 border-t bg-white flex items-center gap-2 lg:gap-3 z-0">
-
                         <input type="text" id="chatInputMessage" placeholder="พิมพ์ข้อความตอบกลับ..." class="flex-1 px-4 lg:px-6 py-3 lg:py-4 bg-slate-50 border border-slate-200 rounded-full outline-none focus:ring-2 focus:ring-purple-300 text-sm lg:text-base">
-
                         <button onclick="sendChatMessage()" class="w-12 h-12 lg:w-14 lg:h-14 bg-[#6d28d9] text-white rounded-full flex items-center justify-center shadow-lg"><i class="fa-solid fa-paper-plane"></i></button>
-
                     </div>
-
                 </div>
-
             </div>
-
-
 
             <div id="view_settings" class="hidden max-w-3xl mx-auto">
-
                 <div class="bg-white rounded-2xl lg:rounded-[2rem] p-6 lg:p-10 border shadow-sm">
-
                     <div class="flex flex-col md:flex-row items-center gap-6 lg:gap-10 mb-8 border-b pb-8">
-
                         <div class="relative w-24 h-24 lg:w-32 lg:h-32 rounded-full bg-slate-100 overflow-hidden border-4 border-white shadow-lg group">
-
                             <img id="previewSettingPic" src="" class="w-full h-full object-cover hidden">
-
                             <div id="previewSettingInitials" class="w-full h-full flex items-center justify-center text-4xl lg:text-5xl font-bold text-purple-600 bg-purple-100">A</div>
-
                             <label class="absolute inset-0 flex flex-col items-center justify-center bg-black/50 text-white cursor-pointer opacity-0 group-hover:opacity-100 transition backdrop-blur-[2px]"><i class="fa-solid fa-camera mb-1 text-xl"></i><input type="file" class="hidden" accept="image/*" onchange="handleImageUpload(event)"></label>
-
                         </div>
-
                         <div class="text-center md:text-left">
-
                             <h3 class="font-bold text-2xl lg:text-3xl font-prompt text-slate-800 mb-1" id="settingNameDisplay">-</h3>
-
                             <p class="text-xs font-bold text-[#6d28d9] bg-purple-50 px-3 py-1 rounded-full uppercase">TEACHER</p>
-
                         </div>
-
                     </div>
-
                     <form id="profileForm" class="space-y-5">
-
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-
                             <div><label class="block text-xs font-bold text-slate-500 mb-2 uppercase">Email *</label><input type="email" id="set_email" class="w-full px-4 py-3 bg-slate-50 border rounded-xl outline-none focus:ring-2 focus:ring-[#6d28d9] text-sm" required></div>
-
                             <div><label class="block text-xs font-bold text-slate-500 mb-2 uppercase">Phone *</label><input type="tel" id="set_phone" class="w-full px-4 py-3 bg-slate-50 border rounded-xl outline-none focus:ring-2 focus:ring-[#6d28d9] text-sm" required></div>
-
                         </div>
-
                         <button type="button" onclick="saveProfile()" class="w-full bg-[#6d28d9] text-white font-bold py-4 rounded-xl shadow-lg mt-4 active:scale-[0.98] transition font-prompt text-sm tracking-widest hover:bg-purple-800">อัปเดตข้อมูล</button>
-
                     </form>
-
                 </div>
-
             </div>
-
             
-
         </div>
-
     </main>
 
-
-
     <aside id="rightSidebar" class="w-72 bg-white border-l border-slate-200 flex-shrink-0 hidden lg:flex flex-col h-full shadow-sm">
-
         <div class="p-8 overflow-y-auto flex-1 hide-scroll">
-
             <div class="text-right lg:hidden mb-4"><button onclick="document.getElementById('rightSidebar').classList.add('hidden')" class="text-slate-400 bg-slate-100 w-8 h-8 rounded-full"><i class="fa-solid fa-xmark"></i></button></div>
-
             <h3 class="font-bold text-xs mb-8 font-prompt uppercase text-slate-400 tracking-widest">Instructor Overview</h3>
-
             
-
             <div class="text-center mb-8">
-
                 <div class="relative w-24 h-24 mx-auto mb-4 border-4 border-white shadow-xl rounded-full overflow-hidden">
-
                     <img id="rightProfileImage" src="" class="w-full h-full object-cover hidden">
-
                     <div id="rightProfileInitials" class="w-full h-full flex items-center justify-center text-3xl font-bold text-purple-600 bg-purple-100">A</div>
-
                 </div>
-
                 <h3 class="font-bold text-lg font-prompt text-slate-800" id="rightProfileFullName">-</h3>
-
                 <div class="flex flex-wrap justify-center gap-1.5 mt-3" id="rightProfileSubjects"></div>
-
             </div>
-
             
-
             <div class="grid grid-cols-2 gap-3 mb-8">
-
                 <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 text-center"><p class="text-[10px] text-slate-400 font-bold uppercase mb-1">บทเรียน</p><p class="text-lg font-black text-slate-800" id="statMyLessons">0</p></div>
-
                 <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 text-center"><p class="text-[10px] text-slate-400 font-bold uppercase mb-1">ยอดวิว</p><p class="text-lg font-black text-slate-800" id="statTotalViews">0</p></div>
-
             </div>
-
         </div>
-
     </aside>
 
-
-
     <script>
-
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbz22baIknv96tjyJYB_qiit6T-owv4qSSUpjA22cZMHXeZ02JnqcPxaQGVUyWzhTubQhA/exec';
-
         let currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-
         if (!currentUser || String(currentUser.role).toLowerCase().trim() !== 'teacher') { window.location.replace('index.html'); }
 
-
-
         let allLessons = [], cachedMessages = [], globalStatData = { students: [], scores: [], logs: [] }, activeChatContact = null, uploadedImageBase64 = "";
-
         let chatTimer = null;
 
-
-
         function fetchGAS(payload) { return fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r => r.json()); }
-
         function getInitials(n) { let p = n.trim().split(/\s+/); return p.length >= 2 ? (p[0][0] + p[1][0]).toUpperCase() : n.substring(0, 2).toUpperCase(); }
 
-
-
         // Mobile Toggle Sidebars
-
         function toggleSidebar() { document.getElementById('mainSidebar').classList.toggle('active'); document.getElementById('sidebarOverlay').classList.toggle('active'); }
-
         function toggleRightSidebar() {
-
             const rs = document.getElementById('rightSidebar'); rs.classList.toggle('hidden');
-
             if(!rs.classList.contains('hidden')) { rs.style.position = 'fixed'; rs.style.right = '0'; rs.style.top = '0'; rs.style.zIndex = '100'; rs.style.height = '100vh'; rs.style.width = '280px'; }
-
         }
-
-
 
         window.onload = () => { updateProfileUI(); nav('manage'); loadDashboardData(); 
-
             let chatInput = document.getElementById("chatInputMessage"); if(chatInput) { chatInput.addEventListener("keypress", (e) => { if(e.key === "Enter") sendChatMessage(); }); }
-
         };
 
-
-
         function nav(target) {
-
             ['view_manage', 'view_stats', 'view_inbox', 'view_settings'].forEach(id => document.getElementById(id).style.display = 'none');
-
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
-
             let tab = document.getElementById('nav_' + target); if(tab) tab.classList.add('active');
-
             let v = document.getElementById('view_' + target); if(v) v.style.display = (target === 'inbox' ? 'flex' : 'block');
-
             
-
             if(window.innerWidth < 1024) { document.getElementById('mainSidebar').classList.remove('active'); document.getElementById('sidebarOverlay').classList.remove('active'); }
-
             
-
             // Inbox Auto-refresh
-
             if(target === 'inbox') {
-
                 renderChatContacts();
-
                 document.querySelectorAll('.inbox-badge').forEach(b => b.classList.add('hidden'));
-
                 if(!chatTimer) chatTimer = setInterval(loadMessagesForChat, 5000);
-
             } else if(chatTimer) { clearInterval(chatTimer); chatTimer = null; }
 
-
-
             if(target === 'stats') loadAnalytics();
-
             
-
             // Auto Fill Profile
-
             if(target === 'settings') {
-
                 document.getElementById('settingNameDisplay').innerText = currentUser.name;
-
                 document.getElementById('set_email').value = currentUser.email || "";
-
                 document.getElementById('set_phone').value = currentUser.phone || "";
-
                 if(currentUser.pic) { 
-
                     document.getElementById('previewSettingPic').src = currentUser.pic; 
-
                     document.getElementById('previewSettingPic').classList.remove('hidden'); 
-
                     document.getElementById('previewSettingInitials').classList.add('hidden'); 
-
                 }
-
             }
-
             document.getElementById('mainScrollArea').scrollTop = 0;
-
         }
-
-
 
         function loadDashboardData() {
-
             fetchGAS({ action: "getDashboardData", myId: currentUser.id, myName: currentUser.name, role: currentUser.role }).then(r => {
-
                 if(r.status === "success") {
-
                     allLessons = r.lessons; cachedMessages = r.messages;
-
                     document.getElementById('loadingLessons_teacher').style.display = 'none';
-
                     
-
                     let ts = document.getElementById('t_subject'); ts.innerHTML = '<option value="">-- เลือกวิชา --</option>';
-
                     let myS = currentUser.assigned ? currentUser.assigned.split(',').map(s=>s.trim()) : [];
-
                     myS.forEach(s => ts.innerHTML += `<option value="${s}">${s}</option>`);
-
                     
-
                     renderTeacherLessons(); updateRightSidebar();
-
                     
-
                     let unread = cachedMessages.filter(m => !m.reply || m.reply.trim()==="").length;
-
                     document.querySelectorAll('.inbox-badge').forEach(b => { if(unread>0) { b.innerText=unread; b.classList.remove('hidden'); } else b.classList.add('hidden'); });
-
                 }
-
             });
-
         }
-
-
 
         function renderTeacherLessons() {
-
             let h = ""; let sel = document.getElementById('statLessonSelect'); sel.innerHTML = '<option value="">-- เลือกบทเรียน --</option>';
-
             let myS = currentUser.assigned ? currentUser.assigned.split(',').map(s=>s.trim()) : [];
-
             let f = allLessons.filter(l => myS.includes(l.subject));
-
             
-
             if(f.length === 0) h = '<div class="col-span-full text-center py-10 text-slate-400 border-2 border-dashed rounded-2xl">คุณยังไม่ได้สร้างบทเรียน</div>';
-
             
-
             f.forEach((l, i) => {
-
                 h += `<div class="bg-white rounded-2xl lg:rounded-3xl p-5 lg:p-6 border flex flex-col justify-between shadow-sm hover:shadow-md transition"><div><div class="flex justify-between mb-4"><span class="bg-purple-50 text-purple-700 px-3 py-1 rounded-lg text-[10px] lg:text-xs font-bold border border-purple-100">${l.subject} | EP.${l.ep}</span><span class="text-[10px] lg:text-xs text-slate-500 font-bold bg-slate-50 px-2 py-1 rounded-md"><i class="fa-solid fa-eye text-sky-500"></i> ${l.views}</span></div><h3 class="font-bold text-sm lg:text-lg mb-6 line-clamp-2">${l.title}</h3></div><div class="flex gap-2 lg:gap-3"><button onclick="editLessonSetup(${allLessons.indexOf(l)})" class="flex-1 bg-slate-50 py-2.5 lg:py-3 rounded-xl text-xs lg:text-sm font-bold border hover:bg-purple-600 hover:text-white transition shadow-sm"><i class="fa-solid fa-pen mr-1"></i> แก้ไข</button><button onclick="deleteLesson('${l.title}')" class="flex-1 bg-rose-50 text-rose-600 py-2.5 lg:py-3 rounded-xl text-xs lg:text-sm font-bold border border-rose-100 hover:bg-rose-600 hover:text-white transition shadow-sm"><i class="fa-solid fa-trash mr-1"></i> ลบ</button></div></div>`;
-
                 sel.innerHTML += `<option value="${l.title}">[${l.subject}] ${l.title}</option>`;
-
             });
-
             document.getElementById('lessonGrid_teacher').innerHTML = h;
-
         }
-
-
 
         function updateRightSidebar() {
-
             // ดึงชื่อเต็มมาโชว์ใน Sidebar
-
             document.getElementById('rightProfileFullName').innerText = currentUser.name;
-
             
-
             if(currentUser.pic) { 
-
                 document.getElementById('rightProfileImage').src = currentUser.pic; document.getElementById('rightProfileImage').classList.remove('hidden'); document.getElementById('rightProfileInitials').classList.add('hidden'); 
-
                 document.getElementById('mobileHeaderProfileImg').src = currentUser.pic; document.getElementById('mobileHeaderProfileImg').classList.remove('hidden'); document.getElementById('mobileHeaderProfileInitials').classList.add('hidden');
-
             } else {
-
                 let inits = getInitials(currentUser.name);
-
                 document.getElementById('rightProfileInitials').innerText = inits;
-
                 document.getElementById('mobileHeaderProfileInitials').innerText = inits;
-
             }
-
             
-
             let myS = currentUser.assigned ? currentUser.assigned.split(',').map(s=>s.trim()) : [];
-
             let myL = allLessons.filter(l => myS.includes(l.subject));
-
             document.getElementById('statMyLessons').innerText = myL.length;
-
             document.getElementById('statTotalViews').innerText = myL.reduce((a,b) => a + (b.views||0), 0);
-
             document.getElementById('rightProfileSubjects').innerHTML = myS.map(s => `<span class="bg-purple-50 text-purple-700 font-bold px-2 py-1 rounded border border-purple-100 text-[9px]">${s}</span>`).join('');
-
         }
-
-
 
         function addTeacherQuizField() {
-
             let c = document.getElementById('t_quizFields'); if(c.children.length >= 5) return Swal.fire('เตือน','สร้างได้สูงสุด 5 ข้อ','warning');
-
             let v = document.createElement('div'); v.className = "quiz-item bg-white p-4 lg:p-6 rounded-xl lg:rounded-2xl border mb-4 relative shadow-sm";
-
             v.innerHTML = `<button type="button" onclick="this.parentElement.remove(); updateQuizNumbers();" class="absolute top-3 right-3 lg:top-4 lg:right-4 w-8 h-8 rounded-full bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white transition"><i class="fa-solid fa-trash text-xs"></i></button><label class="quiz-number block font-bold mb-3 text-xs text-purple-700 bg-purple-50 w-max px-3 py-1 rounded-lg">ข้อ X.</label><input type="text" class="t_q w-full p-3 border rounded-xl mb-4 bg-slate-50 outline-none focus:ring-2 focus:ring-purple-300 text-sm" placeholder="พิมพ์คำถาม..." required><div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4"><div class="flex items-center"><span class="w-6 text-slate-400 font-bold text-xs">ก.</span><input type="text" class="t_c1 p-2 border rounded-lg w-full text-sm outline-none focus:border-purple-400"></div><div class="flex items-center"><span class="w-6 text-slate-400 font-bold text-xs">ข.</span><input type="text" class="t_c2 p-2 border rounded-lg w-full text-sm outline-none focus:border-purple-400"></div><div class="flex items-center"><span class="w-6 text-slate-400 font-bold text-xs">ค.</span><input type="text" class="t_c3 p-2 border rounded-lg w-full text-sm outline-none focus:border-purple-400"></div><div class="flex items-center"><span class="w-6 text-slate-400 font-bold text-xs">ง.</span><input type="text" class="t_c4 p-2 border rounded-lg w-full text-sm outline-none focus:border-purple-400"></div></div><div class="text-sm bg-slate-50 p-3 rounded-lg border flex items-center"><span class="mr-2 font-bold text-slate-600 text-xs">เฉลย:</span> <select class="t_ans p-1.5 border rounded-md font-bold text-emerald-600 text-xs bg-white"><option value="1">ข้อ ก.</option><option value="2">ข้อ ข.</option><option value="3">ข้อ ค.</option><option value="4">ข้อ ง.</option></select></div>`;
-
             c.appendChild(v); updateQuizNumbers();
-
         }
-
         function updateQuizNumbers() { document.querySelectorAll('.quiz-item').forEach((it, i) => it.querySelector('.quiz-number').innerText = `ข้อ ${i + 1}.`); }
 
-
-
         function saveLesson() {
-
             let req = { action: document.getElementById('t_mode').value==="add"?"addLesson":"editLesson", oldTitle: document.getElementById('t_oldTitle').value, subject: document.getElementById('t_subject').value, ep: document.getElementById('t_ep').value, title: document.getElementById('t_title').value, content: (document.getElementById('t_youtube').value ? `[YT:${document.getElementById('t_youtube').value}]\n` : '') + document.getElementById('t_content').value, questions: [] };
-
             document.querySelectorAll('.quiz-item').forEach(it => req.questions.push({q: it.querySelector('.t_q').value, ans: it.querySelector('.t_ans').value, c1: it.querySelector('.t_c1').value, c2: it.querySelector('.t_c2').value, c3: it.querySelector('.t_c3').value, c4: it.querySelector('.t_c4').value}));
-
             while(req.questions.length < 5) req.questions.push({q:"",c1:"",c2:"",c3:"",c4:"",ans:"1"});
-
             if(!req.subject || !req.title) return Swal.fire('เตือน','กรุณากรอกวิชาและชื่อเรื่องให้ครบครับ','warning');
-
             Swal.fire({title:'กำลังบันทึก...', didOpen:()=>Swal.showLoading()});
-
             fetchGAS(req).then(r => { if(r.status==="success") { Swal.fire('สำเร็จ','','success'); resetTeacherForm(); loadDashboardData(); }});
-
         }
-
         function resetTeacherForm() { document.getElementById('teacherForm').reset(); document.getElementById('t_mode').value="add"; document.getElementById('t_quizFields').innerHTML=""; document.getElementById('cancelEditBtn').classList.add('hidden'); document.getElementById('formActionTitle').innerHTML='<i class="fa-solid fa-plus-circle mr-2"></i> สร้างบทเรียนใหม่'; }
-
         function editLessonSetup(idx) { let l = allLessons[idx]; document.getElementById('t_mode').value="edit"; document.getElementById('t_oldTitle').value=l.title; document.getElementById('t_subject').value=l.subject; document.getElementById('t_ep').value=l.ep; document.getElementById('t_title').value=l.title; let yt = (l.content||"").match(/\[YT:(.*?)\]/); document.getElementById('t_youtube').value = yt ? yt[1] : ""; document.getElementById('t_content').value = (l.content||"").replace(/\[YT:.*?\]\n?/, ""); document.getElementById('t_quizFields').innerHTML=""; (l.questions||[]).filter(q=>q.q).forEach(q=>addTeacherQuizField(q)); document.getElementById('cancelEditBtn').classList.remove('hidden'); document.getElementById('formActionTitle').innerHTML='<i class="fa-solid fa-pen mr-2 text-amber-500"></i> กำลังแก้ไข'; document.getElementById('view_manage').scrollIntoView(); }
-
         function deleteLesson(t) { Swal.fire({title:'ลบ?', text: 'แน่ใจหรือไม่?', icon:'warning', showCancelButton:true}).then(r=>{if(r.isConfirmed) { Swal.fire({title:'Deleting...',didOpen:()=>Swal.showLoading()}); fetchGAS({action:"deleteLesson", title:t}).then(()=>loadDashboardData()); }}); }
 
-
-
         // --- CHAT SYSTEM ---
-
         function renderChatContacts() {
-
             let studentsMap = {}; 
-
             cachedMessages.forEach(m => { 
-
                 if(!studentsMap[m.senderName]) { studentsMap[m.senderName] = { name: m.senderName, id: m.senderId, room: m.senderRoom, pic: m.senderPic, msgs: [] }; } 
-
                 studentsMap[m.senderName].msgs.push(m); 
-
             });
-
             let students = Object.values(studentsMap).sort((a,b) => new Date(b.msgs[0].date) - new Date(a.msgs[0].date));
-
             let html = `<p class="px-4 text-[10px] font-bold text-slate-400 mb-3 uppercase tracking-widest mt-2">นักเรียน</p>`;
-
             
-
             if(students.length === 0) html += `<div class="text-center p-4 text-xs text-slate-400">ไม่มีข้อความใหม่</div>`;
-
             
-
             students.forEach(s => {
-
                 let unread = s.msgs.filter(m => !m.reply || m.reply.trim() === "").length; 
-
                 let pic = s.pic ? `<img src="${s.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center font-bold text-indigo-600 bg-indigo-100 text-xs">${getInitials(s.name)}</div>`;
-
                 html += `<div class="chat-contact ${activeChatContact===s.name?'active':''} flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-slate-50 transition mb-1 border border-transparent shadow-sm" onclick="openChat('${s.name}')"><div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shrink-0 border border-white shadow-sm">${pic}${unread===0?'<div class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full"></div>':''}</div><div class="flex-1 min-w-0"><h4 class="font-bold text-xs lg:text-sm truncate text-slate-800">${s.name}</h4><p class="text-[10px] text-slate-400 truncate">ห้อง ${s.room}</p></div>${unread>0?`<div class="w-5 h-5 bg-rose-500 rounded-full flex items-center justify-center text-white text-[9px] font-bold shadow-sm">${unread}</div>`:''}</div>`;
-
             });
-
             document.getElementById('chatContactList').innerHTML = html;
-
         }
-
-
 
         function openChat(n) {
-
             activeChatContact = n; document.getElementById('chatPlaceholder').classList.add('hidden'); renderChatContacts();
-
             let sInfo = cachedMessages.find(m => m.senderName === n); 
-
             document.getElementById('chatHeaderName').innerText = n + " (ห้อง " + sInfo.senderRoom + ")";
-
             let pic = sInfo.senderPic ? `<img src="${sInfo.senderPic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center font-bold text-indigo-600 bg-indigo-100 text-xs lg:text-sm">${getInitials(n)}</div>`; 
-
             document.getElementById('chatHeaderAvatar').innerHTML = pic;
-
             
-
             let msgs = cachedMessages.filter(m => m.senderName === n); let h = "";
-
             let myPicHtml = currentUser.pic ? `<img src="${currentUser.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-purple-100 text-purple-600 font-bold text-[8px]">${getInitials(currentUser.name)}</div>`;
-
             
-
             [...msgs].reverse().forEach(m => {
-
                 let d = new Date(m.date).toLocaleString('th-TH', { hour:'2-digit', minute:'2-digit' });
-
                 let sPic = m.senderPic ? `<img src="${m.senderPic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-indigo-100 text-indigo-600 font-bold text-[8px]">${getInitials(m.senderName)}</div>`;
-
                 h += `<div class="flex flex-col items-start w-full mb-4"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${sPic}</div><p class="text-[9px] font-bold text-slate-400">${m.senderName} • ${d}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm">${m.message}</div></div>`;
-
                 if(m.reply && m.reply.trim()!=="") { h += `<div class="flex flex-col items-end w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400">คุณตอบแล้ว</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${m.reply}</div></div>`; }
-
             });
-
             document.getElementById('chatHistory').innerHTML = h; document.getElementById('chatHistory').scrollTop = document.getElementById('chatHistory').scrollHeight;
-
         }
-
-
 
         function sendChatMessage() {
-
             let msg = document.getElementById('chatInputMessage').value.trim(); if(!msg || !activeChatContact) return;
-
             let targetMsg = cachedMessages.filter(m => m.senderName === activeChatContact).find(m => !m.reply || m.reply.trim()==="");
-
             if(!targetMsg) return Swal.fire('ข้อมูล', 'ไม่มีข้อความใหม่ค้างตอบครับ', 'info');
-
             fetchGAS({ action: "replyMessage", row: targetMsg.row, replyText: msg }).then(() => { document.getElementById('chatInputMessage').value = ""; loadMessagesForChat(); });
-
         }
-
-
 
         function loadMessagesForChat() { fetchGAS({ action: "getMessages", myId: currentUser.id, myName: currentUser.name, role: currentUser.role }).then(r => { if(r.status === "success") { cachedMessages = r.data; if(activeChatContact) openChat(activeChatContact); else renderChatContacts(); } }); }
 
-
-
         function loadAnalytics() { fetchGAS({action:"getAnalytics"}).then(r => { if(r.status === "success"){ globalStatData = r; renderTeacherTables(); } }); }
-
         function renderTeacherTables() {
-
             let sel = document.getElementById('statLessonSelect').value; if(!sel) return;
-
             let sh = "", lh = "";
-
             globalStatData.students.forEach(s => {
-
                 let sc = globalStatData.scores.find(x => x.id == s.id && x.lesson === sel);
-
                 sh += `<tr class="hover:bg-slate-50 border-b"><td class="py-3 px-2 font-bold text-slate-500">${s.id}</td><td class="py-3 px-2 font-bold">${s.name}</td><td class="py-3 px-2 text-right"><span class="${sc?'bg-emerald-100 text-emerald-700':'bg-slate-100 text-slate-400'} px-3 py-1 rounded-lg font-bold shadow-sm">${sc?sc.score+'/5':'ยังไม่สอบ'}</span></td></tr>`;
-
                 let v = globalStatData.logs.filter(x => x.id == s.id && x.lesson === sel);
-
                 lh += `<tr class="hover:bg-slate-50 border-b"><td class="py-3 px-2 font-bold text-slate-500">${s.id}</td><td class="py-3 px-2 font-bold">${s.name}</td><td class="py-3 px-2 text-right"><span class="${v.length>0?'bg-sky-100 text-sky-700':'bg-slate-100 text-slate-400'} px-3 py-1 rounded-lg font-bold shadow-sm">${v.length>0?'เข้าแล้ว ('+v.length+')':'ยังไม่เข้า'}</span></td></tr>`;
-
             });
-
             document.getElementById('statTableBody').innerHTML = sh || '<tr><td colspan="3" class="text-center py-4">ไม่มีข้อมูล</td></tr>'; document.getElementById('logTableBody').innerHTML = lh || '<tr><td colspan="3" class="text-center py-4">ไม่มีข้อมูล</td></tr>';
-
         }
-
-
 
         // --- SETTINGS ---
-
         function updateProfileUI() {
-
             document.getElementById('rightProfileFullName').innerText = currentUser.name;
-
             let inits = getInitials(currentUser.name); document.getElementById('mobileHeaderProfileInitials').innerText = inits;
-
             if(currentUser.pic) { 
-
                 document.getElementById('rightProfileImage').src = currentUser.pic; document.getElementById('rightProfileImage').classList.remove('hidden'); document.getElementById('rightProfileInitials').classList.add('hidden'); 
-
                 document.getElementById('mobileHeaderProfileImg').src = currentUser.pic; document.getElementById('mobileHeaderProfileImg').classList.remove('hidden'); document.getElementById('mobileHeaderProfileInitials').classList.add('hidden');
-
             }
-
         }
-
-
 
         function handleImageUpload(e) {
-
             let f = e.target.files[0]; if(!f) return;
-
             let r = new FileReader(); r.onload = ev => {
-
                 let img = new Image(); img.onload = () => {
-
                     let c = document.createElement('canvas'), w = 200, s = w / img.width; c.width = w; c.height = img.height * s;
-
                     c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); uploadedImageBase64 = c.toDataURL('image/jpeg', 0.8);
-
                     document.getElementById('previewSettingPic').src = uploadedImageBase64; document.getElementById('previewSettingPic').classList.remove('hidden'); document.getElementById('previewSettingInitials').classList.add('hidden');
-
                 }; img.src = ev.target.result;
-
             }; r.readAsDataURL(f);
-
         }
-
-
 
         function saveProfile() {
-
             let e = document.getElementById('set_email').value.trim();
-
             let p = document.getElementById('set_phone').value.trim();
-
             let c = uploadedImageBase64 || currentUser.pic;
-
             if(!e || !p) return Swal.fire('เตือน', 'กรุณากรอกอีเมลและเบอร์โทรศัพท์ให้ครบถ้วนก่อนบันทึกครับ', 'warning');
-
             Swal.fire({title:'กำลังบันทึก...', didOpen:()=>Swal.showLoading()});
-
             fetchGAS({action:"updateProfile", username:currentUser.id, pic:c, email:e, phone:p}).then(r => {
-
                 if(r.status === "success") { currentUser.pic = c; currentUser.email = e; currentUser.phone = p; sessionStorage.setItem('currentUser', JSON.stringify(currentUser)); updateProfileUI(); Swal.fire('สำเร็จ','บันทึกข้อมูลโปรไฟล์เรียบร้อยแล้ว','success'); }
-
             });
-
         }
 
-
-
         function toggleLanguage() { Swal.fire({ text: 'ระบบกำลังดำเนินการแปลภาษา...', icon: 'info', timer: 1000, showConfirmButton: false }); }
-
         function logout() { sessionStorage.clear(); window.location.replace('index.html'); }
-
     </script>
-
 </body>
-
 </html>
