@@ -82,13 +82,16 @@
 
         <div class="flex-1 overflow-y-auto p-4 md:p-8 lg:p-10 hide-scroll" id="mainScrollArea">
             
-            <div id="view_system" class="max-w-5xl mx-auto">
+            <div id="view_system" class="max-w-6xl mx-auto">
                 <h2 class="text-2xl lg:text-3xl font-bold font-prompt text-slate-800 mb-6 lg:mb-8">Admin Panel - ตั้งค่าระบบ</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="bg-white rounded-[1.5rem] lg:rounded-[2rem] p-6 lg:p-8 shadow-sm border border-slate-100">
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8">
+                    <div class="bg-white rounded-[1.5rem] lg:rounded-[2rem] p-6 lg:p-8 shadow-sm border border-slate-100 h-max">
                         <h3 class="text-lg font-bold mb-6 font-prompt text-[#6d28d9]"><i class="fa-solid fa-layer-group mr-2"></i> เพิ่มรายวิชาใหม่</h3>
                         <div class="space-y-4">
-                            <div><label class="block text-xs font-bold text-slate-500 mb-2 uppercase">ชื่อรายวิชา</label><input type="text" id="a_subName" placeholder="เช่น ฟิสิกส์ 1" class="w-full px-4 py-3 bg-slate-50 border rounded-xl outline-none focus:ring-2 focus:ring-purple-300 text-sm"></div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-2 uppercase">ชื่อรายวิชา</label>
+                                <input type="text" id="a_subName" placeholder="เช่น ฟิสิกส์ 1" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-300 text-sm">
+                            </div>
                             <button onclick="adminAddSubject()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3.5 rounded-xl font-prompt transition mt-2 shadow-md">บันทึกรายวิชา</button>
                         </div>
                     </div>
@@ -96,11 +99,11 @@
                     <div class="bg-white rounded-[1.5rem] lg:rounded-[2rem] p-6 lg:p-8 shadow-sm border border-slate-100">
                         <h3 class="text-lg font-bold mb-6 font-prompt text-[#6d28d9]"><i class="fa-solid fa-user-tie mr-2"></i> ลงทะเบียนครูผู้สอน</h3>
                         <div class="space-y-4">
-                            <div class="grid grid-cols-2 gap-4">
-                                <div><label class="block text-xs font-bold text-slate-500 mb-2 uppercase">Username</label><input type="text" id="a_tUser" placeholder="ชื่อผู้ใช้งาน" class="w-full px-4 py-3 bg-slate-50 border rounded-xl outline-none focus:ring-2 focus:ring-purple-300 text-sm"></div>
-                                <div><label class="block text-xs font-bold text-slate-500 mb-2 uppercase">Password</label><input type="password" id="a_tPass" placeholder="รหัสผ่าน" class="w-full px-4 py-3 bg-slate-50 border rounded-xl outline-none focus:ring-2 focus:ring-purple-300 text-sm"></div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div><label class="block text-xs font-bold text-slate-500 mb-2 uppercase">Username</label><input type="text" id="a_tUser" placeholder="ชื่อผู้ใช้งาน" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-300 text-sm"></div>
+                                <div><label class="block text-xs font-bold text-slate-500 mb-2 uppercase">Password</label><input type="password" id="a_tPass" placeholder="รหัสผ่าน" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-300 text-sm"></div>
                             </div>
-                            <div><label class="block text-xs font-bold text-slate-500 mb-2 uppercase">ชื่อ-นามสกุล</label><input type="text" id="a_tName" placeholder="ชื่อที่จะแสดงผล" class="w-full px-4 py-3 bg-slate-50 border rounded-xl outline-none focus:ring-2 focus:ring-purple-300 text-sm"></div>
+                            <div><label class="block text-xs font-bold text-slate-500 mb-2 uppercase">ชื่อ-นามสกุล</label><input type="text" id="a_tName" placeholder="ชื่อที่จะแสดงผล" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-300 text-sm"></div>
                             <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
                                 <p class="font-bold text-slate-700 text-sm mb-3">วิชาที่รับผิดชอบ</p>
                                 <div id="a_subjectCheckboxes" class="flex flex-wrap gap-2"></div>
@@ -117,7 +120,7 @@
                 <div class="mb-10 lg:mb-12">
                     <h3 class="text-xl lg:text-2xl font-bold font-prompt text-slate-800 mb-6">บทเรียนในระบบทั้งหมด</h3>
                     <div id="loadingLessons_admin" class="text-purple-500 font-bold flex items-center py-6 justify-center"><i class="fa-solid fa-circle-notch fa-spin mr-3 text-xl"></i> กำลังโหลด...</div>
-                    <div id="lessonGrid_admin" class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6"></div>
+                    <div id="lessonGrid_admin" class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6"></div>
                 </div>
 
                 <div id="lessonFormCard" class="bg-white rounded-[1.5rem] lg:rounded-[2rem] p-6 lg:p-10 shadow-sm border border-slate-100 mb-8 lg:mb-10">
@@ -129,7 +132,7 @@
                     <form id="adminForm">
                         <input type="hidden" id="t_mode" value="add"><input type="hidden" id="t_oldTitle" value="">
                         <div class="bg-slate-50 p-5 lg:p-8 rounded-2xl lg:rounded-3xl border border-slate-100 mb-6 shadow-inner">
-                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 mb-4 lg:mb-6">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6 mb-4 lg:mb-6">
                                 <div><label class="block font-bold text-slate-700 mb-2 text-xs lg:text-sm">รายวิชา</label><select id="t_subject" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white outline-none focus:ring-2 focus:ring-purple-400 shadow-sm text-sm" required></select></div>
                                 <div><label class="block font-bold text-slate-700 mb-2 text-xs lg:text-sm">EP.</label><input type="text" id="t_ep" class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-purple-400 shadow-sm text-sm" required></div>
                             </div>
@@ -155,16 +158,16 @@
             </div>
 
             <div id="view_inbox" class="hidden h-[calc(100vh-120px)] w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-4 lg:gap-6">
-                <div class="w-full lg:w-1/3 bg-white rounded-2xl lg:rounded-3xl border border-slate-100 flex flex-col overflow-hidden shadow-sm lg:h-full h-1/3 shrink-0">
+                <div class="w-full lg:w-1/3 bg-white rounded-2xl lg:rounded-3xl border border-slate-100 flex flex-col overflow-hidden shadow-sm h-[35%] lg:h-full shrink-0">
                     <div class="p-4 lg:p-6 border-b"><h2 class="text-lg lg:text-2xl font-bold font-prompt text-slate-800">กล่องข้อความ</h2></div>
                     <div class="flex-1 overflow-y-auto p-2 lg:p-4 hide-scroll" id="chatContactList"></div>
                 </div>
-                <div class="w-full lg:w-2/3 bg-white rounded-2xl lg:rounded-3xl border border-slate-100 flex flex-col overflow-hidden shadow-sm relative lg:h-full h-2/3">
+                <div class="w-full lg:w-2/3 bg-white rounded-2xl lg:rounded-3xl border border-slate-100 flex flex-col overflow-hidden shadow-sm relative h-[65%] lg:h-full">
                     <div id="chatPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-50 z-10 text-slate-400">
-                        <div class="w-20 h-20 bg-purple-100 text-purple-400 rounded-full flex items-center justify-center text-3xl mb-4 shadow-inner"><i class="fa-regular fa-comment"></i></div>
-                        <p class="font-bold text-slate-500">เลือกบุคคลเพื่อเริ่มสนทนา</p>
+                        <div class="w-16 h-16 lg:w-20 lg:h-20 bg-purple-100 text-purple-400 rounded-full flex items-center justify-center text-2xl lg:text-3xl mb-4 shadow-inner"><i class="fa-regular fa-comment"></i></div>
+                        <p class="font-bold text-slate-500 text-sm lg:text-base">เลือกบุคคลเพื่อเริ่มสนทนา</p>
                     </div>
-                    <div class="p-4 lg:p-5 border-b flex items-center justify-between bg-white z-0" id="chatHeader">
+                    <div class="p-3 lg:p-5 border-b flex items-center justify-between bg-white z-0" id="chatHeader">
                         <div class="flex items-center gap-3 lg:gap-4">
                             <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shadow-sm border border-slate-200 bg-indigo-100 flex items-center justify-center font-bold text-indigo-600" id="chatHeaderAvatar"></div>
                             <div><h3 class="font-bold text-sm lg:text-lg text-slate-800 mt-1 flex items-center" id="chatHeaderName">Name</h3></div>
@@ -193,7 +196,7 @@
                         <p class="text-xs font-bold text-rose-600 bg-rose-50 px-3 py-1 rounded-full uppercase mt-2">Admin Account</p>
                     </div>
                     <form id="profileForm" class="space-y-5">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div><label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-widest">Email</label><input type="email" id="set_email" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-[#6d28d9] text-sm"></div>
                             <div><label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-widest">Phone</label><input type="tel" id="set_phone" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-[#6d28d9] text-sm"></div>
                         </div>
@@ -233,7 +236,7 @@
 
     <script>
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbzLMRP-0QxGIWBtmk2V1toXTfRnb5ACuABcSKGs2qqtxNKa07EeDAOHLFYzzyVS1MnWbA/exec';
-        let currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+        let currentUser = JSON.parse(sessionStorage.getItem('currentUser')) || JSON.parse(localStorage.getItem('currentUser'));
         if (!currentUser || String(currentUser.role).toLowerCase().trim() !== 'admin') { window.location.replace('index.html'); }
 
         let allSubjects = [], allLessons = [], cachedMessages = [], allUsersData = [], activeChatContact = null, uploadedImageBase64 = "";
@@ -241,6 +244,13 @@
 
         function fetchGAS(payload) { return fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r => r.json()); }
         function getInitials(n) { let p = n.trim().split(/\s+/); return p.length >= 2 ? (p[0][0] + p[1][0]).toUpperCase() : n.substring(0, 2).toUpperCase(); }
+
+        // แก้ปุ่มออกจากระบบ ล้างทั้ง Session และ Local เพื่อป้องกันบั๊ก
+        function logout() { 
+            sessionStorage.clear(); 
+            localStorage.clear(); 
+            window.location.href = 'index.html'; 
+        }
 
         function toggleSidebar() { document.getElementById('mainSidebar').classList.toggle('active'); document.getElementById('sidebarOverlay').classList.toggle('active'); }
         function toggleRightSidebar() {
@@ -323,7 +333,7 @@
                     if(ts) ts.innerHTML = '<option value="">-- เลือกวิชา --</option>';
 
                     allSubjects.forEach(sub => { 
-                        chkHtml += `<label class="flex items-center bg-white border px-3 py-2 rounded-lg cursor-pointer text-sm hover:border-purple-300 transition"><input type="checkbox" value="${sub}" class="t-cb mr-2 text-purple-600 focus:ring-purple-500"> ${sub}</label>`; 
+                        chkHtml += `<label class="flex items-center bg-white border border-slate-200 px-3 py-2 rounded-lg cursor-pointer text-sm hover:border-purple-300 transition"><input type="checkbox" value="${sub}" class="t-cb mr-2 text-purple-600 focus:ring-purple-500"> ${sub}</label>`; 
                         if(ts) ts.innerHTML += `<option value="${sub}">${sub}</option>`;
                     });
                     document.getElementById('a_subjectCheckboxes').innerHTML = chkHtml;
@@ -416,7 +426,7 @@
         function deleteLesson(t) { Swal.fire({title:'ลบ?', text: 'แน่ใจหรือไม่?', icon:'warning', showCancelButton:true}).then(r=>{if(r.isConfirmed) { Swal.fire({title:'Deleting...',didOpen:()=>Swal.showLoading()}); fetchGAS({action:"deleteLesson", title:t}).then(()=>loadDashboardData()); }}); }
 
         // =====================================
-        // ระบบ CHAT แอดมิน (ปรับปรุงตามเงื่อนไขใหม่)
+        // ระบบ CHAT แอดมิน (แยกหมวดหมู่ นร/ครู)
         // =====================================
         function buildContactCard(c) {
             let isActive = activeChatContact === c.name ? "active" : "";
@@ -448,7 +458,7 @@
             }
             let tmp = document.createElement("DIV"); tmp.innerHTML = latestText; latestText = tmp.textContent || tmp.innerText || "";
 
-            // แยกการแสดงผลตามประเภท
+            // แยกการแสดงผลตามประเภท (Teacher / Student)
             let displayName = c.name;
             let displayDetails = "";
             let rRole = String(c.role || "").toLowerCase();
@@ -484,16 +494,17 @@
         }
 
         function renderChatContacts() {
-            let tList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'teacher').map(u => ({...u, bgColor:'bg-indigo-100', textColor:'text-indigo-600', initials:getInitials(u.name || u.Name || "A"), room:u.assigned || u.room || u.Room || "-", id: u.id || u.username || u.Username || "-"}));
+            // ดึงรายชื่อจากที่มีการแชทหรือทั้งหมดใน Users
+            let tList = allUsersData.filter(u => String(u.role).toLowerCase() === 'teacher').map(u => ({...u, bgColor:'bg-indigo-100', textColor:'text-indigo-600', initials:getInitials(u.name), room:u.assigned}));
             
             // ดึงข้อมูลนักเรียนและใช้ระบบสกัด ID ฉุกเฉิน หากหลังบ้านไม่ได้ส่งมา
-            let sList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'student').map(u => {
+            let sList = allUsersData.filter(u => String(u.role).toLowerCase() === 'student').map(u => {
                 let sId = u.id || u.username || u.Username || "-";
                 if(sId === "-") {
                     let fMsg = cachedMessages.find(m => m.senderName === (u.name || u.Name));
                     if(fMsg) sId = fMsg.senderId;
                 }
-                return {...u, bgColor:'bg-slate-200', textColor:'text-slate-600', initials:getInitials(u.name || u.Name || "A"), room:u.assigned || u.room || u.Room || "-", id: sId};
+                return {...u, bgColor:'bg-slate-200', textColor:'text-slate-600', initials:getInitials(u.name), room:u.assigned || u.room || u.Room || "-", id: sId};
             });
 
             let htmlInboxList = "";
@@ -597,7 +608,6 @@
             cHist.scrollTop = cHist.scrollHeight;
             document.getElementById('chatInputMessage').value = "";
 
-            // Admin ส่งข้อความ
             fetchGAS({ action: "sendMessage", senderId: currentUser.id, senderName: currentUser.name, senderRoom: "Admin", senderPic: currentUser.pic, receiver: activeChatContact, message: msg });
             
             setTimeout(loadMessagesForChat, 1000);
