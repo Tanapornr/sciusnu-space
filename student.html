@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
-        body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; color: #334155; margin: 0; overflow-x: hidden; }
+        body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; color: #1d1d1f; margin: 0; overflow-x: hidden; }
         h1, h2, h3, h4, h5, .font-prompt { font-family: 'Prompt', sans-serif; }
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
@@ -32,41 +32,36 @@
         .menu-item:hover { color: #6d28d9; background-color: #f3f4f6; border-left-color: #c4b5fd; }
         .menu-item.active { color: #6d28d9; font-weight: 700; border-left-color: #6d28d9; background-color: #f5f3ff; }
         
-        .course-card { transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer; }
-        .course-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px -5px rgba(109, 40, 217, 0.15); }
-        .course-card:active { transform: scale(0.98); }
+        /* Course Card iOS Style */
+        .course-card { transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); cursor: pointer; border: 1px solid rgba(0,0,0,0.05); }
+        .course-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08); }
+        .course-card:active { transform: scale(0.97); }
         
         .rich-text { line-height: 1.8; font-size: 1rem; color: #475569; }
         .chat-bubble-sent { background: linear-gradient(135deg, #6d28d9 0%, #8b5cf6 100%); color: white; border-radius: 18px 18px 4px 18px; }
         .chat-bubble-received { background-color: #f1f5f9; color: #334155; border-radius: 18px 18px 18px 4px; border: 1px solid #e2e8f0; }
 
-        .subject-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
-        .subject-card:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.15); filter: brightness(1.05); }
-        .subject-card:active { transform: scale(0.95); }
+        /* Subject Card iOS Style */
+        .subject-card { transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); cursor: pointer; background: white; border: 1px solid rgba(0,0,0,0.06); }
+        .subject-card:hover { transform: translateY(-3px); box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.06); }
+        .subject-card:active { transform: scale(0.96); }
 
         /* ========================================================
-           ✨ iOS MINIMALIST SWEETALERT2 OVERRIDES ✨
+           ✨ iOS MINIMALIST POP-UP (CENTERED & BIGGER) ✨
            ======================================================== */
-        
-        /* 1. สไตล์แจ้งเตือนมุมบน (Toast) แบบ iPhone Notification */
-        .swal2-popup.swal2-toast {
+        .ios-center-popup {
             background: rgba(255, 255, 255, 0.85) !important;
-            backdrop-filter: blur(16px) !important;
-            -webkit-backdrop-filter: blur(16px) !important;
-            border: 1px solid rgba(255, 255, 255, 0.6) !important;
-            border-radius: 999px !important; /* ทรงแคปซูล */
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08) !important;
-            padding: 8px 24px 8px 8px !important;
-            width: auto !important;
-            margin-top: 20px !important;
+            backdrop-filter: blur(24px) !important;
+            -webkit-backdrop-filter: blur(24px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.5) !important;
+            border-radius: 32px !important;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.12) !important;
+            padding: 2.5rem 2rem !important;
+            width: 340px !important;
         }
-        .swal2-toast .swal2-html-container {
-            font-family: 'Prompt', sans-serif !important;
-            margin: 0 !important;
-        }
-
-        /* 2. สไตล์ Pop-up กลางจอ (Question / Alert) */
-        .swal2-popup:not(.swal2-toast) {
+        
+        /* สไตล์ Pop-up คำถามคั่นเวลา */
+        .swal2-popup:not(.ios-center-popup) {
             border-radius: 32px !important;
             background: rgba(255, 255, 255, 0.95) !important;
             backdrop-filter: blur(20px) !important;
@@ -76,41 +71,17 @@
             border: 1px solid rgba(255, 255, 255, 0.8) !important;
         }
         
-        /* ฟอนต์และข้อความ */
-        .swal2-title {
-            font-family: 'Prompt', sans-serif !important;
-            color: #1d1d1f !important;
-            font-size: 1.25rem !important;
-        }
-        .swal2-html-container {
-            font-family: 'Sarabun', sans-serif !important;
-            color: #475569 !important;
-        }
+        .swal2-title { font-family: 'Prompt', sans-serif !important; color: #1d1d1f !important; font-size: 1.25rem !important; }
+        .swal2-html-container { font-family: 'Sarabun', sans-serif !important; color: #475569 !important; }
 
-        /* 3. ปุ่มกด (Button) ทรงแคปซูล */
         .swal2-confirm {
-            border-radius: 999px !important;
-            font-family: 'Prompt', sans-serif !important;
-            font-weight: 600 !important;
-            padding: 14px 36px !important;
-            background-color: #6d28d9 !important;
-            box-shadow: 0 8px 20px -6px rgba(109, 40, 217, 0.5) !important;
-            transition: all 0.2s ease !important;
+            border-radius: 999px !important; font-family: 'Prompt', sans-serif !important; font-weight: 600 !important;
+            padding: 14px 36px !important; background-color: #6d28d9 !important;
+            box-shadow: 0 8px 20px -6px rgba(109, 40, 217, 0.5) !important; transition: all 0.2s ease !important;
         }
-        .swal2-confirm:hover {
-            background-color: #5b21b6 !important;
-            transform: translateY(-2px) !important;
-            box-shadow: 0 12px 24px -6px rgba(109, 40, 217, 0.6) !important;
-        }
-        .swal2-confirm:active {
-            transform: scale(0.96) !important;
-        }
-
-        /* เส้น Progress Bar จับเวลา */
-        .swal2-timer-progress-bar {
-            background-color: rgba(109, 40, 217, 0.3) !important;
-            height: 3px !important;
-        }
+        .swal2-confirm:hover { background-color: #5b21b6 !important; transform: translateY(-2px) !important; box-shadow: 0 12px 24px -6px rgba(109, 40, 217, 0.6) !important; }
+        .swal2-confirm:active { transform: scale(0.96) !important; }
+        .swal2-timer-progress-bar { background-color: rgba(109, 40, 217, 0.3) !important; height: 3px !important; }
     </style>
 </head>
 <body class="flex h-screen w-screen overflow-hidden antialiased">
@@ -148,7 +119,8 @@
                 <input type="text" id="globalSearchInput" onkeyup="searchLesson(this.value)" placeholder="ค้นหาบทเรียนหรือรายวิชา..." class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-full outline-none focus:ring-2 focus:ring-purple-200 transition text-sm">
             </div>
 
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 ml-auto">
+                <!-- นำปุ่มเปลี่ยนภาษา (EN) ออกไปแล้ว -->
                 <button onclick="toggleRightSidebar()" class="lg:hidden w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm">
                     <img id="mobileHeaderProfileImg" src="" class="w-full h-full object-cover hidden">
                     <div id="mobileHeaderProfileInitials" class="w-full h-full bg-purple-100 text-purple-600 flex items-center justify-center text-xs font-bold">A</div>
@@ -325,16 +297,6 @@
         let lastTime = 0; 
         let questionTriggers = []; 
 
-        const gradientColors = [
-            "from-[#3b82f6] to-[#8b5cf6]", 
-            "from-[#f97316] to-[#f59e0b]", 
-            "from-[#10b981] to-[#34d399]", 
-            "from-[#eab308] to-[#facc15]", 
-            "from-[#ec4899] to-[#f43f5e]", 
-            "from-[#8b5cf6] to-[#d946ef]", 
-            "from-[#06b6d4] to-[#3b82f6]"  
-        ];
-
         function fetchGAS(payload) { return fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r => r.json()); }
         function getInitials(n) { let p = n.trim().split(/\s+/); return p.length >= 2 ? (p[0][0] + p[1][0]).toUpperCase() : n.substring(0, 2).toUpperCase(); }
         function extractYouTubeID(u) { let m = u.match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/); return (m && m[7].length === 11) ? m[7] : false; }
@@ -343,14 +305,20 @@
             if(!t) return ""; t = t.replace(/\[YT:(.*?)\]\n?/g, ""); t = t.replace(/(สำคัญมาก|ข้อควรระวัง)(:|\s)/g, '<span class="bg-rose-100 text-rose-700 px-2 py-0.5 rounded font-bold text-xs ml-1 shadow-sm">$1$2</span>'); t = t.replace(/\*\*(.*?)\*\*/g, '<span class="text-yellow-600 font-bold bg-yellow-50 px-1 py-0.5 rounded">$1</span>'); t = t.replace(/^### (.*$)/gim, '<h4 class="text-lg font-bold text-[#6d28d9] mt-4 mb-2 font-prompt">$1</h4>'); t = t.replace(/^- (.*$)/gim, '<div class="flex items-start my-1 text-sm"><i class="fa-solid fa-circle-check text-[#6d28d9] mt-1 mr-2"></i> <span>$1</span></div>'); return t;
         }
 
-        // แจ้งเตือนสไตล์ iOS Minimalist Custom function
+        // แจ้งเตือนสไตล์ iOS กลางจอ (ใหญ่ขึ้น ค้าง 4.5 วิ)
         function showiOSToast(iconClass, text, iconColorBg, iconColorText) {
             Swal.fire({ 
-                toast: true, 
-                position: 'top', 
+                toast: false, 
+                position: 'center', 
                 showConfirmButton: false, 
-                timer: 3000, 
-                html: `<div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full ${iconColorBg} ${iconColorText} flex items-center justify-center shrink-0 shadow-sm border border-white/50"><i class="${iconClass} text-[12px]"></i></div><span class="font-bold text-slate-800 text-sm tracking-wide">${text}</span></div>` 
+                timer: 4500, 
+                customClass: { popup: 'ios-center-popup' },
+                html: `<div class="flex flex-col items-center gap-4 text-center">
+                          <div class="w-16 h-16 rounded-full ${iconColorBg} ${iconColorText} flex items-center justify-center shadow-sm">
+                              <i class="${iconClass} text-3xl"></i>
+                          </div>
+                          <span class="font-bold text-slate-800 text-lg tracking-wide leading-snug">${text}</span>
+                       </div>` 
             });
         }
 
@@ -443,19 +411,21 @@
 
                     document.getElementById('loadingLessons_student').style.display = 'none';
                     
+                    // ปรับการ์ดวิชาให้เป็นสีขาว คลีน มินิมอล
                     let sH = ""; 
-                    allSubjects.forEach((s, idx) => { 
-                        let colorClass = gradientColors[idx % gradientColors.length];
+                    allSubjects.forEach((s) => { 
                         let lessonCount = allLessons.filter(l => String(l.subject).trim() === String(s).trim()).length;
                         
                         sH += `
-                        <div class="subject-card bg-gradient-to-br ${colorClass} rounded-[2rem] p-5 lg:p-6 flex flex-col justify-between h-32 cursor-pointer text-white relative overflow-hidden w-full" onclick="selectSubject('${s}')">
-                            <i class="fa-solid fa-book-open absolute -right-4 -bottom-4 text-6xl opacity-20 transform -rotate-12"></i>
-                            <div>
-                                <h3 class="font-bold text-base lg:text-lg font-prompt leading-tight drop-shadow-sm">${s}</h3>
+                        <div class="subject-card rounded-[2rem] p-5 lg:p-6 flex flex-col justify-between h-32 w-full" onclick="selectSubject('${s}')">
+                            <div class="absolute -right-2 -bottom-4 w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center z-0">
+                                <i class="fa-solid fa-book-open text-4xl text-slate-200 transform -rotate-12"></i>
                             </div>
-                            <div class="flex items-center gap-2 mt-auto">
-                                <div class="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] lg:text-xs font-bold shadow-sm border border-white/30">
+                            <div class="relative z-10">
+                                <h3 class="font-bold text-base lg:text-lg font-prompt leading-tight text-slate-800">${s}</h3>
+                            </div>
+                            <div class="flex items-center gap-2 mt-auto relative z-10">
+                                <div class="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-[10px] lg:text-xs font-bold border border-slate-200/50">
                                     <i class="fa-solid fa-layer-group mr-1"></i> ${lessonCount} บทเรียน
                                 </div>
                             </div>
@@ -504,6 +474,7 @@
             document.getElementById('lessonGrid_student').innerHTML = filtered.length > 0 ? filtered.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'grid')).join('') : '<div class="col-span-full py-20 text-center text-slate-400 font-bold border-2 border-dashed border-slate-200 rounded-[2rem]">ไม่พบสิ่งที่ค้นหา</div>';
         }
 
+        // ถอดฟิลเตอร์สีออก โชว์ภาพธรรมชาติ เพิ่มเงาดำบางๆ
         function renderLessonCard(l, idx, isNew = false, layoutType = 'grid') {
             let isC = l.studentScore !== null;
             let favs = JSON.parse(localStorage.getItem('favs_'+currentUser.id)||'[]');
@@ -533,12 +504,10 @@
                 }
             }
 
-            let colorIndex = (l.subject.length + l.title.length) % gradientColors.length;
-            let overlayColor = gradientColors[colorIndex];
             let hasVideo = (l.content || "").includes("[YT:");
             let playIcon = hasVideo ? `
                 <div class="absolute inset-0 flex items-center justify-center z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div class="w-14 h-14 bg-white/40 backdrop-blur-md rounded-full flex items-center justify-center text-white shadow-xl border border-white/50">
+                    <div class="w-14 h-14 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center text-white shadow-xl border border-white/50">
                         <i class="fa-solid fa-play text-2xl ml-1 drop-shadow-md"></i>
                     </div>
                 </div>` : '';
@@ -546,13 +515,16 @@
             let widthClass = layoutType === 'scroll' ? 'min-w-[85vw] sm:min-w-[340px] max-w-[85vw] sm:max-w-[340px] snap-start shrink-0' : '';
 
             return `
-            <div class="course-card bg-white rounded-[2rem] p-4 lg:p-5 border border-slate-100 flex flex-col h-full shadow-sm relative w-full" onclick="openLesson(${idx})">
-                <div class="h-32 lg:h-40 w-full rounded-[1.5rem] mb-4 lg:mb-5 relative overflow-hidden bg-slate-900 group shrink-0">
-                    <img src="${getImageUrl(l.title)}" class="w-full h-full object-cover opacity-80 transition duration-700 group-hover:scale-110 ${isC?'grayscale':''}">
-                    <div class="absolute inset-0 bg-gradient-to-tr ${overlayColor} opacity-50 mix-blend-color-burn transition duration-500 group-hover:opacity-30 z-0"></div>
+            <div class="course-card bg-white rounded-[2rem] p-4 lg:p-5 flex flex-col h-full relative w-full ${widthClass}" onclick="openLesson(${idx})">
+                <div class="h-32 lg:h-40 w-full rounded-[1.5rem] mb-4 lg:mb-5 relative overflow-hidden bg-slate-100 group shrink-0 border border-slate-200/50">
+                    <img src="${getImageUrl(l.title)}" class="w-full h-full object-cover transition duration-700 group-hover:scale-105 ${isC?'grayscale':''}">
+                    <!-- เงาดำจางๆ ล่างภาพช่วยให้อ่านตัวหนังสือชัด -->
+                    <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent z-0 pointer-events-none"></div>
+                    
                     ${playIcon}
                     ${newBadge}
-                    <div class="absolute top-3 right-3 w-8 h-8 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-sm z-20 transition hover:bg-white" onclick="toggleFavorite(event, '${l.title}')"><i class="${heartClass} fa-heart text-sm pointer-events-none"></i></div>
+                    
+                    <div class="absolute top-3 right-3 w-8 h-8 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-sm z-20 transition hover:bg-white hover:scale-110" onclick="toggleFavorite(event, '${l.title}')"><i class="${heartClass} fa-heart text-sm pointer-events-none"></i></div>
                     ${isC ? `<div class="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[1px] z-10"><div class="bg-emerald-500 text-white px-3 py-1 rounded-lg text-[10px] font-bold shadow-md">Completed</div></div>` : ''}
                     ${progressIndicator}
                 </div>
@@ -603,9 +575,6 @@
             if(document.getElementById('view_lessons').style.display !== 'none') { renderStudentLessons(); }
         }
 
-        // =====================================
-        // ระบบข้อสอบ Pop-up สไตล์ iOS Minimal
-        // =====================================
         function showQuestionPopup(questionObj, qIndex) {
             if(ytPlayer && typeof ytPlayer.pauseVideo === 'function') ytPlayer.pauseVideo(); 
 
@@ -656,7 +625,7 @@
                         showiOSToast('fa-solid fa-check', 'เก่งมาก! ตอบถูกครับ', 'bg-emerald-100', 'text-emerald-600');
                         if(ytPlayer) ytPlayer.playVideo();
                     } else {
-                        showiOSToast('fa-solid fa-xmark', 'อ๊ะ! ยังไม่ถูก ลองตั้งใจฟังต่อนะ', 'bg-rose-100', 'text-rose-600');
+                        showiOSToast('fa-solid fa-xmark', 'อ๊ะ! ยังไม่ถูกนะ ลองฟังต่อดู', 'bg-rose-100', 'text-rose-600');
                         if(ytPlayer) ytPlayer.playVideo();
                     }
                 } else if (result.dismiss === Swal.DismissReason.timer) {
@@ -675,7 +644,7 @@
             let answeredList = JSON.parse(localStorage.getItem('ytAnsQs_' + currentUser.id + '_' + currentLesson.title) || '[]');
 
             if (duration > 0 && vQs.length > 0) {
-                let interval = 60; // ทดสอบ: เด้งทุกๆ 60 วิ
+                let interval = 60; // ทดสอบเด้งทุกๆ 60 วินาที
                 for(let i=0; i<vQs.length; i++) {
                     questionTriggers.push({ 
                         time: interval * (i + 1), 
@@ -818,7 +787,7 @@
                         document.getElementById('quizContainer').innerHTML = `<div class="text-center py-8"><button type="button" onclick="submitQuiz(true,0)" class="bg-[#6d28d9] text-white font-bold px-10 py-4 rounded-full shadow-lg hover:bg-purple-800 transition">บันทึกการเรียนจบ</button></div>`;
                     } else { 
                         let qh = ""; 
-                        vQs.forEach((q, i) => { qh += `<div class="bg-white p-5 lg:p-8 rounded-2xl lg:rounded-3xl border mb-6 shadow-sm"><p class="font-bold text-base lg:text-lg mb-5 text-slate-800">${i+1}. ${q.q}</p><div class="grid grid-cols-1 gap-3 text-sm"><label class="p-4 bg-slate-50 border rounded-xl cursor-pointer flex items-center active:bg-purple-50 transition"><input type="radio" name="ans${i+1}" value="1" class="mr-3 accent-purple-600 w-4 h-4"> ก. ${q.c1}</label><label class="p-4 bg-slate-50 border rounded-xl cursor-pointer flex items-center active:bg-purple-50 transition"><input type="radio" name="ans${i+1}" value="2" class="mr-3 accent-purple-600 w-4 h-4"> ข. ${q.c2}</label><label class="p-4 bg-slate-50 border rounded-xl cursor-pointer flex items-center active:bg-purple-50 transition"><input type="radio" name="ans${i+1}" value="3" class="mr-3 accent-purple-600 w-4 h-4"> ค. ${q.c3}</label><label class="p-4 bg-slate-50 border rounded-xl cursor-pointer flex items-center active:bg-purple-50 transition"><input type="radio" name="ans${i+1}" value="4" class="mr-3 accent-purple-600 w-4 h-4"> ง. ${q.c4}</label></div></div>`; }); 
+                        vQs.forEach((q, i) => { qh += `<div class="bg-white p-5 lg:p-8 rounded-2xl lg:rounded-3xl border mb-6 shadow-sm"><p class="font-bold text-base lg:text-lg mb-5 text-slate-800">${i+1}. ${q.q}</p><div class="grid grid-cols-1 gap-3 text-sm"><label class="p-4 bg-[#f8fafc] border border-slate-200 rounded-xl cursor-pointer flex items-center hover:bg-purple-50 hover:border-purple-300 transition-all active:scale-[0.98]"><input type="radio" name="ans${i+1}" value="1" class="mr-3 accent-purple-600 w-4 h-4"> ก. ${q.c1}</label><label class="p-4 bg-[#f8fafc] border border-slate-200 rounded-xl cursor-pointer flex items-center hover:bg-purple-50 hover:border-purple-300 transition-all active:scale-[0.98]"><input type="radio" name="ans${i+1}" value="2" class="mr-3 accent-purple-600 w-4 h-4"> ข. ${q.c2}</label><label class="p-4 bg-[#f8fafc] border border-slate-200 rounded-xl cursor-pointer flex items-center hover:bg-purple-50 hover:border-purple-300 transition-all active:scale-[0.98]"><input type="radio" name="ans${i+1}" value="3" class="mr-3 accent-purple-600 w-4 h-4"> ค. ${q.c3}</label><label class="p-4 bg-[#f8fafc] border border-slate-200 rounded-xl cursor-pointer flex items-center hover:bg-purple-50 hover:border-purple-300 transition-all active:scale-[0.98]"><input type="radio" name="ans${i+1}" value="4" class="mr-3 accent-purple-600 w-4 h-4"> ง. ${q.c4}</label></div></div>`; }); 
                         document.getElementById('quizContainer').innerHTML = qh + `<button type="button" onclick="submitQuiz()" class="w-full bg-[#6d28d9] text-white font-bold py-4 rounded-full mt-4 text-lg shadow-lg hover:bg-purple-800 transition">ส่งคำตอบ</button>`; 
                     }
                 }
@@ -836,7 +805,7 @@
             if(!noQ && vQs.length > 0) { 
                 for(let i=1; i<=vQs.length; i++) { 
                     let a = document.querySelector(`input[name="ans${i}"]:checked`); 
-                    if(!a) return showiOSToast('fa-solid fa-circle-exclamation', 'กรุณาทำข้อสอบให้ครบครับ', 'bg-amber-100', 'text-amber-600');
+                    if(!a) return showiOSToast('fa-solid fa-circle-exclamation', 'กรุณาทำข้อสอบให้ครบ', 'bg-amber-100', 'text-amber-600');
                     if(a.value === vQs[i-1].ans) sc++; 
                 } 
             }
@@ -852,7 +821,7 @@
                 openLesson(allLessons.indexOf(currentLesson)); 
                 loadDashboardData(); 
                 
-                let titleMsg = vQs.length > 0 ? `บันทึกคะแนนเรียบร้อย 🎉` : `บันทึกประวัติการเรียนเรียบร้อย 🎓`;
+                let titleMsg = vQs.length > 0 ? `บันทึกคะแนนเรียบร้อย 🎉` : `บันทึกประวัติการเรียนแล้ว 🎓`;
                 showiOSToast('fa-solid fa-check-double', titleMsg, 'bg-emerald-100', 'text-emerald-600');
             });
         }
@@ -860,10 +829,12 @@
         function buildContactCard(c, type) {
             let isActive = activeChatContact === c.name ? "active" : "";
             let pPic = c.pic ? `<img src="${c.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center font-bold text-xs lg:text-sm">${c.initials}</div>`;
+            
             let totalMsgs = countTeacherMessages(c.name);
             let readCount = parseInt(localStorage.getItem('readMsgs_' + currentUser.id + '_' + c.name) || '0');
             let unreadCount = totalMsgs - readCount;
             if(unreadCount < 0) unreadCount = 0;
+
             let badgeHtml = unreadCount > 0 ? `<div class="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 rounded-full flex items-center justify-center text-white text-[8px] font-bold shadow-sm border-2 border-white">${unreadCount}</div>` : '';
 
             let latestText = "";
@@ -871,14 +842,29 @@
             if(contactMsgs.length > 0) {
                 let sorted = [...contactMsgs].sort((a,b) => new Date(a.date) - new Date(b.date));
                 let lastMsg = sorted[sorted.length - 1];
+                
                 if(lastMsg.senderName === currentUser.name) {
-                    latestText = lastMsg.reply && lastMsg.reply.trim() !== "" ? c.name + ": " + lastMsg.reply.split('<br><br>').pop() : "คุณ: " + lastMsg.message;
+                    if(lastMsg.reply && lastMsg.reply.trim() !== "") {
+                        let reps = lastMsg.reply.split('<br><br>').filter(x => x.trim() !== "");
+                        latestText = c.name + ": " + reps[reps.length - 1];
+                    } else {
+                        latestText = "คุณ: " + lastMsg.message;
+                    }
                 } else {
-                    latestText = lastMsg.reply && lastMsg.reply.trim() !== "" ? "คุณ: " + lastMsg.reply.split('<br><br>').pop() : c.name + ": " + lastMsg.message;
+                    if(lastMsg.reply && lastMsg.reply.trim() !== "") {
+                        let reps = lastMsg.reply.split('<br><br>').filter(x => x.trim() !== "");
+                        latestText = "คุณ: " + reps[reps.length - 1];
+                    } else {
+                        latestText = c.name + ": " + lastMsg.message;
+                    }
                 }
-            } else { latestText = "เริ่มการสนทนา..."; }
+            } else {
+                latestText = "เริ่มการสนทนา...";
+            }
             
-            let tmp = document.createElement("DIV"); tmp.innerHTML = latestText; latestText = tmp.textContent || tmp.innerText || "";
+            let tmp = document.createElement("DIV");
+            tmp.innerHTML = latestText;
+            latestText = tmp.textContent || tmp.innerText || "";
             if(latestText.length > 25) latestText = latestText.substring(0, 25) + "...";
 
             if (type === "sidebar") {
@@ -886,7 +872,9 @@
                 return `
                 <div class="flex items-center justify-between group p-3 rounded-2xl border border-slate-100 hover:border-purple-200 shadow-sm transition mb-3 bg-white cursor-pointer" onclick="nav('inbox'); openChat('${c.name}')">
                     <div class="flex items-start gap-3">
-                        <div class="relative w-12 h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm shrink-0 flex items-center justify-center border border-white">${pPic}${badgeHtml}</div>
+                        <div class="relative w-12 h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm shrink-0 flex items-center justify-center border border-white">${pPic}
+                            ${badgeHtml}
+                        </div>
                         <div class="flex flex-col max-w-[130px] lg:max-w-[150px]">
                             <p class="text-sm font-bold text-slate-800 leading-tight truncate">${c.name}</p>
                             <p class="text-[10px] text-slate-500 truncate mt-0.5 ${unreadCount > 0 ? 'font-bold text-slate-800' : ''}" title="${latestText}">${latestText}</p>
@@ -900,7 +888,9 @@
             } else {
                 return `
                 <div class="chat-contact ${isActive} flex items-center gap-3 p-3 lg:p-4 rounded-xl cursor-pointer hover:bg-slate-50 transition mb-1 border border-transparent shadow-sm" onclick="openChat('${c.name}')">
-                    <div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm border border-white shrink-0 flex items-center justify-center">${pPic}${badgeHtml}</div>
+                    <div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm border border-white shrink-0 flex items-center justify-center">${pPic}
+                        ${badgeHtml}
+                    </div>
                     <div class="flex-1 min-w-0">
                         <h4 class="font-bold text-xs lg:text-sm truncate text-slate-800">${c.name}</h4>
                         <p class="text-[10px] text-slate-400 truncate ${unreadCount > 0 ? 'font-bold text-slate-800' : ''}" title="${latestText}">${latestText}</p>
@@ -910,8 +900,11 @@
         }
 
         function renderChatContacts() {
-            let tList = mentors.filter(m => m.role === 'Teacher'), aList = mentors.filter(m => m.role === 'Admin');
-            let htmlInboxList = "", htmlRightSidebar = "";
+            let tList = mentors.filter(m => m.role === 'Teacher');
+            let aList = mentors.filter(m => m.role === 'Admin');
+            
+            let htmlInboxList = "";
+            let htmlRightSidebar = "";
 
             if(mentors.length === 0) {
                  htmlInboxList = '<div class="text-center p-4 text-xs text-slate-400 border-2 border-dashed rounded-xl mx-4 mt-4">ไม่มีผู้ติดต่อ</div>';
@@ -919,41 +912,74 @@
             } else {
                 if(tList.length > 0) {
                     htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-400 mb-3 uppercase tracking-widest mt-2">รายชื่ออาจารย์</p>`;
-                    tList.forEach(c => { htmlInboxList += buildContactCard(c, "inbox"); htmlRightSidebar += buildContactCard(c, "sidebar"); });
+                    tList.forEach(c => {
+                        htmlInboxList += buildContactCard(c, "inbox");
+                        htmlRightSidebar += buildContactCard(c, "sidebar");
+                    });
                 }
+                
                 if(aList.length > 0) {
                     htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-400 mb-3 uppercase tracking-widest mt-4">แอดมิน</p>`;
-                    aList.forEach(c => { htmlInboxList += buildContactCard(c, "inbox"); htmlRightSidebar += buildContactCard(c, "sidebar"); });
+                    aList.forEach(c => {
+                        htmlInboxList += buildContactCard(c, "inbox");
+                        htmlRightSidebar += buildContactCard(c, "sidebar");
+                    });
                 }
             }
-            document.getElementById('chatContactList').innerHTML = htmlInboxList; document.getElementById('mentorListUI').innerHTML = htmlRightSidebar;
+            
+            let clist = document.getElementById('chatContactList');
+            if(clist) clist.innerHTML = htmlInboxList;
+            
+            let mentorUI = document.getElementById('mentorListUI');
+            if(mentorUI) mentorUI.innerHTML = htmlRightSidebar;
+
             updateUnreadBadges(); 
         }
 
         function openChat(n) {
             activeChatContact = n; document.getElementById('chatPlaceholder').classList.add('hidden'); 
-            let totalMsgs = countTeacherMessages(n); localStorage.setItem('readMsgs_' + currentUser.id + '_' + n, totalMsgs);
+            
+            let totalMsgs = countTeacherMessages(n);
+            localStorage.setItem('readMsgs_' + currentUser.id + '_' + n, totalMsgs);
             renderChatContacts(); 
             
             let contactInfo = mentors.find(x => x.name === n);
             let partnerPicHtml = (contactInfo && contactInfo.pic) ? `<img src="${contactInfo.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-sm">${getInitials(n)}</div>`;
 
             let subjectBadgeHeader = (contactInfo && contactInfo.room && contactInfo.room !== "-" && contactInfo.role === 'Teacher') ? ` <span class="text-xs text-slate-400 font-normal ml-2">(วิชา: ${contactInfo.room})</span>` : '';
-            document.getElementById('chatHeaderName').innerHTML = `${n}${subjectBadgeHeader}`; document.getElementById('chatHeaderAvatar').innerHTML = partnerPicHtml;
+            document.getElementById('chatHeaderName').innerHTML = `${n}${subjectBadgeHeader}`; 
+            document.getElementById('chatHeaderAvatar').innerHTML = partnerPicHtml;
             
             let msgs = cachedMessages.filter(m => (m.senderName === currentUser.name && m.receiver === n) || (m.senderName === n && m.receiver === currentUser.name));
             let sortedMsgs = [...msgs].sort((a,b) => new Date(a.date) - new Date(b.date));
 
-            let h = "", myPicHtml = currentUser.pic ? `<img src="${currentUser.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-purple-100 text-purple-600 font-bold text-[8px]">${getInitials(currentUser.name)}</div>`;
+            let h = "";
+            let myPicHtml = currentUser.pic ? `<img src="${currentUser.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-purple-100 text-purple-600 font-bold text-[8px]">${getInitials(currentUser.name)}</div>`;
+            
             sortedMsgs.forEach(m => {
                 let d = new Date(m.date).toLocaleString('th-TH', { hour:'2-digit', minute:'2-digit' });
                 let sPicHtml = partnerPicHtml.replace('text-sm', 'text-[8px]');
+                
                 if(m.senderName === currentUser.name) {
-                    if (m.message && m.message.trim() !== "") h += `<div class="flex flex-col items-end w-full mb-4"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400">${d} • คุณ</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${m.message}</div></div>`;
-                    if(m.reply && m.reply.trim() !== "") m.reply.split('<br><br>').filter(x => x.trim() !== "").forEach(rep => h += `<div class="flex flex-col items-start w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${sPicHtml}</div><p class="text-[9px] font-bold text-slate-500">${n}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm border border-slate-100">${rep}</div></div>`);
+                    if (m.message && m.message.trim() !== "") {
+                        h += `<div class="flex flex-col items-end w-full mb-4"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400">${d} • คุณ</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${m.message}</div></div>`;
+                    }
+                    if(m.reply && m.reply.trim() !== "") { 
+                        let reps = m.reply.split('<br><br>').filter(x => x.trim() !== "");
+                        reps.forEach(rep => {
+                            h += `<div class="flex flex-col items-start w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${sPicHtml}</div><p class="text-[9px] font-bold text-slate-500">${n}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm border border-slate-100">${rep}</div></div>`; 
+                        });
+                    }
                 } else {
-                    if (m.message && m.message.trim() !== "") h += `<div class="flex flex-col items-start w-full mb-4"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${sPicHtml}</div><p class="text-[9px] font-bold text-slate-500">${n} • ${d}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm border border-slate-100">${m.message}</div></div>`;
-                    if(m.reply && m.reply.trim() !== "") m.reply.split('<br><br>').filter(x => x.trim() !== "").forEach(rep => h += `<div class="flex flex-col items-end w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400">คุณตอบแล้ว</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${rep}</div></div>`);
+                    if (m.message && m.message.trim() !== "") {
+                        h += `<div class="flex flex-col items-start w-full mb-4"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${sPicHtml}</div><p class="text-[9px] font-bold text-slate-500">${n} • ${d}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm border border-slate-100">${m.message}</div></div>`;
+                    }
+                    if(m.reply && m.reply.trim() !== "") { 
+                        let reps = m.reply.split('<br><br>').filter(x => x.trim() !== "");
+                        reps.forEach(rep => {
+                            h += `<div class="flex flex-col items-end w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400">คุณตอบแล้ว</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${rep}</div></div>`; 
+                        });
+                    }
                 }
             });
             document.getElementById('chatHistory').innerHTML = h; document.getElementById('chatHistory').scrollTop = document.getElementById('chatHistory').scrollHeight;
@@ -966,21 +992,32 @@
             let cHist = document.getElementById('chatHistory');
             let myPicHtml = currentUser.pic ? `<img src="${currentUser.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-purple-100 text-purple-600 font-bold text-[8px]">${getInitials(currentUser.name)}</div>`;
             cHist.innerHTML += `<div class="flex flex-col items-end w-full mb-4 mt-2 opacity-50"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400">กำลังส่ง...</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${msg}</div></div>`;
-            cHist.scrollTop = cHist.scrollHeight; document.getElementById('chatInputMessage').value = "";
+            cHist.scrollTop = cHist.scrollHeight;
+            document.getElementById('chatInputMessage').value = "";
+
             fetchGAS({ action: "sendMessage", senderId: currentUser.id, senderName: currentUser.name, senderRoom: currentUser.assigned, senderPic: currentUser.pic, receiver: activeChatContact, message: msg }).then(() => { forceRefreshChat(); });
         }
 
         function forceRefreshChat() {
-            let btn = document.querySelector('#chatHeader button i'); if(btn) btn.classList.add('fa-spin');
+            let btn = document.querySelector('#chatHeader button i');
+            if(btn) btn.classList.add('fa-spin');
             fetchGAS({ action: "getMessages", myId: currentUser.id, myName: currentUser.name, role: currentUser.role })
             .then(r => { 
                 if(btn) btn.classList.remove('fa-spin');
                 if(r.status === "success") { 
                     if(r.users && r.users.length > 0) {
                         allUsersData = r.users;
-                        mentors = allUsersData.filter(u => u.role && ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({ name: u.name || u.Name || "", role: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher', initials: getInitials(u.name || u.Name || "A"), pic: u.pic || u.ProfilePic || "", room: u.assigned || u.room || u.Room || "-", bgColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "bg-rose-100" : "bg-indigo-100", textColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "text-rose-600" : "text-indigo-600" })).sort((a, b) => (a.role === 'Admin' && b.role !== 'Admin') ? 1 : (a.role !== 'Admin' && b.role === 'Admin') ? -1 : 0);
+                        mentors = allUsersData.filter(u => u.role && ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({
+                            name: u.name || u.Name || "", role: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher', initials: getInitials(u.name || u.Name || "A"), pic: u.pic || u.ProfilePic || "", room: u.assigned || u.room || u.Room || "-", bgColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "bg-rose-100" : "bg-indigo-100", textColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "text-rose-600" : "text-indigo-600"
+                        })).sort((a, b) => {
+                            if (a.role === 'Admin' && b.role !== 'Admin') return 1;
+                            if (a.role !== 'Admin' && b.role === 'Admin') return -1;
+                            return 0;
+                        });
                     }
-                    cachedMessages = r.data || []; if(activeChatContact) openChat(activeChatContact); else renderChatContacts(); 
+                    cachedMessages = r.data || []; 
+                    if(activeChatContact) openChat(activeChatContact); 
+                    else renderChatContacts(); 
                 } 
             }); 
         }
@@ -992,12 +1029,21 @@
                     let isChanged = false;
                     if(JSON.stringify(cachedMessages) !== JSON.stringify(r.data)) isChanged = true;
                     if(!isChanged && r.users) isChanged = true; 
+
                     if(isChanged) {
                         if(r.users && r.users.length > 0) {
                             allUsersData = r.users;
-                            mentors = allUsersData.filter(u => u.role && ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({ name: u.name || u.Name || "", role: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher', initials: getInitials(u.name || u.Name || "A"), pic: u.pic || u.ProfilePic || "", room: u.assigned || u.room || u.Room || "-", bgColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "bg-rose-100" : "bg-indigo-100", textColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "text-rose-600" : "text-indigo-600" })).sort((a, b) => (a.role === 'Admin' && b.role !== 'Admin') ? 1 : (a.role !== 'Admin' && b.role === 'Admin') ? -1 : 0);
+                            mentors = allUsersData.filter(u => u.role && ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({
+                                name: u.name || u.Name || "", role: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher', initials: getInitials(u.name || u.Name || "A"), pic: u.pic || u.ProfilePic || "", room: u.assigned || u.room || u.Room || "-", bgColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "bg-rose-100" : "bg-indigo-100", textColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "text-rose-600" : "text-indigo-600"
+                            })).sort((a, b) => {
+                                if (a.role === 'Admin' && b.role !== 'Admin') return 1;
+                                if (a.role !== 'Admin' && b.role === 'Admin') return -1;
+                                return 0;
+                            });
                         }
-                        cachedMessages = r.data || []; if(activeChatContact) openChat(activeChatContact); else renderChatContacts(); 
+                        cachedMessages = r.data || []; 
+                        if(activeChatContact) openChat(activeChatContact); 
+                        else renderChatContacts(); 
                     }
                 } 
             }); 
@@ -1005,22 +1051,34 @@
 
         function updateProfileUI() {
             const fullName = currentUser.name; const inits = getInitials(fullName);
-            if(document.getElementById('settingNameDisplay')) document.getElementById('settingNameDisplay').innerText = fullName;
-            if(document.getElementById('set_email')) document.getElementById('set_email').value = currentUser.email || "";
-            if(document.getElementById('set_phone')) document.getElementById('set_phone').value = currentUser.phone || "";
             
-            document.getElementById('rightProfileFullName').innerText = fullName; document.getElementById('rightProfileId').innerText = "ID: " + currentUser.id; document.getElementById('rightProfileClass').innerText = "Class: " + (currentUser.assigned || "-"); document.getElementById('mobileHeaderProfileInitials').innerText = inits;
+            let setDisplay = document.getElementById('settingNameDisplay');
+            if(setDisplay) setDisplay.innerText = fullName;
+            let setEmail = document.getElementById('set_email');
+            if(setEmail) setEmail.value = currentUser.email || "";
+            let setPhone = document.getElementById('set_phone');
+            if(setPhone) setPhone.value = currentUser.phone || "";
+
+            let setPic = document.getElementById('previewSettingPic');
+            let setInit = document.getElementById('previewSettingInitials');
+            
+            document.getElementById('rightProfileFullName').innerText = fullName;
+            document.getElementById('rightProfileId').innerText = "ID: " + currentUser.id;
+            document.getElementById('rightProfileClass').innerText = "Class: " + (currentUser.assigned || "-");
+            document.getElementById('mobileHeaderProfileInitials').innerText = inits;
             
             if(currentUser.pic && currentUser.pic.trim() !== "") { 
                 document.getElementById('rightProfileImage').src = currentUser.pic; document.getElementById('rightProfileImage').classList.remove('hidden'); document.getElementById('rightProfileInitials').classList.add('hidden');
                 document.getElementById('mobileHeaderProfileImg').src = currentUser.pic; document.getElementById('mobileHeaderProfileImg').classList.remove('hidden'); document.getElementById('mobileHeaderProfileInitials').classList.add('hidden');
-                if(document.getElementById('previewSettingPic')) { document.getElementById('previewSettingPic').src = currentUser.pic; document.getElementById('previewSettingPic').classList.remove('hidden'); }
-                if(document.getElementById('previewSettingInitials')) document.getElementById('previewSettingInitials').classList.add('hidden');
+                
+                if(setPic) { setPic.src = currentUser.pic; setPic.classList.remove('hidden'); }
+                if(setInit) setInit.classList.add('hidden');
             } else {
                 document.getElementById('rightProfileInitials').innerText = inits; document.getElementById('rightProfileInitials').classList.remove('hidden'); document.getElementById('rightProfileImage').classList.add('hidden');
                 document.getElementById('mobileHeaderProfileInitials').innerText = inits; document.getElementById('mobileHeaderProfileInitials').classList.remove('hidden'); document.getElementById('mobileHeaderProfileImg').classList.add('hidden');
-                if(document.getElementById('previewSettingInitials')) { document.getElementById('previewSettingInitials').innerText = inits; document.getElementById('previewSettingInitials').classList.remove('hidden'); }
-                if(document.getElementById('previewSettingPic')) document.getElementById('previewSettingPic').classList.add('hidden');
+                
+                if(setInit) { setInit.innerText = inits; setInit.classList.remove('hidden'); }
+                if(setPic) setPic.classList.add('hidden');
             }
         }
 
@@ -1030,21 +1088,30 @@
                 let img = new Image(); img.onload = () => {
                     let c = document.createElement('canvas'), w = 200, s = w / img.width; c.width = w; c.height = img.height * s;
                     c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); uploadedImageBase64 = c.toDataURL('image/jpeg', 0.8);
-                    if(document.getElementById('previewSettingPic')) { document.getElementById('previewSettingPic').src = uploadedImageBase64; document.getElementById('previewSettingPic').classList.remove('hidden'); }
-                    if(document.getElementById('previewSettingInitials')) document.getElementById('previewSettingInitials').classList.add('hidden');
+                    
+                    let prevPic = document.getElementById('previewSettingPic');
+                    let prevInit = document.getElementById('previewSettingInitials');
+                    if(prevPic) { prevPic.src = uploadedImageBase64; prevPic.classList.remove('hidden'); }
+                    if(prevInit) prevInit.classList.add('hidden');
                 }; img.src = ev.target.result;
             }; r.readAsDataURL(f);
         }
 
         function saveProfile() {
-            let e = document.getElementById('set_email').value.trim(); let p = document.getElementById('set_phone').value.trim(); let c = uploadedImageBase64 || currentUser.pic;
-            if(!e || !p) return showiOSToast('fa-solid fa-circle-exclamation', 'กรุณากรอกข้อมูลให้ครบถ้วน', 'bg-amber-100', 'text-amber-600');
+            let e = document.getElementById('set_email').value.trim();
+            let p = document.getElementById('set_phone').value.trim();
+            let c = uploadedImageBase64 || currentUser.pic;
+            if(!e || !p) return showiOSToast('fa-solid fa-circle-exclamation', 'กรุณากรอกอีเมลและเบอร์โทรศัพท์ให้ครบ', 'bg-amber-100', 'text-amber-600');
+            
             Swal.fire({title:'กำลังบันทึก...', didOpen:()=>Swal.showLoading()});
             fetchGAS({action:"updateProfile", username:currentUser.id, pic:c, email:e, phone:p}).then(r => {
                 if(r.status === "success") { 
-                    currentUser.pic = c; currentUser.email = e; currentUser.phone = p; sessionStorage.setItem('currentUser', JSON.stringify(currentUser)); updateProfileUI(); 
+                    currentUser.pic = c; currentUser.email = e; currentUser.phone = p; 
+                    sessionStorage.setItem('currentUser', JSON.stringify(currentUser)); 
+                    updateProfileUI(); 
+                    
                     if(document.getElementById('view_inbox').style.display !== 'none') { forceRefreshChat(); }
-                    showiOSToast('fa-solid fa-check', 'บันทึกข้อมูลเรียบร้อย', 'bg-emerald-100', 'text-emerald-600');
+                    showiOSToast('fa-solid fa-check', 'บันทึกโปรไฟล์เรียบร้อย', 'bg-emerald-100', 'text-emerald-600');
                 }
             });
         }
