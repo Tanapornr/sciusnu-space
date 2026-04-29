@@ -191,31 +191,34 @@
 
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 mb-8 lg:mb-12" id="subjectGrid"></div>
                 
+                <!-- 1. รายการโปรดของคุณ (เปลี่ยนเป็น Grid) -->
                 <div id="favHomeSection" class="hidden mb-10">
                     <div class="flex items-center justify-between mb-5">
                         <h3 class="text-xl lg:text-2xl font-bold font-prompt text-slate-800 dark:text-slate-100 flex items-center">
                             <div class="w-10 h-10 bg-rose-100 dark:bg-rose-900/50 text-rose-500 dark:text-rose-400 rounded-full flex items-center justify-center mr-3 shadow-inner"><i class="fa-solid fa-heart text-sm"></i></div> รายการโปรดของคุณ
                         </h3>
                     </div>
-                    <div id="lessonGrid_fav_home" class="flex overflow-x-auto gap-4 lg:gap-6 pb-6 hide-scroll snap-x snap-mandatory"></div>
+                    <div id="lessonGrid_fav_home" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 pb-6"></div>
                 </div>
 
-                <div id="continueWatchingSection" class="hidden border-t border-slate-300/30 dark:border-white/10 pt-8 mt-4 mb-6">
+                <!-- 2. เรียนค้างไว้... มาลุยต่อ! (เปลี่ยนเป็น Grid) -->
+                <div id="continueWatchingSection" class="hidden mb-10 border-t border-slate-300/30 dark:border-white/10 pt-8 mt-4">
                     <div class="flex items-center justify-between mb-5">
                         <h3 class="text-xl lg:text-2xl font-bold font-prompt text-slate-800 dark:text-slate-100 flex items-center">
                             <div class="w-10 h-10 bg-amber-100 dark:bg-amber-900/50 text-amber-500 dark:text-amber-400 rounded-full flex items-center justify-center mr-3 shadow-inner"><i class="fa-solid fa-fire text-sm"></i></div> 🔥 เรียนค้างไว้... มาลุยต่อ!
                         </h3>
                     </div>
-                    <div id="lessonGrid_continue" class="flex overflow-x-auto gap-4 lg:gap-6 pb-6 hide-scroll snap-x snap-mandatory"></div>
+                    <div id="lessonGrid_continue" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 pb-6"></div>
                 </div>
 
-                <div id="recommendedSection" class="border-t border-slate-300/30 dark:border-white/10 pt-8 mt-4 mb-6">
+                <!-- 3. แนะนำสำหรับคุณ (เปลี่ยนเป็น Grid พอดีจอ ไม่ตกขอบ) -->
+                <div id="recommendedSection" class="mb-10 border-t border-slate-300/30 dark:border-white/10 pt-8 mt-4">
                     <div class="flex items-center justify-between mb-5">
                         <h3 class="text-xl lg:text-2xl font-bold font-prompt text-slate-800 dark:text-slate-100 flex items-center">
                             <div class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-500 dark:text-indigo-400 rounded-full flex items-center justify-center mr-3 shadow-inner"><i class="fa-solid fa-sparkles text-sm"></i></div> แนะนำสำหรับคุณ
                         </h3>
                     </div>
-                    <div id="lessonGrid_home" class="flex overflow-x-auto gap-4 lg:gap-6 pb-6 hide-scroll snap-x snap-mandatory"></div>
+                    <div id="lessonGrid_home" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 pb-6"></div>
                 </div>
             </div>
 
@@ -454,7 +457,6 @@
             if(target !== 'inbox' && chatTimer) { clearInterval(chatTimer); chatTimer = null; }
             
             if(target === 'inbox') { 
-                // 🔥 ทริคเด็ด: พอกดเข้าหน้าข้อความปุ๊บ ให้ถือว่าอ่านหมดแล้ว เคลียร์เลข 1 ทิ้งทันที!
                 if(mentors && mentors.length > 0) {
                     mentors.forEach(m => {
                         let totalMsgs = countTeacherMessages(m.name);
@@ -555,6 +557,7 @@
                 document.getElementById('allSubjectTitle').innerText = currentSubject !== "" ? "วิชา: " + currentSubject + " (เฉพาะรายการโปรด)" : "รายการโปรดทั้งหมด";
             } else { document.getElementById('allSubjectTitle').innerText = currentSubject !== "" ? "วิชา: " + currentSubject : "บทเรียนทั้งหมด"; }
 
+            // ปรับการสร้าง Layout ในหน้าบทเรียนให้เป็นตาราง (Grid)
             document.getElementById('lessonGrid_student').innerHTML = filtered.length > 0 ? filtered.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'grid')).join('') : '<div class="col-span-full py-20 text-center text-slate-500 dark:text-slate-400 font-bold border-2 border-dashed border-slate-300/50 dark:border-slate-700/50 rounded-[2rem]">ไม่พบข้อมูลบทเรียน</div>';
         }
 
@@ -606,6 +609,7 @@
                     </div>
                 </div>` : '';
 
+            // ถอดความกว้างแบบเลื่อนสไลด์ออก ปล่อยให้ Grid จัดการแทน
             let widthClass = layoutType === 'scroll' ? 'min-w-[85vw] sm:min-w-[340px] max-w-[85vw] sm:max-w-[340px] snap-start shrink-0' : '';
 
             return `
@@ -632,8 +636,8 @@
         }
 
         function renderHomeLessons() { 
-            let latest = [...allLessons].reverse().slice(0, 5);
-            document.getElementById('lessonGrid_home').innerHTML = latest.map(l => renderLessonCard(l, allLessons.indexOf(l), true, 'scroll')).join(''); 
+            let latest = [...allLessons].reverse().slice(0, 6); // โชว์ 6 อันให้พอดีตาราง
+            document.getElementById('lessonGrid_home').innerHTML = latest.map(l => renderLessonCard(l, allLessons.indexOf(l), true, 'grid')).join(''); 
             
             let continueSection = document.getElementById('continueWatchingSection');
             let continueGrid = document.getElementById('lessonGrid_continue');
@@ -643,7 +647,8 @@
             });
 
             if(continueLessons.length > 0) {
-                continueGrid.innerHTML = continueLessons.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'scroll')).join('');
+                // ส่งเป็น grid layout
+                continueGrid.innerHTML = continueLessons.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'grid')).join('');
                 continueSection.classList.remove('hidden');
             } else { continueSection.classList.add('hidden'); continueGrid.innerHTML = ''; }
         }
@@ -654,7 +659,8 @@
             let favGrid = document.getElementById('lessonGrid_fav_home');
             if(favs.length > 0) {
                 let fLessons = allLessons.filter(l => favs.includes(l.title));
-                favGrid.innerHTML = fLessons.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'scroll')).join('');
+                // ส่งเป็น grid layout
+                favGrid.innerHTML = fLessons.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'grid')).join('');
                 favSection.classList.remove('hidden');
             } else { favSection.classList.add('hidden'); favGrid.innerHTML = ''; }
         }
