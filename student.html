@@ -191,7 +191,6 @@
 
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 mb-8 lg:mb-12" id="subjectGrid"></div>
                 
-                <!-- 1. รายการโปรดของคุณ -->
                 <div id="favHomeSection" class="hidden mb-10">
                     <div class="flex items-center justify-between mb-5">
                         <h3 class="text-xl lg:text-2xl font-bold font-prompt text-slate-800 dark:text-slate-100 flex items-center">
@@ -201,8 +200,7 @@
                     <div id="lessonGrid_fav_home" class="flex overflow-x-auto gap-4 lg:gap-6 pb-6 hide-scroll snap-x snap-mandatory"></div>
                 </div>
 
-                <!-- 2. เรียนค้างไว้... มาลุยต่อ! -->
-                <div id="continueWatchingSection" class="hidden mb-10">
+                <div id="continueWatchingSection" class="hidden border-t border-slate-300/30 dark:border-white/10 pt-8 mt-4 mb-6">
                     <div class="flex items-center justify-between mb-5">
                         <h3 class="text-xl lg:text-2xl font-bold font-prompt text-slate-800 dark:text-slate-100 flex items-center">
                             <div class="w-10 h-10 bg-amber-100 dark:bg-amber-900/50 text-amber-500 dark:text-amber-400 rounded-full flex items-center justify-center mr-3 shadow-inner"><i class="fa-solid fa-fire text-sm"></i></div> 🔥 เรียนค้างไว้... มาลุยต่อ!
@@ -211,8 +209,7 @@
                     <div id="lessonGrid_continue" class="flex overflow-x-auto gap-4 lg:gap-6 pb-6 hide-scroll snap-x snap-mandatory"></div>
                 </div>
 
-                <!-- 3. แนะนำสำหรับคุณ -->
-                <div id="recommendedSection" class="mb-10">
+                <div id="recommendedSection" class="border-t border-slate-300/30 dark:border-white/10 pt-8 mt-4 mb-6">
                     <div class="flex items-center justify-between mb-5">
                         <h3 class="text-xl lg:text-2xl font-bold font-prompt text-slate-800 dark:text-slate-100 flex items-center">
                             <div class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-500 dark:text-indigo-400 rounded-full flex items-center justify-center mr-3 shadow-inner"><i class="fa-solid fa-sparkles text-sm"></i></div> แนะนำสำหรับคุณ
@@ -455,7 +452,21 @@
             
             if(window.innerWidth < 1024) { document.getElementById('mainSidebar').classList.remove('active'); document.getElementById('sidebarOverlay').classList.remove('active'); }
             if(target !== 'inbox' && chatTimer) { clearInterval(chatTimer); chatTimer = null; }
-            if(target === 'inbox') { renderChatContacts(); if(activeChatContact) openChat(activeChatContact); if(!chatTimer) chatTimer = setInterval(loadMessagesForChat, 5000); }
+            
+            if(target === 'inbox') { 
+                // 🔥 ทริคเด็ด: พอกดเข้าหน้าข้อความปุ๊บ ให้ถือว่าอ่านหมดแล้ว เคลียร์เลข 1 ทิ้งทันที!
+                if(mentors && mentors.length > 0) {
+                    mentors.forEach(m => {
+                        let totalMsgs = countTeacherMessages(m.name);
+                        localStorage.setItem('readMsgs_' + currentUser.id + '_' + m.name, totalMsgs);
+                    });
+                    updateUnreadBadges();
+                }
+                renderChatContacts(); 
+                if(activeChatContact) openChat(activeChatContact); 
+                if(!chatTimer) chatTimer = setInterval(loadMessagesForChat, 5000); 
+            }
+            
             if(target === 'lessons') { renderStudentLessons(); }
             if(target === 'settings') { updateProfileUI(); } 
             document.getElementById('mainScrollArea').scrollTop = 0;
@@ -550,7 +561,7 @@
         function searchLesson(val) {
             let q = val.toLowerCase().trim();
             if(!q) { renderStudentLessons(); return; }
-            nav('lessons'); document.getElementById('allSubjectTitle').innerText = "ผลักค้นหา: " + val;
+            nav('lessons'); document.getElementById('allSubjectTitle').innerText = "ผลการค้นหา: " + val;
             
             let filtered = allLessons.filter(l => l.title.toLowerCase().includes(q) || l.subject.toLowerCase().includes(q));
             if (showFavoritesOnly) { let favs = JSON.parse(localStorage.getItem('favs_'+currentUser.id)||'[]'); filtered = filtered.filter(l => favs.includes(l.title)); }
