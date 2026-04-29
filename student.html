@@ -196,25 +196,34 @@
 
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 mb-8 lg:mb-12" id="subjectGrid"></div>
                 
-                <h3 class="text-xl lg:text-2xl font-bold mb-5 font-prompt text-slate-800 dark:text-slate-100">แนะนำสำหรับคุณ</h3>
-                <div id="lessonGrid_home" class="flex overflow-x-auto gap-4 lg:gap-6 pb-6 hide-scroll snap-x snap-mandatory"></div>
-
-                <div id="continueWatchingSection" class="hidden border-t border-slate-300/30 dark:border-white/10 pt-8 mt-4 mb-6">
-                    <div class="flex items-center justify-between mb-5">
-                        <h3 class="text-xl lg:text-2xl font-bold font-prompt text-slate-800 dark:text-slate-100 flex items-center">
-                            <div class="w-10 h-10 bg-amber-100 dark:bg-amber-900/50 text-amber-500 dark:text-amber-400 rounded-full flex items-center justify-center mr-3 shadow-inner"><i class="fa-solid fa-clock-rotate-left text-sm"></i></div> เรียนต่อจากที่ค้างไว้
-                        </h3>
-                    </div>
-                    <div id="lessonGrid_continue" class="flex overflow-x-auto gap-4 lg:gap-6 pb-6 hide-scroll snap-x snap-mandatory"></div>
-                </div>
-
-                <div id="favHomeSection" class="hidden border-t border-slate-300/30 dark:border-white/10 pt-8 mt-4">
+                <!-- สลับตำแหน่ง: 1. รายการโปรด -->
+                <div id="favHomeSection" class="hidden mt-4 mb-6">
                     <div class="flex items-center justify-between mb-5">
                         <h3 class="text-xl lg:text-2xl font-bold font-prompt text-slate-800 dark:text-slate-100 flex items-center">
                             <div class="w-10 h-10 bg-rose-100 dark:bg-rose-900/50 text-rose-500 dark:text-rose-400 rounded-full flex items-center justify-center mr-3 shadow-inner"><i class="fa-solid fa-heart text-sm"></i></div> รายการโปรดของคุณ
                         </h3>
                     </div>
                     <div id="lessonGrid_fav_home" class="flex overflow-x-auto gap-4 lg:gap-6 pb-6 hide-scroll snap-x snap-mandatory"></div>
+                </div>
+
+                <!-- สลับตำแหน่ง: 2. ลุยต่อให้จบ (ดูค้างไว้) -->
+                <div id="continueWatchingSection" class="hidden border-t border-slate-300/30 dark:border-white/10 pt-8 mt-4 mb-6">
+                    <div class="flex items-center justify-between mb-5">
+                        <h3 class="text-xl lg:text-2xl font-bold font-prompt text-slate-800 dark:text-slate-100 flex items-center">
+                            <div class="w-10 h-10 bg-amber-100 dark:bg-amber-900/50 text-amber-500 dark:text-amber-400 rounded-full flex items-center justify-center mr-3 shadow-inner"><i class="fa-solid fa-fire text-sm"></i></div> ลุยต่อให้จบ!
+                        </h3>
+                    </div>
+                    <div id="lessonGrid_continue" class="flex overflow-x-auto gap-4 lg:gap-6 pb-6 hide-scroll snap-x snap-mandatory"></div>
+                </div>
+
+                <!-- สลับตำแหน่ง: 3. แนะนำสำหรับคุณ -->
+                <div id="recommendedSection" class="border-t border-slate-300/30 dark:border-white/10 pt-8 mt-4 mb-6">
+                    <div class="flex items-center justify-between mb-5">
+                        <h3 class="text-xl lg:text-2xl font-bold font-prompt text-slate-800 dark:text-slate-100 flex items-center">
+                            <div class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-500 dark:text-indigo-400 rounded-full flex items-center justify-center mr-3 shadow-inner"><i class="fa-solid fa-sparkles text-sm"></i></div> แนะนำสำหรับคุณ
+                        </h3>
+                    </div>
+                    <div id="lessonGrid_home" class="flex overflow-x-auto gap-4 lg:gap-6 pb-6 hide-scroll snap-x snap-mandatory"></div>
                 </div>
             </div>
 
@@ -410,7 +419,7 @@
         }
 
         window.onload = () => { 
-            initTheme(); // โหลด Theme
+            initTheme(); 
             renderSidebarMenu(); updateProfileUI(); nav('home'); loadDashboardData(); 
             let chatInput = document.getElementById("chatInputMessage"); if(chatInput) { chatInput.addEventListener("keypress", (e) => { if(e.key === "Enter") sendChatMessage(); }); }
         };
@@ -975,7 +984,7 @@
                     </div>
                     <div class="flex-1 min-w-0">
                         <h4 class="font-bold text-xs lg:text-sm truncate text-slate-800 dark:text-slate-200">${c.name}</h4>
-                        <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate ${unreadCount > 0 ? 'font-bold text-slate-800 dark:text-white' : ''}" title="${latestText}">${latestText}</p>
+                        <p class="text-[10px] text-slate-400 truncate ${unreadCount > 0 ? 'font-bold text-slate-800 dark:text-white' : ''}" title="${latestText}">${latestText}</p>
                     </div>
                 </div>`;
             }
@@ -1183,7 +1192,7 @@
             let e = document.getElementById('set_email').value.trim();
             let p = document.getElementById('set_phone').value.trim();
             let c = uploadedImageBase64 || currentUser.pic;
-            if(!e || !p) return showiOSToast('fa-solid fa-circle-exclamation', 'กรุณากรอกข้อมูลให้ครบถ้วน', 'bg-amber-100', 'text-amber-600');
+            if(!e || !p) return showiOSToast('fa-solid fa-circle-exclamation', 'กรุณากรอกข้อมูลให้ครบถ้วน', 'bg-amber-100 dark:bg-amber-900', 'text-amber-600 dark:text-amber-400');
             
             Swal.fire({title:'กำลังบันทึก...', didOpen:()=>Swal.showLoading()});
             fetchGAS({action:"updateProfile", username:currentUser.id, pic:c, email:e, phone:p}).then(r => {
@@ -1193,7 +1202,7 @@
                     updateProfileUI(); 
                     
                     if(document.getElementById('view_inbox').style.display !== 'none') { forceRefreshChat(); }
-                    showiOSToast('fa-solid fa-check', 'บันทึกโปรไฟล์เรียบร้อย', 'bg-emerald-100', 'text-emerald-600');
+                    showiOSToast('fa-solid fa-check', 'บันทึกโปรไฟล์เรียบร้อย', 'bg-emerald-100 dark:bg-emerald-900', 'text-emerald-600 dark:text-emerald-400');
                 }
             });
         }
