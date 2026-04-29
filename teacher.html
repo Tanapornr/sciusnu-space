@@ -96,7 +96,9 @@
         
         .swal2-title { font-family: 'Prompt', sans-serif !important; font-size: 1.1rem !important; margin-bottom: 0.5em !important; }
         .swal2-html-container { font-family: 'Sarabun', sans-serif !important; margin-top: 0.5em !important; }
-        
+        .dark .swal2-title { color: #f8fafc !important; }
+        .dark .swal2-html-container { color: #cbd5e1 !important; }
+
         .swal2-confirm {
             border-radius: 999px !important; font-family: 'Prompt', sans-serif !important; font-weight: 600 !important;
             padding: 12px 32px !important; background-color: #f05a28 !important; font-size: 0.9rem !important;
@@ -113,7 +115,7 @@
 
     <div id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
-    <aside id="mainSidebar" class="w-72 lg:w-64 flex flex-col flex-shrink-0 z-50 bg-white/90 dark:bg-[#1a1614]/95 backdrop-blur-2xl border-r border-white/80 dark:border-white/5 shadow-2xl lg:bg-white/60 lg:backdrop-blur-xl">
+    <aside id="mainSidebar" class="glass-panel w-72 lg:w-64 flex flex-col flex-shrink-0 z-50 border-r border-white/80 dark:border-white/5 shadow-2xl lg:bg-white/60 lg:backdrop-blur-xl">
         <div class="h-20 lg:h-24 flex items-center px-8 border-b border-slate-200/50 dark:border-white/5 cursor-pointer" onclick="location.reload()">
             <div class="w-8 h-8 bg-[#f05a28] text-white rounded-full flex items-center justify-center text-sm shadow-md mr-3"><i class="fa-solid fa-sparkles"></i></div>
             <h1 class="text-xl font-black font-prompt text-[#f05a28] uppercase">Coursue</h1>
@@ -242,7 +244,7 @@
                 <div class="w-full lg:w-2/3 glass-panel rounded-2xl lg:rounded-3xl flex flex-col overflow-hidden shadow-md relative lg:h-full h-2/3">
                     <div id="chatPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center bg-white/60 dark:bg-black/60 backdrop-blur-md z-10 text-slate-600 dark:text-slate-300">
                         <div class="w-20 h-20 bg-orange-100 dark:bg-orange-900/50 text-orange-500 rounded-full flex items-center justify-center text-3xl mb-4 shadow-inner border border-white/50"><i class="fa-regular fa-comment"></i></div>
-                        <p class="font-bold text-sm lg:text-base">เลือกนักเรียนเพื่อตอบกลับ</p>
+                        <p class="font-bold text-sm lg:text-base">เลือกผู้ติดต่อเพื่อสนทนา</p>
                     </div>
                     <div class="p-4 lg:p-5 border-b border-slate-300/50 dark:border-slate-700/50 flex items-center justify-between z-0 bg-white/40 dark:bg-black/30" id="chatHeader">
                         <div class="flex items-center gap-3 lg:gap-4">
@@ -258,6 +260,7 @@
                 </div>
             </div>
 
+            <!-- หน้าตั้งค่า -->
             <div id="view_settings" class="hidden max-w-3xl mx-auto">
                 <div class="glass-panel rounded-2xl lg:rounded-[2rem] p-6 lg:p-10 shadow-md">
                     <div class="flex flex-col items-center mb-8">
@@ -285,7 +288,8 @@
         </div>
     </main>
 
-    <aside id="rightSidebar" class="glass-panel w-72 flex-shrink-0 hidden lg:flex flex-col h-full shadow-2xl relative border-l border-white/80 dark:border-white/5 bg-white/90 dark:bg-[#1a1614]/95 backdrop-blur-2xl">
+    <!-- เมนูด้านขวา (Overview) -->
+    <aside id="rightSidebar" class="glass-panel w-72 flex-shrink-0 hidden lg:flex flex-col h-full shadow-2xl relative border-l border-white/80 dark:border-white/5">
         <div class="p-8 overflow-y-auto flex-1 hide-scroll pb-24">
             <div class="text-right lg:hidden mb-4"><button onclick="document.getElementById('rightSidebar').classList.add('hidden')" class="text-slate-600 bg-white/80 dark:bg-black/50 w-8 h-8 rounded-full shadow-sm"><i class="fa-solid fa-xmark"></i></button></div>
             <div class="flex justify-between items-center mb-8"><h3 class="font-bold text-slate-800 dark:text-slate-200 text-sm font-prompt uppercase tracking-widest">TEACHER PROFILE</h3></div>
@@ -301,14 +305,15 @@
                 </div>
             </div>
 
-            <h4 class="font-bold text-slate-800 dark:text-slate-200 font-prompt text-sm mb-5 uppercase tracking-widest mt-8">MY STUDENTS</h4>
+            <!-- เปลี่ยนหัวข้อเพื่อครอบคลุมทั้ง Admin และ นักเรียน -->
+            <h4 class="font-bold text-slate-800 dark:text-slate-200 font-prompt text-sm mb-5 uppercase tracking-widest mt-8">CONTACTS</h4>
             <div class="space-y-3" id="studentListRightUI">
-                <div class="text-[10px] text-slate-600 dark:text-slate-400 font-medium text-center py-4 bg-white/60 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-400/50 dark:border-slate-600/50 shadow-inner">กำลังโหลดข้อมูลนักเรียน...</div>
+                <div class="text-[10px] text-slate-600 dark:text-slate-400 font-medium text-center py-4 bg-white/60 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-400/50 dark:border-slate-600/50 shadow-inner">กำลังโหลดข้อมูลผู้ติดต่อ...</div>
             </div>
         </div>
     </aside>
 
-  <script>
+    <script>
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbyDcg8d6HS5ul8_3vkJCgqOZnano4kNmgvqMgsdYl5vYzOAJmBin11VBkVULmWcnHBuAA/exec';
         let currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
         if (!currentUser || String(currentUser.role).toLowerCase().trim() !== 'teacher') { window.location.replace('index.html'); }
@@ -378,13 +383,16 @@
             if(target !== 'inbox' && chatTimer) { clearInterval(chatTimer); chatTimer = null; }
 
             if(target === 'inbox') {
-                if(myStudents && myStudents.length > 0) {
-                    myStudents.forEach(m => {
-                        let totalMsgs = countStudentMessages(m.name);
-                        localStorage.setItem('readMsgs_' + currentUser.id + '_' + m.name, totalMsgs);
-                    });
-                    updateUnreadBadges();
-                }
+                let admins = allUsersData.filter(u => String(u.role || u.Role || "").toLowerCase().trim() === 'admin');
+                let allContacts = [...admins.map(a => a.name || a.Name), ...myStudents.map(s => s.name)];
+                
+                [...new Set(allContacts)].forEach(cName => {
+                    if(!cName) return;
+                    let totalMsgs = countMessages(cName);
+                    localStorage.setItem('readMsgs_' + currentUser.id + '_' + cName, totalMsgs);
+                });
+                
+                updateUnreadBadges();
                 renderChatContacts();
                 if(activeChatContact) openChat(activeChatContact);
                 if(!chatTimer) chatTimer = setInterval(loadMessagesForChat, 5000);
@@ -399,20 +407,26 @@
             document.getElementById('mainScrollArea').scrollTop = 0;
         }
 
-        function countStudentMessages(studentName) {
+        function countMessages(contactName) {
             let count = 0;
             cachedMessages.forEach(m => {
-                if (m.senderName === studentName && m.receiver === currentUser.name && m.message && m.message.trim() !== "") count += 1;
-                if (m.senderName === currentUser.name && m.receiver === studentName && m.reply && m.reply.trim() !== "") { count += m.reply.split('<br><br>').filter(x => x.trim() !== "").length; }
+                if (m.senderName === contactName && m.receiver === currentUser.name && m.message && m.message.trim() !== "") count += 1;
+                if (m.senderName === currentUser.name && m.receiver === contactName && m.reply && m.reply.trim() !== "") { count += m.reply.split('<br><br>').filter(x => x.trim() !== "").length; }
             });
             return count;
         }
 
         function updateUnreadBadges() {
             let globalUnread = 0;
-            myStudents.forEach(c => {
-                let totalMsgs = countStudentMessages(c.name);
-                let readCount = parseInt(localStorage.getItem('readMsgs_' + currentUser.id + '_' + c.name) || '0');
+            let admins = allUsersData.filter(u => String(u.role || u.Role || "").toLowerCase().trim() === 'admin');
+            let allContacts = [...admins.map(a => a.name || a.Name), ...myStudents.map(s => s.name)];
+            
+            let uniqueContacts = [...new Set(allContacts)];
+
+            uniqueContacts.forEach(cName => {
+                if(!cName) return;
+                let totalMsgs = countMessages(cName);
+                let readCount = parseInt(localStorage.getItem('readMsgs_' + currentUser.id + '_' + cName) || '0');
                 let unreadCount = totalMsgs - readCount;
                 if(unreadCount > 0) globalUnread += unreadCount;
             });
@@ -426,14 +440,12 @@
                     cachedMessages = r.messages || [];
                     allSubjects = r.subjects || [];
                     
-                    // ✨ แก้ไขระบบให้รองรับทั้ง r.users และ r.data (ตัวพิมพ์เล็ก/ใหญ่)
                     let rawUsers = r.users || r.data || [];
                     if(rawUsers.length > 0) allUsersData = rawUsers; 
 
                     let loader = document.getElementById('loadingLessons_teacher');
                     if(loader) loader.style.display = 'none';
                     
-                    // ✨ กรองเฉพาะนักเรียน (รองรับ u.Role และ u.role)
                     myStudents = allUsersData.filter(u => String(u.role || u.Role || "").toLowerCase().trim() === 'student').map(u => ({
                         name: u.name || u.Name || "ไม่มีชื่อ", 
                         role: 'Student', 
@@ -657,70 +669,120 @@
 
         function deleteLesson(t) { Swal.fire({title:'ลบบทเรียน?', text: 'คุณแน่ใจหรือไม่ที่จะลบเนื้อหานี้?', icon:'warning', showCancelButton:true, customClass:{popup:'ios-popup'}, confirmButtonColor:'#f05a28', confirmButtonText:'ยืนยันการลบ', cancelButtonText:'ยกเลิก'}).then(r=>{if(r.isConfirmed) { Swal.fire({title:'Deleting...', customClass:{popup:'ios-popup'}, didOpen:()=>Swal.showLoading()}); fetchGAS({action:"deleteLesson", title:t}).then(()=>loadDashboardData()); }}); }
 
+        function buildContactCard(c, type) {
+            let isActive = activeChatContact === c.name ? "active" : "";
+            let pPic = c.pic ? `<img src="${c.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center font-bold text-xs lg:text-sm">${c.initials}</div>`;
+            
+            let totalMsgs = countMessages(c.name);
+            let readCount = parseInt(localStorage.getItem('readMsgs_' + currentUser.id + '_' + c.name) || '0');
+            let unreadCount = totalMsgs - readCount;
+            if(unreadCount < 0) unreadCount = 0;
+
+            let badgeHtml = unreadCount > 0 ? `<div class="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 rounded-full flex items-center justify-center text-white text-[8px] font-bold shadow-sm border-2 border-white">${unreadCount}</div>` : '';
+
+            let latestText = "";
+            let contactMsgs = cachedMessages.filter(m => (m.senderName === currentUser.name && m.receiver === c.name) || (m.senderName === c.name && m.receiver === currentUser.name));
+            if(contactMsgs.length > 0) {
+                let sorted = [...contactMsgs].sort((a,b) => new Date(a.date) - new Date(b.date));
+                let lastMsg = sorted[sorted.length - 1];
+                
+                if(lastMsg.senderName === currentUser.name) {
+                    if(lastMsg.reply && lastMsg.reply.trim() !== "") {
+                        let reps = lastMsg.reply.split('<br><br>').filter(x => x.trim() !== "");
+                        latestText = c.name + ": " + reps[reps.length - 1];
+                    } else {
+                        latestText = "คุณ: " + lastMsg.message;
+                    }
+                } else {
+                    if(lastMsg.reply && lastMsg.reply.trim() !== "") {
+                        let reps = lastMsg.reply.split('<br><br>').filter(x => x.trim() !== "");
+                        latestText = "คุณ: " + reps[reps.length - 1];
+                    } else {
+                        latestText = c.name + ": " + lastMsg.message;
+                    }
+                }
+            } else {
+                latestText = "เริ่มการสนทนา...";
+            }
+            
+            let tmp = document.createElement("DIV");
+            tmp.innerHTML = latestText;
+            latestText = tmp.textContent || tmp.innerText || "";
+            if(latestText.length > 25) latestText = latestText.substring(0, 25) + "...";
+
+            if (type === "sidebar") {
+                let subjectBadge = '';
+                if (c.role === 'Admin') {
+                    subjectBadge = `<p class="text-[9px] text-rose-600 dark:text-rose-400 font-bold mt-1 bg-white/60 dark:bg-black/30 px-2 py-0.5 rounded-md w-max border border-white/80 dark:border-white/10"><i class="fa-solid fa-user-shield mr-1 text-rose-500"></i> Admin</p>`;
+                } else if (c.class && c.class !== "-") {
+                    subjectBadge = `<p class="text-[9px] text-slate-600 dark:text-slate-400 font-medium mt-1 bg-white/60 dark:bg-black/30 px-2 py-0.5 rounded-md w-max border border-white/80 dark:border-white/10"><i class="fa-solid fa-graduation-cap mr-1 text-slate-500"></i> ${c.class}</p>`;
+                }
+
+                return `
+                <div class="flex items-center justify-between group p-3 rounded-2xl border border-slate-200/50 dark:border-slate-700/50 hover:border-orange-300 dark:hover:border-orange-700 shadow-sm transition mb-3 bg-white/50 dark:bg-black/30 backdrop-blur-sm cursor-pointer" onclick="nav('inbox'); openChat('${c.name}')">
+                    <div class="flex items-start gap-3">
+                        <div class="relative w-12 h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm shrink-0 flex items-center justify-center border border-white/50">${pPic}
+                            ${badgeHtml}
+                        </div>
+                        <div class="flex flex-col max-w-[130px] lg:max-w-[150px]">
+                            <p class="text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight truncate">${c.name}</p>
+                            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5 ${unreadCount > 0 ? 'font-bold text-slate-800 dark:text-white' : ''}" title="${latestText}">${latestText}</p>
+                            ${subjectBadge}
+                        </div>
+                    </div>
+                    <button class="w-9 h-9 rounded-full border border-orange-200/50 dark:border-orange-900/50 text-[#f05a28] flex items-center justify-center hover:bg-[#f05a28] hover:text-white transition shadow-sm shrink-0">
+                        <i class="fa-regular fa-comment-dots text-sm pointer-events-none"></i>
+                    </button>
+                </div>`;
+            } else {
+                return `
+                <div class="chat-contact ${isActive} flex items-center gap-3 p-3 lg:p-4 rounded-xl cursor-pointer hover:bg-white/50 dark:hover:bg-black/30 transition mb-1 border border-transparent shadow-sm" onclick="openChat('${c.name}')">
+                    <div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm border border-white/50 shrink-0 flex items-center justify-center">${pPic}
+                        ${badgeHtml}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="font-bold text-xs lg:text-sm truncate text-slate-800 dark:text-slate-200">${c.name}</h4>
+                        <p class="text-[10px] text-slate-400 truncate ${unreadCount > 0 ? 'font-bold text-slate-800 dark:text-white' : ''}" title="${latestText}">${latestText}</p>
+                    </div>
+                </div>`;
+            }
+        }
+
         function renderChatContacts() {
             let htmlInboxList = "";
             let htmlRightSidebar = "";
 
-            if(myStudents.length === 0) {
-                 htmlInboxList = '<div class="text-center p-4 text-xs text-slate-600 dark:text-slate-400 font-medium border-2 border-dashed border-slate-400/50 dark:border-slate-600/50 rounded-xl mx-4 mt-4 bg-white/40 dark:bg-transparent">ไม่มีนักเรียนในระบบ</div>';
-                 htmlRightSidebar = '<div class="text-xs text-slate-600 dark:text-slate-400 font-medium text-center py-4 border-2 border-dashed border-slate-400/50 dark:border-slate-600/50 rounded-2xl mx-2 bg-white/40 dark:bg-transparent">ไม่มีข้อมูลนักเรียน</div>';
+            let admins = allUsersData.filter(u => String(u.role || u.Role || "").toLowerCase().trim() === 'admin').map(u => ({
+                name: u.name || u.Name || "ไม่มีชื่อ",
+                role: 'Admin',
+                initials: getInitials(u.name || u.Name || "A"),
+                pic: u.pic || u.ProfilePic || "",
+                class: "Admin",
+                bgColor: "bg-rose-100 dark:bg-rose-900/50",
+                textColor: "text-rose-600 dark:text-rose-400"
+            }));
+
+            let allContacts = [...admins, ...myStudents];
+
+            if(allContacts.length === 0) {
+                 htmlInboxList = '<div class="text-center p-4 text-xs text-slate-600 dark:text-slate-400 font-medium border-2 border-dashed border-slate-400/50 dark:border-slate-600/50 rounded-xl mx-4 mt-4 bg-white/40 dark:bg-transparent">ไม่มีผู้ติดต่อ</div>';
+                 htmlRightSidebar = '<div class="text-xs text-slate-600 dark:text-slate-400 font-medium text-center py-4 border-2 border-dashed border-slate-400/50 dark:border-slate-600/50 rounded-2xl mx-2 bg-white/40 dark:bg-transparent">ไม่มีผู้ติดต่อ</div>';
             } else {
-                htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-widest mt-2">รายชื่อนักเรียน</p>`;
-                
-                myStudents.forEach(s => {
-                    let isActive = activeChatContact === s.name ? "active" : "";
-                    
-                    let totalMsgs = countStudentMessages(s.name);
-                    let readCount = parseInt(localStorage.getItem('readMsgs_' + currentUser.id + '_' + s.name) || '0');
-                    let unreadCount = totalMsgs - readCount;
-                    if(unreadCount < 0) unreadCount = 0;
+                if(admins.length > 0) {
+                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-widest mt-2">แอดมิน</p>`;
+                    admins.forEach(c => {
+                        htmlInboxList += buildContactCard(c, "inbox");
+                        htmlRightSidebar += buildContactCard(c, "sidebar");
+                    });
+                }
 
-                    let badgeHtml = unreadCount > 0 ? `<div class="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 rounded-full flex items-center justify-center text-white text-[8px] font-bold shadow-sm border-2 border-white">${unreadCount}</div>` : '';
-
-                    let latestText = "เริ่มการสนทนา...";
-                    let contactMsgs = cachedMessages.filter(m => (m.senderName === currentUser.name && m.receiver === s.name) || (m.senderName === s.name && m.receiver === currentUser.name));
-                    if(contactMsgs.length > 0) {
-                        let sorted = [...contactMsgs].sort((a,b) => new Date(a.date) - new Date(b.date));
-                        let lastMsg = sorted[sorted.length - 1];
-                        if(lastMsg.senderName === currentUser.name) {
-                            if(lastMsg.reply && lastMsg.reply.trim() !== "") {
-                                let reps = lastMsg.reply.split('<br><br>').filter(x => x.trim() !== "");
-                                latestText = s.name + ": " + reps[reps.length - 1];
-                            } else { latestText = "คุณ: " + lastMsg.message; }
-                        } else {
-                            if(lastMsg.reply && lastMsg.reply.trim() !== "") {
-                                let reps = lastMsg.reply.split('<br><br>').filter(x => x.trim() !== "");
-                                latestText = "คุณ: " + reps[reps.length - 1];
-                            } else { latestText = s.name + ": " + lastMsg.message; }
-                        }
-                    }
-
-                    let tmp = document.createElement("DIV"); tmp.innerHTML = latestText; latestText = tmp.textContent || tmp.innerText || "";
-                    if(latestText.length > 25) latestText = latestText.substring(0, 25) + "...";
-
-                    let picHtml = s.pic ? `<img src="${s.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center font-bold text-indigo-600 bg-indigo-100 text-xs">${getInitials(s.name)}</div>`;
-                    let subjectBadge = s.class && s.class !== "-" ? `<p class="text-[9px] text-slate-600 dark:text-slate-400 font-medium mt-1 bg-white/60 dark:bg-black/30 px-2 py-0.5 rounded-md w-max border border-white/80 dark:border-white/10"><i class="fa-solid fa-graduation-cap mr-1 text-slate-500"></i> ${s.class}</p>` : '';
-
-                    let cardHtml = `
-                    <div class="chat-contact ${isActive} flex items-center justify-between group p-3 rounded-2xl border border-white dark:border-slate-700/50 hover:border-orange-300 dark:hover:border-orange-700 shadow-sm transition mb-3 bg-white/60 dark:bg-black/30 backdrop-blur-md cursor-pointer" onclick="nav('inbox'); openChat('${s.name}')">
-                        <div class="flex items-start gap-3">
-                            <div class="relative w-12 h-12 rounded-full ${s.bgColor} ${s.textColor} overflow-hidden shadow-sm shrink-0 flex items-center justify-center border border-white/80">${picHtml}
-                                ${badgeHtml}
-                            </div>
-                            <div class="flex flex-col max-w-[130px] lg:max-w-[150px]">
-                                <p class="text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight truncate">${s.name}</p>
-                                <p class="text-[10px] text-slate-600 dark:text-slate-400 font-medium truncate mt-0.5 ${unreadCount > 0 ? 'font-bold text-slate-800 dark:text-white' : ''}" title="${latestText}">${latestText}</p>
-                                ${subjectBadge}
-                            </div>
-                        </div>
-                        <button class="w-9 h-9 rounded-full border border-orange-200 dark:border-orange-900/50 text-[#f05a28] flex items-center justify-center hover:bg-[#f05a28] hover:text-white transition shadow-sm shrink-0 bg-white/50 dark:bg-transparent">
-                            <i class="fa-regular fa-comment-dots text-sm pointer-events-none"></i>
-                        </button>
-                    </div>`;
-
-                    htmlInboxList += cardHtml;
-                    htmlRightSidebar += cardHtml;
-                });
+                if(myStudents.length > 0) {
+                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-widest mt-4">รายชื่อนักเรียน</p>`;
+                    myStudents.forEach(c => {
+                        htmlInboxList += buildContactCard(c, "inbox");
+                        htmlRightSidebar += buildContactCard(c, "sidebar");
+                    });
+                }
             }
             
             let clist = document.getElementById('chatContactList');
@@ -733,62 +795,70 @@
         }
 
         function openChat(n) {
-            activeChatContact = n; 
-            let placeholder = document.getElementById('chatPlaceholder');
-            if(placeholder) placeholder.classList.add('hidden'); 
+            activeChatContact = n; document.getElementById('chatPlaceholder').classList.add('hidden'); 
             
-            renderChatContacts();
-            let msgs = cachedMessages.filter(m => m.senderName === n || m.receiver === n);
+            let totalMsgs = countMessages(n);
+            localStorage.setItem('readMsgs_' + currentUser.id + '_' + n, totalMsgs);
+            renderChatContacts(); 
             
-            let sortedMsgs = [...msgs].sort((a,b) => new Date(a.date) - new Date(b.date));
-
-            let latestStudentPic = null;
-            let studentRoom = "-";
-            sortedMsgs.forEach(m => {
-                if(m.senderName === n) {
-                    if(m.senderPic && m.senderPic.trim() !== "") latestStudentPic = m.senderPic;
-                    if(m.senderRoom) studentRoom = m.senderRoom;
-                } else if(m.receiver === n) {
-                    if(m.receiverPic && m.receiverPic.trim() !== "") latestStudentPic = m.receiverPic;
+            let contactInfo = [...allUsersData].map(u => {
+                let roleStr = String(u.role || u.Role || "").toLowerCase().trim();
+                return {
+                    name: u.name || u.Name || "", 
+                    role: roleStr === 'admin' ? 'Admin' : (roleStr === 'teacher' ? 'Teacher' : 'Student'), 
+                    initials: getInitials(u.name || u.Name || "A"), 
+                    pic: u.pic || u.ProfilePic || "", 
+                    room: u.assigned || u.room || u.Room || "-"
                 }
-            });
+            }).find(x => x.name === n);
 
-            let userObj = allUsersData.find(u => u.name === n);
-            if (userObj) {
-                if(userObj.pic && userObj.pic.trim() !== "") latestStudentPic = userObj.pic;
-                if(userObj.assigned && userObj.assigned.trim() !== "") studentRoom = userObj.assigned;
+            let partnerPicHtml = (contactInfo && contactInfo.pic) ? `<img src="${contactInfo.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-sm">${getInitials(n)}</div>`;
+
+            let subjectBadgeHeader = '';
+            if (contactInfo) {
+                if (contactInfo.role === 'Admin') {
+                    subjectBadgeHeader = ` <span class="text-xs text-rose-500 font-bold ml-2">(Admin)</span>`;
+                } else if (contactInfo.room && contactInfo.room !== "-") {
+                    subjectBadgeHeader = ` <span class="text-xs text-slate-500 dark:text-slate-400 font-normal ml-2">(Class: ${contactInfo.room})</span>`;
+                }
             }
 
-            let hName = document.getElementById('chatHeaderName');
-            if(hName) hName.innerText = n + (studentRoom !== "-" ? ` (Class: ${studentRoom})` : ""); 
+            document.getElementById('chatHeaderName').innerHTML = `${n}${subjectBadgeHeader}`; 
+            document.getElementById('chatHeaderAvatar').innerHTML = partnerPicHtml;
             
-            let headerPicHtml = latestStudentPic ? `<img src="${latestStudentPic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center font-bold text-indigo-600 bg-indigo-100 text-xs lg:text-sm">${getInitials(n)}</div>`; 
-            let hAv = document.getElementById('chatHeaderAvatar');
-            if(hAv) hAv.innerHTML = headerPicHtml;
-            
+            let msgs = cachedMessages.filter(m => (m.senderName === currentUser.name && m.receiver === n) || (m.senderName === n && m.receiver === currentUser.name));
+            let sortedMsgs = [...msgs].sort((a,b) => new Date(a.date) - new Date(b.date));
+
             let h = "";
             let myPicHtml = currentUser.pic ? `<img src="${currentUser.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-orange-100 text-orange-600 font-bold text-[8px]">${getInitials(currentUser.name)}</div>`;
             
             sortedMsgs.forEach(m => {
                 let d = new Date(m.date).toLocaleString('th-TH', { hour:'2-digit', minute:'2-digit' });
-                let sPicHtml = latestStudentPic ? `<img src="${latestStudentPic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-indigo-100 text-indigo-600 font-bold text-[8px]">${getInitials(n)}</div>`;
+                let sPicHtml = partnerPicHtml.replace('text-sm', 'text-[8px]');
                 
-                if(m.senderName === n && m.message && m.message.trim() !== "") {
-                    h += `<div class="flex flex-col items-start w-full mb-4"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-white/80">${sPicHtml}</div><p class="text-[9px] font-bold text-slate-600 dark:text-slate-400">${n} • ${d}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm backdrop-blur-md font-medium">${m.message}</div></div>`;
-                }
-                
-                if(m.reply && m.reply.trim()!=="") { 
-                    let reps = m.reply.split('<br><br>');
-                    reps.forEach(rep => {
-                        if(rep.trim() !== "") {
-                            h += `<div class="flex flex-col items-end w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-500 dark:text-slate-400">คุณตอบแล้ว</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-white/80">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${rep}</div></div>`; 
-                        }
-                    });
+                if(m.senderName === currentUser.name) {
+                    if (m.message && m.message.trim() !== "") {
+                        h += `<div class="flex flex-col items-end w-full mb-4"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-500 dark:text-slate-400">${d} • คุณ</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-white/50">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${m.message}</div></div>`;
+                    }
+                    if(m.reply && m.reply.trim() !== "") { 
+                        let reps = m.reply.split('<br><br>').filter(x => x.trim() !== "");
+                        reps.forEach(rep => {
+                            h += `<div class="flex flex-col items-start w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white/50 text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${sPicHtml}</div><p class="text-[9px] font-bold text-slate-600 dark:text-slate-400">${n}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm backdrop-blur-md font-medium">${rep}</div></div>`; 
+                        });
+                    }
+                } else {
+                    if (m.message && m.message.trim() !== "") {
+                        h += `<div class="flex flex-col items-start w-full mb-4"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white/50 text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${sPicHtml}</div><p class="text-[9px] font-bold text-slate-600 dark:text-slate-400">${n} • ${d}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm backdrop-blur-md font-medium">${m.message}</div></div>`;
+                    }
+                    if(m.reply && m.reply.trim() !== "") { 
+                        let reps = m.reply.split('<br><br>').filter(x => x.trim() !== "");
+                        reps.forEach(rep => {
+                            h += `<div class="flex flex-col items-end w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400 dark:text-slate-500">คุณตอบแล้ว</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-white/50">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${rep}</div></div>`; 
+                        });
+                    }
                 }
             });
-            
-            let cHist = document.getElementById('chatHistory');
-            if(cHist) { cHist.innerHTML = h; cHist.scrollTop = cHist.scrollHeight; }
+            document.getElementById('chatHistory').innerHTML = h; document.getElementById('chatHistory').scrollTop = document.getElementById('chatHistory').scrollHeight;
         }
 
         function loadMessagesForChat() { 
@@ -828,7 +898,7 @@
             let msgs = cachedMessages.filter(m => m.senderName === activeChatContact || m.receiver === activeChatContact);
             let targetMsg = msgs.filter(m => m.senderName === activeChatContact).pop();
             
-            if(!targetMsg) return showiOSToast('fa-solid fa-info-circle', 'ต้องรอให้นักเรียนทักมาก่อนครับ', 'bg-sky-100', 'text-sky-600');
+            if(!targetMsg) return showiOSToast('fa-solid fa-info-circle', 'ต้องรอให้อีกฝ่ายทักมาก่อนครับ', 'bg-sky-100', 'text-sky-600');
             
             let newReply = msg;
             if(targetMsg.reply && targetMsg.reply.trim() !== "") {
@@ -914,3 +984,5 @@
         function toggleLanguage() { showiOSToast('fa-solid fa-language', 'กำลังแปลภาษา...', 'bg-sky-100', 'text-sky-600'); }
         function logout() { sessionStorage.clear(); window.location.replace('index.html'); }
     </script>
+</body>
+</html>
