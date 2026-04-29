@@ -100,15 +100,17 @@
                 <div class="flex overflow-x-auto gap-3 lg:gap-4 pb-4 mb-6 lg:mb-8 hide-scroll" id="subjectGrid"></div>
                 
                 <h3 class="text-xl lg:text-2xl font-bold mb-5 font-prompt text-slate-800">แนะนำสำหรับคุณ</h3>
-                <div id="lessonGrid_home" class="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8 mb-10"></div>
+                <!-- ใช้ Scroll แนวนอน (Swipe) ในมือถือ -->
+                <div id="lessonGrid_home" class="flex overflow-x-auto gap-4 lg:gap-6 pb-6 hide-scroll snap-x snap-mandatory"></div>
 
-                <div id="continueWatchingSection" class="hidden border-t border-slate-100 pt-8 mt-4 mb-10">
+                <div id="continueWatchingSection" class="hidden border-t border-slate-100 pt-8 mt-4 mb-6">
                     <div class="flex items-center justify-between mb-5">
                         <h3 class="text-xl lg:text-2xl font-bold font-prompt text-slate-800 flex items-center">
                             <div class="w-10 h-10 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center mr-3 shadow-inner"><i class="fa-solid fa-clock-rotate-left text-sm"></i></div> เรียนต่อจากที่ค้างไว้
                         </h3>
                     </div>
-                    <div id="lessonGrid_continue" class="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8"></div>
+                    <!-- ใช้ Scroll แนวนอน -->
+                    <div id="lessonGrid_continue" class="flex overflow-x-auto gap-4 lg:gap-6 pb-6 hide-scroll snap-x snap-mandatory"></div>
                 </div>
 
                 <div id="favHomeSection" class="hidden border-t border-slate-100 pt-8 mt-4">
@@ -117,7 +119,8 @@
                             <div class="w-10 h-10 bg-rose-100 text-rose-500 rounded-full flex items-center justify-center mr-3 shadow-inner"><i class="fa-solid fa-heart text-sm"></i></div> รายการโปรดของคุณ
                         </h3>
                     </div>
-                    <div id="lessonGrid_fav_home" class="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8"></div>
+                    <!-- ใช้ Scroll แนวนอน -->
+                    <div id="lessonGrid_fav_home" class="flex overflow-x-auto gap-4 lg:gap-6 pb-6 hide-scroll snap-x snap-mandatory"></div>
                 </div>
             </div>
 
@@ -130,6 +133,8 @@
                 </div>
                 <div class="flex overflow-x-auto gap-3 lg:gap-4 pb-4 mb-6 lg:mb-8 hide-scroll" id="allSubjectGrid"></div>
                 <div id="loadingLessons_student" class="hidden text-purple-500 font-bold flex items-center justify-center py-10"><i class="fa-solid fa-circle-notch fa-spin mr-3 text-2xl"></i> กำลังโหลด...</div>
+                
+                <!-- หน้ารวมยังเป็น Grid ปกติ -->
                 <div id="lessonGrid_student" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8"></div>
             </div>
 
@@ -152,13 +157,12 @@
                     <div id="det_content" class="rich-text whitespace-pre-wrap px-1 lg:px-2"></div>
                 </div>
                 
-                <!-- กล่องแบบทดสอบ (จะซ่อนถาวรหากเป็นวิดีโอ) -->
-                <div id="quizSectionWrapper" class="bg-white rounded-[1.5rem] lg:rounded-[2rem] p-5 lg:p-8 border-t-8 border-[#6d28d9] shadow-md">
+                <div id="quizSectionWrapper" class="bg-white rounded-[1.5rem] lg:rounded-[2rem] p-5 lg:p-8 border-t-8 border-[#6d28d9] shadow-md hidden">
                     <h3 id="quizSectionTitle" class="text-xl lg:text-2xl font-bold mb-6 border-b pb-4 font-prompt">แบบทดสอบประจำบท</h3>
                     <div id="quizCompletedMsg" class="hidden bg-emerald-50 rounded-2xl p-8 lg:p-10 text-center border border-emerald-100">
                         <i class="fa-solid fa-circle-check text-5xl text-emerald-500 mb-4"></i>
-                        <h4 class="text-xl font-bold text-emerald-900 mb-2 font-prompt">คุณทำคะแนนได้:</h4>
-                        <div class="text-4xl lg:text-5xl font-black text-emerald-600"><span id="quizScoreResult">0</span><span class="text-xl text-slate-400"></span></div>
+                        <h4 id="quizCompletedTitle" class="text-xl font-bold text-emerald-900 mb-2 font-prompt">คุณทำคะแนนได้:</h4>
+                        <div id="quizCompletedScoreBox" class="text-4xl lg:text-5xl font-black text-emerald-600"><span id="quizScoreResult">0</span><span id="quizMaxScore" class="text-xl text-slate-400"></span></div>
                     </div>
                     <form id="quizForm" class="space-y-4 lg:space-y-6"><div id="quizContainer"></div></form>
                 </div>
@@ -378,7 +382,7 @@
                 document.getElementById('allSubjectTitle').innerText = currentSubject !== "" ? "วิชา: " + currentSubject + " (เฉพาะรายการโปรด)" : "รายการโปรดทั้งหมด";
             } else { document.getElementById('allSubjectTitle').innerText = currentSubject !== "" ? "วิชา: " + currentSubject : "บทเรียนทั้งหมด"; }
 
-            document.getElementById('lessonGrid_student').innerHTML = filtered.length > 0 ? filtered.map(l => renderLessonCard(l, allLessons.indexOf(l))).join('') : '<div class="col-span-full py-20 text-center text-slate-400 font-bold border-2 border-dashed border-slate-200 rounded-[2rem]">ไม่พบข้อมูลบทเรียน</div>';
+            document.getElementById('lessonGrid_student').innerHTML = filtered.length > 0 ? filtered.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'grid')).join('') : '<div class="col-span-full py-20 text-center text-slate-400 font-bold border-2 border-dashed border-slate-200 rounded-[2rem]">ไม่พบข้อมูลบทเรียน</div>';
         }
 
         function searchLesson(val) {
@@ -389,10 +393,10 @@
             let filtered = allLessons.filter(l => l.title.toLowerCase().includes(q) || l.subject.toLowerCase().includes(q));
             if (showFavoritesOnly) { let favs = JSON.parse(localStorage.getItem('favs_'+currentUser.id)||'[]'); filtered = filtered.filter(l => favs.includes(l.title)); }
 
-            document.getElementById('lessonGrid_student').innerHTML = filtered.length > 0 ? filtered.map(l => renderLessonCard(l, allLessons.indexOf(l))).join('') : '<div class="col-span-full py-20 text-center text-slate-400 font-bold border-2 border-dashed border-slate-200 rounded-[2rem]">ไม่พบสิ่งที่ค้นหา</div>';
+            document.getElementById('lessonGrid_student').innerHTML = filtered.length > 0 ? filtered.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'grid')).join('') : '<div class="col-span-full py-20 text-center text-slate-400 font-bold border-2 border-dashed border-slate-200 rounded-[2rem]">ไม่พบสิ่งที่ค้นหา</div>';
         }
 
-        function renderLessonCard(l, idx, isNew = false) {
+        function renderLessonCard(l, idx, isNew = false, layoutType = 'grid') {
             let isC = l.studentScore !== null;
             let favs = JSON.parse(localStorage.getItem('favs_'+currentUser.id)||'[]');
             let isF = favs.includes(l.title);
@@ -408,9 +412,28 @@
                 progressIndicator = `<div class="absolute bottom-0 left-0 w-full h-1.5 bg-slate-200/50 z-20"><div class="h-full bg-amber-400" style="width: ${progPct}%"></div></div>`;
             }
 
+            // คำนวณจำนวนโจทย์ที่อาจารย์ตั้งไว้
+            let totalQs = (l.questions || []).filter(q => q && q.q && q.q.trim() !== "").length;
+            let scoreHtml = '';
+            
+            if (totalQs > 0) {
+                // ถ้ามีข้อสอบ โชว์ 0/จำนวนข้อจริง
+                scoreHtml = `<div class="mt-auto border-t border-slate-100 pt-4"><span class="text-xs font-bold text-emerald-500">Score: ${isC ? l.studentScore : 0}/${totalQs}</span></div>`;
+            } else {
+                // ถ้าไม่มีข้อสอบ ซ่อนสกอร์และโชว์ป้ายอื่นแทน
+                if(isC) {
+                    scoreHtml = `<div class="mt-auto border-t border-slate-100 pt-4"><span class="text-xs font-bold text-emerald-500"><i class="fa-solid fa-circle-check mr-1"></i>เรียนจบแล้ว</span></div>`;
+                } else {
+                    scoreHtml = `<div class="mt-auto border-t border-slate-100 pt-4"><span class="text-[10px] font-bold text-slate-400">ไม่มีแบบทดสอบ</span></div>`;
+                }
+            }
+
+            // คลาสสำหรับบังคับขนาดตอนอยู่ในโหมด Scroll แนวนอน (หน้าแรก)
+            let widthClass = layoutType === 'scroll' ? 'min-w-[85vw] sm:min-w-[340px] max-w-[85vw] sm:max-w-[340px] snap-start shrink-0' : '';
+
             return `
-            <div class="course-card bg-white rounded-[2rem] p-4 lg:p-5 border border-slate-100 flex flex-col h-full shadow-sm hover:shadow-md transition relative" onclick="openLesson(${idx})">
-                <div class="h-32 lg:h-48 w-full rounded-[1.5rem] mb-4 lg:mb-5 relative overflow-hidden bg-slate-900 group">
+            <div class="course-card bg-white rounded-[2rem] p-4 lg:p-5 border border-slate-100 flex flex-col h-full shadow-sm hover:shadow-md transition relative ${widthClass}" onclick="openLesson(${idx})">
+                <div class="h-32 lg:h-48 w-full rounded-[1.5rem] mb-4 lg:mb-5 relative overflow-hidden bg-slate-900 group shrink-0">
                     <img src="${getImageUrl(l.title)}" class="w-full h-full object-cover opacity-90 transition duration-500 group-hover:scale-105 ${isC?'grayscale':''}">
                     ${newBadge}
                     <div class="absolute top-3 right-3 w-8 h-8 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-sm z-10 transition hover:bg-white" onclick="toggleFavorite(event, '${l.title}')"><i class="${heartClass} fa-heart text-sm pointer-events-none"></i></div>
@@ -422,16 +445,14 @@
                         <span class="text-[9px] lg:text-xs font-bold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full mb-2 inline-block border border-purple-100">${l.subject}</span>
                         <h3 class="font-bold text-base lg:text-lg mb-4 leading-snug text-slate-800 line-clamp-2">${l.title}</h3>
                     </div>
-                    <div class="mt-auto border-t border-slate-100 pt-4">
-                        <span class="text-xs font-bold text-emerald-500">Score: ${isC ? l.studentScore : 0}/5</span>
-                    </div>
+                    ${scoreHtml}
                 </div>
             </div>`;
         }
 
         function renderHomeLessons() { 
-            let latest = [...allLessons].reverse().slice(0, 2);
-            document.getElementById('lessonGrid_home').innerHTML = latest.map(l => renderLessonCard(l, allLessons.indexOf(l), true)).join(''); 
+            let latest = [...allLessons].reverse().slice(0, 5);
+            document.getElementById('lessonGrid_home').innerHTML = latest.map(l => renderLessonCard(l, allLessons.indexOf(l), true, 'scroll')).join(''); 
             
             let continueSection = document.getElementById('continueWatchingSection');
             let continueGrid = document.getElementById('lessonGrid_continue');
@@ -441,7 +462,7 @@
             });
 
             if(continueLessons.length > 0) {
-                continueGrid.innerHTML = continueLessons.slice(0, 4).map(l => renderLessonCard(l, allLessons.indexOf(l))).join('');
+                continueGrid.innerHTML = continueLessons.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'scroll')).join('');
                 continueSection.classList.remove('hidden');
             } else { continueSection.classList.add('hidden'); continueGrid.innerHTML = ''; }
         }
@@ -452,7 +473,7 @@
             let favGrid = document.getElementById('lessonGrid_fav_home');
             if(favs.length > 0) {
                 let fLessons = allLessons.filter(l => favs.includes(l.title));
-                favGrid.innerHTML = fLessons.map(l => renderLessonCard(l, allLessons.indexOf(l))).join('');
+                favGrid.innerHTML = fLessons.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'scroll')).join('');
                 favSection.classList.remove('hidden');
             } else { favSection.classList.add('hidden'); favGrid.innerHTML = ''; }
         }
@@ -467,7 +488,7 @@
         }
 
         // =====================================
-        // ระบบข้อสอบ Pop-up & Anti-Skip
+        // ระบบ YouTube API: Anti-Skip + Pop-up Real Test
         // =====================================
         function showQuestionPopup(questionObj, qIndex) {
             if(ytPlayer && typeof ytPlayer.pauseVideo === 'function') ytPlayer.pauseVideo(); 
@@ -528,9 +549,7 @@
             let answeredList = JSON.parse(localStorage.getItem('ytAnsQs_' + currentUser.id + '_' + currentLesson.title) || '[]');
 
             if (duration > 0 && vQs.length > 0) {
-                // คำนวณเวลาเด้งให้กระจายเฉลี่ยในคลิปอัตโนมัติ
                 let interval = duration / (vQs.length + 1);
-                
                 for(let i=0; i<vQs.length; i++) {
                     questionTriggers.push({ 
                         time: interval * (i + 1), 
@@ -592,12 +611,13 @@
                                 }
                             }
 
-                            // วิดีโอจบแล้ว Auto Submit
+                            // เมื่อดูวิดีโอจนจบ
                             if (duration - currentTime < 5) {
                                 localStorage.setItem('ytProg_' + currentUser.id + '_' + currentLesson.title, "done");
                                 localStorage.removeItem('ytPct_' + currentUser.id + '_' + currentLesson.title);
                                 clearInterval(ytProgressTimer); ytProgressTimer = null;
                                 
+                                // ส่งคะแนนทันทีที่ดูจบ
                                 if (currentLesson.studentScore === null) {
                                     let finalScore = parseInt(localStorage.getItem('ytScore_' + currentUser.id + '_' + currentLesson.title) || '0');
                                     submitQuiz(true, finalScore);
@@ -623,11 +643,23 @@
 
             let ytId = extractYouTubeID(currentLesson.content.match(/\[YT:(.*?)\]/)?.[1] || "");
             
-            // ดึงคำถามออกมาเช็ค
-            let vQs = (currentLesson.questions || []).filter(q => q.q);
+            // เช็คจำนวนคำถามของบทเรียนนี้
+            let vQs = (currentLesson.questions || []).filter(q => q && q.q && q.q.trim() !== "");
+            let totalQs = vQs.length;
             let quizWrapper = document.getElementById('quizSectionWrapper');
 
+            // การจัดการโชว์/ซ่อน ข้อความคะแนน
+            if (totalQs === 0) {
+                document.getElementById('quizCompletedTitle').innerText = "เยี่ยมมาก! คุณเรียนจบบทนี้แล้ว 🎉";
+                document.getElementById('quizCompletedScoreBox').classList.add('hidden');
+            } else {
+                document.getElementById('quizCompletedTitle').innerText = "คุณทำคะแนนได้:";
+                document.getElementById('quizCompletedScoreBox').classList.remove('hidden');
+                document.getElementById('quizMaxScore').innerText = "/" + totalQs;
+            }
+
             if(ytId) { 
+                // โหมดวิดีโอ YouTube
                 document.getElementById('det_video_container').innerHTML = `
                     <div id="ytplayer_div" class="w-full h-full absolute inset-0"></div>
                     <div id="antiSkipWarning" class="absolute top-4 left-1/2 -translate-x-1/2 bg-rose-500 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg transition-opacity duration-300 opacity-0 pointer-events-none z-50"><i class="fa-solid fa-ban mr-1"></i> ห้ามข้ามวิดีโอนะครับ</div>
@@ -641,22 +673,22 @@
                     events: { 'onReady': onYouTubePlayerReady, 'onStateChange': onYouTubePlayerStateChange }
                 });
 
-                // หากดูจบแล้วให้แสดงคะแนน แต่ถ้ากำลังดูอยู่ให้ซ่อนกล่องข้อสอบทิ้ง 100%
+                // หากดูจบและสอบผ่านแล้วให้โชว์คะแนนด้านล่าง แต่ถ้ายังดูอยู่ ซ่อนกล่องข้อสอบทิ้ง 100%
                 if(currentLesson.studentScore !== null) {
                     quizWrapper.classList.remove('hidden');
                     document.getElementById('quizForm').classList.add('hidden'); 
                     document.getElementById('quizCompletedMsg').classList.remove('hidden'); 
                     document.getElementById('quizScoreResult').innerText = currentLesson.studentScore; 
                 } else {
-                    quizWrapper.classList.add('hidden');
+                    quizWrapper.classList.add('hidden'); // วิดีโอยังดูไม่จบ ซ่อนกล่องล่างไปเลย!
                 }
 
             } else { 
+                // โหมดบทความภาพ (ไม่มีวิดีโอ) โชว์กล่องข้อสอบด้านล่างปกติ
                 document.getElementById('det_video_container').classList.add('hidden'); 
                 document.getElementById('det_image_container').classList.remove('hidden'); 
                 document.getElementById('det_img_src').src = getImageUrl(currentLesson.title); 
                 
-                // สำหรับบทความ โชว์กล่องข้อสอบด้านล่างปกติ
                 quizWrapper.classList.remove('hidden');
                 
                 if(currentLesson.studentScore !== null) { 
@@ -666,20 +698,34 @@
                 } else {
                     document.getElementById('quizForm').classList.remove('hidden'); 
                     document.getElementById('quizCompletedMsg').classList.add('hidden');
-                    if(vQs.length === 0) document.getElementById('quizContainer').innerHTML = `<div class="text-center py-8"><button type="button" onclick="submitQuiz(true,0)" class="bg-[#6d28d9] text-white font-bold px-10 py-4 rounded-full shadow-lg">บันทึกการเรียนจบ</button></div>`;
-                    else { let qh = ""; vQs.forEach((q, i) => { qh += `<div class="bg-white p-5 lg:p-8 rounded-2xl lg:rounded-3xl border mb-6 shadow-sm"><p class="font-bold text-base lg:text-lg mb-5 text-slate-800">${i+1}. ${q.q}</p><div class="grid grid-cols-1 gap-3 text-sm"><label class="p-4 bg-slate-50 border rounded-xl cursor-pointer flex items-center active:bg-purple-50 transition"><input type="radio" name="ans${i+1}" value="1" class="mr-3"> ${q.c1}</label><label class="p-4 bg-slate-50 border rounded-xl cursor-pointer flex items-center active:bg-purple-50 transition"><input type="radio" name="ans${i+1}" value="2" class="mr-3"> ${q.c2}</label><label class="p-4 bg-slate-50 border rounded-xl cursor-pointer flex items-center active:bg-purple-50 transition"><input type="radio" name="ans${i+1}" value="3" class="mr-3"> ${q.c3}</label><label class="p-4 bg-slate-50 border rounded-xl cursor-pointer flex items-center active:bg-purple-50 transition"><input type="radio" name="ans${i+1}" value="4" class="mr-3"> ${q.c4}</label></div></div>`; }); document.getElementById('quizContainer').innerHTML = qh + `<button type="button" onclick="submitQuiz()" class="w-full bg-[#6d28d9] text-white font-bold py-4 rounded-xl mt-4 text-lg lg:text-xl shadow-lg">ส่งคำตอบ</button>`; }
+                    if(totalQs === 0) {
+                        document.getElementById('quizContainer').innerHTML = `<div class="text-center py-8"><button type="button" onclick="submitQuiz(true,0)" class="bg-[#6d28d9] text-white font-bold px-10 py-4 rounded-full shadow-lg hover:bg-purple-800 transition">บันทึกการเรียนจบ</button></div>`;
+                    } else { 
+                        let qh = ""; 
+                        vQs.forEach((q, i) => { qh += `<div class="bg-white p-5 lg:p-8 rounded-2xl lg:rounded-3xl border mb-6 shadow-sm"><p class="font-bold text-base lg:text-lg mb-5 text-slate-800">${i+1}. ${q.q}</p><div class="grid grid-cols-1 gap-3 text-sm"><label class="p-4 bg-slate-50 border rounded-xl cursor-pointer flex items-center active:bg-purple-50 transition"><input type="radio" name="ans${i+1}" value="1" class="mr-3"> ${q.c1}</label><label class="p-4 bg-slate-50 border rounded-xl cursor-pointer flex items-center active:bg-purple-50 transition"><input type="radio" name="ans${i+1}" value="2" class="mr-3"> ${q.c2}</label><label class="p-4 bg-slate-50 border rounded-xl cursor-pointer flex items-center active:bg-purple-50 transition"><input type="radio" name="ans${i+1}" value="3" class="mr-3"> ${q.c3}</label><label class="p-4 bg-slate-50 border rounded-xl cursor-pointer flex items-center active:bg-purple-50 transition"><input type="radio" name="ans${i+1}" value="4" class="mr-3"> ${q.c4}</label></div></div>`; }); 
+                        document.getElementById('quizContainer').innerHTML = qh + `<button type="button" onclick="submitQuiz()" class="w-full bg-[#6d28d9] text-white font-bold py-4 rounded-xl mt-4 text-lg lg:text-xl shadow-lg hover:bg-purple-800 transition">ส่งคำตอบ</button>`; 
+                    }
                 }
             }
             
-            document.getElementById('det_ep').innerText = "EP." + currentLesson.ep; document.getElementById('det_title').innerText = currentLesson.title; document.getElementById('det_content').innerHTML = formatContent(currentLesson.content);
+            document.getElementById('det_ep').innerText = "EP." + currentLesson.ep; 
+            document.getElementById('det_title').innerText = currentLesson.title; 
+            document.getElementById('det_content').innerHTML = formatContent(currentLesson.content);
             fetchGAS({ action: "view", username: currentUser.id, name: currentUser.name, room: currentUser.assigned, subject: currentLesson.subject, lessonName: currentLesson.title });
         }
 
         function submitQuiz(noQ = false, sc = 0) {
-            let vQs = (currentLesson.questions || []).filter(q => q.q);
-            if(!noQ) { for(let i=1; i<=vQs.length; i++) { let a = document.querySelector(`input[name="ans${i}"]:checked`); if(!a) return Swal.fire('เตือน', 'กรุณาทำข้อสอบให้ครบครับ', 'warning'); if(a.value === vQs[i-1].ans) sc++; } }
+            let vQs = (currentLesson.questions || []).filter(q => q && q.q && q.q.trim() !== "");
             
-            // เคลียร์ความจำวิดีโอ
+            if(!noQ && vQs.length > 0) { 
+                for(let i=1; i<=vQs.length; i++) { 
+                    let a = document.querySelector(`input[name="ans${i}"]:checked`); 
+                    if(!a) return Swal.fire('เตือน', 'กรุณาทำข้อสอบให้ครบครับ', 'warning'); 
+                    if(a.value === vQs[i-1].ans) sc++; 
+                } 
+            }
+            
+            // ล้างประวัติข้อมูลชั่วคราว
             localStorage.removeItem('ytProg_' + currentUser.id + '_' + currentLesson.title);
             localStorage.removeItem('ytPct_' + currentUser.id + '_' + currentLesson.title);
             localStorage.removeItem('ytMax_' + currentUser.id + '_' + currentLesson.title);
@@ -690,7 +736,9 @@
                 currentLesson.studentScore = sc; 
                 openLesson(allLessons.indexOf(currentLesson)); 
                 loadDashboardData(); 
-                Swal.fire({ icon: 'success', title: 'เก่งมาก! ดูจบแล้ว', text: `ระบบบันทึกคะแนนให้เรียบร้อยแล้ว 🎉` }); 
+                
+                let titleMsg = vQs.length > 0 ? `บันทึกคะแนนเรียบร้อย 🎉` : `บันทึกประวัติการเรียนเรียบร้อย 🎓`;
+                Swal.fire({ icon: 'success', title: 'เก่งมาก!', text: titleMsg, showConfirmButton: false, timer: 2000 }); 
             });
         }
 
