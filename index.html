@@ -141,7 +141,7 @@
     <script>
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbyDcg8d6HS5ul8_3vkJCgqOZnano4kNmgvqMgsdYl5vYzOAJmBin11VBkVULmWcnHBuAA/exec';
 
-        window.onload = () => { sessionStorage.clear(); localStorage.clear(); };
+        window.onload = () => { sessionStorage.clear(); };
 
         document.getElementById("password").addEventListener("keypress", function(event) {
             if (event.key === "Enter") { event.preventDefault(); login(); }
