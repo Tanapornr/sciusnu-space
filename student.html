@@ -47,36 +47,39 @@
         .subject-card:active { transform: scale(0.96); }
 
         /* ========================================================
-           ✨ iOS MINIMALIST POP-UP (CENTERED & BIGGER) ✨
+           ✨ iOS MINIMALIST POP-UP (COMPACT & FAST) ✨
            ======================================================== */
         .ios-center-popup {
             background: rgba(255, 255, 255, 0.85) !important;
             backdrop-filter: blur(24px) !important;
             -webkit-backdrop-filter: blur(24px) !important;
             border: 1px solid rgba(255, 255, 255, 0.5) !important;
-            border-radius: 32px !important;
-            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.12) !important;
-            padding: 2.5rem 2rem !important;
-            width: 340px !important;
+            border-radius: 24px !important; /* ปรับให้ขอบมนพอดีๆ */
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1) !important;
+            padding: 1.5rem !important; /* ลด padding ให้กล่องเล็กลง */
+            width: auto !important;
+            min-width: 260px !important;
+            max-width: 300px !important;
         }
         
-        /* สไตล์ Pop-up คำถามคั่นเวลา */
+        /* สไตล์ Pop-up คำถามคั่นเวลา (เล็กลง) */
         .swal2-popup:not(.ios-center-popup) {
-            border-radius: 32px !important;
+            border-radius: 24px !important;
             background: rgba(255, 255, 255, 0.95) !important;
             backdrop-filter: blur(20px) !important;
             -webkit-backdrop-filter: blur(20px) !important;
-            box-shadow: 0 24px 48px rgba(0,0,0,0.12) !important;
-            padding: 2.5em 2em !important;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+            padding: 1.5em 1.5em 2em !important; /* ลด padding ให้กระชับ */
+            width: 360px !important; /* จำกัดความกว้างไม่ให้เทอะทะ */
             border: 1px solid rgba(255, 255, 255, 0.8) !important;
         }
         
-        .swal2-title { font-family: 'Prompt', sans-serif !important; color: #1d1d1f !important; font-size: 1.25rem !important; }
-        .swal2-html-container { font-family: 'Sarabun', sans-serif !important; color: #475569 !important; }
+        .swal2-title { font-family: 'Prompt', sans-serif !important; color: #1d1d1f !important; font-size: 1.1rem !important; margin-bottom: 0.5em !important; }
+        .swal2-html-container { font-family: 'Sarabun', sans-serif !important; color: #475569 !important; margin-top: 0.5em !important;}
 
         .swal2-confirm {
             border-radius: 999px !important; font-family: 'Prompt', sans-serif !important; font-weight: 600 !important;
-            padding: 14px 36px !important; background-color: #6d28d9 !important;
+            padding: 12px 32px !important; background-color: #6d28d9 !important; font-size: 0.9rem !important;
             box-shadow: 0 8px 20px -6px rgba(109, 40, 217, 0.5) !important; transition: all 0.2s ease !important;
         }
         .swal2-confirm:hover { background-color: #5b21b6 !important; transform: translateY(-2px) !important; box-shadow: 0 12px 24px -6px rgba(109, 40, 217, 0.6) !important; }
@@ -120,7 +123,6 @@
             </div>
 
             <div class="flex items-center gap-3 ml-auto">
-                <!-- นำปุ่มเปลี่ยนภาษา (EN) ออกไปแล้ว -->
                 <button onclick="toggleRightSidebar()" class="lg:hidden w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm">
                     <img id="mobileHeaderProfileImg" src="" class="w-full h-full object-cover hidden">
                     <div id="mobileHeaderProfileInitials" class="w-full h-full bg-purple-100 text-purple-600 flex items-center justify-center text-xs font-bold">A</div>
@@ -305,19 +307,19 @@
             if(!t) return ""; t = t.replace(/\[YT:(.*?)\]\n?/g, ""); t = t.replace(/(สำคัญมาก|ข้อควรระวัง)(:|\s)/g, '<span class="bg-rose-100 text-rose-700 px-2 py-0.5 rounded font-bold text-xs ml-1 shadow-sm">$1$2</span>'); t = t.replace(/\*\*(.*?)\*\*/g, '<span class="text-yellow-600 font-bold bg-yellow-50 px-1 py-0.5 rounded">$1</span>'); t = t.replace(/^### (.*$)/gim, '<h4 class="text-lg font-bold text-[#6d28d9] mt-4 mb-2 font-prompt">$1</h4>'); t = t.replace(/^- (.*$)/gim, '<div class="flex items-start my-1 text-sm"><i class="fa-solid fa-circle-check text-[#6d28d9] mt-1 mr-2"></i> <span>$1</span></div>'); return t;
         }
 
-        // แจ้งเตือนสไตล์ iOS กลางจอ (ใหญ่ขึ้น ค้าง 4.5 วิ)
+        // แจ้งเตือนสไตล์ iOS กลางจอ (ย่อขนาดลง & เด้งหายไวขึ้นใน 2 วิ)
         function showiOSToast(iconClass, text, iconColorBg, iconColorText) {
             Swal.fire({ 
                 toast: false, 
                 position: 'center', 
                 showConfirmButton: false, 
-                timer: 4500, 
+                timer: 2000, 
                 customClass: { popup: 'ios-center-popup' },
-                html: `<div class="flex flex-col items-center gap-4 text-center">
-                          <div class="w-16 h-16 rounded-full ${iconColorBg} ${iconColorText} flex items-center justify-center shadow-sm">
-                              <i class="${iconClass} text-3xl"></i>
+                html: `<div class="flex flex-col items-center gap-3 text-center">
+                          <div class="w-12 h-12 rounded-full ${iconColorBg} ${iconColorText} flex items-center justify-center shadow-sm">
+                              <i class="${iconClass} text-2xl"></i>
                           </div>
-                          <span class="font-bold text-slate-800 text-lg tracking-wide leading-snug">${text}</span>
+                          <span class="font-bold text-slate-800 text-base tracking-wide leading-snug">${text}</span>
                        </div>` 
             });
         }
@@ -325,7 +327,7 @@
         function toggleSidebar() { document.getElementById('mainSidebar').classList.toggle('active'); document.getElementById('sidebarOverlay').classList.toggle('active'); }
         function toggleRightSidebar() {
             const rs = document.getElementById('rightSidebar'); rs.classList.toggle('hidden');
-            if(!rs.classList.contains('hidden')) { rs.style.position = 'fixed'; rs.style.right = '0'; rs.style.top = '0'; rs.style.zIndex = '100'; rs.style.height = '100vh'; rs.style.width = '300px'; showiOSToast('fa-solid fa-xmark', 'แตะที่ว่างเพื่อปิดโปรไฟล์', 'bg-slate-100', 'text-slate-500'); }
+            if(!rs.classList.contains('hidden')) { rs.style.position = 'fixed'; rs.style.right = '0'; rs.style.top = '0'; rs.style.zIndex = '100'; rs.style.height = '100vh'; rs.style.width = '300px'; showiOSToast('fa-solid fa-xmark', 'แตะที่ว่างเพื่อปิด', 'bg-slate-100', 'text-slate-500'); }
         }
 
         window.onload = () => { 
@@ -579,19 +581,19 @@
             if(ytPlayer && typeof ytPlayer.pauseVideo === 'function') ytPlayer.pauseVideo(); 
 
             let html = `
-                <div class="text-left font-prompt mt-2">
-                    <p class="font-bold text-lg mb-6 text-slate-800 leading-snug">${questionObj.q}</p>
+                <div class="text-left font-prompt mt-1">
+                    <p class="font-bold text-base lg:text-lg mb-4 text-slate-800 leading-snug">${questionObj.q}</p>
                     <div class="space-y-3 text-sm font-medium">
-                        <label class="block p-4 bg-[#f8fafc] border border-slate-200 rounded-2xl cursor-pointer hover:bg-purple-50 hover:border-purple-300 transition-all active:scale-[0.98]">
+                        <label class="block p-3 bg-[#f8fafc] border border-slate-200 rounded-2xl cursor-pointer hover:bg-purple-50 hover:border-purple-300 transition-all active:scale-[0.98]">
                             <input type="radio" name="popupAns" value="1" class="mr-3 accent-purple-600 w-4 h-4 align-middle"> ก. ${questionObj.c1}
                         </label>
-                        <label class="block p-4 bg-[#f8fafc] border border-slate-200 rounded-2xl cursor-pointer hover:bg-purple-50 hover:border-purple-300 transition-all active:scale-[0.98]">
+                        <label class="block p-3 bg-[#f8fafc] border border-slate-200 rounded-2xl cursor-pointer hover:bg-purple-50 hover:border-purple-300 transition-all active:scale-[0.98]">
                             <input type="radio" name="popupAns" value="2" class="mr-3 accent-purple-600 w-4 h-4 align-middle"> ข. ${questionObj.c2}
                         </label>
-                        <label class="block p-4 bg-[#f8fafc] border border-slate-200 rounded-2xl cursor-pointer hover:bg-purple-50 hover:border-purple-300 transition-all active:scale-[0.98]">
+                        <label class="block p-3 bg-[#f8fafc] border border-slate-200 rounded-2xl cursor-pointer hover:bg-purple-50 hover:border-purple-300 transition-all active:scale-[0.98]">
                             <input type="radio" name="popupAns" value="3" class="mr-3 accent-purple-600 w-4 h-4 align-middle"> ค. ${questionObj.c3}
                         </label>
-                        <label class="block p-4 bg-[#f8fafc] border border-slate-200 rounded-2xl cursor-pointer hover:bg-purple-50 hover:border-purple-300 transition-all active:scale-[0.98]">
+                        <label class="block p-3 bg-[#f8fafc] border border-slate-200 rounded-2xl cursor-pointer hover:bg-purple-50 hover:border-purple-300 transition-all active:scale-[0.98]">
                             <input type="radio" name="popupAns" value="4" class="mr-3 accent-purple-600 w-4 h-4 align-middle"> ง. ${questionObj.c4}
                         </label>
                     </div>
@@ -609,7 +611,7 @@
                 allowEscapeKey: false,
                 preConfirm: () => {
                     let ans = document.querySelector('input[name="popupAns"]:checked');
-                    if (!ans) { Swal.showValidationMessage('กรุณาเลือกคำตอบก่อนไปต่อนะครับ'); return false; }
+                    if (!ans) { Swal.showValidationMessage('กรุณาเลือกคำตอบให้ครบถ้วนครับ'); return false; }
                     return { userAns: ans.value, correctAns: questionObj.ans };
                 }
             }).then((result) => {
@@ -629,7 +631,7 @@
                         if(ytPlayer) ytPlayer.playVideo();
                     }
                 } else if (result.dismiss === Swal.DismissReason.timer) {
-                    showiOSToast('fa-solid fa-clock', 'หมดเวลา! ตั้งใจดูวิดีโอต่อนะครับ', 'bg-amber-100', 'text-amber-600');
+                    showiOSToast('fa-solid fa-clock', 'หมดเวลาแล้วครับ', 'bg-amber-100', 'text-amber-600');
                     if(ytPlayer) ytPlayer.playVideo();
                 }
             });
@@ -644,7 +646,7 @@
             let answeredList = JSON.parse(localStorage.getItem('ytAnsQs_' + currentUser.id + '_' + currentLesson.title) || '[]');
 
             if (duration > 0 && vQs.length > 0) {
-                let interval = 60; // ทดสอบเด้งทุกๆ 60 วินาที
+                let interval = 60; // ทดสอบเด้งทุกๆ 60 วิ
                 for(let i=0; i<vQs.length; i++) {
                     questionTriggers.push({ 
                         time: interval * (i + 1), 
@@ -683,7 +685,10 @@
                             currentTime = maxTimeWatched; 
                             
                             let warnUI = document.getElementById('antiSkipWarning');
-                            if(warnUI) { warnUI.classList.remove('opacity-0'); setTimeout(() => { warnUI.classList.add('opacity-0'); }, 2500); }
+                            if(warnUI) { 
+                                warnUI.classList.remove('opacity-0'); 
+                                setTimeout(() => { warnUI.classList.add('opacity-0'); }, 1500); // หายเร็วขึ้น
+                            }
                         } else {
                             if (currentTime > maxTimeWatched) {
                                 maxTimeWatched = currentTime;
@@ -805,7 +810,7 @@
             if(!noQ && vQs.length > 0) { 
                 for(let i=1; i<=vQs.length; i++) { 
                     let a = document.querySelector(`input[name="ans${i}"]:checked`); 
-                    if(!a) return showiOSToast('fa-solid fa-circle-exclamation', 'กรุณาทำข้อสอบให้ครบ', 'bg-amber-100', 'text-amber-600');
+                    if(!a) return showiOSToast('fa-solid fa-circle-exclamation', 'กรุณาทำข้อสอบให้ครบครับ', 'bg-amber-100', 'text-amber-600');
                     if(a.value === vQs[i-1].ans) sc++; 
                 } 
             }
@@ -821,7 +826,7 @@
                 openLesson(allLessons.indexOf(currentLesson)); 
                 loadDashboardData(); 
                 
-                let titleMsg = vQs.length > 0 ? `บันทึกคะแนนเรียบร้อย 🎉` : `บันทึกประวัติการเรียนแล้ว 🎓`;
+                let titleMsg = vQs.length > 0 ? `บันทึกคะแนนเรียบร้อย 🎉` : `บันทึกประวัติการเรียนเรียบร้อย 🎓`;
                 showiOSToast('fa-solid fa-check-double', titleMsg, 'bg-emerald-100', 'text-emerald-600');
             });
         }
@@ -1101,7 +1106,7 @@
             let e = document.getElementById('set_email').value.trim();
             let p = document.getElementById('set_phone').value.trim();
             let c = uploadedImageBase64 || currentUser.pic;
-            if(!e || !p) return showiOSToast('fa-solid fa-circle-exclamation', 'กรุณากรอกอีเมลและเบอร์โทรศัพท์ให้ครบ', 'bg-amber-100', 'text-amber-600');
+            if(!e || !p) return showiOSToast('fa-solid fa-circle-exclamation', 'กรุณากรอกข้อมูลให้ครบถ้วน', 'bg-amber-100', 'text-amber-600');
             
             Swal.fire({title:'กำลังบันทึก...', didOpen:()=>Swal.showLoading()});
             fetchGAS({action:"updateProfile", username:currentUser.id, pic:c, email:e, phone:p}).then(r => {
