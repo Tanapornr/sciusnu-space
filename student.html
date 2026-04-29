@@ -86,17 +86,17 @@
            ✨ iOS MINIMALIST POP-UP ✨
            ======================================================== */
         .ios-center-popup {
-            background: rgba(255, 255, 255, 0.85) !important;
+            background: rgba(255, 255, 255, 0.9) !important;
             backdrop-filter: blur(24px) !important;
             -webkit-backdrop-filter: blur(24px) !important;
-            border: 1px solid rgba(255, 255, 255, 0.5) !important;
+            border: 1px solid rgba(255, 255, 255, 0.6) !important;
             border-radius: 24px !important;
             box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1) !important;
             padding: 1.5rem !important;
             width: auto !important; min-width: 260px !important; max-width: 300px !important;
         }
         .dark .ios-center-popup {
-            background: rgba(30, 30, 30, 0.85) !important;
+            background: rgba(30, 30, 30, 0.9) !important;
             border: 1px solid rgba(255, 255, 255, 0.1) !important;
         }
         
@@ -243,13 +243,8 @@
                             <i class="fa-solid fa-ban mr-1"></i> ห้ามข้ามวิดีโอนะครับ
                         </div>
                     </div>
-                    <div id="det_image_container" class="w-full h-48 lg:h-80 bg-slate-900 rounded-xl lg:rounded-[1.5rem] mb-6 overflow-hidden relative border border-white/20">
-                        <img id="det_img_src" src="" class="w-full h-full object-cover opacity-70">
-                        <div class="absolute bottom-4 left-4 lg:bottom-8 lg:left-8 text-white">
-                            <span id="det_ep" class="bg-[#f05a28] px-3 py-1 rounded-lg text-[10px] lg:text-xs font-bold mb-2 inline-block shadow-md border border-white/20">EP.X</span>
-                            <h2 id="det_title" class="text-xl lg:text-3xl font-bold font-prompt drop-shadow-md">Title</h2>
-                        </div>
-                    </div>
+                    <!-- ส่วนภาพปกแบบดั้งเดิม ถูกซ่อนและแทนที่ด้วยดีไซน์ใหม่ใน JS แล้ว -->
+                    <div id="det_image_container" class="w-full h-48 lg:h-80 rounded-xl lg:rounded-[1.5rem] mb-6 overflow-hidden relative border border-white/20 shadow-inner hidden"></div>
                     <div id="det_content" class="rich-text whitespace-pre-wrap px-1 lg:px-2 text-slate-800 dark:text-slate-200 font-medium"></div>
                 </div>
                 
@@ -314,9 +309,9 @@
         </div>
     </main>
 
-    <aside id="rightSidebar" class="w-72 flex-shrink-0 hidden lg:flex flex-col h-full shadow-2xl relative border-l border-white/80 dark:border-white/5 bg-white/90 dark:bg-[#1a1614]/95 backdrop-blur-2xl">
+    <aside id="rightSidebar" class="glass-panel w-72 flex-shrink-0 hidden lg:flex flex-col h-full shadow-2xl relative border-l border-white/80 dark:border-white/5 bg-white/90 dark:bg-[#1a1614]/95 backdrop-blur-2xl">
         <div class="p-8 overflow-y-auto flex-1 hide-scroll pb-24">
-            <div class="text-right lg:hidden mb-4"><button onclick="document.getElementById('rightSidebar').classList.add('hidden')" class="text-slate-500 bg-slate-100 dark:bg-slate-800 w-8 h-8 rounded-full shadow-sm"><i class="fa-solid fa-xmark"></i></button></div>
+            <div class="text-right lg:hidden mb-4"><button onclick="document.getElementById('rightSidebar').classList.add('hidden')" class="text-slate-500 bg-white/80 dark:bg-black/50 w-8 h-8 rounded-full shadow-sm"><i class="fa-solid fa-xmark"></i></button></div>
             <div class="flex justify-between items-center mb-8"><h3 class="font-bold text-slate-800 dark:text-slate-200 text-sm font-prompt uppercase tracking-widest">STUDENT PROFILE</h3></div>
             
             <div class="text-center mb-10">
@@ -333,7 +328,7 @@
 
             <h4 class="font-bold text-slate-800 dark:text-slate-200 font-prompt text-sm mb-5 uppercase tracking-widest mt-8">TEACHER</h4>
             <div class="space-y-3" id="mentorListUI">
-                <div class="text-[10px] text-slate-600 dark:text-slate-400 font-medium text-center py-4 bg-white/60 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-400/50 dark:border-slate-600/50 shadow-inner">กำลังโหลดข้อมูลอาจารย์...</div>
+                <div class="text-[10px] text-slate-500 dark:text-slate-400 text-center py-4 bg-white/40 dark:bg-black/20 rounded-xl border border-dashed border-slate-400/50 dark:border-slate-600/50 shadow-inner">กำลังโหลดข้อมูลอาจารย์...</div>
             </div>
         </div>
     </aside>
@@ -353,6 +348,23 @@
         let maxTimeWatched = 0; 
         let lastTime = 0; 
         let questionTriggers = []; 
+
+        // ✨ ชุดสี Gradient สไตล์ Minimal ✨
+        const bgGradients = [
+            'from-[#ff9a9e] to-[#fecfef]', // Peach to Pink
+            'from-[#a1c4fd] to-[#c2e9fb]', // Light Blue
+            'from-[#84fab0] to-[#8fd3f4]', // Mint to Blue
+            'from-[#fccb90] to-[#d57eeb]', // Orange to Purple
+            'from-[#e0c3fc] to-[#8ec5fc]', // Lilac to Light Blue
+            'from-[#ffecd2] to-[#fcb69f]', // Warm Peach
+            'from-[#cfd9df] to-[#e2ebf0]', // Silver
+            'from-[#f6d365] to-[#fda085]'  // Yellow to Orange
+        ];
+
+        // ✨ ไอคอน Abstract สำหรับหน้าปก ✨
+        const abstractIcons = [
+            'fa-shapes', 'fa-layer-group', 'fa-cube', 'fa-cubes', 'fa-circle-nodes', 'fa-code-branch', 'fa-puzzle-piece', 'fa-chart-pie'
+        ];
 
         function initTheme() {
             const savedTheme = localStorage.getItem('theme');
@@ -378,7 +390,7 @@
         function fetchGAS(payload) { return fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r => r.json()); }
         function getInitials(n) { let p = n.trim().split(/\s+/); return p.length >= 2 ? (p[0][0] + p[1][0]).toUpperCase() : n.substring(0, 2).toUpperCase(); }
         function extractYouTubeID(u) { let m = u.match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/); return (m && m[7].length === 11) ? m[7] : false; }
-        function getImageUrl(t) { return `https://picsum.photos/seed/${encodeURIComponent(t)}/800/600`; }
+        
         function formatContent(t) {
             if(!t) return ""; t = t.replace(/\[YT:(.*?)\]\n?/g, ""); t = t.replace(/(สำคัญมาก|ข้อควรระวัง)(:|\s)/g, '<span class="bg-rose-100 text-rose-700 px-2 py-0.5 rounded font-bold text-xs ml-1 shadow-sm border border-rose-200">$1$2</span>'); t = t.replace(/\*\*(.*?)\*\*/g, '<span class="text-orange-700 font-bold bg-orange-50 dark:bg-orange-900/40 px-1 py-0.5 rounded border border-orange-200/50">$1</span>'); t = t.replace(/^### (.*$)/gim, '<h4 class="text-lg font-bold text-[#f05a28] mt-4 mb-2 font-prompt drop-shadow-sm">$1</h4>'); t = t.replace(/^- (.*$)/gim, '<div class="flex items-start my-1 text-sm font-medium"><i class="fa-solid fa-circle-check text-[#f05a28] mt-1 mr-2"></i> <span>$1</span></div>'); return t;
         }
@@ -446,7 +458,6 @@
             if(window.innerWidth < 1024) { document.getElementById('mainSidebar').classList.remove('active'); document.getElementById('sidebarOverlay').classList.remove('active'); }
             if(target !== 'inbox' && chatTimer) { clearInterval(chatTimer); chatTimer = null; }
             
-            // ✨ เพิ่มการอัปเดตหน้าโฮมแบบ Real-time ✨
             if(target === 'home') { 
                 renderHomeLessons(); 
                 renderHomeFavorites(); 
@@ -608,12 +619,22 @@
                 </div>` : '';
 
             let widthClass = layoutType === 'scroll' ? 'min-w-[85vw] sm:min-w-[340px] max-w-[85vw] sm:max-w-[340px] snap-start shrink-0' : '';
+            
+            // ✨ สร้างภาพหน้าปกแบบ CSS Gradient ✨
+            let gradColor = bgGradients[idx % bgGradients.length];
+            let iconClass = abstractIcons[idx % abstractIcons.length];
 
             return `
             <div class="glass-panel course-card rounded-[2rem] p-4 lg:p-5 flex flex-col h-full relative w-full ${widthClass}" onclick="openLesson(${idx})">
-                <div class="h-32 lg:h-40 w-full rounded-[1.5rem] mb-4 lg:mb-5 relative overflow-hidden bg-slate-200/50 dark:bg-slate-800 group shrink-0 border border-white/40 dark:border-white/10">
-                    <img src="${getImageUrl(l.title)}" class="w-full h-full object-cover transition duration-700 group-hover:scale-105 ${isC?'grayscale':''}">
-                    <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent z-0 pointer-events-none"></div>
+                
+                <!-- เปลี่ยนภาพปกเป็น Minimal Gradient -->
+                <div class="h-32 lg:h-40 w-full rounded-[1.5rem] mb-4 lg:mb-5 relative overflow-hidden group shrink-0 border border-white/40 dark:border-white/10 bg-gradient-to-br ${gradColor} ${isC?'grayscale':''}">
+                    
+                    <div class="w-full h-full flex items-center justify-center transition duration-700 group-hover:scale-105">
+                        <i class="fa-solid ${iconClass} text-white/30 text-6xl transform -rotate-12 group-hover:rotate-0 transition duration-500 drop-shadow-sm"></i>
+                    </div>
+                    
+                    <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/30 to-transparent z-0 pointer-events-none"></div>
                     
                     ${playIcon}
                     ${newBadge}
@@ -622,6 +643,7 @@
                     ${isC ? `<div class="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[1px] z-10"><div class="bg-emerald-500 text-white px-3 py-1 rounded-lg text-[10px] font-bold shadow-md border border-white/20">Completed</div></div>` : ''}
                     ${progressIndicator}
                 </div>
+                
                 <div class="flex-1 flex flex-col justify-between px-1">
                     <div>
                         <span class="text-[9px] lg:text-xs font-bold text-orange-700 dark:text-orange-400 bg-white/80 dark:bg-black/40 border border-white dark:border-orange-900/50 shadow-sm px-2 py-0.5 rounded-full mb-2 inline-block">${l.subject}</span>
@@ -738,7 +760,7 @@
             let answeredList = JSON.parse(localStorage.getItem('ytAnsQs_' + currentUser.id + '_' + currentLesson.title) || '[]');
 
             if (duration > 0 && vQs.length > 0) {
-                let interval = 60; // 60s
+                let interval = 60; 
                 for(let i=0; i<vQs.length; i++) {
                     questionTriggers.push({ 
                         time: interval * (i + 1), 
@@ -868,8 +890,22 @@
 
             } else { 
                 document.getElementById('det_video_container').classList.add('hidden'); 
-                document.getElementById('det_image_container').classList.remove('hidden'); 
-                document.getElementById('det_img_src').src = getImageUrl(currentLesson.title); 
+                
+                // ✨ นำภาพปกแบบ Gradient มาแสดงในหน้ารายละเอียด ✨
+                let gradColor = bgGradients[idx % bgGradients.length];
+                let iconClass = abstractIcons[idx % abstractIcons.length];
+                
+                let imgContainer = document.getElementById('det_image_container');
+                imgContainer.className = `w-full h-48 lg:h-80 rounded-xl lg:rounded-[1.5rem] mb-6 overflow-hidden relative border border-white/20 shadow-inner flex items-center justify-center bg-gradient-to-br ${gradColor}`;
+                imgContainer.innerHTML = `
+                    <i class="fa-solid ${iconClass} text-white/30 text-8xl lg:text-[10rem] drop-shadow-sm"></i>
+                    <div class="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/60 to-transparent z-0 pointer-events-none"></div>
+                    <div class="absolute bottom-4 left-4 lg:bottom-8 lg:left-8 text-white z-10">
+                        <span id="det_ep" class="bg-[#f05a28] px-3 py-1 rounded-lg text-[10px] lg:text-xs font-bold mb-2 inline-block shadow-md border border-white/20">EP.${currentLesson.ep}</span>
+                        <h2 id="det_title" class="text-xl lg:text-3xl font-bold font-prompt drop-shadow-md">${currentLesson.title}</h2>
+                    </div>
+                `;
+                imgContainer.classList.remove('hidden');
                 
                 quizWrapper.classList.remove('hidden');
                 
@@ -890,8 +926,6 @@
                 }
             }
             
-            document.getElementById('det_ep').innerText = "EP." + currentLesson.ep; 
-            document.getElementById('det_title').innerText = currentLesson.title; 
             document.getElementById('det_content').innerHTML = formatContent(currentLesson.content);
             fetchGAS({ action: "view", username: currentUser.id, name: currentUser.name, room: currentUser.assigned, subject: currentLesson.subject, lessonName: currentLesson.title });
         }
@@ -965,32 +999,32 @@
             if(latestText.length > 25) latestText = latestText.substring(0, 25) + "...";
 
             if (type === "sidebar") {
-                let subjectBadge = c.room && c.room !== "-" && c.role === 'Teacher' ? `<p class="text-[9px] text-slate-600 dark:text-slate-300 font-medium mt-1 bg-white/60 dark:bg-black/30 px-2 py-0.5 rounded-md w-max border border-white/80 dark:border-white/10"><i class="fa-solid fa-book mr-1 text-slate-500"></i> วิชา: ${c.room}</p>` : '';
+                let subjectBadge = c.room && c.room !== "-" && c.role === 'Teacher' ? `<p class="text-[9px] text-slate-500 dark:text-slate-400 mt-1 bg-white/40 dark:bg-black/30 px-2 py-0.5 rounded-md w-max border border-white/50 dark:border-white/10"><i class="fa-solid fa-book mr-1 text-slate-400"></i> วิชา: ${c.room}</p>` : '';
                 return `
-                <div class="flex items-center justify-between group p-3 rounded-2xl border border-white dark:border-slate-700/50 hover:border-orange-300 dark:hover:border-orange-700 shadow-sm transition mb-3 bg-white/60 dark:bg-black/30 backdrop-blur-md cursor-pointer" onclick="nav('inbox'); openChat('${c.name}')">
+                <div class="flex items-center justify-between group p-3 rounded-2xl border border-slate-200/50 dark:border-slate-700/50 hover:border-orange-300 dark:hover:border-orange-700 shadow-sm transition mb-3 bg-white/50 dark:bg-black/30 backdrop-blur-sm cursor-pointer" onclick="nav('inbox'); openChat('${c.name}')">
                     <div class="flex items-start gap-3">
-                        <div class="relative w-12 h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm shrink-0 flex items-center justify-center border border-white/80">${pPic}
+                        <div class="relative w-12 h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm shrink-0 flex items-center justify-center border border-white/50">${pPic}
                             ${badgeHtml}
                         </div>
                         <div class="flex flex-col max-w-[130px] lg:max-w-[150px]">
                             <p class="text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight truncate">${c.name}</p>
-                            <p class="text-[10px] text-slate-600 dark:text-slate-400 font-medium truncate mt-0.5 ${unreadCount > 0 ? 'font-bold text-slate-800 dark:text-white' : ''}" title="${latestText}">${latestText}</p>
+                            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5 ${unreadCount > 0 ? 'font-bold text-slate-800 dark:text-white' : ''}" title="${latestText}">${latestText}</p>
                             ${subjectBadge}
                         </div>
                     </div>
-                    <button class="w-9 h-9 rounded-full border border-orange-200 dark:border-orange-900/50 text-[#f05a28] flex items-center justify-center hover:bg-[#f05a28] hover:text-white transition shadow-sm shrink-0 bg-white/50 dark:bg-transparent">
+                    <button class="w-9 h-9 rounded-full border border-orange-200/50 dark:border-orange-900/50 text-[#f05a28] flex items-center justify-center hover:bg-[#f05a28] hover:text-white transition shadow-sm shrink-0">
                         <i class="fa-regular fa-comment-dots text-sm pointer-events-none"></i>
                     </button>
                 </div>`;
             } else {
                 return `
-                <div class="chat-contact ${isActive} flex items-center gap-3 p-3 lg:p-4 rounded-xl cursor-pointer hover:bg-white/80 dark:hover:bg-black/40 transition mb-1 border border-transparent shadow-sm" onclick="openChat('${c.name}')">
-                    <div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm border border-white/80 shrink-0 flex items-center justify-center">${pPic}
+                <div class="chat-contact ${isActive} flex items-center gap-3 p-3 lg:p-4 rounded-xl cursor-pointer hover:bg-white/50 dark:hover:bg-black/30 transition mb-1 border border-transparent shadow-sm" onclick="openChat('${c.name}')">
+                    <div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm border border-white/50 shrink-0 flex items-center justify-center">${pPic}
                         ${badgeHtml}
                     </div>
                     <div class="flex-1 min-w-0">
                         <h4 class="font-bold text-xs lg:text-sm truncate text-slate-800 dark:text-slate-200">${c.name}</h4>
-                        <p class="text-[10px] text-slate-600 dark:text-slate-400 font-medium truncate ${unreadCount > 0 ? 'font-bold text-slate-800 dark:text-white' : ''}" title="${latestText}">${latestText}</p>
+                        <p class="text-[10px] text-slate-400 truncate ${unreadCount > 0 ? 'font-bold text-slate-800 dark:text-white' : ''}" title="${latestText}">${latestText}</p>
                     </div>
                 </div>`;
             }
@@ -1004,11 +1038,11 @@
             let htmlRightSidebar = "";
 
             if(mentors.length === 0) {
-                 htmlInboxList = '<div class="text-center p-4 text-xs text-slate-600 dark:text-slate-400 font-medium border-2 border-dashed border-slate-400/50 dark:border-slate-600/50 rounded-xl mx-4 mt-4 bg-white/40 dark:bg-transparent">ไม่มีผู้ติดต่อ</div>';
-                 htmlRightSidebar = '<div class="text-xs text-slate-600 dark:text-slate-400 font-medium text-center py-4 border-2 border-dashed border-slate-400/50 dark:border-slate-600/50 rounded-2xl mx-2 bg-white/40 dark:bg-transparent">ไม่มีข้อมูลอาจารย์</div>';
+                 htmlInboxList = '<div class="text-center p-4 text-xs text-slate-500 dark:text-slate-400 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl mx-4 mt-4">ไม่มีผู้ติดต่อ</div>';
+                 htmlRightSidebar = '<div class="text-xs text-slate-500 dark:text-slate-400 text-center py-4 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl mx-2">ไม่มีข้อมูลอาจารย์</div>';
             } else {
                 if(tList.length > 0) {
-                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-widest mt-2">รายชื่ออาจารย์</p>`;
+                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-widest mt-2">รายชื่ออาจารย์</p>`;
                     tList.forEach(c => {
                         htmlInboxList += buildContactCard(c, "inbox");
                         htmlRightSidebar += buildContactCard(c, "sidebar");
@@ -1016,7 +1050,7 @@
                 }
                 
                 if(aList.length > 0) {
-                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-widest mt-4">แอดมิน</p>`;
+                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-widest mt-4">แอดมิน</p>`;
                     aList.forEach(c => {
                         htmlInboxList += buildContactCard(c, "inbox");
                         htmlRightSidebar += buildContactCard(c, "sidebar");
@@ -1043,7 +1077,7 @@
             let contactInfo = mentors.find(x => x.name === n);
             let partnerPicHtml = (contactInfo && contactInfo.pic) ? `<img src="${contactInfo.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-sm">${getInitials(n)}</div>`;
 
-            let subjectBadgeHeader = (contactInfo && contactInfo.room && contactInfo.room !== "-" && contactInfo.role === 'Teacher') ? ` <span class="text-xs text-slate-600 dark:text-slate-400 font-medium ml-2">(วิชา: ${contactInfo.room})</span>` : '';
+            let subjectBadgeHeader = (contactInfo && contactInfo.room && contactInfo.room !== "-" && contactInfo.role === 'Teacher') ? ` <span class="text-xs text-slate-500 dark:text-slate-400 font-normal ml-2">(วิชา: ${contactInfo.room})</span>` : '';
             document.getElementById('chatHeaderName').innerHTML = `${n}${subjectBadgeHeader}`; 
             document.getElementById('chatHeaderAvatar').innerHTML = partnerPicHtml;
             
@@ -1059,22 +1093,22 @@
                 
                 if(m.senderName === currentUser.name) {
                     if (m.message && m.message.trim() !== "") {
-                        h += `<div class="flex flex-col items-end w-full mb-4"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-500 dark:text-slate-400">${d} • คุณ</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-white/80">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${m.message}</div></div>`;
+                        h += `<div class="flex flex-col items-end w-full mb-4"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400 dark:text-slate-500">${d} • คุณ</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-white/50">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${m.message}</div></div>`;
                     }
                     if(m.reply && m.reply.trim() !== "") { 
                         let reps = m.reply.split('<br><br>').filter(x => x.trim() !== "");
                         reps.forEach(rep => {
-                            h += `<div class="flex flex-col items-start w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white/80 text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${sPicHtml}</div><p class="text-[9px] font-bold text-slate-600 dark:text-slate-400">${n}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm backdrop-blur-md font-medium">${rep}</div></div>`; 
+                            h += `<div class="flex flex-col items-start w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white/50 text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${sPicHtml}</div><p class="text-[9px] font-bold text-slate-500 dark:text-slate-400">${n}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm backdrop-blur-sm">${rep}</div></div>`; 
                         });
                     }
                 } else {
                     if (m.message && m.message.trim() !== "") {
-                        h += `<div class="flex flex-col items-start w-full mb-4"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white/80 text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${sPicHtml}</div><p class="text-[9px] font-bold text-slate-600 dark:text-slate-400">${n} • ${d}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm backdrop-blur-md font-medium">${m.message}</div></div>`;
+                        h += `<div class="flex flex-col items-start w-full mb-4"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white/50 text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${sPicHtml}</div><p class="text-[9px] font-bold text-slate-500 dark:text-slate-400">${n} • ${d}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm backdrop-blur-sm">${m.message}</div></div>`;
                     }
                     if(m.reply && m.reply.trim() !== "") { 
                         let reps = m.reply.split('<br><br>').filter(x => x.trim() !== "");
                         reps.forEach(rep => {
-                            h += `<div class="flex flex-col items-end w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-500 dark:text-slate-400">คุณตอบแล้ว</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-white/80">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${rep}</div></div>`; 
+                            h += `<div class="flex flex-col items-end w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400 dark:text-slate-500">คุณตอบแล้ว</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-white/50">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${rep}</div></div>`; 
                         });
                     }
                 }
@@ -1088,7 +1122,7 @@
             
             let cHist = document.getElementById('chatHistory');
             let myPicHtml = currentUser.pic ? `<img src="${currentUser.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-orange-100 text-orange-600 font-bold text-[8px]">${getInitials(currentUser.name)}</div>`;
-            cHist.innerHTML += `<div class="flex flex-col items-end w-full mb-4 mt-2 opacity-50"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-500 dark:text-slate-400">กำลังส่ง...</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-white/80">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${msg}</div></div>`;
+            cHist.innerHTML += `<div class="flex flex-col items-end w-full mb-4 mt-2 opacity-50"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400 dark:text-slate-500">กำลังส่ง...</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-white/50">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${msg}</div></div>`;
             cHist.scrollTop = cHist.scrollHeight;
             document.getElementById('chatInputMessage').value = "";
 
