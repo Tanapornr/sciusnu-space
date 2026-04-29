@@ -2,144 +2,92 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - SCiUS Dashboard</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Login - SCiUS Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;700&family=Sarabun:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
     <style>
-        body { 
-            font-family: 'Sarabun', sans-serif; 
-            background-color: #f1f5f9; 
-            background-image: radial-gradient(#6d28d9 0.5px, transparent 0.5px);
-            background-size: 24px 24px;
-            background-opacity: 0.1;
-        }
+        body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; color: #334155; }
         h1, h2, h3, .font-prompt { font-family: 'Prompt', sans-serif; }
-        .login-card {
-            backdrop-filter: blur(10px);
-            background-color: rgba(255, 255, 255, 0.9);
-        }
+        
+        /* ✨ iOS MINIMALIST SWEETALERT2 ✨ */
+        .swal2-popup.swal2-toast { background: rgba(255, 255, 255, 0.85) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: 1px solid rgba(255, 255, 255, 0.5) !important; border-radius: 999px !important; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important; padding: 10px 24px 10px 10px !important; width: auto !important; margin-top: 20px !important; }
+        .swal2-toast .swal2-html-container { font-family: 'Prompt', sans-serif !important; margin: 0 !important; }
+        .ios-center-popup { background: rgba(255, 255, 255, 0.9) !important; backdrop-filter: blur(24px) !important; -webkit-backdrop-filter: blur(24px) !important; border: 1px solid rgba(255, 255, 255, 0.6) !important; border-radius: 28px !important; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1) !important; padding: 2rem 1.5rem !important; width: auto !important; min-width: 280px !important; max-width: 320px !important; }
+        .swal2-popup:not(.swal2-toast):not(.ios-center-popup) { border-radius: 28px !important; background: rgba(255, 255, 255, 0.95) !important; backdrop-filter: blur(20px) !important; -webkit-backdrop-filter: blur(20px) !important; box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important; padding: 2em 1.5em !important; width: 320px !important; border: 1px solid rgba(255, 255, 255, 0.8) !important; }
+        .swal2-title { font-family: 'Prompt', sans-serif !important; color: #1d1d1f !important; font-size: 1.15rem !important; margin-bottom: 0.5em !important; }
+        .swal2-html-container { font-family: 'Sarabun', sans-serif !important; color: #475569 !important; margin-top: 0.5em !important; font-size: 0.95rem !important;}
+        .swal2-confirm { border-radius: 999px !important; font-family: 'Prompt', sans-serif !important; font-weight: 600 !important; padding: 12px 32px !important; background-color: #6d28d9 !important; font-size: 0.95rem !important; box-shadow: 0 8px 20px -6px rgba(109, 40, 217, 0.5) !important; transition: all 0.2s ease !important; }
+        .swal2-confirm:hover { background-color: #5b21b6 !important; transform: translateY(-2px) !important; box-shadow: 0 12px 24px -6px rgba(109, 40, 217, 0.6) !important; }
+        .swal2-confirm:active { transform: scale(0.96) !important; }
+        .swal2-timer-progress-bar { background-color: rgba(109, 40, 217, 0.3) !important; height: 3px !important; }
     </style>
 </head>
-<body class="flex h-screen w-screen items-center justify-center p-4">
-
-    <div class="login-card bg-white p-8 md:p-12 rounded-[2.5rem] shadow-2xl w-full max-w-md border border-white/50 text-center">
-        <div class="flex items-center justify-center mb-10">
-            <div class="w-14 h-14 bg-[#6d28d9] text-white rounded-2xl flex items-center justify-center text-2xl mr-4 shadow-lg shadow-purple-200 transform -rotate-6">
-                <i class="fa-solid fa-sparkles"></i>
-            </div>
-            <div class="text-left">
-                <h1 class="text-3xl font-black font-prompt text-[#6d28d9] tracking-tighter uppercase leading-none">Coursue</h1>
-                <p class="text-[10px] font-bold text-slate-400 tracking-[0.2em] uppercase mt-1">Learning Space</p>
-            </div>
+<body class="h-screen w-screen flex items-center justify-center p-4 bg-gradient-to-br from-[#f8fafc] to-[#e2e8f0]">
+    <div class="bg-white rounded-[2rem] shadow-xl p-8 max-w-md w-full border border-slate-100">
+        <div class="text-center mb-8">
+            <div class="w-16 h-16 bg-[#6d28d9] text-white rounded-full flex items-center justify-center text-3xl mx-auto shadow-lg mb-4"><i class="fa-solid fa-sparkles"></i></div>
+            <h1 class="text-2xl font-bold font-prompt text-slate-800">เข้าสู่ระบบ</h1>
+            <p class="text-slate-500 text-sm mt-2">SCiUS Online Learning Portal</p>
         </div>
-
-        <h2 class="text-xl font-bold text-slate-700 font-prompt mb-2 text-center">ยินดีต้อนรับเข้าสู่ระบบ</h2>
-        <p class="text-slate-400 text-sm mb-8 text-center">กรุณาระบุตัวตนเพื่อเริ่มต้นการเรียนรู้</p>
-        
-        <form onsubmit="event.preventDefault(); login();" class="space-y-5">
-            <div class="text-left">
-                <label class="block text-xs font-bold text-slate-500 mb-2 ml-1 uppercase tracking-wider">Username</label>
+        <form id="loginForm" class="space-y-5" onsubmit="event.preventDefault(); login();">
+            <div>
+                <label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wide">ชื่อผู้ใช้งาน</label>
                 <div class="relative">
-                    <i class="fa-regular fa-user absolute left-5 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                    <input type="text" id="login_user" placeholder="รหัสผู้ใช้งาน" class="w-full pl-12 pr-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:bg-white outline-none transition-all shadow-inner" required>
+                    <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="username" class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-300 transition text-sm" placeholder="Username" required>
                 </div>
             </div>
-            
-            <div class="text-left">
-                <label class="block text-xs font-bold text-slate-500 mb-2 ml-1 uppercase tracking-wider">Password</label>
+            <div>
+                <label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wide">รหัสผ่าน</label>
                 <div class="relative">
-                    <i class="fa-solid fa-lock absolute left-5 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                    <input type="password" id="login_pass" placeholder="รหัสผ่าน" class="w-full pl-12 pr-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:bg-white outline-none transition-all shadow-inner" required>
+                    <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="password" id="password" class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-300 transition text-sm" placeholder="Password" required>
                 </div>
             </div>
-
-            <button type="submit" class="w-full bg-[#6d28d9] hover:bg-purple-800 text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-purple-200 font-prompt text-lg mt-4 active:scale-[0.98]">
-                Sign In <i class="fa-solid fa-arrow-right-to-bracket ml-2 text-sm"></i>
-            </button>
+            <button type="submit" class="w-full bg-[#6d28d9] text-white font-bold font-prompt py-4 rounded-xl shadow-lg hover:bg-purple-800 transition active:scale-[0.98]">เข้าสู่ระบบ</button>
         </form>
-
-        <div class="mt-8 pt-6 border-t border-slate-100">
-            <p class="text-[11px] text-slate-400 font-medium uppercase tracking-widest">&copy; 2026 SCiUS Naresuan University</p>
-        </div>
     </div>
 
     <script>
-        // =================================================================
-        // ⚠️ ใส่ Web App URL ของ Google Apps Script ที่นี่ ⚠️
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbz22baIknv96tjyJYB_qiit6T-owv4qSSUpjA22cZMHXeZ02JnqcPxaQGVUyWzhTubQhA/exec';
-        // =================================================================
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbze1x9SSRsoZSE__Cm6iMzLv9A45ry3eTHB2fkJNktUmRs4yyLgh96s7wUdaPBPSzgIew/exec';
 
-        // ล้างความจำเก่าทุกครั้งที่เปิดหน้า Login เพื่อความปลอดภัยและแก้ปัญหากระพริบ
-        localStorage.removeItem('currentUser');
-        sessionStorage.removeItem('currentUser');
-
-        async function login() {
-            const username = document.getElementById('login_user').value.trim();
-            const password = document.getElementById('login_pass').value.trim();
-            
-            if(!username || !password) {
-                Swal.fire('แจ้งเตือน', 'กรุณากรอกรหัสผู้ใช้งานและรหัสผ่านให้ครบ', 'warning');
-                return;
-            }
-            
-            Swal.fire({
-                title: 'Signing in...',
-                html: 'กำลังตรวจสอบข้อมูลโปรดรอสักครู่',
-                allowOutsideClick: false,
-                didOpen: () => { Swal.showLoading(); }
+        // Custom iOS Toast Function
+        function showiOSToast(iconClass, text, iconColorBg, iconColorText) {
+            Swal.fire({ 
+                toast: false, position: 'center', showConfirmButton: false, timer: 2500, customClass: { popup: 'ios-center-popup' },
+                html: `<div class="flex flex-col items-center gap-3 text-center"><div class="w-14 h-14 rounded-full ${iconColorBg} ${iconColorText} flex items-center justify-center shadow-sm"><i class="${iconClass} text-2xl"></i></div><span class="font-bold text-slate-800 text-base tracking-wide leading-snug">${text}</span></div>` 
             });
-            
-            try {
-                const response = await fetch(GAS_URL, { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ action: "login", username: username, password: password }) 
-                });
+        }
 
-                const r = await response.json();
+        function login() {
+            let u = document.getElementById('username').value.trim();
+            let p = document.getElementById('password').value.trim();
+            if(!u || !p) return showiOSToast('fa-solid fa-circle-exclamation', 'กรุณากรอกข้อมูลให้ครบ', 'bg-amber-100', 'text-amber-600');
 
-                if(r.status === "success") {
-                    // จัดการ Role ให้เป็นตัวเล็กและสะอาดที่สุด
-                    const safeRole = String(r.role).toLowerCase().trim();
-                    
-                    const userObj = { 
-                        id: r.username, 
-                        name: r.name, 
-                        role: safeRole, 
-                        assigned: r.assigned, 
-                        pic: r.pic, 
-                        email: r.email, 
-                        phone: r.phone 
-                    };
-                    
-                    // บันทึกแบบ sessionStorage (ปิดแท็บคือหลุดจากระบบ)
-                    sessionStorage.setItem('currentUser', JSON.stringify(userObj));
-                    
-                    Swal.fire({ 
-                        icon: 'success', 
-                        title: 'เข้าสู่ระบบสำเร็จ', 
-                        text: 'ยินดีต้อนรับ ' + r.name,
-                        showConfirmButton: false, 
-                        timer: 1500 
-                    }).then(() => {
-                        // แยกส่งไปตามหน้าตามสิทธิ์ที่ได้รับ
-                        if(safeRole === 'student') window.location.replace('student.html');
-                        else if(safeRole === 'teacher') window.location.replace('teacher.html');
-                        else if(safeRole === 'admin') window.location.replace('admin.html');
-                        else Swal.fire('Error', 'ไม่พบสิทธิ์การใช้งานที่ถูกต้อง', 'error');
-                    });
+            Swal.fire({ title: 'กำลังตรวจสอบ...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+
+            fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "login", username: u, password: p }) })
+            .then(r => r.json())
+            .then(data => {
+                if(data.status === "success") {
+                    let user = data.user;
+                    sessionStorage.setItem('currentUser', JSON.stringify(user));
+                    showiOSToast('fa-solid fa-check', 'เข้าสู่ระบบสำเร็จ', 'bg-emerald-100', 'text-emerald-600');
+                    setTimeout(() => {
+                        let r = String(user.role).toLowerCase().trim();
+                        if(r === "admin") window.location.href = "admin.html";
+                        else if(r === "teacher") window.location.href = "teacher.html";
+                        else window.location.href = "student.html";
+                    }, 1500);
                 } else {
-                    Swal.fire('เข้าสู่ระบบล้มเหลว', r.message, 'error');
+                    showiOSToast('fa-solid fa-xmark', 'รหัสผ่านไม่ถูกต้อง', 'bg-rose-100', 'text-rose-600');
                 }
-            } catch(e) {
-                console.error("Login Error:", e);
-                Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ หรือลิงก์ GAS_URL ไม่ถูกต้อง', 'error');
-            }
+            }).catch(e => {
+                showiOSToast('fa-solid fa-triangle-exclamation', 'ไม่สามารถเชื่อมต่อได้', 'bg-rose-100', 'text-rose-600');
+            });
         }
     </script>
 </body>
