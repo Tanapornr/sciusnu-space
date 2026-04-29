@@ -308,7 +308,7 @@
         </div>
     </aside>
 
-    <script>
+  <script>
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbyDcg8d6HS5ul8_3vkJCgqOZnano4kNmgvqMgsdYl5vYzOAJmBin11VBkVULmWcnHBuAA/exec';
         let currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
         if (!currentUser || String(currentUser.role).toLowerCase().trim() !== 'teacher') { window.location.replace('index.html'); }
@@ -417,7 +417,6 @@
                 if(unreadCount > 0) globalUnread += unreadCount;
             });
             document.querySelectorAll('.inbox-badge').forEach(b => { if(globalUnread > 0) { b.innerText = globalUnread; b.classList.remove('hidden'); } else { b.classList.add('hidden'); } });
-            // document.getElementById('statTotalMsgs').innerText = globalUnread; // ลบเพื่อป้องกันบัคเพราะไม่ได้สร้าง UI นี้ไว้
         }
 
         function loadDashboardData() {
@@ -426,13 +425,23 @@
                     allLessons = r.lessons || []; 
                     cachedMessages = r.messages || [];
                     allSubjects = r.subjects || [];
-                    if(r.users) allUsersData = r.users; 
+                    
+                    // ✨ แก้ไขระบบให้รองรับทั้ง r.users และ r.data (ตัวพิมพ์เล็ก/ใหญ่)
+                    let rawUsers = r.users || r.data || [];
+                    if(rawUsers.length > 0) allUsersData = rawUsers; 
 
                     let loader = document.getElementById('loadingLessons_teacher');
                     if(loader) loader.style.display = 'none';
                     
-                    myStudents = allUsersData.filter(u => String(u.role).toLowerCase().trim() === 'student').map(u => ({
-                        name: u.name || u.Name || "", role: 'Student', initials: getInitials(u.name || u.Name || "A"), pic: u.pic || u.ProfilePic || "", class: u.assigned || u.room || u.Room || "-", bgColor: "bg-blue-100 dark:bg-blue-900/50", textColor: "text-blue-600 dark:text-blue-400"
+                    // ✨ กรองเฉพาะนักเรียน (รองรับ u.Role และ u.role)
+                    myStudents = allUsersData.filter(u => String(u.role || u.Role || "").toLowerCase().trim() === 'student').map(u => ({
+                        name: u.name || u.Name || "ไม่มีชื่อ", 
+                        role: 'Student', 
+                        initials: getInitials(u.name || u.Name || "A"), 
+                        pic: u.pic || u.ProfilePic || "", 
+                        class: u.assigned || u.room || u.Room || "-", 
+                        bgColor: "bg-blue-100 dark:bg-blue-900/50", 
+                        textColor: "text-blue-600 dark:text-blue-400"
                     }));
 
                     let myS = currentUser.assigned ? currentUser.assigned.split(',').map(s=>s.trim()).filter(s=>s) : [];
@@ -577,7 +586,6 @@
             renderChatContacts(); 
         }
 
-        // ✨ แก้ไขฟังก์ชันอัปเดตคำถาม ให้ดึงข้อมูลเก่ามาใส่ในช่องด้วย ✨
         function addTeacherQuizField(qData = null) {
             let c = document.getElementById('t_quizFields'); 
             if(c.children.length >= 5) return showiOSToast('fa-solid fa-circle-exclamation', 'สร้างได้สูงสุด 5 ข้อ', 'bg-amber-100', 'text-amber-600');
@@ -640,7 +648,6 @@
             document.getElementById('t_content').value = (l.content||"").replace(/\[YT:.*?\]\n?/, ""); 
             document.getElementById('t_quizFields').innerHTML=""; 
             
-            // ส่งข้อมูลคำถามเก่าเข้าไปวาดกล่องใหม่
             (l.questions||[]).filter(q=>q.q && q.q.trim() !== "").forEach(q=>addTeacherQuizField(q)); 
             
             document.getElementById('cancelEditBtn').classList.remove('hidden'); 
@@ -650,46 +657,79 @@
 
         function deleteLesson(t) { Swal.fire({title:'ลบบทเรียน?', text: 'คุณแน่ใจหรือไม่ที่จะลบเนื้อหานี้?', icon:'warning', showCancelButton:true, customClass:{popup:'ios-popup'}, confirmButtonColor:'#f05a28', confirmButtonText:'ยืนยันการลบ', cancelButtonText:'ยกเลิก'}).then(r=>{if(r.isConfirmed) { Swal.fire({title:'Deleting...', customClass:{popup:'ios-popup'}, didOpen:()=>Swal.showLoading()}); fetchGAS({action:"deleteLesson", title:t}).then(()=>loadDashboardData()); }}); }
 
-        // ==========================================
-        // ระบบ CHAT 
-        // ==========================================
-        
         function renderChatContacts() {
-            let studentsMap = {}; 
-            
-            cachedMessages.forEach(m => { 
-                let sName = m.senderName;
-                if(sName === currentUser.name) sName = m.receiver;
-                
-                if(!studentsMap[sName]) { 
-                    studentsMap[sName] = { name: sName, room: m.senderRoom || "-", pic: "", msgs: [] }; 
-                }
-                
-                if (m.senderName === sName && m.senderPic && m.senderPic.trim() !== "") { studentsMap[sName].pic = m.senderPic; }
-                if (m.receiver === sName && m.receiverPic && m.receiverPic.trim() !== "") { studentsMap[sName].pic = m.receiverPic; }
-                if (m.senderName === sName && m.senderRoom && m.senderRoom.trim() !== "") { studentsMap[sName].room = m.senderRoom; }
+            let htmlInboxList = "";
+            let htmlRightSidebar = "";
 
-                studentsMap[sName].msgs.push(m); 
-            });
-            
-            let students = Object.values(studentsMap).sort((a,b) => new Date(b.msgs[b.msgs.length-1].date) - new Date(a.msgs[a.msgs.length-1].date));
-            let html = `<p class="px-4 text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-widest mt-2">รายชื่อนักเรียน</p>`;
-            
-            if(students.length === 0) html += `<div class="text-center p-4 text-xs text-slate-600 dark:text-slate-400 font-medium border-2 border-dashed border-slate-400/50 dark:border-slate-600/50 rounded-xl mx-4 mt-4 bg-white/40 dark:bg-transparent">ไม่มีข้อความ</div>`;
-            
-            students.forEach(s => {
-                let userObj = allUsersData.find(u => u.name === s.name);
-                if (userObj && userObj.pic && userObj.pic.trim() !== "") s.pic = userObj.pic;
-                if (userObj && userObj.assigned && userObj.assigned.trim() !== "") s.room = userObj.assigned;
-
-                let isActive = activeChatContact === s.name ? "active" : "";
-                let unreadCount = s.msgs.filter(m => m.senderName === s.name && (!m.reply || m.reply.trim() === "")).length; 
-                let picHtml = s.pic ? `<img src="${s.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center font-bold text-indigo-600 bg-indigo-100 text-xs">${getInitials(s.name)}</div>`;
+            if(myStudents.length === 0) {
+                 htmlInboxList = '<div class="text-center p-4 text-xs text-slate-600 dark:text-slate-400 font-medium border-2 border-dashed border-slate-400/50 dark:border-slate-600/50 rounded-xl mx-4 mt-4 bg-white/40 dark:bg-transparent">ไม่มีนักเรียนในระบบ</div>';
+                 htmlRightSidebar = '<div class="text-xs text-slate-600 dark:text-slate-400 font-medium text-center py-4 border-2 border-dashed border-slate-400/50 dark:border-slate-600/50 rounded-2xl mx-2 bg-white/40 dark:bg-transparent">ไม่มีข้อมูลนักเรียน</div>';
+            } else {
+                htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-widest mt-2">รายชื่อนักเรียน</p>`;
                 
-                html += `<div class="chat-contact ${isActive} flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-white/80 dark:hover:bg-black/40 transition mb-1 border border-transparent shadow-sm" onclick="openChat('${s.name}')"><div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shrink-0 border border-white shadow-sm">${picHtml}${unreadCount===0?'<div class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full"></div>':''}</div><div class="flex-1 min-w-0"><h4 class="font-bold text-xs lg:text-sm truncate text-slate-800 dark:text-slate-200">${s.name}</h4><p class="text-[10px] text-slate-600 dark:text-slate-400 font-medium truncate">${s.room}</p></div>${unreadCount>0?`<div class="w-5 h-5 bg-rose-500 rounded-full flex items-center justify-center text-white text-[9px] font-bold shadow-sm">${unreadCount}</div>`:''}</div>`;
-            });
+                myStudents.forEach(s => {
+                    let isActive = activeChatContact === s.name ? "active" : "";
+                    
+                    let totalMsgs = countStudentMessages(s.name);
+                    let readCount = parseInt(localStorage.getItem('readMsgs_' + currentUser.id + '_' + s.name) || '0');
+                    let unreadCount = totalMsgs - readCount;
+                    if(unreadCount < 0) unreadCount = 0;
+
+                    let badgeHtml = unreadCount > 0 ? `<div class="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 rounded-full flex items-center justify-center text-white text-[8px] font-bold shadow-sm border-2 border-white">${unreadCount}</div>` : '';
+
+                    let latestText = "เริ่มการสนทนา...";
+                    let contactMsgs = cachedMessages.filter(m => (m.senderName === currentUser.name && m.receiver === s.name) || (m.senderName === s.name && m.receiver === currentUser.name));
+                    if(contactMsgs.length > 0) {
+                        let sorted = [...contactMsgs].sort((a,b) => new Date(a.date) - new Date(b.date));
+                        let lastMsg = sorted[sorted.length - 1];
+                        if(lastMsg.senderName === currentUser.name) {
+                            if(lastMsg.reply && lastMsg.reply.trim() !== "") {
+                                let reps = lastMsg.reply.split('<br><br>').filter(x => x.trim() !== "");
+                                latestText = s.name + ": " + reps[reps.length - 1];
+                            } else { latestText = "คุณ: " + lastMsg.message; }
+                        } else {
+                            if(lastMsg.reply && lastMsg.reply.trim() !== "") {
+                                let reps = lastMsg.reply.split('<br><br>').filter(x => x.trim() !== "");
+                                latestText = "คุณ: " + reps[reps.length - 1];
+                            } else { latestText = s.name + ": " + lastMsg.message; }
+                        }
+                    }
+
+                    let tmp = document.createElement("DIV"); tmp.innerHTML = latestText; latestText = tmp.textContent || tmp.innerText || "";
+                    if(latestText.length > 25) latestText = latestText.substring(0, 25) + "...";
+
+                    let picHtml = s.pic ? `<img src="${s.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center font-bold text-indigo-600 bg-indigo-100 text-xs">${getInitials(s.name)}</div>`;
+                    let subjectBadge = s.class && s.class !== "-" ? `<p class="text-[9px] text-slate-600 dark:text-slate-400 font-medium mt-1 bg-white/60 dark:bg-black/30 px-2 py-0.5 rounded-md w-max border border-white/80 dark:border-white/10"><i class="fa-solid fa-graduation-cap mr-1 text-slate-500"></i> ${s.class}</p>` : '';
+
+                    let cardHtml = `
+                    <div class="chat-contact ${isActive} flex items-center justify-between group p-3 rounded-2xl border border-white dark:border-slate-700/50 hover:border-orange-300 dark:hover:border-orange-700 shadow-sm transition mb-3 bg-white/60 dark:bg-black/30 backdrop-blur-md cursor-pointer" onclick="nav('inbox'); openChat('${s.name}')">
+                        <div class="flex items-start gap-3">
+                            <div class="relative w-12 h-12 rounded-full ${s.bgColor} ${s.textColor} overflow-hidden shadow-sm shrink-0 flex items-center justify-center border border-white/80">${picHtml}
+                                ${badgeHtml}
+                            </div>
+                            <div class="flex flex-col max-w-[130px] lg:max-w-[150px]">
+                                <p class="text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight truncate">${s.name}</p>
+                                <p class="text-[10px] text-slate-600 dark:text-slate-400 font-medium truncate mt-0.5 ${unreadCount > 0 ? 'font-bold text-slate-800 dark:text-white' : ''}" title="${latestText}">${latestText}</p>
+                                ${subjectBadge}
+                            </div>
+                        </div>
+                        <button class="w-9 h-9 rounded-full border border-orange-200 dark:border-orange-900/50 text-[#f05a28] flex items-center justify-center hover:bg-[#f05a28] hover:text-white transition shadow-sm shrink-0 bg-white/50 dark:bg-transparent">
+                            <i class="fa-regular fa-comment-dots text-sm pointer-events-none"></i>
+                        </button>
+                    </div>`;
+
+                    htmlInboxList += cardHtml;
+                    htmlRightSidebar += cardHtml;
+                });
+            }
+            
             let clist = document.getElementById('chatContactList');
-            if(clist) clist.innerHTML = html;
+            if(clist) clist.innerHTML = htmlInboxList;
+            
+            let mentorUI = document.getElementById('studentListRightUI');
+            if(mentorUI) mentorUI.innerHTML = htmlRightSidebar;
+
+            updateUnreadBadges(); 
         }
 
         function openChat(n) {
@@ -755,7 +795,8 @@
             fetchGAS({ action: "getMessages", myId: currentUser.id, myName: currentUser.name, role: currentUser.role })
             .then(r => { 
                 if(r.status === "success") { 
-                    if(r.users) allUsersData = r.users;
+                    let rawUsers = r.users || r.data || [];
+                    if(rawUsers.length > 0) allUsersData = rawUsers;
                     
                     let isChanged = false;
                     if(JSON.stringify(cachedMessages) !== JSON.stringify(r.data)) isChanged = true;
@@ -763,6 +804,17 @@
 
                     if(isChanged) {
                         cachedMessages = r.data || []; 
+                        
+                        myStudents = allUsersData.filter(u => String(u.role || u.Role || "").toLowerCase().trim() === 'student').map(u => ({
+                            name: u.name || u.Name || "ไม่มีชื่อ", 
+                            role: 'Student', 
+                            initials: getInitials(u.name || u.Name || "A"), 
+                            pic: u.pic || u.ProfilePic || "", 
+                            class: u.assigned || u.room || u.Room || "-", 
+                            bgColor: "bg-blue-100 dark:bg-blue-900/50", 
+                            textColor: "text-blue-600 dark:text-blue-400"
+                        }));
+
                         if(activeChatContact) openChat(activeChatContact); 
                         else renderChatContacts(); 
                     }
@@ -797,7 +849,7 @@
 
         function updateProfileUI() {
             if(!currentUser) return;
-            const fullName = currentUser.name || "-";
+            const fullName = currentUser.name || "Teacher";
             const inits = getInitials(fullName);
 
             let setDisplay = document.getElementById('settingNameDisplay');
@@ -862,5 +914,3 @@
         function toggleLanguage() { showiOSToast('fa-solid fa-language', 'กำลังแปลภาษา...', 'bg-sky-100', 'text-sky-600'); }
         function logout() { sessionStorage.clear(); window.location.replace('index.html'); }
     </script>
-</body>
-</html>
