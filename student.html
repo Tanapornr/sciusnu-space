@@ -50,7 +50,7 @@
         @media (max-width: 1024px) {
             #mainSidebar { position: fixed; top: 0; left: 0; height: 100vh; transform: translateX(-100%); z-index: 50; }
             #mainSidebar.active { transform: translateX(0); }
-            #sidebarOverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 40; backdrop-filter: blur(2px); }
+            #sidebarOverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 40; backdrop-filter: blur(4px); }
             #sidebarOverlay.active { display: block; }
         }
 
@@ -66,19 +66,20 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
+        /* แก้สีตัวหนังสือตอน Hover ให้ชัดขึ้น */
         .menu-item { transition: all 0.2s ease-in-out; border-left: 4px solid transparent; cursor: pointer; }
         .menu-item:hover { color: #f05a28; background-color: rgba(240, 90, 40, 0.05); }
-        .dark .menu-item:hover { background-color: rgba(240, 90, 40, 0.1); }
-        .menu-item.active { color: #f05a28; font-weight: 700; border-left-color: #f05a28; background-color: rgba(240, 90, 40, 0.1); }
-        .dark .menu-item.active { background-color: rgba(240, 90, 40, 0.2); }
+        .dark .menu-item:hover { background-color: rgba(240, 90, 40, 0.1); color: #f05a28; }
+        .menu-item.active { color: #f05a28 !important; font-weight: 700; border-left-color: #f05a28; background-color: rgba(240, 90, 40, 0.1); }
+        .dark .menu-item.active { background-color: rgba(240, 90, 40, 0.2); color: #f05a28 !important;}
         
         .course-card { transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); cursor: pointer; }
         .course-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1); }
         .course-card:active { transform: scale(0.97); }
 
         .chat-bubble-sent { background: linear-gradient(135deg, #f05a28 0%, #fb923c 100%); color: white; border-radius: 18px 18px 4px 18px; }
-        .chat-bubble-received { background-color: rgba(255, 255, 255, 0.7); color: #334155; border-radius: 18px 18px 18px 4px; border: 1px solid rgba(0,0,0,0.05); }
-        .dark .chat-bubble-received { background-color: rgba(40, 40, 40, 0.8); color: #e2e8f0; border: 1px solid rgba(255,255,255,0.05); }
+        .chat-bubble-received { background-color: rgba(255, 255, 255, 0.9); color: #1e293b; border-radius: 18px 18px 18px 4px; border: 1px solid rgba(0,0,0,0.05); }
+        .dark .chat-bubble-received { background-color: rgba(40, 40, 40, 0.9); color: #f8fafc; border: 1px solid rgba(255,255,255,0.05); }
 
         /* ========================================================
            ✨ iOS MINIMALIST POP-UP ✨
@@ -134,19 +135,21 @@
 
     <div id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
-    <aside id="mainSidebar" class="glass-panel w-72 lg:w-64 flex flex-col flex-shrink-0 z-50">
-        <div class="h-20 lg:h-24 flex items-center px-8 border-b border-white/40 dark:border-white/5 cursor-pointer" onclick="nav('home')">
+    <!-- อัปเดตพื้นหลังเมนูด้านซ้ายให้ทึบขึ้น เพื่อให้อ่านง่าย -->
+    <aside id="mainSidebar" class="w-72 lg:w-64 flex flex-col flex-shrink-0 z-50 bg-white/90 dark:bg-[#1a1614]/95 backdrop-blur-2xl border-r border-white/50 dark:border-white/5 shadow-2xl">
+        <div class="h-20 lg:h-24 flex items-center px-8 border-b border-slate-200/50 dark:border-white/5 cursor-pointer" onclick="nav('home')">
             <div class="w-8 h-8 bg-[#f05a28] text-white rounded-full flex items-center justify-center text-sm shadow-md mr-3"><i class="fa-solid fa-sparkles"></i></div>
             <h1 class="text-xl font-black font-prompt text-[#f05a28] uppercase">Coursue</h1>
         </div>
 
         <div class="flex-1 overflow-y-auto py-6 hide-scroll flex flex-col gap-6">
-            <nav class="flex flex-col font-prompt text-slate-600 dark:text-slate-400 font-medium text-sm" id="sidebarMenu"></nav>
+            <!-- ปรับสีตัวหนังสือเป็นสีเทาเข้มเกือบดำ (text-slate-800) และให้หนาขึ้น (font-semibold) -->
+            <nav class="flex flex-col font-prompt text-slate-800 dark:text-slate-200 font-semibold text-sm" id="sidebarMenu"></nav>
         </div>
 
-        <div class="p-6 border-t border-white/40 dark:border-white/5">
-            <div class="flex flex-col font-prompt text-sm">
-                <a onclick="nav('settings')" id="nav_settings" class="menu-item px-8 py-4 flex items-center text-slate-600 dark:text-slate-400"><i class="fa-solid fa-user-gear w-6 mr-3 text-lg"></i> <span>ตั้งค่าโปรไฟล์</span></a>
+        <div class="p-6 border-t border-slate-200/50 dark:border-white/5">
+            <div class="flex flex-col font-prompt text-sm font-semibold">
+                <a onclick="nav('settings')" id="nav_settings" class="menu-item px-8 py-4 flex items-center text-slate-800 dark:text-slate-200"><i class="fa-solid fa-user-gear w-6 mr-3 text-lg"></i> <span>ตั้งค่าโปรไฟล์</span></a>
                 <a onclick="logout()" class="menu-item px-8 py-4 flex items-center text-rose-500"><i class="fa-solid fa-arrow-right-from-bracket w-6 mr-3 text-lg"></i> <span>ออกจากระบบ</span></a>
             </div>
         </div>
@@ -156,7 +159,7 @@
         
         <header class="h-20 lg:h-24 flex items-center justify-between px-4 lg:px-10 border-b border-white/30 dark:border-white/5 glass-panel shrink-0 shadow-sm lg:shadow-none">
             <div class="flex items-center gap-3">
-                <button onclick="toggleSidebar()" class="lg:hidden w-10 h-10 flex items-center justify-center text-slate-600 dark:text-slate-300 bg-white/50 dark:bg-black/30 rounded-xl"><i class="fa-solid fa-bars-staggered text-xl"></i></button>
+                <button onclick="toggleSidebar()" class="lg:hidden w-10 h-10 flex items-center justify-center text-slate-600 dark:text-slate-300 bg-white/80 dark:bg-black/50 backdrop-blur-md rounded-xl shadow-sm"><i class="fa-solid fa-bars-staggered text-xl"></i></button>
                 <div class="lg:hidden font-black font-prompt text-[#f05a28] text-xl">COURSUE</div>
             </div>
 
@@ -166,7 +169,7 @@
             </div>
 
             <div class="flex items-center gap-3 ml-auto">
-                <button onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/50 dark:bg-black/30 border border-white/50 dark:border-white/10 shadow-sm transition-all hover:scale-105">
+                <button onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-md border border-white/50 dark:border-white/10 shadow-sm transition-all hover:scale-105">
                     <i id="themeIcon" class="fa-solid fa-moon text-slate-600 dark:text-yellow-400 text-lg"></i>
                 </button>
 
@@ -191,7 +194,6 @@
 
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 mb-8 lg:mb-12" id="subjectGrid"></div>
                 
-                <!-- 1. รายการโปรดของคุณ (เปลี่ยนเป็น Grid) -->
                 <div id="favHomeSection" class="hidden mb-10">
                     <div class="flex items-center justify-between mb-5">
                         <h3 class="text-xl lg:text-2xl font-bold font-prompt text-slate-800 dark:text-slate-100 flex items-center">
@@ -201,7 +203,6 @@
                     <div id="lessonGrid_fav_home" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 pb-6"></div>
                 </div>
 
-                <!-- 2. เรียนค้างไว้... มาลุยต่อ! (เปลี่ยนเป็น Grid) -->
                 <div id="continueWatchingSection" class="hidden mb-10 border-t border-slate-300/30 dark:border-white/10 pt-8 mt-4">
                     <div class="flex items-center justify-between mb-5">
                         <h3 class="text-xl lg:text-2xl font-bold font-prompt text-slate-800 dark:text-slate-100 flex items-center">
@@ -211,7 +212,6 @@
                     <div id="lessonGrid_continue" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 pb-6"></div>
                 </div>
 
-                <!-- 3. แนะนำสำหรับคุณ (เปลี่ยนเป็น Grid พอดีจอ ไม่ตกขอบ) -->
                 <div id="recommendedSection" class="mb-10 border-t border-slate-300/30 dark:border-white/10 pt-8 mt-4">
                     <div class="flex items-center justify-between mb-5">
                         <h3 class="text-xl lg:text-2xl font-bold font-prompt text-slate-800 dark:text-slate-100 flex items-center">
@@ -315,9 +315,9 @@
         </div>
     </main>
 
-    <aside id="rightSidebar" class="glass-panel w-72 flex-shrink-0 hidden lg:flex flex-col h-full shadow-sm relative border-l border-white/50 dark:border-white/10">
+    <aside id="rightSidebar" class="w-72 flex-shrink-0 hidden lg:flex flex-col h-full shadow-sm relative border-l border-white/50 dark:border-white/10 bg-white/90 dark:bg-[#1a1614]/95 backdrop-blur-2xl">
         <div class="p-8 overflow-y-auto flex-1 hide-scroll pb-24">
-            <div class="text-right lg:hidden mb-4"><button onclick="document.getElementById('rightSidebar').classList.add('hidden')" class="text-slate-500 bg-white/50 dark:bg-black/50 w-8 h-8 rounded-full"><i class="fa-solid fa-xmark"></i></button></div>
+            <div class="text-right lg:hidden mb-4"><button onclick="document.getElementById('rightSidebar').classList.add('hidden')" class="text-slate-500 bg-slate-100 dark:bg-slate-800 w-8 h-8 rounded-full shadow-sm"><i class="fa-solid fa-xmark"></i></button></div>
             <div class="flex justify-between items-center mb-8"><h3 class="font-bold text-slate-800 dark:text-slate-200 text-sm font-prompt uppercase tracking-widest">STUDENT PROFILE</h3></div>
             
             <div class="text-center mb-10">
@@ -327,14 +327,14 @@
                 </div>
                 <h3 class="font-bold text-xl font-prompt text-slate-800 dark:text-white mb-3" id="rightProfileFullName">-</h3>
                 <div class="flex justify-center gap-2 mt-2 items-center">
-                    <span class="bg-orange-100/50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 font-bold px-3 py-1.5 rounded-full text-[11px] shadow-sm border border-orange-200 dark:border-orange-800/50" id="rightProfileId">ID: -</span>
-                    <span class="bg-slate-100/50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 font-bold px-3 py-1.5 rounded-full text-[11px] shadow-sm border border-slate-200 dark:border-slate-700" id="rightProfileClass">Class: -</span>
+                    <span class="bg-orange-100/80 dark:bg-orange-900/50 text-orange-700 dark:text-orange-300 font-bold px-3 py-1.5 rounded-full text-[11px] shadow-sm border border-orange-200/50 dark:border-orange-800/50" id="rightProfileId">ID: -</span>
+                    <span class="bg-slate-100/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 font-bold px-3 py-1.5 rounded-full text-[11px] shadow-sm border border-slate-200/50 dark:border-slate-700/50" id="rightProfileClass">Class: -</span>
                 </div>
             </div>
 
             <h4 class="font-bold text-slate-800 dark:text-slate-200 font-prompt text-sm mb-5 uppercase tracking-widest mt-8">TEACHER</h4>
             <div class="space-y-3" id="mentorListUI">
-                <div class="text-[10px] text-slate-500 dark:text-slate-400 text-center py-4 bg-white/40 dark:bg-black/20 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">กำลังโหลดข้อมูลอาจารย์...</div>
+                <div class="text-[10px] text-slate-500 dark:text-slate-400 text-center py-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">กำลังโหลดข้อมูลอาจารย์...</div>
             </div>
         </div>
     </aside>
@@ -557,7 +557,6 @@
                 document.getElementById('allSubjectTitle').innerText = currentSubject !== "" ? "วิชา: " + currentSubject + " (เฉพาะรายการโปรด)" : "รายการโปรดทั้งหมด";
             } else { document.getElementById('allSubjectTitle').innerText = currentSubject !== "" ? "วิชา: " + currentSubject : "บทเรียนทั้งหมด"; }
 
-            // ปรับการสร้าง Layout ในหน้าบทเรียนให้เป็นตาราง (Grid)
             document.getElementById('lessonGrid_student').innerHTML = filtered.length > 0 ? filtered.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'grid')).join('') : '<div class="col-span-full py-20 text-center text-slate-500 dark:text-slate-400 font-bold border-2 border-dashed border-slate-300/50 dark:border-slate-700/50 rounded-[2rem]">ไม่พบข้อมูลบทเรียน</div>';
         }
 
@@ -609,7 +608,6 @@
                     </div>
                 </div>` : '';
 
-            // ถอดความกว้างแบบเลื่อนสไลด์ออก ปล่อยให้ Grid จัดการแทน
             let widthClass = layoutType === 'scroll' ? 'min-w-[85vw] sm:min-w-[340px] max-w-[85vw] sm:max-w-[340px] snap-start shrink-0' : '';
 
             return `
@@ -636,7 +634,7 @@
         }
 
         function renderHomeLessons() { 
-            let latest = [...allLessons].reverse().slice(0, 6); // โชว์ 6 อันให้พอดีตาราง
+            let latest = [...allLessons].reverse().slice(0, 6); 
             document.getElementById('lessonGrid_home').innerHTML = latest.map(l => renderLessonCard(l, allLessons.indexOf(l), true, 'grid')).join(''); 
             
             let continueSection = document.getElementById('continueWatchingSection');
@@ -647,7 +645,6 @@
             });
 
             if(continueLessons.length > 0) {
-                // ส่งเป็น grid layout
                 continueGrid.innerHTML = continueLessons.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'grid')).join('');
                 continueSection.classList.remove('hidden');
             } else { continueSection.classList.add('hidden'); continueGrid.innerHTML = ''; }
@@ -659,7 +656,6 @@
             let favGrid = document.getElementById('lessonGrid_fav_home');
             if(favs.length > 0) {
                 let fLessons = allLessons.filter(l => favs.includes(l.title));
-                // ส่งเป็น grid layout
                 favGrid.innerHTML = fLessons.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'grid')).join('');
                 favSection.classList.remove('hidden');
             } else { favSection.classList.add('hidden'); favGrid.innerHTML = ''; }
