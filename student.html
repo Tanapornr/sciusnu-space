@@ -39,6 +39,11 @@
         .rich-text { line-height: 1.8; font-size: 1rem; color: #475569; }
         .chat-bubble-sent { background: linear-gradient(135deg, #6d28d9 0%, #8b5cf6 100%); color: white; border-radius: 18px 18px 4px 18px; }
         .chat-bubble-received { background-color: #f1f5f9; color: #334155; border-radius: 18px 18px 18px 4px; border: 1px solid #e2e8f0; }
+
+        /* อนิเมชั่นสำหรับการ์ดวิชา */
+        .subject-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .subject-card:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.15); filter: brightness(1.1); }
+        .subject-card:active { transform: scale(0.95); }
     </style>
 </head>
 <body class="flex h-screen w-screen overflow-hidden antialiased">
@@ -77,7 +82,6 @@
             </div>
 
             <div class="flex items-center gap-3">
-                <button onclick="toggleLanguage()" class="px-3 py-1.5 bg-slate-100 text-slate-600 rounded-lg text-xs font-bold uppercase" id="langToggleBtn">EN</button>
                 <button onclick="toggleRightSidebar()" class="lg:hidden w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm">
                     <img id="mobileHeaderProfileImg" src="" class="w-full h-full object-cover hidden">
                     <div id="mobileHeaderProfileInitials" class="w-full h-full bg-purple-100 text-purple-600 flex items-center justify-center text-xs font-bold">A</div>
@@ -97,7 +101,7 @@
                     <i class="fa-solid fa-sparkles absolute -right-4 -bottom-4 text-9xl text-white/10"></i>
                 </div>
 
-                <div class="flex overflow-x-auto gap-3 lg:gap-4 pb-4 mb-6 lg:mb-8 hide-scroll" id="subjectGrid"></div>
+                <div class="flex overflow-x-auto gap-4 lg:gap-6 pb-6 mb-6 lg:mb-8 hide-scroll snap-x snap-mandatory" id="subjectGrid"></div>
                 
                 <h3 class="text-xl lg:text-2xl font-bold mb-5 font-prompt text-slate-800">แนะนำสำหรับคุณ</h3>
                 <!-- ใช้ Scroll แนวนอน (Swipe) ในมือถือ -->
@@ -131,7 +135,7 @@
                         <i class="fa-regular fa-heart mr-2 text-rose-500"></i> <span>รายการโปรด</span>
                     </button>
                 </div>
-                <div class="flex overflow-x-auto gap-3 lg:gap-4 pb-4 mb-6 lg:mb-8 hide-scroll" id="allSubjectGrid"></div>
+                <div class="flex overflow-x-auto gap-4 lg:gap-6 pb-6 mb-6 lg:mb-8 hide-scroll snap-x snap-mandatory" id="allSubjectGrid"></div>
                 <div id="loadingLessons_student" class="hidden text-purple-500 font-bold flex items-center justify-center py-10"><i class="fa-solid fa-circle-notch fa-spin mr-3 text-2xl"></i> กำลังโหลด...</div>
                 
                 <!-- หน้ารวมยังเป็น Grid ปกติ -->
@@ -157,6 +161,7 @@
                     <div id="det_content" class="rich-text whitespace-pre-wrap px-1 lg:px-2"></div>
                 </div>
                 
+                <!-- กล่องแบบทดสอบ (จะซ่อนถาวรหากเป็นวิดีโอ) -->
                 <div id="quizSectionWrapper" class="bg-white rounded-[1.5rem] lg:rounded-[2rem] p-5 lg:p-8 border-t-8 border-[#6d28d9] shadow-md hidden">
                     <h3 id="quizSectionTitle" class="text-xl lg:text-2xl font-bold mb-6 border-b pb-4 font-prompt">แบบทดสอบประจำบท</h3>
                     <div id="quizCompletedMsg" class="hidden bg-emerald-50 rounded-2xl p-8 lg:p-10 text-center border border-emerald-100">
@@ -258,6 +263,18 @@
         let lastTime = 0; 
         let questionTriggers = []; 
 
+        // ชุดสี Gradient สำหรับสุ่มให้การ์ดวิชา (ตรงตามแบบ)
+        const gradientColors = [
+            "from-[#3b82f6] to-[#60a5fa]", // Blue
+            "from-[#f97316] to-[#fb923c]", // Orange
+            "from-[#22c55e] to-[#4ade80]", // Green
+            "from-[#eab308] to-[#facc15]", // Yellow
+            "from-[#ec4899] to-[#f472b6]", // Pink
+            "from-[#8b5cf6] to-[#a78bfa]", // Purple
+            "from-[#14b8a6] to-[#2dd4bf]", // Teal
+            "from-[#f43f5e] to-[#fb7185]"  // Rose
+        ];
+
         function fetchGAS(payload) { return fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r => r.json()); }
         function getInitials(n) { let p = n.trim().split(/\s+/); return p.length >= 2 ? (p[0][0] + p[1][0]).toUpperCase() : n.substring(0, 2).toUpperCase(); }
         function extractYouTubeID(u) { let m = u.match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/); return (m && m[7].length === 11) ? m[7] : false; }
@@ -354,8 +371,29 @@
                     }
 
                     document.getElementById('loadingLessons_student').style.display = 'none';
-                    let sH = ""; allSubjects.forEach(s => { sH += `<div class="bg-white rounded-2xl p-4 border border-slate-100 flex items-center min-w-[160px] cursor-pointer hover:border-purple-300 hover:shadow-md shadow-sm transition active:scale-95 group" onclick="selectSubject('${s}')"><div class="w-10 h-10 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center mr-3 shadow-inner group-hover:bg-purple-600 group-hover:text-white transition"><i class="fa-solid fa-layer-group text-xs"></i></div><p class="font-bold text-[11px] truncate text-slate-700">${s}</p></div>`; });
-                    document.getElementById('subjectGrid').innerHTML = sH; document.getElementById('allSubjectGrid').innerHTML = sH;
+                    
+                    // ปรับกล่องวิชาให้เป็นการ์ดสี Gradient สวยงาม
+                    let sH = ""; 
+                    allSubjects.forEach((s, idx) => { 
+                        let colorClass = gradientColors[idx % gradientColors.length];
+                        let lessonCount = allLessons.filter(l => String(l.subject).trim() === String(s).trim()).length;
+                        
+                        sH += `
+                        <div class="subject-card bg-gradient-to-br ${colorClass} rounded-[2rem] p-6 lg:p-8 flex flex-col justify-between min-w-[240px] lg:min-w-[280px] h-[140px] lg:h-[160px] cursor-pointer text-white snap-start shrink-0 relative overflow-hidden" onclick="selectSubject('${s}')">
+                            <i class="fa-solid fa-book-open absolute -right-6 -bottom-6 text-8xl opacity-20 transform -rotate-12"></i>
+                            <div>
+                                <h3 class="font-bold text-lg lg:text-xl font-prompt leading-tight drop-shadow-sm">${s}</h3>
+                            </div>
+                            <div class="flex items-center gap-2 mt-auto">
+                                <div class="bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-bold shadow-sm">
+                                    <i class="fa-solid fa-layer-group mr-1"></i> ${lessonCount} บทเรียน
+                                </div>
+                            </div>
+                        </div>`; 
+                    });
+                    
+                    document.getElementById('subjectGrid').innerHTML = sH; 
+                    document.getElementById('allSubjectGrid').innerHTML = sH;
                     
                     renderHomeLessons(); renderHomeFavorites(); renderStudentLessons(); updateStats(); renderChatContacts();
                 }
@@ -412,15 +450,13 @@
                 progressIndicator = `<div class="absolute bottom-0 left-0 w-full h-1.5 bg-slate-200/50 z-20"><div class="h-full bg-amber-400" style="width: ${progPct}%"></div></div>`;
             }
 
-            // คำนวณจำนวนโจทย์ที่อาจารย์ตั้งไว้
+            // คำนวณคะแนนตามข้อที่มีอยู่จริง
             let totalQs = (l.questions || []).filter(q => q && q.q && q.q.trim() !== "").length;
             let scoreHtml = '';
             
             if (totalQs > 0) {
-                // ถ้ามีข้อสอบ โชว์ 0/จำนวนข้อจริง
                 scoreHtml = `<div class="mt-auto border-t border-slate-100 pt-4"><span class="text-xs font-bold text-emerald-500">Score: ${isC ? l.studentScore : 0}/${totalQs}</span></div>`;
             } else {
-                // ถ้าไม่มีข้อสอบ ซ่อนสกอร์และโชว์ป้ายอื่นแทน
                 if(isC) {
                     scoreHtml = `<div class="mt-auto border-t border-slate-100 pt-4"><span class="text-xs font-bold text-emerald-500"><i class="fa-solid fa-circle-check mr-1"></i>เรียนจบแล้ว</span></div>`;
                 } else {
@@ -428,7 +464,6 @@
                 }
             }
 
-            // คลาสสำหรับบังคับขนาดตอนอยู่ในโหมด Scroll แนวนอน (หน้าแรก)
             let widthClass = layoutType === 'scroll' ? 'min-w-[85vw] sm:min-w-[340px] max-w-[85vw] sm:max-w-[340px] snap-start shrink-0' : '';
 
             return `
@@ -487,9 +522,6 @@
             if(document.getElementById('view_lessons').style.display !== 'none') { renderStudentLessons(); }
         }
 
-        // =====================================
-        // ระบบ YouTube API: Anti-Skip + Pop-up Real Test
-        // =====================================
         function showQuestionPopup(questionObj, qIndex) {
             if(ytPlayer && typeof ytPlayer.pauseVideo === 'function') ytPlayer.pauseVideo(); 
 
@@ -545,7 +577,7 @@
             if(!ytPlayer || typeof ytPlayer.getDuration !== 'function') return;
             
             let duration = ytPlayer.getDuration();
-            let vQs = (currentLesson.questions || []).filter(q => q.q);
+            let vQs = (currentLesson.questions || []).filter(q => q && q.q && q.q.trim() !== "");
             let answeredList = JSON.parse(localStorage.getItem('ytAnsQs_' + currentUser.id + '_' + currentLesson.title) || '[]');
 
             if (duration > 0 && vQs.length > 0) {
@@ -583,7 +615,6 @@
                         let currentTime = ytPlayer.getCurrentTime();
                         let duration = ytPlayer.getDuration();
 
-                        // 🚫 ระบบ Anti-Skip (ล็อกห้ามกรอข้าม)
                         if (currentTime > maxTimeWatched && currentTime > lastTime + 2) {
                             ytPlayer.seekTo(maxTimeWatched, true);
                             currentTime = maxTimeWatched; 
@@ -601,7 +632,6 @@
                         if (duration > 0) {
                             let pct = (currentTime / duration) * 100;
 
-                            // 📝 เช็คจุดเด้งคำถามคั่นเวลา
                             for (let i = 0; i < questionTriggers.length; i++) {
                                 let trigger = questionTriggers[i];
                                 if (currentTime >= trigger.time && !trigger.answered) {
@@ -611,13 +641,11 @@
                                 }
                             }
 
-                            // เมื่อดูวิดีโอจนจบ
                             if (duration - currentTime < 5) {
                                 localStorage.setItem('ytProg_' + currentUser.id + '_' + currentLesson.title, "done");
                                 localStorage.removeItem('ytPct_' + currentUser.id + '_' + currentLesson.title);
                                 clearInterval(ytProgressTimer); ytProgressTimer = null;
                                 
-                                // ส่งคะแนนทันทีที่ดูจบ
                                 if (currentLesson.studentScore === null) {
                                     let finalScore = parseInt(localStorage.getItem('ytScore_' + currentUser.id + '_' + currentLesson.title) || '0');
                                     submitQuiz(true, finalScore);
@@ -643,12 +671,10 @@
 
             let ytId = extractYouTubeID(currentLesson.content.match(/\[YT:(.*?)\]/)?.[1] || "");
             
-            // เช็คจำนวนคำถามของบทเรียนนี้
             let vQs = (currentLesson.questions || []).filter(q => q && q.q && q.q.trim() !== "");
             let totalQs = vQs.length;
             let quizWrapper = document.getElementById('quizSectionWrapper');
 
-            // การจัดการโชว์/ซ่อน ข้อความคะแนน
             if (totalQs === 0) {
                 document.getElementById('quizCompletedTitle').innerText = "เยี่ยมมาก! คุณเรียนจบบทนี้แล้ว 🎉";
                 document.getElementById('quizCompletedScoreBox').classList.add('hidden');
@@ -659,7 +685,6 @@
             }
 
             if(ytId) { 
-                // โหมดวิดีโอ YouTube
                 document.getElementById('det_video_container').innerHTML = `
                     <div id="ytplayer_div" class="w-full h-full absolute inset-0"></div>
                     <div id="antiSkipWarning" class="absolute top-4 left-1/2 -translate-x-1/2 bg-rose-500 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg transition-opacity duration-300 opacity-0 pointer-events-none z-50"><i class="fa-solid fa-ban mr-1"></i> ห้ามข้ามวิดีโอนะครับ</div>
@@ -673,18 +698,16 @@
                     events: { 'onReady': onYouTubePlayerReady, 'onStateChange': onYouTubePlayerStateChange }
                 });
 
-                // หากดูจบและสอบผ่านแล้วให้โชว์คะแนนด้านล่าง แต่ถ้ายังดูอยู่ ซ่อนกล่องข้อสอบทิ้ง 100%
                 if(currentLesson.studentScore !== null) {
                     quizWrapper.classList.remove('hidden');
                     document.getElementById('quizForm').classList.add('hidden'); 
                     document.getElementById('quizCompletedMsg').classList.remove('hidden'); 
                     document.getElementById('quizScoreResult').innerText = currentLesson.studentScore; 
                 } else {
-                    quizWrapper.classList.add('hidden'); // วิดีโอยังดูไม่จบ ซ่อนกล่องล่างไปเลย!
+                    quizWrapper.classList.add('hidden'); 
                 }
 
             } else { 
-                // โหมดบทความภาพ (ไม่มีวิดีโอ) โชว์กล่องข้อสอบด้านล่างปกติ
                 document.getElementById('det_video_container').classList.add('hidden'); 
                 document.getElementById('det_image_container').classList.remove('hidden'); 
                 document.getElementById('det_img_src').src = getImageUrl(currentLesson.title); 
@@ -725,7 +748,6 @@
                 } 
             }
             
-            // ล้างประวัติข้อมูลชั่วคราว
             localStorage.removeItem('ytProg_' + currentUser.id + '_' + currentLesson.title);
             localStorage.removeItem('ytPct_' + currentUser.id + '_' + currentLesson.title);
             localStorage.removeItem('ytMax_' + currentUser.id + '_' + currentLesson.title);
