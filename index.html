@@ -46,54 +46,88 @@
 
         input::placeholder { color: #cbd5e1; font-size: 0.9rem; }
         
-        .swal-rounded { border-radius: 24px !important; }
-        .swal-btn { border-radius: 999px !important; padding: 12px 32px !important; font-family: 'Prompt', sans-serif !important; font-weight: 600 !important; }
+        /* ========================================================
+           ✨ iOS MINIMALIST POP-UP STYLES ✨
+           ======================================================== */
+        .ios-popup {
+            border-radius: 28px !important;
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            box-shadow: 0 24px 48px rgba(0,0,0,0.1) !important;
+            border: 1px solid rgba(255, 255, 255, 0.8) !important;
+            padding: 2em 1.5em !important;
+        }
+        
+        /* ป๊อปอัพต้อนรับ (เน้นความสวยงาม ไร้กรอบรบกวน) */
+        .ios-welcome-popup {
+            border-radius: 32px !important;
+            background: rgba(255, 255, 255, 0.9) !important;
+            backdrop-filter: blur(24px) !important;
+            -webkit-backdrop-filter: blur(24px) !important;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15) !important;
+            border: 1px solid rgba(255, 255, 255, 0.6) !important;
+            padding: 2.5rem 2rem !important;
+            width: auto !important;
+            min-width: 320px !important;
+        }
+
+        .swal2-title { font-family: 'Prompt', sans-serif !important; color: #1d1d1f !important; font-size: 1.2rem !important; margin-bottom: 0.5em !important;}
+        .swal2-html-container { font-family: 'Sarabun', sans-serif !important; color: #475569 !important; }
+
+        .swal2-confirm {
+            border-radius: 999px !important; font-family: 'Prompt', sans-serif !important; font-weight: 600 !important;
+            padding: 12px 36px !important; background-color: #f05a28 !important; font-size: 0.95rem !important;
+            box-shadow: 0 8px 20px -6px rgba(240, 90, 40, 0.5) !important; transition: all 0.2s ease !important;
+        }
+        .swal2-confirm:hover { background-color: #d94a1d !important; transform: translateY(-2px) !important; box-shadow: 0 12px 24px -6px rgba(240, 90, 40, 0.6) !important; }
+        .swal2-confirm:active { transform: scale(0.96) !important; }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 sm:p-6 relative">
+<body class="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8 relative">
 
     <div class="absolute top-0 left-0 w-48 h-48 sm:w-72 sm:h-72 bg-orange-300 rounded-full mix-blend-multiply filter blur-[60px] opacity-60 animate-blob z-0"></div>
     <div class="absolute bottom-0 right-0 w-56 h-56 sm:w-96 sm:h-96 bg-rose-200 rounded-full mix-blend-multiply filter blur-[60px] opacity-60 animate-blob animation-delay-2000 z-0"></div>
 
-    <div class="glass-container w-full max-w-4xl rounded-[2rem] lg:rounded-[3rem] p-2 sm:p-4 flex flex-col md:flex-row relative z-10 mx-auto">
+    <div class="glass-container w-full max-w-[950px] rounded-[2rem] lg:rounded-[3rem] p-2 sm:p-4 flex flex-col md:flex-row relative z-10 mx-auto">
         
-        <div class="w-full md:w-1/2 bg-white rounded-[1.5rem] lg:rounded-[2.5rem] p-6 sm:p-8 lg:p-12 shadow-sm flex flex-col justify-center relative overflow-hidden">
+        <div class="w-full md:w-[45%] bg-white rounded-[1.5rem] lg:rounded-[2.5rem] p-6 sm:p-10 lg:p-12 shadow-sm flex flex-col justify-center relative overflow-hidden">
             
-            <div class="mb-6 lg:mb-8 text-center md:text-left">
+            <div class="mb-6 sm:mb-8 text-center md:text-left">
                 <p class="text-orange-500 font-bold text-[10px] sm:text-xs uppercase tracking-widest mb-1">SCiUS Portal</p>
                 <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-800 font-prompt tracking-tight">Login</h1>
             </div>
 
-            <div class="space-y-4 lg:space-y-5 w-full max-w-sm mx-auto md:max-w-none">
+            <div class="space-y-4 sm:space-y-5 w-full max-w-sm mx-auto md:max-w-none">
                 <div>
                     <label class="block text-[11px] sm:text-xs font-bold text-slate-600 mb-2 uppercase tracking-wide">Username</label>
                     <div class="relative">
-                        <input type="text" id="username" placeholder="กรอกชื่อผู้ใช้งาน..." class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all text-sm font-medium text-slate-700">
+                        <input type="text" id="username" placeholder="กรอกชื่อผู้ใช้งาน..." class="w-full px-4 sm:px-5 py-3 sm:py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all text-sm font-medium text-slate-700">
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-[11px] sm:text-xs font-bold text-slate-600 mb-2 uppercase tracking-wide">Password</label>
                     <div class="relative">
-                        <input type="password" id="password" placeholder="กรอกรหัสผ่าน..." class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all text-sm font-medium text-slate-700">
+                        <input type="password" id="password" placeholder="กรอกรหัสผ่าน..." class="w-full px-4 sm:px-5 py-3 sm:py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all text-sm font-medium text-slate-700">
                         <button type="button" onclick="togglePassword()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-orange-500 transition">
                             <i class="fa-regular fa-eye" id="eyeIcon"></i>
                         </button>
                     </div>
                     
                     <div class="text-right mt-2">
-                        <a href="#" onclick="forgotPassword()" class="text-[11px] font-bold text-orange-500 hover:text-orange-700 transition">Forgot Password?</a>
+                        <a href="#" onclick="forgotPassword()" class="text-[10px] sm:text-[11px] font-bold text-orange-500 hover:text-orange-700 transition">Forgot Password?</a>
                     </div>
                 </div>
 
-                <button onclick="login()" class="w-full bg-[#f05a28] hover:bg-[#d94a1d] text-white font-bold py-3.5 sm:py-4 rounded-xl shadow-[0_8px_20px_-6px_rgba(240,90,40,0.6)] active:scale-[0.98] transition-all duration-200 font-prompt text-base sm:text-lg mt-4">
+                <button onclick="login()" class="w-full bg-[#f05a28] hover:bg-[#d94a1d] text-white font-bold py-3.5 sm:py-4 rounded-xl sm:rounded-2xl shadow-[0_8px_20px_-6px_rgba(240,90,40,0.6)] active:scale-[0.98] transition-all duration-200 font-prompt text-base sm:text-lg mt-2 sm:mt-4">
                     Sign in
                 </button>
             </div>
             
         </div>
 
-        <div class="hidden md:flex w-1/2 items-center justify-center p-8 relative">
+        <div class="hidden md:flex w-[55%] items-center justify-center p-8 relative">
             <img src="https://i.postimg.cc/Df9Gq2s3/d-sin-th-y-ngmi-di-t-ngch-x-(15).png" 
                  alt="3D Character" 
                  class="w-[85%] max-w-[300px] lg:max-w-[400px] h-auto object-contain animate-float drop-shadow-2xl filter contrast-105">
@@ -105,7 +139,6 @@
     </div>
 
     <script>
-        // เปลี่ยนลิงก์เป็น URL ใหม่ล่าสุดเรียบร้อยครับ
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbyDcg8d6HS5ul8_3vkJCgqOZnano4kNmgvqMgsdYl5vYzOAJmBin11VBkVULmWcnHBuAA/exec';
 
         window.onload = () => { sessionStorage.clear(); localStorage.clear(); };
@@ -126,14 +159,17 @@
             }
         }
 
+        // ปรับแจ้งเตือนให้เป็นแบบ iOS
         function forgotPassword() {
             Swal.fire({
-                icon: 'info',
-                title: 'ลืมรหัสผ่าน?',
-                text: 'กรุณาติดต่อคุณครูหรือแอดมินผู้ดูแลระบบเพื่อขอรีเซ็ตรหัสผ่านใหม่ครับ',
+                html: `<div class="flex flex-col items-center gap-3">
+                          <div class="w-14 h-14 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center text-3xl mb-2"><i class="fa-solid fa-key"></i></div>
+                          <h2 class="font-prompt font-bold text-xl text-slate-800">ลืมรหัสผ่าน?</h2>
+                          <p class="text-sm text-slate-500">กรุณาติดต่อคุณครูหรือแอดมินผู้ดูแลระบบเพื่อขอรีเซ็ตรหัสผ่านใหม่ครับ</p>
+                       </div>`,
                 confirmButtonColor: '#f05a28',
                 confirmButtonText: 'เข้าใจแล้ว',
-                customClass: { popup: 'swal-rounded', confirmButton: 'swal-btn' }
+                customClass: { popup: 'ios-popup' }
             });
         }
 
@@ -143,12 +179,14 @@
 
             if (!u || !p) {
                 Swal.fire({
-                    icon: 'warning',
-                    title: 'ข้อมูลไม่ครบ',
-                    text: 'กรุณากรอก Username และ Password ให้ครบถ้วน',
+                    html: `<div class="flex flex-col items-center gap-3">
+                              <div class="w-14 h-14 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center text-3xl mb-2"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                              <h2 class="font-prompt font-bold text-xl text-slate-800">ข้อมูลไม่ครบ</h2>
+                              <p class="text-sm text-slate-500">กรุณากรอก Username และ Password ให้ครบถ้วน</p>
+                           </div>`,
                     confirmButtonColor: '#f05a28',
                     confirmButtonText: 'ตกลง',
-                    customClass: { popup: 'swal-rounded', confirmButton: 'swal-btn' }
+                    customClass: { popup: 'ios-popup' }
                 });
                 return;
             }
@@ -157,11 +195,14 @@
                 title: 'กำลังเข้าสู่ระบบ...',
                 text: 'กรุณารอสักครู่',
                 allowOutsideClick: false,
+                customClass: { popup: 'ios-popup' },
                 didOpen: () => { Swal.showLoading(); }
             });
 
             fetch(GAS_URL, {
+                redirect: "follow", 
                 method: 'POST',
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
                 body: JSON.stringify({ action: "login", username: u, password: p })
             })
             .then(res => res.text()) 
@@ -181,49 +222,80 @@
                         
                         sessionStorage.setItem('currentUser', JSON.stringify(userObj));
                         
+                        // สร้าง HTML รูปโปรไฟล์และข้อมูลสไตล์ iOS แบบที่ 2
+                        let initials = userObj.name.trim().substring(0, 2).toUpperCase();
+                        let profilePicHtml = userObj.pic ? 
+                            `<img src="${userObj.pic}" class="w-full h-full object-cover">` : 
+                            `<div class="w-full h-full bg-orange-100 text-orange-600 flex items-center justify-center text-3xl font-black">${initials}</div>`;
+
+                        let welcomeHtml = `
+                            <div class="flex flex-col items-center">
+                                <h2 class="font-prompt font-extrabold text-2xl text-slate-800 mb-6 drop-shadow-sm">ยินดีต้อนรับ!</h2>
+                                
+                                <div class="relative w-28 h-28 mb-5 border-[4px] border-white shadow-xl rounded-full overflow-hidden bg-white">
+                                    ${profilePicHtml}
+                                </div>
+                                
+                                <h3 class="font-prompt font-bold text-2xl text-slate-800 mb-4">${userObj.name}</h3>
+                                
+                                <div class="flex justify-center gap-3 w-full">
+                                    <span class="bg-orange-50 text-orange-600 font-bold px-4 py-2 rounded-full text-xs shadow-sm border border-orange-200/60">ID: ${userObj.id}</span>
+                                    <span class="bg-slate-50 text-slate-600 font-bold px-4 py-2 rounded-full text-xs shadow-sm border border-slate-200/60">Class: ${userObj.assigned || '-'}</span>
+                                </div>
+                            </div>
+                        `;
+
                         Swal.fire({
-                            icon: 'success',
-                            title: 'ยินดีต้อนรับ!',
-                            text: `เข้าสู่ระบบสำเร็จในฐานะ ${userObj.role}`,
+                            html: welcomeHtml,
                             showConfirmButton: false,
-                            timer: 1500
+                            timer: 2800, // ค้างไว้ 2.8 วิให้อ่านข้อมูลทัน
+                            customClass: { popup: 'ios-welcome-popup' }
                         }).then(() => {
                             let r = String(userObj.role).toLowerCase();
                             if (r === 'admin') window.location.href = 'admin.html';
                             else if (r === 'teacher') window.location.href = 'teacher.html';
                             else window.location.href = 'student.html';
                         });
+
                     } else {
                         Swal.fire({
-                            icon: 'error',
-                            title: 'เข้าสู่ระบบไม่สำเร็จ',
-                            text: data.message || 'Username หรือ Password ไม่ถูกต้อง',
+                            html: `<div class="flex flex-col items-center gap-3">
+                                      <div class="w-14 h-14 bg-rose-100 text-rose-500 rounded-full flex items-center justify-center text-3xl mb-2"><i class="fa-solid fa-xmark"></i></div>
+                                      <h2 class="font-prompt font-bold text-xl text-slate-800">เข้าสู่ระบบไม่สำเร็จ</h2>
+                                      <p class="text-sm text-slate-500">${data.message || 'Username หรือ Password ไม่ถูกต้อง'}</p>
+                                   </div>`,
                             confirmButtonColor: '#f05a28',
                             confirmButtonText: 'ลองอีกครั้ง',
-                            customClass: { popup: 'swal-rounded', confirmButton: 'swal-btn' }
+                            customClass: { popup: 'ios-popup' }
                         });
                     }
                 } catch (e) {
-                    console.error("GAS returned HTML error instead of JSON:", text);
                     Swal.fire({
-                        icon: 'error',
-                        title: 'พบข้อผิดพลาดที่ฐานข้อมูล',
-                        html: 'ระบบฐานข้อมูล Google Sheets ไม่ตอบสนอง<br><br><b>วิธีแก้เบื้องต้น:</b><br>1. ตรวจสอบชื่อแผ่นงาน (Sheet) ว่าตั้งถูกเป๊ะหรือไม่ (เช่น Users ตัว U ใหญ่)<br>2. ลืมกด <b>"เวอร์ชันใหม่ (New version)"</b> ตอน Deploy หรือไม่',
+                        html: `<div class="flex flex-col items-center gap-3 text-center">
+                                  <div class="w-14 h-14 bg-rose-100 text-rose-500 rounded-full flex items-center justify-center text-3xl mb-2"><i class="fa-solid fa-server"></i></div>
+                                  <h2 class="font-prompt font-bold text-xl text-slate-800">พบข้อผิดพลาดที่ฐานข้อมูล</h2>
+                                  <p class="text-sm text-slate-500 text-left w-full bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                    <b>วิธีแก้เบื้องต้น:</b><br>
+                                    1. ตรวจสอบชื่อแผ่นงาน (Sheet) ใน Google Sheets ว่าพิมพ์ถูกเป๊ะไหม<br>
+                                    2. <b>ลืมกด "เวอร์ชันใหม่ (New version)"</b> ตอน Deploy โค้ดหรือเปล่าครับ?
+                                  </p>
+                               </div>`,
                         confirmButtonColor: '#f05a28',
                         confirmButtonText: 'ตกลง',
-                        customClass: { popup: 'swal-rounded', confirmButton: 'swal-btn' }
+                        customClass: { popup: 'ios-popup' }
                     });
                 }
             })
             .catch(err => {
-                console.error("Network Error: ", err);
                 Swal.fire({
-                    icon: 'error',
-                    title: 'เชื่อมต่อขัดข้อง',
-                    text: 'ไม่สามารถเชื่อมต่ออินเทอร์เน็ตหรือลิงก์ฐานข้อมูลได้ กรุณาลองใหม่อีกครั้ง',
+                    html: `<div class="flex flex-col items-center gap-3">
+                              <div class="w-14 h-14 bg-rose-100 text-rose-500 rounded-full flex items-center justify-center text-3xl mb-2"><i class="fa-solid fa-wifi"></i></div>
+                              <h2 class="font-prompt font-bold text-xl text-slate-800">เชื่อมต่อขัดข้อง</h2>
+                              <p class="text-sm text-slate-500">ไม่สามารถเชื่อมต่ออินเทอร์เน็ตหรือลิงก์ฐานข้อมูลได้ กรุณาลองใหม่อีกครั้ง</p>
+                           </div>`,
                     confirmButtonColor: '#f05a28',
                     confirmButtonText: 'ตกลง',
-                    customClass: { popup: 'swal-rounded', confirmButton: 'swal-btn' }
+                    customClass: { popup: 'ios-popup' }
                 });
             });
         }
