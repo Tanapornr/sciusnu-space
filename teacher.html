@@ -10,15 +10,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
+    <!-- ตั้งค่า Tailwind เพื่อรองรับ Dark Mode -->
     <script>
         tailwind.config = {
             darkMode: 'class',
-            theme: { extend: { colors: { primary: '#f05a28' } } }
+            theme: {
+                extend: {
+                    colors: { primary: '#f05a28' }
+                }
+            }
         }
     </script>
 
     <style>
-        body { font-family: 'Sarabun', sans-serif; margin: 0; overflow-x: hidden; }
+        body { 
+            font-family: 'Sarabun', sans-serif; 
+            margin: 0; overflow-x: hidden; 
+        }
         h1, h2, h3, h4, h5, .font-prompt { font-family: 'Prompt', sans-serif; }
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
@@ -26,6 +34,7 @@
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
+        /* อนิเมชั่นพื้นหลัง */
         .animate-blob { animation: blob 7s infinite; }
         .animation-delay-2000 { animation-delay: 2s; }
         @keyframes blob {
@@ -35,6 +44,7 @@
             100% { transform: translate(0px, 0px) scale(1); }
         }
 
+        /* ระบบ Sidebar บนมือถือ */
         #mainSidebar { transition: transform 0.3s ease-in-out; }
         @media (max-width: 1024px) {
             #mainSidebar { position: fixed; top: 0; left: 0; height: 100vh; transform: translateX(-100%); z-index: 50; }
@@ -103,8 +113,7 @@
 
     <div id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
-    <!-- เมนูด้านซ้าย -->
-    <aside id="mainSidebar" class="glass-panel w-72 lg:w-64 flex flex-col flex-shrink-0 z-50 border-r border-white/80 dark:border-white/5 shadow-2xl">
+    <aside id="mainSidebar" class="w-72 lg:w-64 flex flex-col flex-shrink-0 z-50 bg-white/90 dark:bg-[#1a1614]/95 backdrop-blur-2xl border-r border-white/80 dark:border-white/5 shadow-2xl lg:bg-white/60 lg:backdrop-blur-xl">
         <div class="h-20 lg:h-24 flex items-center px-8 border-b border-slate-200/50 dark:border-white/5 cursor-pointer" onclick="location.reload()">
             <div class="w-8 h-8 bg-[#f05a28] text-white rounded-full flex items-center justify-center text-sm shadow-md mr-3"><i class="fa-solid fa-sparkles"></i></div>
             <h1 class="text-xl font-black font-prompt text-[#f05a28] uppercase">Coursue</h1>
@@ -154,7 +163,6 @@
 
         <div class="flex-1 overflow-y-auto p-4 md:p-8 lg:p-10 hide-scroll" id="mainScrollArea">
             
-            <!-- หน้าจัดการเนื้อหา -->
             <div id="view_manage" class="hidden max-w-5xl mx-auto">
                 <div class="bg-gradient-to-br from-[#f05a28] to-[#fb923c] dark:from-[#c2410c] dark:to-[#ea580c] rounded-[2rem] p-6 lg:p-10 text-white mb-8 lg:mb-10 relative overflow-hidden shadow-lg border border-white/40 dark:border-white/10">
                     <div class="relative z-10">
@@ -250,7 +258,6 @@
                 </div>
             </div>
 
-            <!-- หน้าตั้งค่า -->
             <div id="view_settings" class="hidden max-w-3xl mx-auto">
                 <div class="glass-panel rounded-2xl lg:rounded-[2rem] p-6 lg:p-10 shadow-md">
                     <div class="flex flex-col items-center mb-8">
@@ -278,8 +285,7 @@
         </div>
     </main>
 
-    <!-- เมนูด้านขวา (Overview) แก้ไขเป็น Glassmorphism -->
-    <aside id="rightSidebar" class="glass-panel w-72 flex-shrink-0 hidden lg:flex flex-col h-full shadow-2xl relative border-l border-white/80 dark:border-white/5">
+    <aside id="rightSidebar" class="glass-panel w-72 flex-shrink-0 hidden lg:flex flex-col h-full shadow-2xl relative border-l border-white/80 dark:border-white/5 bg-white/90 dark:bg-[#1a1614]/95 backdrop-blur-2xl">
         <div class="p-8 overflow-y-auto flex-1 hide-scroll pb-24">
             <div class="text-right lg:hidden mb-4"><button onclick="document.getElementById('rightSidebar').classList.add('hidden')" class="text-slate-600 bg-white/80 dark:bg-black/50 w-8 h-8 rounded-full shadow-sm"><i class="fa-solid fa-xmark"></i></button></div>
             <div class="flex justify-between items-center mb-8"><h3 class="font-bold text-slate-800 dark:text-slate-200 text-sm font-prompt uppercase tracking-widest">TEACHER PROFILE</h3></div>
@@ -411,6 +417,7 @@
                 if(unreadCount > 0) globalUnread += unreadCount;
             });
             document.querySelectorAll('.inbox-badge').forEach(b => { if(globalUnread > 0) { b.innerText = globalUnread; b.classList.remove('hidden'); } else { b.classList.add('hidden'); } });
+            // document.getElementById('statTotalMsgs').innerText = globalUnread; // ลบเพื่อป้องกันบัคเพราะไม่ได้สร้าง UI นี้ไว้
         }
 
         function loadDashboardData() {
@@ -433,14 +440,13 @@
                     let ts = document.getElementById('t_subject'); 
                     if(ts) {
                         ts.innerHTML = '<option value="">-- เลือกวิชา --</option>';
-                        let subList = myS.length > 0 ? myS : allSubjects; // Fallback เอาทุกวิชามาให้เลือกถ้าไม่ได้ตั้งค่า Assigned ไว้
+                        let subList = myS.length > 0 ? myS : allSubjects; 
                         subList.forEach(s => ts.innerHTML += `<option value="${s}">${s}</option>`);
                     }
 
                     renderTeacherLessons(myS); 
                     updateRightSidebar();
                     
-                    // Pre-load Analytics ซ่อนไว้ข้างหลัง ให้เปิดมาแล้วเจอเลย
                     loadAnalyticsBackground();
 
                     updateUnreadBadges();
@@ -449,7 +455,6 @@
             });
         }
 
-        // โหลดข้อมูลสถิติรอไว้เลย จะได้เร็ว
         function loadAnalyticsBackground() {
             fetchGAS({action:"getAnalytics"}).then(r => { 
                 if(r.status === "success"){ globalStatData = r; } 
@@ -470,7 +475,6 @@
         function renderTeacherLessons(myS) {
             let h = ""; let sel = document.getElementById('statLessonSelect'); if(sel) sel.innerHTML = '<option value="">-- เลือกบทเรียน --</option>';
             
-            // Fallback: ถ้าอาจารย์ไม่มี Assigned Subject ให้แสดงทั้งหมดเลย จะได้ไม่โล่ง
             let f = (myS && myS.length > 0) ? allLessons.filter(l => myS.includes(l.subject)) : allLessons;
             
             if(f.length === 0) h = '<div class="col-span-full text-center py-20 text-slate-700 dark:text-slate-300 font-bold border-2 border-dashed border-slate-400/60 dark:border-slate-600/60 rounded-[2rem] bg-white/30 dark:bg-black/20 backdrop-blur-sm">คุณยังไม่ได้สร้างบทเรียน</div>';
@@ -495,7 +499,6 @@
             let grid = document.getElementById('lessonGrid_teacher');
             if(grid) grid.innerHTML = h;
             
-            // เมื่อโหลดเสร็จให้ลองเรนเดอร์ตารางสถิติด้วยเลย เผื่อมีวิชาเลือกไว้
             if(globalStatData.students && globalStatData.students.length > 0) renderTeacherTables();
         }
 
@@ -524,7 +527,7 @@
 
         function updateProfileUI() {
             if(!currentUser) return;
-            const fullName = currentUser.name || currentUser.id || "Teacher";
+            const fullName = currentUser.name || "Teacher";
             const inits = getInitials(fullName);
 
             let setDisplay = document.getElementById('settingNameDisplay');
@@ -555,7 +558,7 @@
 
         function updateRightSidebar() {
             let rightName = document.getElementById('rightProfileFullName');
-            if(rightName) rightName.innerText = currentUser.name || currentUser.id || "Teacher";
+            if(rightName) rightName.innerText = currentUser.name || "Teacher";
             
             let rightPic = document.getElementById('rightProfileImage');
             let rightInit = document.getElementById('rightProfileInitials');
@@ -571,15 +574,47 @@
             let idDisp = document.getElementById('rightProfileId');
             if(idDisp) idDisp.innerText = "ID: " + currentUser.id;
 
-            renderChatContacts(); // อัปเดตรายชื่อนักเรียนในแถบขวา
+            renderChatContacts(); 
         }
 
-        function addTeacherQuizField() {
-            let c = document.getElementById('t_quizFields'); if(c.children.length >= 5) return showiOSToast('fa-solid fa-circle-exclamation', 'สร้างได้สูงสุด 5 ข้อ', 'bg-amber-100', 'text-amber-600');
-            let v = document.createElement('div'); v.className = "quiz-item bg-white/60 dark:bg-black/30 p-4 lg:p-6 rounded-xl lg:rounded-2xl border border-white dark:border-slate-700 mb-4 relative shadow-sm backdrop-blur-sm";
-            v.innerHTML = `<button type="button" onclick="this.parentElement.remove(); updateQuizNumbers();" class="absolute top-3 right-3 lg:top-4 lg:right-4 w-8 h-8 rounded-full bg-rose-100/80 text-rose-500 hover:bg-rose-500 hover:text-white transition shadow-sm"><i class="fa-solid fa-trash text-xs"></i></button><label class="quiz-number block font-bold mb-3 text-xs text-[#f05a28] bg-orange-100/80 dark:bg-orange-900/50 w-max px-3 py-1 rounded-lg border border-orange-200 dark:border-orange-800/50 shadow-sm">ข้อ X.</label><input type="text" class="t_q w-full p-3 border border-white dark:border-slate-700 rounded-xl mb-4 bg-white/80 dark:bg-black/50 outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white shadow-inner" placeholder="พิมพ์คำถาม..." required><div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4"><div class="flex items-center"><span class="w-6 text-slate-500 font-bold text-xs">ก.</span><input type="text" class="t_c1 p-2 border border-white dark:border-slate-700 bg-white/80 dark:bg-black/50 rounded-lg w-full text-sm text-slate-800 dark:text-white outline-none focus:border-[#f05a28] shadow-inner"></div><div class="flex items-center"><span class="w-6 text-slate-500 font-bold text-xs">ข.</span><input type="text" class="t_c2 p-2 border border-white dark:border-slate-700 bg-white/80 dark:bg-black/50 rounded-lg w-full text-sm text-slate-800 dark:text-white outline-none focus:border-[#f05a28] shadow-inner"></div><div class="flex items-center"><span class="w-6 text-slate-500 font-bold text-xs">ค.</span><input type="text" class="t_c3 p-2 border border-white dark:border-slate-700 bg-white/80 dark:bg-black/50 rounded-lg w-full text-sm text-slate-800 dark:text-white outline-none focus:border-[#f05a28] shadow-inner"></div><div class="flex items-center"><span class="w-6 text-slate-500 font-bold text-xs">ง.</span><input type="text" class="t_c4 p-2 border border-white dark:border-slate-700 bg-white/80 dark:bg-black/50 rounded-lg w-full text-sm text-slate-800 dark:text-white outline-none focus:border-[#f05a28] shadow-inner"></div></div><div class="text-sm bg-white/80 dark:bg-black/50 p-3 rounded-lg border border-white dark:border-slate-700 flex items-center shadow-inner"><span class="mr-2 font-bold text-slate-700 dark:text-slate-300 text-xs">เฉลย:</span> <select class="t_ans p-1.5 border border-slate-200 dark:border-slate-600 rounded-md font-bold text-emerald-600 dark:text-emerald-400 text-xs bg-white dark:bg-slate-800 outline-none"><option value="1">ข้อ ก.</option><option value="2">ข้อ ข.</option><option value="3">ข้อ ค.</option><option value="4">ข้อ ง.</option></select></div>`;
-            c.appendChild(v); updateQuizNumbers();
+        // ✨ แก้ไขฟังก์ชันอัปเดตคำถาม ให้ดึงข้อมูลเก่ามาใส่ในช่องด้วย ✨
+        function addTeacherQuizField(qData = null) {
+            let c = document.getElementById('t_quizFields'); 
+            if(c.children.length >= 5) return showiOSToast('fa-solid fa-circle-exclamation', 'สร้างได้สูงสุด 5 ข้อ', 'bg-amber-100', 'text-amber-600');
+            
+            let v = document.createElement('div'); 
+            v.className = "quiz-item bg-white/60 dark:bg-black/30 p-4 lg:p-6 rounded-xl lg:rounded-2xl border border-white dark:border-slate-700 mb-4 relative shadow-sm backdrop-blur-sm";
+            
+            let qText = qData ? (qData.q || "") : "";
+            let c1 = qData ? (qData.c1 || "") : "";
+            let c2 = qData ? (qData.c2 || "") : "";
+            let c3 = qData ? (qData.c3 || "") : "";
+            let c4 = qData ? (qData.c4 || "") : "";
+            let ans = qData ? (qData.ans || "1") : "1";
+
+            v.innerHTML = `
+                <button type="button" onclick="this.parentElement.remove(); updateQuizNumbers();" class="absolute top-3 right-3 lg:top-4 lg:right-4 w-8 h-8 rounded-full bg-rose-100/80 text-rose-500 hover:bg-rose-500 hover:text-white transition shadow-sm"><i class="fa-solid fa-trash text-xs"></i></button>
+                <label class="quiz-number block font-bold mb-3 text-xs text-[#f05a28] bg-orange-100/80 dark:bg-orange-900/50 w-max px-3 py-1 rounded-lg border border-orange-200 dark:border-orange-800/50 shadow-sm">ข้อ X.</label>
+                <input type="text" class="t_q w-full p-3 border border-white dark:border-slate-700 rounded-xl mb-4 bg-white/80 dark:bg-black/50 outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white shadow-inner" placeholder="พิมพ์คำถาม..." value="${qText.replace(/"/g, '&quot;')}" required>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                    <div class="flex items-center"><span class="w-6 text-slate-500 font-bold text-xs">ก.</span><input type="text" class="t_c1 p-2 border border-white dark:border-slate-700 bg-white/80 dark:bg-black/50 rounded-lg w-full text-sm text-slate-800 dark:text-white outline-none focus:border-[#f05a28] shadow-inner" value="${c1.replace(/"/g, '&quot;')}"></div>
+                    <div class="flex items-center"><span class="w-6 text-slate-500 font-bold text-xs">ข.</span><input type="text" class="t_c2 p-2 border border-white dark:border-slate-700 bg-white/80 dark:bg-black/50 rounded-lg w-full text-sm text-slate-800 dark:text-white outline-none focus:border-[#f05a28] shadow-inner" value="${c2.replace(/"/g, '&quot;')}"></div>
+                    <div class="flex items-center"><span class="w-6 text-slate-500 font-bold text-xs">ค.</span><input type="text" class="t_c3 p-2 border border-white dark:border-slate-700 bg-white/80 dark:bg-black/50 rounded-lg w-full text-sm text-slate-800 dark:text-white outline-none focus:border-[#f05a28] shadow-inner" value="${c3.replace(/"/g, '&quot;')}"></div>
+                    <div class="flex items-center"><span class="w-6 text-slate-500 font-bold text-xs">ง.</span><input type="text" class="t_c4 p-2 border border-white dark:border-slate-700 bg-white/80 dark:bg-black/50 rounded-lg w-full text-sm text-slate-800 dark:text-white outline-none focus:border-[#f05a28] shadow-inner" value="${c4.replace(/"/g, '&quot;')}"></div>
+                </div>
+                <div class="text-sm bg-white/80 dark:bg-black/50 p-3 rounded-lg border border-white dark:border-slate-700 flex items-center shadow-inner">
+                    <span class="mr-2 font-bold text-slate-700 dark:text-slate-300 text-xs">เฉลย:</span> 
+                    <select class="t_ans p-1.5 border border-slate-200 dark:border-slate-600 rounded-md font-bold text-emerald-600 dark:text-emerald-400 text-xs bg-white dark:bg-slate-800 outline-none">
+                        <option value="1" ${ans == '1' ? 'selected' : ''}>ข้อ ก.</option>
+                        <option value="2" ${ans == '2' ? 'selected' : ''}>ข้อ ข.</option>
+                        <option value="3" ${ans == '3' ? 'selected' : ''}>ข้อ ค.</option>
+                        <option value="4" ${ans == '4' ? 'selected' : ''}>ข้อ ง.</option>
+                    </select>
+                </div>`;
+            c.appendChild(v); 
+            updateQuizNumbers();
         }
+
         function updateQuizNumbers() { document.querySelectorAll('.quiz-item').forEach((it, i) => it.querySelector('.quiz-number').innerText = `ข้อ ${i + 1}.`); }
 
         function saveLesson() {
@@ -590,7 +625,9 @@
             Swal.fire({title:'กำลังบันทึก...', customClass:{popup: 'ios-popup'}, didOpen:()=>Swal.showLoading()});
             fetchGAS(req).then(r => { if(r.status==="success") { showiOSToast('fa-solid fa-check', 'บันทึกบทเรียนเรียบร้อย', 'bg-emerald-100', 'text-emerald-600'); resetTeacherForm(); loadDashboardData(); }});
         }
+        
         function resetTeacherForm() { document.getElementById('teacherForm').reset(); document.getElementById('t_mode').value="add"; document.getElementById('t_quizFields').innerHTML=""; document.getElementById('cancelEditBtn').classList.add('hidden'); document.getElementById('formActionTitle').innerHTML='<i class="fa-solid fa-plus-circle mr-2"></i> สร้างบทเรียนใหม่'; }
+        
         function editLessonSetup(idx) { 
             let l = allLessons[idx]; 
             document.getElementById('t_mode').value="edit"; 
@@ -602,11 +639,15 @@
             document.getElementById('t_youtube').value = yt ? yt[1] : ""; 
             document.getElementById('t_content').value = (l.content||"").replace(/\[YT:.*?\]\n?/, ""); 
             document.getElementById('t_quizFields').innerHTML=""; 
-            (l.questions||[]).filter(q=>q.q).forEach(q=>addTeacherQuizField(q)); 
+            
+            // ส่งข้อมูลคำถามเก่าเข้าไปวาดกล่องใหม่
+            (l.questions||[]).filter(q=>q.q && q.q.trim() !== "").forEach(q=>addTeacherQuizField(q)); 
+            
             document.getElementById('cancelEditBtn').classList.remove('hidden'); 
             document.getElementById('formActionTitle').innerHTML='<i class="fa-solid fa-pen mr-2 text-amber-500"></i> กำลังแก้ไข'; 
             document.getElementById('lessonFormCard').scrollIntoView({ behavior: 'smooth', block: 'start' }); 
         }
+
         function deleteLesson(t) { Swal.fire({title:'ลบบทเรียน?', text: 'คุณแน่ใจหรือไม่ที่จะลบเนื้อหานี้?', icon:'warning', showCancelButton:true, customClass:{popup:'ios-popup'}, confirmButtonColor:'#f05a28', confirmButtonText:'ยืนยันการลบ', cancelButtonText:'ยกเลิก'}).then(r=>{if(r.isConfirmed) { Swal.fire({title:'Deleting...', customClass:{popup:'ios-popup'}, didOpen:()=>Swal.showLoading()}); fetchGAS({action:"deleteLesson", title:t}).then(()=>loadDashboardData()); }}); }
 
         // ==========================================
@@ -614,78 +655,41 @@
         // ==========================================
         
         function renderChatContacts() {
-            let htmlInboxList = "";
-            let htmlRightSidebar = "";
-
-            if(myStudents.length === 0) {
-                 htmlInboxList = '<div class="text-center p-4 text-xs text-slate-600 dark:text-slate-400 font-medium border-2 border-dashed border-slate-400/50 dark:border-slate-600/50 rounded-xl mx-4 mt-4 bg-white/40 dark:bg-transparent">ไม่มีนักเรียนในระบบ</div>';
-                 htmlRightSidebar = '<div class="text-xs text-slate-600 dark:text-slate-400 font-medium text-center py-4 border-2 border-dashed border-slate-400/50 dark:border-slate-600/50 rounded-2xl mx-2 bg-white/40 dark:bg-transparent">ไม่มีข้อมูลนักเรียน</div>';
-            } else {
-                htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-widest mt-2">รายชื่อนักเรียน</p>`;
+            let studentsMap = {}; 
+            
+            cachedMessages.forEach(m => { 
+                let sName = m.senderName;
+                if(sName === currentUser.name) sName = m.receiver;
                 
-                myStudents.forEach(s => {
-                    let isActive = activeChatContact === s.name ? "active" : "";
-                    
-                    let totalMsgs = countStudentMessages(s.name);
-                    let readCount = parseInt(localStorage.getItem('readMsgs_' + currentUser.id + '_' + s.name) || '0');
-                    let unreadCount = totalMsgs - readCount;
-                    if(unreadCount < 0) unreadCount = 0;
+                if(!studentsMap[sName]) { 
+                    studentsMap[sName] = { name: sName, room: m.senderRoom || "-", pic: "", msgs: [] }; 
+                }
+                
+                if (m.senderName === sName && m.senderPic && m.senderPic.trim() !== "") { studentsMap[sName].pic = m.senderPic; }
+                if (m.receiver === sName && m.receiverPic && m.receiverPic.trim() !== "") { studentsMap[sName].pic = m.receiverPic; }
+                if (m.senderName === sName && m.senderRoom && m.senderRoom.trim() !== "") { studentsMap[sName].room = m.senderRoom; }
 
-                    let badgeHtml = unreadCount > 0 ? `<div class="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 rounded-full flex items-center justify-center text-white text-[8px] font-bold shadow-sm border-2 border-white">${unreadCount}</div>` : '';
-
-                    let latestText = "เริ่มการสนทนา...";
-                    let contactMsgs = cachedMessages.filter(m => (m.senderName === currentUser.name && m.receiver === s.name) || (m.senderName === s.name && m.receiver === currentUser.name));
-                    if(contactMsgs.length > 0) {
-                        let sorted = [...contactMsgs].sort((a,b) => new Date(a.date) - new Date(b.date));
-                        let lastMsg = sorted[sorted.length - 1];
-                        if(lastMsg.senderName === currentUser.name) {
-                            if(lastMsg.reply && lastMsg.reply.trim() !== "") {
-                                let reps = lastMsg.reply.split('<br><br>').filter(x => x.trim() !== "");
-                                latestText = s.name + ": " + reps[reps.length - 1];
-                            } else { latestText = "คุณ: " + lastMsg.message; }
-                        } else {
-                            if(lastMsg.reply && lastMsg.reply.trim() !== "") {
-                                let reps = lastMsg.reply.split('<br><br>').filter(x => x.trim() !== "");
-                                latestText = "คุณ: " + reps[reps.length - 1];
-                            } else { latestText = s.name + ": " + lastMsg.message; }
-                        }
-                    }
-
-                    let tmp = document.createElement("DIV"); tmp.innerHTML = latestText; latestText = tmp.textContent || tmp.innerText || "";
-                    if(latestText.length > 25) latestText = latestText.substring(0, 25) + "...";
-
-                    let picHtml = s.pic ? `<img src="${s.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center font-bold text-indigo-600 bg-indigo-100 text-xs">${getInitials(s.name)}</div>`;
-                    let subjectBadge = s.class && s.class !== "-" ? `<p class="text-[9px] text-slate-600 dark:text-slate-400 font-medium mt-1 bg-white/60 dark:bg-black/30 px-2 py-0.5 rounded-md w-max border border-white/80 dark:border-white/10"><i class="fa-solid fa-graduation-cap mr-1 text-slate-500"></i> ${s.class}</p>` : '';
-
-                    let cardHtml = `
-                    <div class="chat-contact ${isActive} flex items-center justify-between group p-3 rounded-2xl border border-white dark:border-slate-700/50 hover:border-orange-300 dark:hover:border-orange-700 shadow-sm transition mb-3 bg-white/60 dark:bg-black/30 backdrop-blur-md cursor-pointer" onclick="nav('inbox'); openChat('${s.name}')">
-                        <div class="flex items-start gap-3">
-                            <div class="relative w-12 h-12 rounded-full ${s.bgColor} ${s.textColor} overflow-hidden shadow-sm shrink-0 flex items-center justify-center border border-white/80">${picHtml}
-                                ${badgeHtml}
-                            </div>
-                            <div class="flex flex-col max-w-[130px] lg:max-w-[150px]">
-                                <p class="text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight truncate">${s.name}</p>
-                                <p class="text-[10px] text-slate-600 dark:text-slate-400 font-medium truncate mt-0.5 ${unreadCount > 0 ? 'font-bold text-slate-800 dark:text-white' : ''}" title="${latestText}">${latestText}</p>
-                                ${subjectBadge}
-                            </div>
-                        </div>
-                        <button class="w-9 h-9 rounded-full border border-orange-200 dark:border-orange-900/50 text-[#f05a28] flex items-center justify-center hover:bg-[#f05a28] hover:text-white transition shadow-sm shrink-0 bg-white/50 dark:bg-transparent">
-                            <i class="fa-regular fa-comment-dots text-sm pointer-events-none"></i>
-                        </button>
-                    </div>`;
-
-                    htmlInboxList += cardHtml;
-                    htmlRightSidebar += cardHtml;
-                });
-            }
+                studentsMap[sName].msgs.push(m); 
+            });
             
+            let students = Object.values(studentsMap).sort((a,b) => new Date(b.msgs[b.msgs.length-1].date) - new Date(a.msgs[a.msgs.length-1].date));
+            let html = `<p class="px-4 text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-widest mt-2">รายชื่อนักเรียน</p>`;
+            
+            if(students.length === 0) html += `<div class="text-center p-4 text-xs text-slate-600 dark:text-slate-400 font-medium border-2 border-dashed border-slate-400/50 dark:border-slate-600/50 rounded-xl mx-4 mt-4 bg-white/40 dark:bg-transparent">ไม่มีข้อความ</div>`;
+            
+            students.forEach(s => {
+                let userObj = allUsersData.find(u => u.name === s.name);
+                if (userObj && userObj.pic && userObj.pic.trim() !== "") s.pic = userObj.pic;
+                if (userObj && userObj.assigned && userObj.assigned.trim() !== "") s.room = userObj.assigned;
+
+                let isActive = activeChatContact === s.name ? "active" : "";
+                let unreadCount = s.msgs.filter(m => m.senderName === s.name && (!m.reply || m.reply.trim() === "")).length; 
+                let picHtml = s.pic ? `<img src="${s.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center font-bold text-indigo-600 bg-indigo-100 text-xs">${getInitials(s.name)}</div>`;
+                
+                html += `<div class="chat-contact ${isActive} flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-white/80 dark:hover:bg-black/40 transition mb-1 border border-transparent shadow-sm" onclick="openChat('${s.name}')"><div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shrink-0 border border-white shadow-sm">${picHtml}${unreadCount===0?'<div class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full"></div>':''}</div><div class="flex-1 min-w-0"><h4 class="font-bold text-xs lg:text-sm truncate text-slate-800 dark:text-slate-200">${s.name}</h4><p class="text-[10px] text-slate-600 dark:text-slate-400 font-medium truncate">${s.room}</p></div>${unreadCount>0?`<div class="w-5 h-5 bg-rose-500 rounded-full flex items-center justify-center text-white text-[9px] font-bold shadow-sm">${unreadCount}</div>`:''}</div>`;
+            });
             let clist = document.getElementById('chatContactList');
-            if(clist) clist.innerHTML = htmlInboxList;
-            
-            let mentorUI = document.getElementById('studentListRightUI');
-            if(mentorUI) mentorUI.innerHTML = htmlRightSidebar;
-
-            updateUnreadBadges(); 
+            if(clist) clist.innerHTML = html;
         }
 
         function openChat(n) {
@@ -693,11 +697,9 @@
             let placeholder = document.getElementById('chatPlaceholder');
             if(placeholder) placeholder.classList.add('hidden'); 
             
-            let totalMsgs = countStudentMessages(n);
-            localStorage.setItem('readMsgs_' + currentUser.id + '_' + n, totalMsgs);
-            renderChatContacts(); 
-            
+            renderChatContacts();
             let msgs = cachedMessages.filter(m => m.senderName === n || m.receiver === n);
+            
             let sortedMsgs = [...msgs].sort((a,b) => new Date(a.date) - new Date(b.date));
 
             let latestStudentPic = null;
@@ -791,6 +793,37 @@
 
             fetchGAS({ action: "replyMessage", row: targetMsg.row, replyText: newReply });
             setTimeout(loadMessagesForChat, 1500);
+        }
+
+        function updateProfileUI() {
+            if(!currentUser) return;
+            const fullName = currentUser.name || "-";
+            const inits = getInitials(fullName);
+
+            let setDisplay = document.getElementById('settingNameDisplay');
+            if(setDisplay) setDisplay.innerText = fullName;
+            let setEmail = document.getElementById('set_email');
+            if(setEmail) setEmail.value = currentUser.email || "";
+            let setPhone = document.getElementById('set_phone');
+            if(setPhone) setPhone.value = currentUser.phone || "";
+
+            let setPic = document.getElementById('previewSettingPic');
+            let setInit = document.getElementById('previewSettingInitials');
+
+            let mobPic = document.getElementById('mobileHeaderProfileImg');
+            let mobInit = document.getElementById('mobileHeaderProfileInitials');
+
+            if(currentUser.pic && currentUser.pic.trim() !== "") {
+                if(setPic) { setPic.src = currentUser.pic; setPic.classList.remove('hidden'); }
+                if(setInit) setInit.classList.add('hidden');
+                if(mobPic) { mobPic.src = currentUser.pic; mobPic.classList.remove('hidden'); }
+                if(mobInit) mobInit.classList.add('hidden');
+            } else {
+                if(setInit) { setInit.innerText = inits; setInit.classList.remove('hidden'); }
+                if(setPic) setPic.classList.add('hidden');
+                if(mobInit) { mobInit.innerText = inits; mobInit.classList.remove('hidden'); }
+                if(mobPic) mobPic.classList.add('hidden');
+            }
         }
 
         function handleImageUpload(e) {
