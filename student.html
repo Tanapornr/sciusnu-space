@@ -33,16 +33,15 @@
         .menu-item.active { color: #6d28d9; font-weight: 700; border-left-color: #6d28d9; background-color: #f5f3ff; }
         
         .course-card { transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer; }
-        .course-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
+        .course-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px -5px rgba(109, 40, 217, 0.15); }
         .course-card:active { transform: scale(0.98); }
         
         .rich-text { line-height: 1.8; font-size: 1rem; color: #475569; }
         .chat-bubble-sent { background: linear-gradient(135deg, #6d28d9 0%, #8b5cf6 100%); color: white; border-radius: 18px 18px 4px 18px; }
         .chat-bubble-received { background-color: #f1f5f9; color: #334155; border-radius: 18px 18px 18px 4px; border: 1px solid #e2e8f0; }
 
-        /* อนิเมชั่นสำหรับการ์ดวิชา */
-        .subject-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .subject-card:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.15); filter: brightness(1.1); }
+        .subject-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
+        .subject-card:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.15); filter: brightness(1.05); }
         .subject-card:active { transform: scale(0.95); }
     </style>
 </head>
@@ -101,20 +100,21 @@
                     <i class="fa-solid fa-sparkles absolute -right-4 -bottom-4 text-9xl text-white/10"></i>
                 </div>
 
-                <div class="flex overflow-x-auto gap-4 lg:gap-6 pb-6 mb-6 lg:mb-8 hide-scroll snap-x snap-mandatory" id="subjectGrid"></div>
+                <!-- แบบเลื่อนลง (Grid) สำหรับการ์ดรายวิชา -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 mb-8 lg:mb-12" id="subjectGrid"></div>
                 
                 <h3 class="text-xl lg:text-2xl font-bold mb-5 font-prompt text-slate-800">แนะนำสำหรับคุณ</h3>
-                <!-- ใช้ Scroll แนวนอน (Swipe) ในมือถือ -->
-                <div id="lessonGrid_home" class="flex overflow-x-auto gap-4 lg:gap-6 pb-6 hide-scroll snap-x snap-mandatory"></div>
+                <!-- แบบเลื่อนลง (Grid) สำหรับบทเรียนแนะนำ -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-10" id="lessonGrid_home"></div>
 
-                <div id="continueWatchingSection" class="hidden border-t border-slate-100 pt-8 mt-4 mb-6">
+                <div id="continueWatchingSection" class="hidden border-t border-slate-100 pt-8 mt-4 mb-10">
                     <div class="flex items-center justify-between mb-5">
                         <h3 class="text-xl lg:text-2xl font-bold font-prompt text-slate-800 flex items-center">
                             <div class="w-10 h-10 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center mr-3 shadow-inner"><i class="fa-solid fa-clock-rotate-left text-sm"></i></div> เรียนต่อจากที่ค้างไว้
                         </h3>
                     </div>
-                    <!-- ใช้ Scroll แนวนอน -->
-                    <div id="lessonGrid_continue" class="flex overflow-x-auto gap-4 lg:gap-6 pb-6 hide-scroll snap-x snap-mandatory"></div>
+                    <!-- แบบเลื่อนลง (Grid) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8" id="lessonGrid_continue"></div>
                 </div>
 
                 <div id="favHomeSection" class="hidden border-t border-slate-100 pt-8 mt-4">
@@ -123,8 +123,8 @@
                             <div class="w-10 h-10 bg-rose-100 text-rose-500 rounded-full flex items-center justify-center mr-3 shadow-inner"><i class="fa-solid fa-heart text-sm"></i></div> รายการโปรดของคุณ
                         </h3>
                     </div>
-                    <!-- ใช้ Scroll แนวนอน -->
-                    <div id="lessonGrid_fav_home" class="flex overflow-x-auto gap-4 lg:gap-6 pb-6 hide-scroll snap-x snap-mandatory"></div>
+                    <!-- แบบเลื่อนลง (Grid) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8" id="lessonGrid_fav_home"></div>
                 </div>
             </div>
 
@@ -135,11 +135,11 @@
                         <i class="fa-regular fa-heart mr-2 text-rose-500"></i> <span>รายการโปรด</span>
                     </button>
                 </div>
-                <div class="flex overflow-x-auto gap-4 lg:gap-6 pb-6 mb-6 lg:mb-8 hide-scroll snap-x snap-mandatory" id="allSubjectGrid"></div>
+                <!-- แบบเลื่อนลง (Grid) สำหรับหมวดหมู่ในหน้ารวม -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 mb-8 lg:mb-12" id="allSubjectGrid"></div>
                 <div id="loadingLessons_student" class="hidden text-purple-500 font-bold flex items-center justify-center py-10"><i class="fa-solid fa-circle-notch fa-spin mr-3 text-2xl"></i> กำลังโหลด...</div>
                 
-                <!-- หน้ารวมยังเป็น Grid ปกติ -->
-                <div id="lessonGrid_student" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8"></div>
+                <div id="lessonGrid_student" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"></div>
             </div>
 
             <div id="view_lesson_detail" class="hidden max-w-4xl mx-auto">
@@ -161,7 +161,6 @@
                     <div id="det_content" class="rich-text whitespace-pre-wrap px-1 lg:px-2"></div>
                 </div>
                 
-                <!-- กล่องแบบทดสอบ (จะซ่อนถาวรหากเป็นวิดีโอ) -->
                 <div id="quizSectionWrapper" class="bg-white rounded-[1.5rem] lg:rounded-[2rem] p-5 lg:p-8 border-t-8 border-[#6d28d9] shadow-md hidden">
                     <h3 id="quizSectionTitle" class="text-xl lg:text-2xl font-bold mb-6 border-b pb-4 font-prompt">แบบทดสอบประจำบท</h3>
                     <div id="quizCompletedMsg" class="hidden bg-emerald-50 rounded-2xl p-8 lg:p-10 text-center border border-emerald-100">
@@ -263,16 +262,15 @@
         let lastTime = 0; 
         let questionTriggers = []; 
 
-        // ชุดสี Gradient สำหรับสุ่มให้การ์ดวิชา (ตรงตามแบบ)
+        // ชุดสี Gradient สำหรับสุ่มให้หน้าปกและวิชา (สีสันสดใส สไตล์วัยรุ่น)
         const gradientColors = [
-            "from-[#3b82f6] to-[#60a5fa]", // Blue
-            "from-[#f97316] to-[#fb923c]", // Orange
-            "from-[#22c55e] to-[#4ade80]", // Green
+            "from-[#3b82f6] to-[#8b5cf6]", // Blue to Purple
+            "from-[#f97316] to-[#f59e0b]", // Orange to Yellow
+            "from-[#10b981] to-[#34d399]", // Emerald
             "from-[#eab308] to-[#facc15]", // Yellow
-            "from-[#ec4899] to-[#f472b6]", // Pink
-            "from-[#8b5cf6] to-[#a78bfa]", // Purple
-            "from-[#14b8a6] to-[#2dd4bf]", // Teal
-            "from-[#f43f5e] to-[#fb7185]"  // Rose
+            "from-[#ec4899] to-[#f43f5e]", // Pink to Rose
+            "from-[#8b5cf6] to-[#d946ef]", // Purple to Pink
+            "from-[#06b6d4] to-[#3b82f6]"  // Cyan to Blue
         ];
 
         function fetchGAS(payload) { return fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r => r.json()); }
@@ -372,20 +370,20 @@
 
                     document.getElementById('loadingLessons_student').style.display = 'none';
                     
-                    // ปรับกล่องวิชาให้เป็นการ์ดสี Gradient สวยงาม
+                    // เรนเดอร์การ์ดวิชาแบบสีสดใส
                     let sH = ""; 
                     allSubjects.forEach((s, idx) => { 
                         let colorClass = gradientColors[idx % gradientColors.length];
                         let lessonCount = allLessons.filter(l => String(l.subject).trim() === String(s).trim()).length;
                         
                         sH += `
-                        <div class="subject-card bg-gradient-to-br ${colorClass} rounded-[2rem] p-6 lg:p-8 flex flex-col justify-between min-w-[240px] lg:min-w-[280px] h-[140px] lg:h-[160px] cursor-pointer text-white snap-start shrink-0 relative overflow-hidden" onclick="selectSubject('${s}')">
-                            <i class="fa-solid fa-book-open absolute -right-6 -bottom-6 text-8xl opacity-20 transform -rotate-12"></i>
+                        <div class="subject-card bg-gradient-to-br ${colorClass} rounded-[2rem] p-5 lg:p-6 flex flex-col justify-between h-32 cursor-pointer text-white relative overflow-hidden w-full" onclick="selectSubject('${s}')">
+                            <i class="fa-solid fa-book-open absolute -right-4 -bottom-4 text-6xl opacity-20 transform -rotate-12"></i>
                             <div>
-                                <h3 class="font-bold text-lg lg:text-xl font-prompt leading-tight drop-shadow-sm">${s}</h3>
+                                <h3 class="font-bold text-base lg:text-lg font-prompt leading-tight drop-shadow-sm">${s}</h3>
                             </div>
                             <div class="flex items-center gap-2 mt-auto">
-                                <div class="bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-bold shadow-sm">
+                                <div class="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] lg:text-xs font-bold shadow-sm">
                                     <i class="fa-solid fa-layer-group mr-1"></i> ${lessonCount} บทเรียน
                                 </div>
                             </div>
@@ -420,7 +418,7 @@
                 document.getElementById('allSubjectTitle').innerText = currentSubject !== "" ? "วิชา: " + currentSubject + " (เฉพาะรายการโปรด)" : "รายการโปรดทั้งหมด";
             } else { document.getElementById('allSubjectTitle').innerText = currentSubject !== "" ? "วิชา: " + currentSubject : "บทเรียนทั้งหมด"; }
 
-            document.getElementById('lessonGrid_student').innerHTML = filtered.length > 0 ? filtered.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'grid')).join('') : '<div class="col-span-full py-20 text-center text-slate-400 font-bold border-2 border-dashed border-slate-200 rounded-[2rem]">ไม่พบข้อมูลบทเรียน</div>';
+            document.getElementById('lessonGrid_student').innerHTML = filtered.length > 0 ? filtered.map(l => renderLessonCard(l, allLessons.indexOf(l))).join('') : '<div class="col-span-full py-20 text-center text-slate-400 font-bold border-2 border-dashed border-slate-200 rounded-[2rem]">ไม่พบข้อมูลบทเรียน</div>';
         }
 
         function searchLesson(val) {
@@ -431,10 +429,11 @@
             let filtered = allLessons.filter(l => l.title.toLowerCase().includes(q) || l.subject.toLowerCase().includes(q));
             if (showFavoritesOnly) { let favs = JSON.parse(localStorage.getItem('favs_'+currentUser.id)||'[]'); filtered = filtered.filter(l => favs.includes(l.title)); }
 
-            document.getElementById('lessonGrid_student').innerHTML = filtered.length > 0 ? filtered.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'grid')).join('') : '<div class="col-span-full py-20 text-center text-slate-400 font-bold border-2 border-dashed border-slate-200 rounded-[2rem]">ไม่พบสิ่งที่ค้นหา</div>';
+            document.getElementById('lessonGrid_student').innerHTML = filtered.length > 0 ? filtered.map(l => renderLessonCard(l, allLessons.indexOf(l))).join('') : '<div class="col-span-full py-20 text-center text-slate-400 font-bold border-2 border-dashed border-slate-200 rounded-[2rem]">ไม่พบสิ่งที่ค้นหา</div>';
         }
 
-        function renderLessonCard(l, idx, isNew = false, layoutType = 'grid') {
+        // ดีไซน์การ์ดรูปแบบใหม่ (Gen-Z Style)
+        function renderLessonCard(l, idx, isNew = false) {
             let isC = l.studentScore !== null;
             let favs = JSON.parse(localStorage.getItem('favs_'+currentUser.id)||'[]');
             let isF = favs.includes(l.title);
@@ -443,10 +442,10 @@
             let progStatus = localStorage.getItem('ytProg_' + currentUser.id + '_' + l.title);
             let progPct = localStorage.getItem('ytPct_' + currentUser.id + '_' + l.title) || 0;
             let progressIndicator = '';
-            let newBadge = isNew ? `<div class="absolute top-3 left-3 bg-gradient-to-r from-rose-500 to-pink-500 text-white px-3 py-1 rounded-full text-[10px] font-bold shadow-md tracking-wider animate-pulse border border-white/20 z-10">NEW</div>` : '';
+            let newBadge = isNew ? `<div class="absolute top-3 left-3 bg-gradient-to-r from-rose-500 to-pink-500 text-white px-3 py-1 rounded-full text-[10px] font-bold shadow-md tracking-wider animate-pulse border border-white/20 z-20">NEW</div>` : '';
 
             if (!isC && progStatus && progStatus !== "done") {
-                newBadge = `<div class="absolute top-3 left-3 bg-amber-400 text-amber-900 px-2 py-0.5 rounded-md text-[9px] font-bold shadow-md z-10 flex items-center"><i class="fa-solid fa-clock-rotate-left mr-1"></i> ดูค้างไว้</div>`;
+                newBadge = `<div class="absolute top-3 left-3 bg-amber-400 text-amber-900 px-2 py-0.5 rounded-md text-[9px] font-bold shadow-md z-20 flex items-center"><i class="fa-solid fa-clock-rotate-left mr-1"></i> ดูค้างไว้</div>`;
                 progressIndicator = `<div class="absolute bottom-0 left-0 w-full h-1.5 bg-slate-200/50 z-20"><div class="h-full bg-amber-400" style="width: ${progPct}%"></div></div>`;
             }
 
@@ -455,7 +454,7 @@
             let scoreHtml = '';
             
             if (totalQs > 0) {
-                scoreHtml = `<div class="mt-auto border-t border-slate-100 pt-4"><span class="text-xs font-bold text-emerald-500">Score: ${isC ? l.studentScore : 0}/${totalQs}</span></div>`;
+                scoreHtml = `<div class="mt-auto border-t border-slate-100 pt-4"><span class="text-xs font-bold text-[#6d28d9]"><i class="fa-solid fa-star text-yellow-400 mr-1"></i> Score: ${isC ? l.studentScore : 0}/${totalQs}</span></div>`;
             } else {
                 if(isC) {
                     scoreHtml = `<div class="mt-auto border-t border-slate-100 pt-4"><span class="text-xs font-bold text-emerald-500"><i class="fa-solid fa-circle-check mr-1"></i>เรียนจบแล้ว</span></div>`;
@@ -464,15 +463,31 @@
                 }
             }
 
-            let widthClass = layoutType === 'scroll' ? 'min-w-[85vw] sm:min-w-[340px] max-w-[85vw] sm:max-w-[340px] snap-start shrink-0' : '';
+            // สุ่มสีให้ overlay ตามรหัสวิชา (ให้คงที่)
+            let colorIndex = (l.subject.length + l.title.length) % gradientColors.length;
+            let overlayColor = gradientColors[colorIndex];
+
+            // เช็คว่ามีวิดีโอไหม ถ้ามีโชว์ปุ่ม Play บนภาพ
+            let hasVideo = (l.content || "").includes("[YT:");
+            let playIcon = hasVideo ? `
+                <div class="absolute inset-0 flex items-center justify-center z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div class="w-12 h-12 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center text-white shadow-xl border border-white/50">
+                        <i class="fa-solid fa-play text-xl ml-1 drop-shadow-md"></i>
+                    </div>
+                </div>` : '';
 
             return `
-            <div class="course-card bg-white rounded-[2rem] p-4 lg:p-5 border border-slate-100 flex flex-col h-full shadow-sm hover:shadow-md transition relative ${widthClass}" onclick="openLesson(${idx})">
-                <div class="h-32 lg:h-48 w-full rounded-[1.5rem] mb-4 lg:mb-5 relative overflow-hidden bg-slate-900 group shrink-0">
-                    <img src="${getImageUrl(l.title)}" class="w-full h-full object-cover opacity-90 transition duration-500 group-hover:scale-105 ${isC?'grayscale':''}">
+            <div class="course-card bg-white rounded-[2rem] p-4 lg:p-5 border border-slate-100 flex flex-col h-full shadow-sm relative w-full" onclick="openLesson(${idx})">
+                <div class="h-32 lg:h-40 w-full rounded-[1.5rem] mb-4 lg:mb-5 relative overflow-hidden bg-slate-900 group shrink-0">
+                    <img src="${getImageUrl(l.title)}" class="w-full h-full object-cover opacity-80 transition duration-700 group-hover:scale-110 ${isC?'grayscale':''}">
+                    <!-- แผ่นฟิล์มสีทับรูปภาพให้ดูสวยแพง -->
+                    <div class="absolute inset-0 bg-gradient-to-tr ${overlayColor} opacity-50 mix-blend-color-burn transition duration-500 group-hover:opacity-30 z-0"></div>
+                    
+                    ${playIcon}
                     ${newBadge}
-                    <div class="absolute top-3 right-3 w-8 h-8 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-sm z-10 transition hover:bg-white" onclick="toggleFavorite(event, '${l.title}')"><i class="${heartClass} fa-heart text-sm pointer-events-none"></i></div>
-                    ${isC ? `<div class="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[1px]"><div class="bg-emerald-500 text-white px-3 py-1 rounded-lg text-[10px] font-bold shadow-md">Completed</div></div>` : ''}
+                    
+                    <div class="absolute top-3 right-3 w-8 h-8 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-sm z-20 transition hover:bg-white" onclick="toggleFavorite(event, '${l.title}')"><i class="${heartClass} fa-heart text-sm pointer-events-none"></i></div>
+                    ${isC ? `<div class="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[1px] z-10"><div class="bg-emerald-500 text-white px-3 py-1 rounded-lg text-[10px] font-bold shadow-md">Completed</div></div>` : ''}
                     ${progressIndicator}
                 </div>
                 <div class="flex-1 flex flex-col justify-between px-1">
@@ -487,7 +502,7 @@
 
         function renderHomeLessons() { 
             let latest = [...allLessons].reverse().slice(0, 5);
-            document.getElementById('lessonGrid_home').innerHTML = latest.map(l => renderLessonCard(l, allLessons.indexOf(l), true, 'scroll')).join(''); 
+            document.getElementById('lessonGrid_home').innerHTML = latest.map(l => renderLessonCard(l, allLessons.indexOf(l), true)).join(''); 
             
             let continueSection = document.getElementById('continueWatchingSection');
             let continueGrid = document.getElementById('lessonGrid_continue');
@@ -497,7 +512,7 @@
             });
 
             if(continueLessons.length > 0) {
-                continueGrid.innerHTML = continueLessons.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'scroll')).join('');
+                continueGrid.innerHTML = continueLessons.map(l => renderLessonCard(l, allLessons.indexOf(l))).join('');
                 continueSection.classList.remove('hidden');
             } else { continueSection.classList.add('hidden'); continueGrid.innerHTML = ''; }
         }
@@ -508,7 +523,7 @@
             let favGrid = document.getElementById('lessonGrid_fav_home');
             if(favs.length > 0) {
                 let fLessons = allLessons.filter(l => favs.includes(l.title));
-                favGrid.innerHTML = fLessons.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'scroll')).join('');
+                favGrid.innerHTML = fLessons.map(l => renderLessonCard(l, allLessons.indexOf(l))).join('');
                 favSection.classList.remove('hidden');
             } else { favSection.classList.add('hidden'); favGrid.innerHTML = ''; }
         }
@@ -1055,7 +1070,6 @@
             });
         }
         
-        function toggleLanguage() { Swal.fire({ text: 'ระบบกำลังดำเนินการแปลภาษา...', icon: 'info', timer: 1000, showConfirmButton: false }); }
         function logout() { sessionStorage.clear(); window.location.replace('index.html'); }
     </script>
 </body>
