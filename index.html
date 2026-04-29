@@ -13,14 +13,12 @@
     <style>
         body { 
             font-family: 'Sarabun', sans-serif; 
-            /* สีพื้นหลังโทนส้มพีช ตามเรฟเฟอเรนซ์ */
             background-color: #ffdcc6; 
             margin: 0; 
             overflow: hidden;
         }
         h1, h2, h3, .font-prompt { font-family: 'Prompt', sans-serif; }
         
-        /* อนิเมชั่นตกแต่งพื้นหลัง */
         .animate-float { animation: float 6s ease-in-out infinite; }
         @keyframes float {
             0% { transform: translateY(0px); }
@@ -37,7 +35,6 @@
             100% { transform: translate(0px, 0px) scale(1); }
         }
 
-        /* เอฟเฟกต์ Glassmorphism */
         .glass-container {
             background: rgba(255, 255, 255, 0.25);
             backdrop-filter: blur(16px);
@@ -51,14 +48,11 @@
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 sm:p-8 relative">
 
-    <!-- วงกลมเบลอตกแต่งพื้นหลัง -->
     <div class="absolute top-10 left-10 w-72 h-72 bg-orange-300 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob z-0"></div>
     <div class="absolute bottom-10 right-10 w-96 h-96 bg-rose-200 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000 z-0"></div>
 
-    <!-- Container หลัก (กรอบกระจกใส) -->
     <div class="glass-container w-full max-w-[950px] rounded-[2.5rem] lg:rounded-[3rem] p-3 sm:p-4 flex flex-col md:flex-row relative z-10">
         
-        <!-- ส่วนซ้าย: กล่องฟอร์มล็อกอิน (สีขาว) -->
         <div class="w-full md:w-[45%] bg-white rounded-[2rem] lg:rounded-[2.5rem] p-8 sm:p-10 lg:p-12 shadow-sm flex flex-col justify-center relative overflow-hidden">
             
             <div class="mb-8">
@@ -67,7 +61,6 @@
             </div>
 
             <div class="space-y-5">
-                <!-- Username -->
                 <div>
                     <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wide">Username</label>
                     <div class="relative">
@@ -75,12 +68,10 @@
                     </div>
                 </div>
 
-                <!-- Password -->
                 <div>
                     <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wide">Password</label>
                     <div class="relative">
                         <input type="password" id="password" placeholder="กรอกรหัสผ่าน..." class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all text-sm font-medium text-slate-700">
-                        <!-- ปุ่มดูรหัสผ่าน -->
                         <button type="button" onclick="togglePassword()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-orange-500 transition">
                             <i class="fa-regular fa-eye" id="eyeIcon"></i>
                         </button>
@@ -91,7 +82,6 @@
                     </div>
                 </div>
 
-                <!-- ปุ่ม Login สีส้มสดใส -->
                 <button onclick="login()" class="w-full bg-[#f05a28] hover:bg-[#d94a1d] text-white font-bold py-4 rounded-2xl shadow-[0_8px_20px_-6px_rgba(240,90,40,0.6)] active:scale-[0.98] transition-all duration-200 font-prompt text-lg mt-4">
                     Sign in
                 </button>
@@ -99,17 +89,12 @@
             
         </div>
 
-        <!-- ส่วนขวา: รูปภาพ 3D ตกแต่ง (ซ่อนในมือถือ โชว์ในไอแพด/คอม) -->
         <div class="hidden md:flex w-[55%] items-center justify-center p-8 relative">
-            <!-- 
-                อาจารย์สามารถเปลี่ยนลิงก์รูปตรง src="..." ด้านล่าง 
-                ให้เป็นภาพตัวละคร 3D หรือภาพที่อาจารย์มีได้เลยครับ 
-            -->
-            <img src="https://cdn3d.iconscout.com/3d/premium/thumb/boy-studying-online-6780795-5590983.png" 
+            <!-- ใส่ลิงก์รูปใหม่ของอาจารย์ตรงนี้ครับ -->
+            <img src="https://i.postimg.cc/6pSYRs9V/d-sin-th-y-ngmi-di-t-ngch-x-(14).png" 
                  alt="3D Character" 
                  class="w-[85%] lg:w-[75%] h-auto object-contain animate-float drop-shadow-2xl filter contrast-105">
             
-            <!-- ใบไม้/จุดตกแต่งลอยๆ -->
             <div class="absolute top-20 right-20 w-4 h-4 bg-yellow-400 rounded-full animate-float" style="animation-delay: 1s;"></div>
             <div class="absolute bottom-32 left-20 w-6 h-6 bg-green-400 rounded-full animate-float" style="animation-delay: 2s; border-radius: 40% 60% 70% 30%;"></div>
             <div class="absolute top-1/2 right-10 w-3 h-3 bg-orange-400 rounded-full animate-float" style="animation-delay: 0.5s;"></div>
@@ -117,13 +102,10 @@
     </div>
 
     <script>
-        // URL ของ Google Apps Script ตัวปัจจุบัน
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbze1x9SSRsoZSE__Cm6iMzLv9A45ry3eTHB2fkJNktUmRs4yyLgh96s7wUdaPBPSzgIew/exec';
 
-        // เคลียร์ข้อมูลเก่าเมื่อเข้าหน้าแรก
         window.onload = () => { sessionStorage.clear(); localStorage.clear(); };
 
-        // กด Enter ในช่องรหัสผ่านเพื่อล็อกอิน
         document.getElementById("password").addEventListener("keypress", function(event) {
             if (event.key === "Enter") {
                 event.preventDefault();
@@ -131,7 +113,6 @@
             }
         });
 
-        // ฟังก์ชันซ่อน/โชว์ รหัสผ่าน
         function togglePassword() {
             let pwdInput = document.getElementById("password");
             let eyeIcon = document.getElementById("eyeIcon");
@@ -146,7 +127,6 @@
             }
         }
 
-        // ฟังก์ชันลืมรหัสผ่าน
         function forgotPassword() {
             Swal.fire({
                 icon: 'info',
@@ -161,7 +141,6 @@
             });
         }
 
-        // ฟังก์ชันล็อกอินเข้าสู่ระบบ
         function login() {
             let u = document.getElementById('username').value.trim();
             let p = document.getElementById('password').value.trim();
@@ -202,7 +181,6 @@
                         phone: data.user.phone || ""
                     };
                     
-                    // บันทึกข้อมูลลง Session
                     sessionStorage.setItem('currentUser', JSON.stringify(userObj));
                     
                     Swal.fire({
