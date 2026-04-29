@@ -12,13 +12,39 @@
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
+    <!-- ตั้งค่า Tailwind เพื่อรองรับ Dark Mode -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { primary: '#f05a28' }
+                }
+            }
+        }
+    </script>
+
     <style>
-        body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; color: #1d1d1f; margin: 0; overflow-x: hidden; }
+        body { 
+            font-family: 'Sarabun', sans-serif; 
+            margin: 0; overflow-x: hidden; 
+        }
         h1, h2, h3, h4, h5, .font-prompt { font-family: 'Prompt', sans-serif; }
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* อนิเมชั่นพื้นหลัง */
+        .animate-blob { animation: blob 7s infinite; }
+        .animation-delay-2000 { animation-delay: 2s; }
+        @keyframes blob {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(20px, -40px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
+        }
 
         #mainSidebar { transition: transform 0.3s ease-in-out; }
         @media (max-width: 1024px) {
@@ -28,23 +54,31 @@
             #sidebarOverlay.active { display: block; }
         }
 
-        .menu-item { transition: all 0.2s ease-in-out; border-left: 4px solid transparent; cursor: pointer; }
-        .menu-item:hover { color: #6d28d9; background-color: #f3f4f6; border-left-color: #c4b5fd; }
-        .menu-item.active { color: #6d28d9; font-weight: 700; border-left-color: #6d28d9; background-color: #f5f3ff; }
-        
-        /* Course Card iOS Style */
-        .course-card { transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); cursor: pointer; border: 1px solid rgba(0,0,0,0.05); }
-        .course-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08); }
-        .course-card:active { transform: scale(0.97); }
-        
-        .rich-text { line-height: 1.8; font-size: 1rem; color: #475569; }
-        .chat-bubble-sent { background: linear-gradient(135deg, #6d28d9 0%, #8b5cf6 100%); color: white; border-radius: 18px 18px 4px 18px; }
-        .chat-bubble-received { background-color: #f1f5f9; color: #334155; border-radius: 18px 18px 18px 4px; border: 1px solid #e2e8f0; }
+        /* Glassmorphism Menu & Cards */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .dark .glass-panel {
+            background: rgba(20, 20, 20, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
 
-        /* Subject Card iOS Style */
-        .subject-card { transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); cursor: pointer; background: white; border: 1px solid rgba(0,0,0,0.06); }
-        .subject-card:hover { transform: translateY(-3px); box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.06); }
-        .subject-card:active { transform: scale(0.96); }
+        .menu-item { transition: all 0.2s ease-in-out; border-left: 4px solid transparent; cursor: pointer; }
+        .menu-item:hover { color: #f05a28; background-color: rgba(240, 90, 40, 0.05); }
+        .dark .menu-item:hover { background-color: rgba(240, 90, 40, 0.1); }
+        .menu-item.active { color: #f05a28; font-weight: 700; border-left-color: #f05a28; background-color: rgba(240, 90, 40, 0.1); }
+        .dark .menu-item.active { background-color: rgba(240, 90, 40, 0.2); }
+        
+        .course-card { transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); cursor: pointer; }
+        .course-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1); }
+        .course-card:active { transform: scale(0.97); }
+
+        .chat-bubble-sent { background: linear-gradient(135deg, #f05a28 0%, #fb923c 100%); color: white; border-radius: 18px 18px 4px 18px; }
+        .chat-bubble-received { background-color: rgba(255, 255, 255, 0.7); color: #334155; border-radius: 18px 18px 18px 4px; border: 1px solid rgba(0,0,0,0.05); }
+        .dark .chat-bubble-received { background-color: rgba(40, 40, 40, 0.8); color: #e2e8f0; border: 1px solid rgba(255,255,255,0.05); }
 
         /* ========================================================
            ✨ iOS MINIMALIST POP-UP (COMPACT & FAST) ✨
@@ -54,78 +88,95 @@
             backdrop-filter: blur(24px) !important;
             -webkit-backdrop-filter: blur(24px) !important;
             border: 1px solid rgba(255, 255, 255, 0.5) !important;
-            border-radius: 24px !important; /* ปรับให้ขอบมนพอดีๆ */
+            border-radius: 24px !important;
             box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1) !important;
-            padding: 1.5rem !important; /* ลด padding ให้กล่องเล็กลง */
-            width: auto !important;
-            min-width: 260px !important;
-            max-width: 300px !important;
+            padding: 1.5rem !important;
+            width: auto !important; min-width: 260px !important; max-width: 300px !important;
+        }
+        .dark .ios-center-popup {
+            background: rgba(30, 30, 30, 0.85) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
         }
         
-        /* สไตล์ Pop-up คำถามคั่นเวลา (เล็กลง) */
         .swal2-popup:not(.ios-center-popup) {
             border-radius: 24px !important;
             background: rgba(255, 255, 255, 0.95) !important;
             backdrop-filter: blur(20px) !important;
-            -webkit-backdrop-filter: blur(20px) !important;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
-            padding: 1.5em 1.5em 2em !important; /* ลด padding ให้กระชับ */
-            width: 360px !important; /* จำกัดความกว้างไม่ให้เทอะทะ */
+            padding: 1.5em 1.5em 2em !important;
+            width: 360px !important;
             border: 1px solid rgba(255, 255, 255, 0.8) !important;
         }
+        .dark .swal2-popup:not(.ios-center-popup) {
+            background: rgba(30, 30, 30, 0.95) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
         
-        .swal2-title { font-family: 'Prompt', sans-serif !important; color: #1d1d1f !important; font-size: 1.1rem !important; margin-bottom: 0.5em !important; }
-        .swal2-html-container { font-family: 'Sarabun', sans-serif !important; color: #475569 !important; margin-top: 0.5em !important;}
+        .swal2-title { font-family: 'Prompt', sans-serif !important; font-size: 1.1rem !important; margin-bottom: 0.5em !important; }
+        .swal2-html-container { font-family: 'Sarabun', sans-serif !important; margin-top: 0.5em !important; }
+        .dark .swal2-title { color: #f8fafc !important; }
+        .dark .swal2-html-container { color: #cbd5e1 !important; }
 
         .swal2-confirm {
             border-radius: 999px !important; font-family: 'Prompt', sans-serif !important; font-weight: 600 !important;
-            padding: 12px 32px !important; background-color: #6d28d9 !important; font-size: 0.9rem !important;
-            box-shadow: 0 8px 20px -6px rgba(109, 40, 217, 0.5) !important; transition: all 0.2s ease !important;
+            padding: 12px 32px !important; background-color: #f05a28 !important; font-size: 0.9rem !important;
+            box-shadow: 0 8px 20px -6px rgba(240, 90, 40, 0.5) !important; transition: all 0.2s ease !important;
         }
-        .swal2-confirm:hover { background-color: #5b21b6 !important; transform: translateY(-2px) !important; box-shadow: 0 12px 24px -6px rgba(109, 40, 217, 0.6) !important; }
+        .swal2-confirm:hover { background-color: #d94a1d !important; transform: translateY(-2px) !important; }
         .swal2-confirm:active { transform: scale(0.96) !important; }
-        .swal2-timer-progress-bar { background-color: rgba(109, 40, 217, 0.3) !important; height: 3px !important; }
+        .swal2-timer-progress-bar { background-color: rgba(240, 90, 40, 0.4) !important; height: 3px !important; }
     </style>
 </head>
-<body class="flex h-screen w-screen overflow-hidden antialiased">
+<body class="flex h-screen w-screen overflow-hidden antialiased bg-[#ffdcc6] dark:bg-[#1a1614] text-slate-800 dark:text-slate-200 transition-colors duration-500 relative">
+
+    <!-- พื้นหลัง Blob Style ส้มพีช -->
+    <div class="absolute top-0 left-0 w-64 h-64 sm:w-96 sm:h-96 bg-orange-300 dark:bg-orange-600/40 rounded-full mix-blend-multiply filter blur-[80px] opacity-60 animate-blob z-0 transition-colors duration-500"></div>
+    <div class="absolute bottom-0 right-0 w-72 h-72 sm:w-[500px] sm:h-[500px] bg-rose-200 dark:bg-red-900/30 rounded-full mix-blend-multiply filter blur-[80px] opacity-60 animate-blob animation-delay-2000 z-0 transition-colors duration-500"></div>
 
     <div id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
-    <aside id="mainSidebar" class="w-72 lg:w-64 bg-white border-r border-slate-200 flex flex-col flex-shrink-0 z-50">
-        <div class="h-20 lg:h-24 flex items-center px-8 border-b border-slate-100 cursor-pointer" onclick="nav('home')">
-            <div class="w-8 h-8 bg-[#6d28d9] text-white rounded-full flex items-center justify-center text-sm shadow-md mr-3"><i class="fa-solid fa-sparkles"></i></div>
-            <h1 class="text-xl font-black font-prompt text-[#6d28d9] uppercase">Coursue</h1>
+    <!-- เมนูด้านซ้าย (Glassmorphism) -->
+    <aside id="mainSidebar" class="glass-panel w-72 lg:w-64 flex flex-col flex-shrink-0 z-50">
+        <div class="h-20 lg:h-24 flex items-center px-8 border-b border-white/40 dark:border-white/5 cursor-pointer" onclick="nav('home')">
+            <div class="w-8 h-8 bg-[#f05a28] text-white rounded-full flex items-center justify-center text-sm shadow-md mr-3"><i class="fa-solid fa-sparkles"></i></div>
+            <h1 class="text-xl font-black font-prompt text-[#f05a28] uppercase">Coursue</h1>
         </div>
 
         <div class="flex-1 overflow-y-auto py-6 hide-scroll flex flex-col gap-6">
-            <nav class="flex flex-col font-prompt text-slate-500 font-medium text-sm" id="sidebarMenu"></nav>
+            <nav class="flex flex-col font-prompt text-slate-600 dark:text-slate-400 font-medium text-sm" id="sidebarMenu"></nav>
         </div>
 
-        <div class="p-6 border-t border-slate-100">
+        <div class="p-6 border-t border-white/40 dark:border-white/5">
             <div class="flex flex-col font-prompt text-sm">
-                <a onclick="nav('settings')" id="nav_settings" class="menu-item px-8 py-4 flex items-center text-slate-500"><i class="fa-solid fa-user-gear w-6 mr-3 text-lg"></i> <span>ตั้งค่าโปรไฟล์</span></a>
+                <a onclick="nav('settings')" id="nav_settings" class="menu-item px-8 py-4 flex items-center text-slate-600 dark:text-slate-400"><i class="fa-solid fa-user-gear w-6 mr-3 text-lg"></i> <span>ตั้งค่าโปรไฟล์</span></a>
                 <a onclick="logout()" class="menu-item px-8 py-4 flex items-center text-rose-500"><i class="fa-solid fa-arrow-right-from-bracket w-6 mr-3 text-lg"></i> <span>ออกจากระบบ</span></a>
             </div>
         </div>
     </aside>
 
-    <main class="flex-1 flex flex-col overflow-hidden relative bg-[#f8fafc]">
+    <main class="flex-1 flex flex-col overflow-hidden relative z-10">
         
-        <header class="h-20 lg:h-24 flex items-center justify-between px-4 lg:px-10 border-b bg-white/95 backdrop-blur-md z-30 shrink-0 shadow-sm lg:shadow-none">
+        <!-- Header (Glassmorphism) -->
+        <header class="h-20 lg:h-24 flex items-center justify-between px-4 lg:px-10 border-b border-white/30 dark:border-white/5 glass-panel shrink-0 shadow-sm lg:shadow-none">
             <div class="flex items-center gap-3">
-                <button onclick="toggleSidebar()" class="lg:hidden w-10 h-10 flex items-center justify-center text-slate-600 bg-slate-100 rounded-xl"><i class="fa-solid fa-bars-staggered text-xl"></i></button>
-                <div class="lg:hidden font-black font-prompt text-[#6d28d9] text-xl">COURSUE</div>
+                <button onclick="toggleSidebar()" class="lg:hidden w-10 h-10 flex items-center justify-center text-slate-600 dark:text-slate-300 bg-white/50 dark:bg-black/30 rounded-xl"><i class="fa-solid fa-bars-staggered text-xl"></i></button>
+                <div class="lg:hidden font-black font-prompt text-[#f05a28] text-xl">COURSUE</div>
             </div>
 
             <div class="flex-1 max-w-lg mx-4 relative hidden sm:block">
                 <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                <input type="text" id="globalSearchInput" onkeyup="searchLesson(this.value)" placeholder="ค้นหาบทเรียนหรือรายวิชา..." class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-full outline-none focus:ring-2 focus:ring-purple-200 transition text-sm">
+                <input type="text" id="globalSearchInput" onkeyup="searchLesson(this.value)" placeholder="ค้นหาบทเรียนหรือรายวิชา..." class="w-full pl-11 pr-4 py-2.5 bg-white/50 dark:bg-black/30 backdrop-blur-sm border border-white/50 dark:border-white/10 rounded-full outline-none focus:ring-2 focus:ring-orange-400 transition text-sm dark:text-white dark:placeholder-slate-400 shadow-inner">
             </div>
 
             <div class="flex items-center gap-3 ml-auto">
-                <button onclick="toggleRightSidebar()" class="lg:hidden w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm">
+                <!-- ปุ่มสลับ Dark/Light Mode -->
+                <button onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/50 dark:bg-black/30 border border-white/50 dark:border-white/10 shadow-sm transition-all hover:scale-105">
+                    <i id="themeIcon" class="fa-solid fa-moon text-slate-600 dark:text-yellow-400 text-lg"></i>
+                </button>
+
+                <button onclick="toggleRightSidebar()" class="lg:hidden w-10 h-10 rounded-full overflow-hidden border-2 border-white dark:border-slate-700 shadow-sm">
                     <img id="mobileHeaderProfileImg" src="" class="w-full h-full object-cover hidden">
-                    <div id="mobileHeaderProfileInitials" class="w-full h-full bg-purple-100 text-purple-600 flex items-center justify-center text-xs font-bold">A</div>
+                    <div id="mobileHeaderProfileInitials" class="w-full h-full bg-orange-100 text-orange-600 flex items-center justify-center text-xs font-bold">A</div>
                 </button>
             </div>
         </header>
@@ -133,33 +184,34 @@
         <div class="flex-1 overflow-y-auto p-4 md:p-8 lg:p-10 hide-scroll" id="mainScrollArea">
             
             <div id="view_home" class="hidden max-w-5xl mx-auto">
-                <div class="bg-gradient-to-br from-[#6d28d9] to-[#8b5cf6] rounded-[2rem] p-6 lg:p-10 text-white mb-8 lg:mb-10 relative overflow-hidden shadow-lg">
+                <!-- แบนเนอร์หลัก -->
+                <div class="bg-gradient-to-br from-[#f05a28] to-[#fb923c] dark:from-[#c2410c] dark:to-[#ea580c] rounded-[2rem] p-6 lg:p-10 text-white mb-8 lg:mb-10 relative overflow-hidden shadow-lg border border-white/20">
                     <div class="relative z-10">
-                        <span class="text-purple-200 text-[10px] lg:text-xs font-bold tracking-widest uppercase bg-white/10 px-3 py-1 rounded-full">Online Education</span>
-                        <h2 class="text-2xl lg:text-4xl font-prompt font-bold leading-tight my-4 lg:my-6">ยกระดับทักษะของคุณกับห้องเรียนออนไลน์ วมว.</h2>
-                        <button onclick="clickMenuLessons()" class="bg-slate-900 text-white px-6 lg:px-8 py-3 rounded-full font-bold text-xs lg:text-sm shadow-md active:scale-95 transition">เริ่มเรียนเลย</button>
+                        <span class="text-orange-100 text-[10px] lg:text-xs font-bold tracking-widest uppercase bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">Online Education</span>
+                        <h2 class="text-2xl lg:text-4xl font-prompt font-bold leading-tight my-4 lg:my-6">ยกระดับทักษะของคุณ<br>กับห้องเรียนออนไลน์ วมว.</h2>
+                        <button onclick="clickMenuLessons()" class="bg-slate-900 text-white px-6 lg:px-8 py-3 rounded-full font-bold text-xs lg:text-sm shadow-md hover:bg-black active:scale-95 transition">เริ่มเรียนเลย</button>
                     </div>
                     <i class="fa-solid fa-sparkles absolute -right-4 -bottom-4 text-9xl text-white/10"></i>
                 </div>
 
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 mb-8 lg:mb-12" id="subjectGrid"></div>
                 
-                <h3 class="text-xl lg:text-2xl font-bold mb-5 font-prompt text-slate-800">แนะนำสำหรับคุณ</h3>
+                <h3 class="text-xl lg:text-2xl font-bold mb-5 font-prompt text-slate-800 dark:text-slate-100">แนะนำสำหรับคุณ</h3>
                 <div id="lessonGrid_home" class="flex overflow-x-auto gap-4 lg:gap-6 pb-6 hide-scroll snap-x snap-mandatory"></div>
 
-                <div id="continueWatchingSection" class="hidden border-t border-slate-100 pt-8 mt-4 mb-6">
+                <div id="continueWatchingSection" class="hidden border-t border-slate-300/30 dark:border-white/10 pt-8 mt-4 mb-6">
                     <div class="flex items-center justify-between mb-5">
-                        <h3 class="text-xl lg:text-2xl font-bold font-prompt text-slate-800 flex items-center">
-                            <div class="w-10 h-10 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center mr-3 shadow-inner"><i class="fa-solid fa-clock-rotate-left text-sm"></i></div> เรียนต่อจากที่ค้างไว้
+                        <h3 class="text-xl lg:text-2xl font-bold font-prompt text-slate-800 dark:text-slate-100 flex items-center">
+                            <div class="w-10 h-10 bg-amber-100 dark:bg-amber-900/50 text-amber-500 dark:text-amber-400 rounded-full flex items-center justify-center mr-3 shadow-inner"><i class="fa-solid fa-clock-rotate-left text-sm"></i></div> เรียนต่อจากที่ค้างไว้
                         </h3>
                     </div>
                     <div id="lessonGrid_continue" class="flex overflow-x-auto gap-4 lg:gap-6 pb-6 hide-scroll snap-x snap-mandatory"></div>
                 </div>
 
-                <div id="favHomeSection" class="hidden border-t border-slate-100 pt-8 mt-4">
+                <div id="favHomeSection" class="hidden border-t border-slate-300/30 dark:border-white/10 pt-8 mt-4">
                     <div class="flex items-center justify-between mb-5">
-                        <h3 class="text-xl lg:text-2xl font-bold font-prompt text-slate-800 flex items-center">
-                            <div class="w-10 h-10 bg-rose-100 text-rose-500 rounded-full flex items-center justify-center mr-3 shadow-inner"><i class="fa-solid fa-heart text-sm"></i></div> รายการโปรดของคุณ
+                        <h3 class="text-xl lg:text-2xl font-bold font-prompt text-slate-800 dark:text-slate-100 flex items-center">
+                            <div class="w-10 h-10 bg-rose-100 dark:bg-rose-900/50 text-rose-500 dark:text-rose-400 rounded-full flex items-center justify-center mr-3 shadow-inner"><i class="fa-solid fa-heart text-sm"></i></div> รายการโปรดของคุณ
                         </h3>
                     </div>
                     <div id="lessonGrid_fav_home" class="flex overflow-x-auto gap-4 lg:gap-6 pb-6 hide-scroll snap-x snap-mandatory"></div>
@@ -168,123 +220,123 @@
 
             <div id="view_lessons" class="hidden max-w-5xl mx-auto">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-                    <h2 class="text-2xl lg:text-3xl font-black text-slate-800 font-prompt" id="allSubjectTitle">บทเรียนทั้งหมด</h2>
-                    <button onclick="toggleShowFavorites()" id="favFilterBtn" class="bg-white border border-slate-200 px-5 py-2.5 rounded-full text-sm font-bold text-slate-600 shadow-sm active:bg-slate-50 transition">
+                    <h2 class="text-2xl lg:text-3xl font-black text-slate-800 dark:text-slate-100 font-prompt" id="allSubjectTitle">บทเรียนทั้งหมด</h2>
+                    <button onclick="toggleShowFavorites()" id="favFilterBtn" class="glass-panel px-5 py-2.5 rounded-full text-sm font-bold text-slate-600 dark:text-slate-300 shadow-sm active:scale-95 transition">
                         <i class="fa-regular fa-heart mr-2 text-rose-500"></i> <span>รายการโปรด</span>
                     </button>
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 mb-8 lg:mb-12" id="allSubjectGrid"></div>
-                <div id="loadingLessons_student" class="hidden text-purple-500 font-bold flex items-center justify-center py-10"><i class="fa-solid fa-circle-notch fa-spin mr-3 text-2xl"></i> กำลังโหลด...</div>
+                <div id="loadingLessons_student" class="hidden text-orange-500 font-bold flex items-center justify-center py-10"><i class="fa-solid fa-circle-notch fa-spin mr-3 text-2xl"></i> กำลังโหลด...</div>
                 
                 <div id="lessonGrid_student" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"></div>
             </div>
 
             <div id="view_lesson_detail" class="hidden max-w-4xl mx-auto">
-                <button onclick="nav('lessons')" class="mb-4 lg:mb-6 flex items-center bg-white px-4 py-2 rounded-full shadow-sm text-sm font-bold text-slate-500 border hover:bg-slate-50 transition"><i class="fa-solid fa-arrow-left mr-2"></i> กลับ</button>
-                <div class="bg-white rounded-[1.5rem] lg:rounded-[2rem] p-4 lg:p-8 border border-slate-100 mb-6 shadow-sm">
-                    <div id="det_video_container" class="w-full aspect-video bg-slate-900 rounded-xl lg:rounded-[1.5rem] mb-6 overflow-hidden hidden shadow-inner relative group">
+                <button onclick="nav('lessons')" class="mb-4 lg:mb-6 flex items-center glass-panel px-4 py-2 rounded-full shadow-sm text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-black/50 transition"><i class="fa-solid fa-arrow-left mr-2"></i> กลับ</button>
+                <div class="glass-panel rounded-[1.5rem] lg:rounded-[2rem] p-4 lg:p-8 mb-6 shadow-sm">
+                    <div id="det_video_container" class="w-full aspect-video bg-black rounded-xl lg:rounded-[1.5rem] mb-6 overflow-hidden hidden shadow-inner relative group border border-white/10">
                         <div id="ytplayer_div" class="w-full h-full absolute inset-0"></div>
                         <div id="antiSkipWarning" class="absolute top-4 left-1/2 -translate-x-1/2 bg-rose-500 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg transition-opacity duration-300 opacity-0 pointer-events-none z-50">
                             <i class="fa-solid fa-ban mr-1"></i> ห้ามข้ามวิดีโอนะครับ
                         </div>
                     </div>
-                    <div id="det_image_container" class="w-full h-48 lg:h-80 bg-slate-900 rounded-xl lg:rounded-[1.5rem] mb-6 overflow-hidden relative">
-                        <img id="det_img_src" src="" class="w-full h-full object-cover opacity-60">
+                    <div id="det_image_container" class="w-full h-48 lg:h-80 bg-slate-900 rounded-xl lg:rounded-[1.5rem] mb-6 overflow-hidden relative border border-white/10">
+                        <img id="det_img_src" src="" class="w-full h-full object-cover opacity-70">
                         <div class="absolute bottom-4 left-4 lg:bottom-8 lg:left-8 text-white">
-                            <span id="det_ep" class="bg-[#6d28d9] px-3 py-1 rounded-lg text-[10px] lg:text-xs font-bold mb-2 inline-block">EP.X</span>
+                            <span id="det_ep" class="bg-[#f05a28] px-3 py-1 rounded-lg text-[10px] lg:text-xs font-bold mb-2 inline-block shadow-md border border-white/20">EP.X</span>
                             <h2 id="det_title" class="text-xl lg:text-3xl font-bold font-prompt drop-shadow-md">Title</h2>
                         </div>
                     </div>
-                    <div id="det_content" class="rich-text whitespace-pre-wrap px-1 lg:px-2"></div>
+                    <div id="det_content" class="rich-text whitespace-pre-wrap px-1 lg:px-2 text-slate-700 dark:text-slate-300"></div>
                 </div>
                 
-                <div id="quizSectionWrapper" class="bg-white rounded-[1.5rem] lg:rounded-[2rem] p-5 lg:p-8 border-t-8 border-[#6d28d9] shadow-md hidden">
-                    <h3 id="quizSectionTitle" class="text-xl lg:text-2xl font-bold mb-6 border-b pb-4 font-prompt">แบบทดสอบประจำบท</h3>
-                    <div id="quizCompletedMsg" class="hidden bg-emerald-50 rounded-2xl p-8 lg:p-10 text-center border border-emerald-100">
+                <div id="quizSectionWrapper" class="glass-panel rounded-[1.5rem] lg:rounded-[2rem] p-5 lg:p-8 border-t-8 border-[#f05a28] shadow-md hidden">
+                    <h3 id="quizSectionTitle" class="text-xl lg:text-2xl font-bold mb-6 border-b border-slate-200/50 dark:border-slate-700/50 pb-4 font-prompt dark:text-white">แบบทดสอบประจำบท</h3>
+                    <div id="quizCompletedMsg" class="hidden bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl p-8 lg:p-10 text-center border border-emerald-100 dark:border-emerald-800">
                         <i class="fa-solid fa-circle-check text-5xl text-emerald-500 mb-4"></i>
-                        <h4 id="quizCompletedTitle" class="text-xl font-bold text-emerald-900 mb-2 font-prompt">คุณทำคะแนนได้:</h4>
-                        <div id="quizCompletedScoreBox" class="text-4xl lg:text-5xl font-black text-emerald-600"><span id="quizScoreResult">0</span><span id="quizMaxScore" class="text-xl text-slate-400"></span></div>
+                        <h4 id="quizCompletedTitle" class="text-xl font-bold text-emerald-900 dark:text-emerald-300 mb-2 font-prompt">คุณทำคะแนนได้:</h4>
+                        <div id="quizCompletedScoreBox" class="text-4xl lg:text-5xl font-black text-emerald-600 dark:text-emerald-400"><span id="quizScoreResult">0</span><span id="quizMaxScore" class="text-xl text-emerald-400/50"></span></div>
                     </div>
                     <form id="quizForm" class="space-y-4 lg:space-y-6"><div id="quizContainer"></div></form>
                 </div>
             </div>
 
             <div id="view_inbox" class="hidden h-[calc(100vh-120px)] w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-4 lg:gap-6">
-                <div class="w-full lg:w-1/3 bg-white rounded-2xl lg:rounded-3xl border border-slate-100 flex flex-col overflow-hidden shadow-sm lg:h-full h-1/3 shrink-0">
-                    <div class="p-4 lg:p-6 border-b"><h2 class="text-lg lg:text-2xl font-bold font-prompt text-slate-800">กล่องข้อความ</h2></div>
+                <div class="w-full lg:w-1/3 glass-panel rounded-2xl lg:rounded-3xl flex flex-col overflow-hidden shadow-sm lg:h-full h-1/3 shrink-0">
+                    <div class="p-4 lg:p-6 border-b border-slate-200/50 dark:border-slate-700/50"><h2 class="text-lg lg:text-2xl font-bold font-prompt text-slate-800 dark:text-white">กล่องข้อความ</h2></div>
                     <div class="flex-1 overflow-y-auto p-2 lg:p-4 hide-scroll" id="chatContactList"></div>
                 </div>
-                <div class="w-full lg:w-2/3 bg-white rounded-2xl lg:rounded-3xl border border-slate-100 flex flex-col overflow-hidden shadow-sm relative lg:h-full h-2/3">
-                    <div id="chatPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-50 z-10 text-slate-400">
-                        <div class="w-20 h-20 bg-purple-100 text-purple-400 rounded-full flex items-center justify-center text-3xl mb-4 shadow-inner"><i class="fa-regular fa-comment"></i></div>
-                        <p class="font-bold text-slate-500 text-sm lg:text-base">เลือกที่ปรึกษาเพื่อเริ่มสนทนา</p>
+                <div class="w-full lg:w-2/3 glass-panel rounded-2xl lg:rounded-3xl flex flex-col overflow-hidden shadow-sm relative lg:h-full h-2/3">
+                    <div id="chatPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center bg-white/40 dark:bg-black/40 backdrop-blur-sm z-10 text-slate-500 dark:text-slate-400">
+                        <div class="w-20 h-20 bg-orange-100 dark:bg-orange-900/50 text-orange-400 rounded-full flex items-center justify-center text-3xl mb-4 shadow-inner"><i class="fa-regular fa-comment"></i></div>
+                        <p class="font-bold text-sm lg:text-base">เลือกที่ปรึกษาเพื่อเริ่มสนทนา</p>
                     </div>
-                    <div class="p-4 lg:p-5 border-b flex items-center justify-between bg-white z-0" id="chatHeader">
+                    <div class="p-4 lg:p-5 border-b border-slate-200/50 dark:border-slate-700/50 flex items-center justify-between z-0 bg-white/30 dark:bg-black/20" id="chatHeader">
                         <div class="flex items-center gap-3 lg:gap-4">
-                            <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shadow-sm bg-slate-200 flex items-center justify-center font-bold text-indigo-600" id="chatHeaderAvatar"></div>
-                            <div><h3 class="font-bold text-sm lg:text-lg text-slate-800 mt-1 flex items-center" id="chatHeaderName">Name</h3></div>
+                            <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shadow-sm bg-slate-200 dark:bg-slate-700 flex items-center justify-center font-bold text-orange-600 dark:text-orange-400 border border-white/50" id="chatHeaderAvatar"></div>
+                            <div><h3 class="font-bold text-sm lg:text-lg text-slate-800 dark:text-white mt-1 flex items-center" id="chatHeaderName">Name</h3></div>
                         </div>
                     </div>
-                    <div class="flex-1 overflow-y-auto p-4 lg:p-6 bg-[#f8fafc] flex flex-col space-y-4 hide-scroll z-0" id="chatHistory"></div>
-                    <div class="p-3 lg:p-5 border-t bg-white flex items-center gap-2 lg:gap-3 shrink-0 z-0">
-                        <input type="text" id="chatInputMessage" placeholder="พิมพ์ข้อความ..." class="flex-1 px-4 lg:px-6 py-3 lg:py-4 bg-slate-50 border border-slate-200 rounded-full outline-none focus:ring-2 focus:ring-purple-300 text-sm lg:text-base">
-                        <button onclick="sendChatMessage()" class="w-12 h-12 lg:w-14 lg:h-14 bg-[#6d28d9] text-white rounded-full flex items-center justify-center shadow-lg hover:bg-purple-800 transition"><i class="fa-solid fa-paper-plane text-lg"></i></button>
+                    <div class="flex-1 overflow-y-auto p-4 lg:p-6 bg-transparent flex flex-col space-y-4 hide-scroll z-0" id="chatHistory"></div>
+                    <div class="p-3 lg:p-5 border-t border-slate-200/50 dark:border-slate-700/50 flex items-center gap-2 lg:gap-3 shrink-0 z-0 bg-white/30 dark:bg-black/20">
+                        <input type="text" id="chatInputMessage" placeholder="พิมพ์ข้อความ..." class="flex-1 px-4 lg:px-6 py-3 lg:py-4 bg-white/60 dark:bg-black/50 border border-white/50 dark:border-white/10 rounded-full outline-none focus:ring-2 focus:ring-orange-400 text-sm lg:text-base dark:text-white dark:placeholder-slate-400 shadow-inner">
+                        <button onclick="sendChatMessage()" class="w-12 h-12 lg:w-14 lg:h-14 bg-[#f05a28] text-white rounded-full flex items-center justify-center shadow-lg hover:bg-[#d94a1d] transition"><i class="fa-solid fa-paper-plane text-lg"></i></button>
                     </div>
                 </div>
             </div>
 
             <div id="view_settings" class="hidden max-w-3xl mx-auto">
-                <div class="bg-white rounded-2xl lg:rounded-[2rem] p-6 lg:p-10 border border-slate-100 shadow-sm">
+                <div class="glass-panel rounded-2xl lg:rounded-[2rem] p-6 lg:p-10 shadow-sm">
                     <div class="flex flex-col items-center mb-8">
-                        <div class="relative w-24 h-24 lg:w-32 lg:h-32 rounded-full bg-slate-100 overflow-hidden border-4 border-white shadow-md group">
+                        <div class="relative w-24 h-24 lg:w-32 lg:h-32 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden border-4 border-white dark:border-slate-700 shadow-md group">
                             <img id="previewSettingPic" src="" class="w-full h-full object-cover hidden">
-                            <div id="previewSettingInitials" class="w-full h-full flex items-center justify-center text-4xl lg:text-5xl font-bold text-purple-600 bg-purple-100">A</div>
+                            <div id="previewSettingInitials" class="w-full h-full flex items-center justify-center text-4xl lg:text-5xl font-bold text-orange-600 bg-orange-100 dark:bg-orange-900/50 dark:text-orange-400">A</div>
                             <label class="absolute inset-0 flex flex-col items-center justify-center bg-black/50 text-white cursor-pointer opacity-0 group-hover:opacity-100 transition backdrop-blur-[2px]">
                                 <i class="fa-solid fa-camera mb-1 text-2xl"></i>
                                 <input type="file" class="hidden" accept="image/*" onchange="handleImageUpload(event)">
                             </label>
                         </div>
-                        <h3 class="font-bold text-2xl font-prompt text-slate-800 mt-4" id="settingNameDisplay">-</h3>
-                        <p class="text-xs font-bold text-purple-600 bg-purple-50 px-3 py-1 rounded-full uppercase mt-2">Student Account</p>
+                        <h3 class="font-bold text-2xl font-prompt text-slate-800 dark:text-white mt-4" id="settingNameDisplay">-</h3>
+                        <p class="text-xs font-bold text-orange-600 dark:text-orange-400 bg-orange-100/50 dark:bg-orange-900/30 px-3 py-1 rounded-full uppercase mt-2 border border-orange-200 dark:border-orange-800/50">Student Account</p>
                     </div>
                     <form id="profileForm" class="space-y-5">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <div><label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-widest">Email *</label><input type="email" id="set_email" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-[#6d28d9] text-sm" required></div>
-                            <div><label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-widest">Phone *</label><input type="tel" id="set_phone" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-[#6d28d9] text-sm" required></div>
+                            <div><label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-2 uppercase tracking-widest">Email *</label><input type="email" id="set_email" class="w-full px-4 py-3 bg-white/50 dark:bg-black/30 border border-white/50 dark:border-white/10 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm dark:text-white" required></div>
+                            <div><label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-2 uppercase tracking-widest">Phone *</label><input type="tel" id="set_phone" class="w-full px-4 py-3 bg-white/50 dark:bg-black/30 border border-white/50 dark:border-white/10 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm dark:text-white" required></div>
                         </div>
-                        <button type="button" onclick="saveProfile()" class="w-full bg-[#6d28d9] text-white font-bold py-4 rounded-xl shadow-lg mt-4 active:scale-[0.98] transition font-prompt uppercase text-sm tracking-widest hover:bg-purple-800">Update Profile</button>
+                        <button type="button" onclick="saveProfile()" class="w-full bg-[#f05a28] text-white font-bold py-4 rounded-xl shadow-lg mt-4 active:scale-[0.98] transition font-prompt uppercase text-sm tracking-widest hover:bg-[#d94a1d]">Update Profile</button>
                     </form>
                 </div>
             </div>
         </div>
     </main>
 
-    <aside id="rightSidebar" class="w-72 bg-white border-l border-slate-200 flex-shrink-0 hidden lg:flex flex-col h-full shadow-sm relative">
+    <aside id="rightSidebar" class="glass-panel w-72 flex-shrink-0 hidden lg:flex flex-col h-full shadow-sm relative border-l border-white/50 dark:border-white/10">
         <div class="p-8 overflow-y-auto flex-1 hide-scroll pb-24">
-            <div class="text-right lg:hidden mb-4"><button onclick="document.getElementById('rightSidebar').classList.add('hidden')" class="text-slate-400 bg-slate-100 w-8 h-8 rounded-full"><i class="fa-solid fa-xmark"></i></button></div>
-            <div class="flex justify-between items-center mb-8"><h3 class="font-bold text-slate-800 text-sm font-prompt uppercase tracking-widest">STUDENT PROFILE</h3></div>
+            <div class="text-right lg:hidden mb-4"><button onclick="document.getElementById('rightSidebar').classList.add('hidden')" class="text-slate-500 bg-white/50 dark:bg-black/50 w-8 h-8 rounded-full"><i class="fa-solid fa-xmark"></i></button></div>
+            <div class="flex justify-between items-center mb-8"><h3 class="font-bold text-slate-800 dark:text-slate-200 text-sm font-prompt uppercase tracking-widest">STUDENT PROFILE</h3></div>
             
             <div class="text-center mb-10">
-                <div class="relative w-28 h-28 mx-auto mb-5 border-[5px] border-white shadow-xl rounded-full overflow-hidden bg-purple-50 flex items-center justify-center">
+                <div class="relative w-28 h-28 mx-auto mb-5 border-[5px] border-white/80 dark:border-slate-800/80 shadow-xl rounded-full overflow-hidden bg-orange-50 dark:bg-orange-900/50 flex items-center justify-center backdrop-blur-sm">
                     <img id="rightProfileImage" src="" class="w-full h-full object-cover hidden">
-                    <div id="rightProfileInitials" class="w-full h-full flex items-center justify-center text-4xl font-bold text-purple-600 bg-purple-100">A</div>
+                    <div id="rightProfileInitials" class="w-full h-full flex items-center justify-center text-4xl font-bold text-orange-600 dark:text-orange-400">A</div>
                 </div>
-                <h3 class="font-bold text-xl font-prompt text-slate-800 mb-3" id="rightProfileFullName">-</h3>
+                <h3 class="font-bold text-xl font-prompt text-slate-800 dark:text-white mb-3" id="rightProfileFullName">-</h3>
                 <div class="flex justify-center gap-2 mt-2 items-center">
-                    <span class="bg-purple-100 text-purple-700 font-bold px-3 py-1.5 rounded-full text-[11px] shadow-sm" id="rightProfileId">ID: -</span>
-                    <span class="bg-indigo-100 text-indigo-700 font-bold px-3 py-1.5 rounded-full text-[11px] shadow-sm" id="rightProfileClass">Class: -</span>
+                    <span class="bg-orange-100/50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 font-bold px-3 py-1.5 rounded-full text-[11px] shadow-sm border border-orange-200 dark:border-orange-800/50" id="rightProfileId">ID: -</span>
+                    <span class="bg-slate-100/50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 font-bold px-3 py-1.5 rounded-full text-[11px] shadow-sm border border-slate-200 dark:border-slate-700" id="rightProfileClass">Class: -</span>
                 </div>
             </div>
 
-            <h4 class="font-bold text-slate-800 font-prompt text-sm mb-5 uppercase tracking-widest mt-8">TEACHER</h4>
+            <h4 class="font-bold text-slate-800 dark:text-slate-200 font-prompt text-sm mb-5 uppercase tracking-widest mt-8">TEACHER</h4>
             <div class="space-y-3" id="mentorListUI">
-                <div class="text-[10px] text-slate-400 text-center py-4 bg-slate-50 rounded-xl border border-dashed">กำลังโหลดข้อมูลอาจารย์...</div>
+                <div class="text-[10px] text-slate-500 dark:text-slate-400 text-center py-4 bg-white/40 dark:bg-black/20 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">กำลังโหลดข้อมูลอาจารย์...</div>
             </div>
         </div>
     </aside>
 
     <script>
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbze1x9SSRsoZSE__Cm6iMzLv9A45ry3eTHB2fkJNktUmRs4yyLgh96s7wUdaPBPSzgIew/exec';
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbyDcg8d6HS5ul8_3vkJCgqOZnano4kNmgvqMgsdYl5vYzOAJmBin11VBkVULmWcnHBuAA/exec';
         let currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
         if (!currentUser || String(currentUser.role).toLowerCase().trim() !== 'student') { window.location.replace('index.html'); }
 
@@ -299,15 +351,42 @@
         let lastTime = 0; 
         let questionTriggers = []; 
 
+        // ระบบ Dark/Light Mode (Default Light)
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark'); // บังคับสว่างเป็นค่าเริ่มต้น
+            }
+            updateThemeIcon();
+        }
+
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeIcon();
+        }
+
+        function updateThemeIcon() {
+            const isDark = document.documentElement.classList.contains('dark');
+            const icon = document.getElementById('themeIcon');
+            if (isDark) {
+                icon.className = 'fa-solid fa-sun text-yellow-400 text-lg';
+            } else {
+                icon.className = 'fa-solid fa-moon text-slate-600 text-lg';
+            }
+        }
+
         function fetchGAS(payload) { return fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r => r.json()); }
         function getInitials(n) { let p = n.trim().split(/\s+/); return p.length >= 2 ? (p[0][0] + p[1][0]).toUpperCase() : n.substring(0, 2).toUpperCase(); }
         function extractYouTubeID(u) { let m = u.match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/); return (m && m[7].length === 11) ? m[7] : false; }
         function getImageUrl(t) { return `https://picsum.photos/seed/${encodeURIComponent(t)}/800/600`; }
         function formatContent(t) {
-            if(!t) return ""; t = t.replace(/\[YT:(.*?)\]\n?/g, ""); t = t.replace(/(สำคัญมาก|ข้อควรระวัง)(:|\s)/g, '<span class="bg-rose-100 text-rose-700 px-2 py-0.5 rounded font-bold text-xs ml-1 shadow-sm">$1$2</span>'); t = t.replace(/\*\*(.*?)\*\*/g, '<span class="text-yellow-600 font-bold bg-yellow-50 px-1 py-0.5 rounded">$1</span>'); t = t.replace(/^### (.*$)/gim, '<h4 class="text-lg font-bold text-[#6d28d9] mt-4 mb-2 font-prompt">$1</h4>'); t = t.replace(/^- (.*$)/gim, '<div class="flex items-start my-1 text-sm"><i class="fa-solid fa-circle-check text-[#6d28d9] mt-1 mr-2"></i> <span>$1</span></div>'); return t;
+            if(!t) return ""; t = t.replace(/\[YT:(.*?)\]\n?/g, ""); t = t.replace(/(สำคัญมาก|ข้อควรระวัง)(:|\s)/g, '<span class="bg-rose-100 text-rose-700 px-2 py-0.5 rounded font-bold text-xs ml-1 shadow-sm">$1$2</span>'); t = t.replace(/\*\*(.*?)\*\*/g, '<span class="text-orange-600 font-bold bg-orange-50 dark:bg-orange-900/30 px-1 py-0.5 rounded">$1</span>'); t = t.replace(/^### (.*$)/gim, '<h4 class="text-lg font-bold text-[#f05a28] mt-4 mb-2 font-prompt">$1</h4>'); t = t.replace(/^- (.*$)/gim, '<div class="flex items-start my-1 text-sm"><i class="fa-solid fa-circle-check text-[#f05a28] mt-1 mr-2"></i> <span>$1</span></div>'); return t;
         }
 
-        // แจ้งเตือนสไตล์ iOS กลางจอ (ย่อขนาดลง & เด้งหายไวขึ้นใน 2 วิ)
         function showiOSToast(iconClass, text, iconColorBg, iconColorText) {
             Swal.fire({ 
                 toast: false, 
@@ -316,10 +395,10 @@
                 timer: 2000, 
                 customClass: { popup: 'ios-center-popup' },
                 html: `<div class="flex flex-col items-center gap-3 text-center">
-                          <div class="w-12 h-12 rounded-full ${iconColorBg} ${iconColorText} flex items-center justify-center shadow-sm">
+                          <div class="w-12 h-12 rounded-full ${iconColorBg} ${iconColorText} flex items-center justify-center shadow-sm border border-white/20">
                               <i class="${iconClass} text-2xl"></i>
                           </div>
-                          <span class="font-bold text-slate-800 text-base tracking-wide leading-snug">${text}</span>
+                          <span class="font-bold text-slate-800 dark:text-slate-100 text-base tracking-wide leading-snug">${text}</span>
                        </div>` 
             });
         }
@@ -327,10 +406,11 @@
         function toggleSidebar() { document.getElementById('mainSidebar').classList.toggle('active'); document.getElementById('sidebarOverlay').classList.toggle('active'); }
         function toggleRightSidebar() {
             const rs = document.getElementById('rightSidebar'); rs.classList.toggle('hidden');
-            if(!rs.classList.contains('hidden')) { rs.style.position = 'fixed'; rs.style.right = '0'; rs.style.top = '0'; rs.style.zIndex = '100'; rs.style.height = '100vh'; rs.style.width = '300px'; showiOSToast('fa-solid fa-xmark', 'แตะที่ว่างเพื่อปิด', 'bg-slate-100', 'text-slate-500'); }
+            if(!rs.classList.contains('hidden')) { rs.style.position = 'fixed'; rs.style.right = '0'; rs.style.top = '0'; rs.style.zIndex = '100'; rs.style.height = '100vh'; rs.style.width = '300px'; showiOSToast('fa-solid fa-xmark', 'แตะที่ว่างเพื่อปิด', 'bg-slate-100 dark:bg-slate-700', 'text-slate-500 dark:text-slate-300'); }
         }
 
         window.onload = () => { 
+            initTheme(); // โหลด Theme
             renderSidebarMenu(); updateProfileUI(); nav('home'); loadDashboardData(); 
             let chatInput = document.getElementById("chatInputMessage"); if(chatInput) { chatInput.addEventListener("keypress", (e) => { if(e.key === "Enter") sendChatMessage(); }); }
         };
@@ -347,7 +427,7 @@
         function clickMenuLessons() { 
             currentSubject = ""; showFavoritesOnly = false; 
             let btn = document.getElementById('favFilterBtn');
-            if(btn) { btn.className = "bg-white border border-slate-200 px-5 py-2.5 rounded-full text-sm font-bold text-slate-600 shadow-sm active:bg-slate-50 transition"; btn.innerHTML = `<i class="fa-regular fa-heart mr-2 text-rose-500"></i> <span>รายการโปรด</span>`; }
+            if(btn) { btn.className = "glass-panel px-5 py-2.5 rounded-full text-sm font-bold text-slate-600 dark:text-slate-300 shadow-sm active:scale-95 transition"; btn.innerHTML = `<i class="fa-regular fa-heart mr-2 text-rose-500"></i> <span>รายการโปรด</span>`; }
             document.getElementById('allSubjectTitle').innerText = "บทเรียนทั้งหมด"; 
             nav('lessons'); 
         }
@@ -355,8 +435,8 @@
         function toggleShowFavorites() {
             showFavoritesOnly = !showFavoritesOnly;
             let btn = document.getElementById('favFilterBtn');
-            if(showFavoritesOnly) { btn.className = "bg-rose-50 border border-rose-200 px-5 py-2.5 rounded-full text-sm font-bold text-rose-600 shadow-sm active:bg-rose-100 transition"; btn.innerHTML = `<i class="fa-solid fa-heart mr-2 text-rose-500"></i> <span>รายการโปรด</span>`; } 
-            else { btn.className = "bg-white border border-slate-200 px-5 py-2.5 rounded-full text-sm font-bold text-slate-600 shadow-sm active:bg-slate-50 transition"; btn.innerHTML = `<i class="fa-regular fa-heart mr-2 text-rose-500"></i> <span>รายการโปรด</span>`; }
+            if(showFavoritesOnly) { btn.className = "bg-rose-500/10 border border-rose-500/20 px-5 py-2.5 rounded-full text-sm font-bold text-rose-600 dark:text-rose-400 shadow-sm active:scale-95 transition backdrop-blur-sm"; btn.innerHTML = `<i class="fa-solid fa-heart mr-2 text-rose-500"></i> <span>รายการโปรด</span>`; } 
+            else { btn.className = "glass-panel px-5 py-2.5 rounded-full text-sm font-bold text-slate-600 dark:text-slate-300 shadow-sm active:scale-95 transition"; btn.innerHTML = `<i class="fa-regular fa-heart mr-2 text-rose-500"></i> <span>รายการโปรด</span>`; }
             renderStudentLessons();
         }
 
@@ -407,27 +487,26 @@
                     if(rawUsers.length > 0) {
                         allUsersData = rawUsers;
                         mentors = allUsersData.filter(u => u.role && ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({
-                            name: u.name || u.Name || "", role: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher', initials: getInitials(u.name || u.Name || "A"), pic: u.pic || u.ProfilePic || "", room: u.assigned || u.room || u.Room || "-", bgColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "bg-rose-100" : "bg-indigo-100", textColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "text-rose-600" : "text-indigo-600"
+                            name: u.name || u.Name || "", role: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher', initials: getInitials(u.name || u.Name || "A"), pic: u.pic || u.ProfilePic || "", room: u.assigned || u.room || u.Room || "-", bgColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "bg-rose-100 dark:bg-rose-900/50" : "bg-orange-100 dark:bg-orange-900/50", textColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "text-rose-600 dark:text-rose-400" : "text-orange-600 dark:text-orange-400"
                         })).sort((a, b) => (a.role === 'Admin' && b.role !== 'Admin') ? 1 : (a.role !== 'Admin' && b.role === 'Admin') ? -1 : 0);
                     }
 
                     document.getElementById('loadingLessons_student').style.display = 'none';
                     
-                    // ปรับการ์ดวิชาให้เป็นสีขาว คลีน มินิมอล
                     let sH = ""; 
                     allSubjects.forEach((s) => { 
                         let lessonCount = allLessons.filter(l => String(l.subject).trim() === String(s).trim()).length;
                         
                         sH += `
-                        <div class="subject-card rounded-[2rem] p-5 lg:p-6 flex flex-col justify-between h-32 w-full" onclick="selectSubject('${s}')">
-                            <div class="absolute -right-2 -bottom-4 w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center z-0">
-                                <i class="fa-solid fa-book-open text-4xl text-slate-200 transform -rotate-12"></i>
+                        <div class="glass-panel subject-card rounded-[2rem] p-5 lg:p-6 flex flex-col justify-between h-32 w-full" onclick="selectSubject('${s}')">
+                            <div class="absolute -right-2 -bottom-4 w-24 h-24 bg-white/20 dark:bg-white/5 rounded-full flex items-center justify-center z-0">
+                                <i class="fa-solid fa-book-open text-4xl text-slate-400/30 transform -rotate-12"></i>
                             </div>
                             <div class="relative z-10">
-                                <h3 class="font-bold text-base lg:text-lg font-prompt leading-tight text-slate-800">${s}</h3>
+                                <h3 class="font-bold text-base lg:text-lg font-prompt leading-tight text-slate-800 dark:text-slate-100">${s}</h3>
                             </div>
                             <div class="flex items-center gap-2 mt-auto relative z-10">
-                                <div class="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-[10px] lg:text-xs font-bold border border-slate-200/50">
+                                <div class="bg-white/50 dark:bg-black/40 text-slate-600 dark:text-slate-300 px-3 py-1 rounded-full text-[10px] lg:text-xs font-bold border border-white/40 dark:border-white/10">
                                     <i class="fa-solid fa-layer-group mr-1"></i> ${lessonCount} บทเรียน
                                 </div>
                             </div>
@@ -455,14 +534,14 @@
             let favs = JSON.parse(localStorage.getItem('favs_'+currentUser.id)||'[]');
 
             if(currentSubject !== "") { filtered = filtered.filter(l => String(l.subject).trim() === String(currentSubject).trim()); } 
-            else if(!showFavoritesOnly) { document.getElementById('lessonGrid_student').innerHTML = '<div class="col-span-full py-10 lg:py-20 text-center text-slate-400 font-bold border-2 border-dashed border-slate-200 rounded-[2rem] text-sm px-4"><i class="fa-solid fa-arrow-up block text-3xl mb-4 text-purple-200"></i> กรุณาเลือก "รายวิชา" ด้านบน เพื่อดูบทเรียน</div>'; return; }
+            else if(!showFavoritesOnly) { document.getElementById('lessonGrid_student').innerHTML = '<div class="col-span-full py-10 lg:py-20 text-center text-slate-500 dark:text-slate-400 font-bold border-2 border-dashed border-slate-300/50 dark:border-slate-700/50 rounded-[2rem] text-sm px-4"><i class="fa-solid fa-arrow-up block text-3xl mb-4 text-[#f05a28]/50"></i> กรุณาเลือก "รายวิชา" ด้านบน เพื่อดูบทเรียน</div>'; return; }
 
             if(showFavoritesOnly) {
                 filtered = filtered.filter(l => favs.includes(l.title));
                 document.getElementById('allSubjectTitle').innerText = currentSubject !== "" ? "วิชา: " + currentSubject + " (เฉพาะรายการโปรด)" : "รายการโปรดทั้งหมด";
             } else { document.getElementById('allSubjectTitle').innerText = currentSubject !== "" ? "วิชา: " + currentSubject : "บทเรียนทั้งหมด"; }
 
-            document.getElementById('lessonGrid_student').innerHTML = filtered.length > 0 ? filtered.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'grid')).join('') : '<div class="col-span-full py-20 text-center text-slate-400 font-bold border-2 border-dashed border-slate-200 rounded-[2rem]">ไม่พบข้อมูลบทเรียน</div>';
+            document.getElementById('lessonGrid_student').innerHTML = filtered.length > 0 ? filtered.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'grid')).join('') : '<div class="col-span-full py-20 text-center text-slate-500 dark:text-slate-400 font-bold border-2 border-dashed border-slate-300/50 dark:border-slate-700/50 rounded-[2rem]">ไม่พบข้อมูลบทเรียน</div>';
         }
 
         function searchLesson(val) {
@@ -473,15 +552,14 @@
             let filtered = allLessons.filter(l => l.title.toLowerCase().includes(q) || l.subject.toLowerCase().includes(q));
             if (showFavoritesOnly) { let favs = JSON.parse(localStorage.getItem('favs_'+currentUser.id)||'[]'); filtered = filtered.filter(l => favs.includes(l.title)); }
 
-            document.getElementById('lessonGrid_student').innerHTML = filtered.length > 0 ? filtered.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'grid')).join('') : '<div class="col-span-full py-20 text-center text-slate-400 font-bold border-2 border-dashed border-slate-200 rounded-[2rem]">ไม่พบสิ่งที่ค้นหา</div>';
+            document.getElementById('lessonGrid_student').innerHTML = filtered.length > 0 ? filtered.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'grid')).join('') : '<div class="col-span-full py-20 text-center text-slate-500 dark:text-slate-400 font-bold border-2 border-dashed border-slate-300/50 dark:border-slate-700/50 rounded-[2rem]">ไม่พบสิ่งที่ค้นหา</div>';
         }
 
-        // ถอดฟิลเตอร์สีออก โชว์ภาพธรรมชาติ เพิ่มเงาดำบางๆ
         function renderLessonCard(l, idx, isNew = false, layoutType = 'grid') {
             let isC = l.studentScore !== null;
             let favs = JSON.parse(localStorage.getItem('favs_'+currentUser.id)||'[]');
             let isF = favs.includes(l.title);
-            let heartClass = isF ? 'fa-solid text-rose-500' : 'fa-regular text-slate-400 hover:text-rose-500';
+            let heartClass = isF ? 'fa-solid text-rose-500' : 'fa-regular text-slate-400 dark:text-slate-300 hover:text-rose-500';
 
             let progStatus = localStorage.getItem('ytProg_' + currentUser.id + '_' + l.title);
             let progPct = localStorage.getItem('ytPct_' + currentUser.id + '_' + l.title) || 0;
@@ -489,27 +567,27 @@
             let newBadge = isNew ? `<div class="absolute top-3 left-3 bg-gradient-to-r from-rose-500 to-pink-500 text-white px-3 py-1 rounded-full text-[10px] font-bold shadow-md tracking-wider animate-pulse border border-white/20 z-20">NEW</div>` : '';
 
             if (!isC && progStatus && progStatus !== "done") {
-                newBadge = `<div class="absolute top-3 left-3 bg-amber-400 text-amber-900 px-2 py-0.5 rounded-md text-[9px] font-bold shadow-md z-20 flex items-center"><i class="fa-solid fa-clock-rotate-left mr-1"></i> ดูค้างไว้</div>`;
-                progressIndicator = `<div class="absolute bottom-0 left-0 w-full h-1.5 bg-slate-200/50 z-20"><div class="h-full bg-amber-400" style="width: ${progPct}%"></div></div>`;
+                newBadge = `<div class="absolute top-3 left-3 bg-amber-400/90 text-amber-900 px-2 py-0.5 rounded-md text-[9px] font-bold shadow-md z-20 flex items-center backdrop-blur-sm border border-amber-300/50"><i class="fa-solid fa-clock-rotate-left mr-1"></i> ดูค้างไว้</div>`;
+                progressIndicator = `<div class="absolute bottom-0 left-0 w-full h-1.5 bg-slate-200/50 dark:bg-slate-700/50 z-20"><div class="h-full bg-amber-400" style="width: ${progPct}%"></div></div>`;
             }
 
             let totalQs = (l.questions || []).filter(q => q && q.q && q.q.trim() !== "").length;
             let scoreHtml = '';
             
             if (totalQs > 0) {
-                scoreHtml = `<div class="mt-auto border-t border-slate-100 pt-4"><span class="text-xs font-bold text-[#6d28d9]"><i class="fa-solid fa-star text-yellow-400 mr-1"></i> Score: ${isC ? l.studentScore : 0}/${totalQs}</span></div>`;
+                scoreHtml = `<div class="mt-auto border-t border-slate-200/50 dark:border-slate-700/50 pt-4"><span class="text-xs font-bold text-[#f05a28]"><i class="fa-solid fa-star text-yellow-500 mr-1"></i> Score: ${isC ? l.studentScore : 0}/${totalQs}</span></div>`;
             } else {
                 if(isC) {
-                    scoreHtml = `<div class="mt-auto border-t border-slate-100 pt-4"><span class="text-xs font-bold text-emerald-500"><i class="fa-solid fa-circle-check mr-1"></i>เรียนจบแล้ว</span></div>`;
+                    scoreHtml = `<div class="mt-auto border-t border-slate-200/50 dark:border-slate-700/50 pt-4"><span class="text-xs font-bold text-emerald-500"><i class="fa-solid fa-circle-check mr-1"></i>เรียนจบแล้ว</span></div>`;
                 } else {
-                    scoreHtml = `<div class="mt-auto border-t border-slate-100 pt-4"><span class="text-[10px] font-bold text-slate-400">ไม่มีแบบทดสอบ</span></div>`;
+                    scoreHtml = `<div class="mt-auto border-t border-slate-200/50 dark:border-slate-700/50 pt-4"><span class="text-[10px] font-bold text-slate-500 dark:text-slate-400">ไม่มีแบบทดสอบ</span></div>`;
                 }
             }
 
             let hasVideo = (l.content || "").includes("[YT:");
             let playIcon = hasVideo ? `
                 <div class="absolute inset-0 flex items-center justify-center z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div class="w-14 h-14 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center text-white shadow-xl border border-white/50">
+                    <div class="w-14 h-14 bg-white/30 dark:bg-black/30 backdrop-blur-md rounded-full flex items-center justify-center text-white shadow-xl border border-white/50">
                         <i class="fa-solid fa-play text-2xl ml-1 drop-shadow-md"></i>
                     </div>
                 </div>` : '';
@@ -517,23 +595,22 @@
             let widthClass = layoutType === 'scroll' ? 'min-w-[85vw] sm:min-w-[340px] max-w-[85vw] sm:max-w-[340px] snap-start shrink-0' : '';
 
             return `
-            <div class="course-card bg-white rounded-[2rem] p-4 lg:p-5 flex flex-col h-full relative w-full ${widthClass}" onclick="openLesson(${idx})">
-                <div class="h-32 lg:h-40 w-full rounded-[1.5rem] mb-4 lg:mb-5 relative overflow-hidden bg-slate-100 group shrink-0 border border-slate-200/50">
+            <div class="glass-panel course-card rounded-[2rem] p-4 lg:p-5 flex flex-col h-full relative w-full ${widthClass}" onclick="openLesson(${idx})">
+                <div class="h-32 lg:h-40 w-full rounded-[1.5rem] mb-4 lg:mb-5 relative overflow-hidden bg-slate-100 dark:bg-slate-800 group shrink-0 border border-white/20 dark:border-white/5">
                     <img src="${getImageUrl(l.title)}" class="w-full h-full object-cover transition duration-700 group-hover:scale-105 ${isC?'grayscale':''}">
-                    <!-- เงาดำจางๆ ล่างภาพช่วยให้อ่านตัวหนังสือชัด -->
                     <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent z-0 pointer-events-none"></div>
                     
                     ${playIcon}
                     ${newBadge}
                     
-                    <div class="absolute top-3 right-3 w-8 h-8 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-sm z-20 transition hover:bg-white hover:scale-110" onclick="toggleFavorite(event, '${l.title}')"><i class="${heartClass} fa-heart text-sm pointer-events-none"></i></div>
+                    <div class="absolute top-3 right-3 w-8 h-8 bg-white/50 dark:bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center shadow-sm z-20 transition hover:bg-white dark:hover:bg-slate-700 hover:scale-110 border border-white/50 dark:border-white/10" onclick="toggleFavorite(event, '${l.title}')"><i class="${heartClass} fa-heart text-sm pointer-events-none"></i></div>
                     ${isC ? `<div class="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[1px] z-10"><div class="bg-emerald-500 text-white px-3 py-1 rounded-lg text-[10px] font-bold shadow-md">Completed</div></div>` : ''}
                     ${progressIndicator}
                 </div>
                 <div class="flex-1 flex flex-col justify-between px-1">
                     <div>
-                        <span class="text-[9px] lg:text-xs font-bold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full mb-2 inline-block border border-purple-100">${l.subject}</span>
-                        <h3 class="font-bold text-base lg:text-lg mb-4 leading-snug text-slate-800 line-clamp-2">${l.title}</h3>
+                        <span class="text-[9px] lg:text-xs font-bold text-orange-600 dark:text-orange-400 bg-white/50 dark:bg-black/30 border border-orange-200/50 dark:border-orange-900/50 px-2 py-0.5 rounded-full mb-2 inline-block">${l.subject}</span>
+                        <h3 class="font-bold text-base lg:text-lg mb-4 leading-snug text-slate-800 dark:text-slate-100 line-clamp-2">${l.title}</h3>
                     </div>
                     ${scoreHtml}
                 </div>
@@ -582,19 +659,19 @@
 
             let html = `
                 <div class="text-left font-prompt mt-1">
-                    <p class="font-bold text-base lg:text-lg mb-4 text-slate-800 leading-snug">${questionObj.q}</p>
+                    <p class="font-bold text-base lg:text-lg mb-4 text-slate-800 dark:text-slate-100 leading-snug">${questionObj.q}</p>
                     <div class="space-y-3 text-sm font-medium">
-                        <label class="block p-3 bg-[#f8fafc] border border-slate-200 rounded-2xl cursor-pointer hover:bg-purple-50 hover:border-purple-300 transition-all active:scale-[0.98]">
-                            <input type="radio" name="popupAns" value="1" class="mr-3 accent-purple-600 w-4 h-4 align-middle"> ก. ${questionObj.c1}
+                        <label class="block p-3 bg-white/50 dark:bg-black/30 border border-slate-200 dark:border-slate-700 rounded-2xl cursor-pointer hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:border-orange-300 dark:hover:border-orange-700 transition-all active:scale-[0.98] text-slate-700 dark:text-slate-300 backdrop-blur-sm">
+                            <input type="radio" name="popupAns" value="1" class="mr-3 accent-[#f05a28] w-4 h-4 align-middle"> ก. ${questionObj.c1}
                         </label>
-                        <label class="block p-3 bg-[#f8fafc] border border-slate-200 rounded-2xl cursor-pointer hover:bg-purple-50 hover:border-purple-300 transition-all active:scale-[0.98]">
-                            <input type="radio" name="popupAns" value="2" class="mr-3 accent-purple-600 w-4 h-4 align-middle"> ข. ${questionObj.c2}
+                        <label class="block p-3 bg-white/50 dark:bg-black/30 border border-slate-200 dark:border-slate-700 rounded-2xl cursor-pointer hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:border-orange-300 dark:hover:border-orange-700 transition-all active:scale-[0.98] text-slate-700 dark:text-slate-300 backdrop-blur-sm">
+                            <input type="radio" name="popupAns" value="2" class="mr-3 accent-[#f05a28] w-4 h-4 align-middle"> ข. ${questionObj.c2}
                         </label>
-                        <label class="block p-3 bg-[#f8fafc] border border-slate-200 rounded-2xl cursor-pointer hover:bg-purple-50 hover:border-purple-300 transition-all active:scale-[0.98]">
-                            <input type="radio" name="popupAns" value="3" class="mr-3 accent-purple-600 w-4 h-4 align-middle"> ค. ${questionObj.c3}
+                        <label class="block p-3 bg-white/50 dark:bg-black/30 border border-slate-200 dark:border-slate-700 rounded-2xl cursor-pointer hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:border-orange-300 dark:hover:border-orange-700 transition-all active:scale-[0.98] text-slate-700 dark:text-slate-300 backdrop-blur-sm">
+                            <input type="radio" name="popupAns" value="3" class="mr-3 accent-[#f05a28] w-4 h-4 align-middle"> ค. ${questionObj.c3}
                         </label>
-                        <label class="block p-3 bg-[#f8fafc] border border-slate-200 rounded-2xl cursor-pointer hover:bg-purple-50 hover:border-purple-300 transition-all active:scale-[0.98]">
-                            <input type="radio" name="popupAns" value="4" class="mr-3 accent-purple-600 w-4 h-4 align-middle"> ง. ${questionObj.c4}
+                        <label class="block p-3 bg-white/50 dark:bg-black/30 border border-slate-200 dark:border-slate-700 rounded-2xl cursor-pointer hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:border-orange-300 dark:hover:border-orange-700 transition-all active:scale-[0.98] text-slate-700 dark:text-slate-300 backdrop-blur-sm">
+                            <input type="radio" name="popupAns" value="4" class="mr-3 accent-[#f05a28] w-4 h-4 align-middle"> ง. ${questionObj.c4}
                         </label>
                     </div>
                 </div>
@@ -624,14 +701,14 @@
                     if(isCorrect) {
                         let currentScore = parseInt(localStorage.getItem('ytScore_' + currentUser.id + '_' + currentLesson.title) || '0');
                         localStorage.setItem('ytScore_' + currentUser.id + '_' + currentLesson.title, currentScore + 1);
-                        showiOSToast('fa-solid fa-check', 'เก่งมาก! ตอบถูกครับ', 'bg-emerald-100', 'text-emerald-600');
+                        showiOSToast('fa-solid fa-check', 'เก่งมาก! ตอบถูกครับ', 'bg-emerald-100 dark:bg-emerald-900', 'text-emerald-600 dark:text-emerald-400');
                         if(ytPlayer) ytPlayer.playVideo();
                     } else {
-                        showiOSToast('fa-solid fa-xmark', 'อ๊ะ! ยังไม่ถูกนะ ลองฟังต่อดู', 'bg-rose-100', 'text-rose-600');
+                        showiOSToast('fa-solid fa-xmark', 'อ๊ะ! ยังไม่ถูกนะ ลองฟังต่อดู', 'bg-rose-100 dark:bg-rose-900', 'text-rose-600 dark:text-rose-400');
                         if(ytPlayer) ytPlayer.playVideo();
                     }
                 } else if (result.dismiss === Swal.DismissReason.timer) {
-                    showiOSToast('fa-solid fa-clock', 'หมดเวลาแล้วครับ', 'bg-amber-100', 'text-amber-600');
+                    showiOSToast('fa-solid fa-clock', 'หมดเวลาแล้วครับ', 'bg-amber-100 dark:bg-amber-900', 'text-amber-600 dark:text-amber-400');
                     if(ytPlayer) ytPlayer.playVideo();
                 }
             });
@@ -646,7 +723,7 @@
             let answeredList = JSON.parse(localStorage.getItem('ytAnsQs_' + currentUser.id + '_' + currentLesson.title) || '[]');
 
             if (duration > 0 && vQs.length > 0) {
-                let interval = 60; // ทดสอบเด้งทุกๆ 60 วิ
+                let interval = 60; // 60s
                 for(let i=0; i<vQs.length; i++) {
                     questionTriggers.push({ 
                         time: interval * (i + 1), 
@@ -664,7 +741,7 @@
             if (savedTime && parseFloat(savedTime) > 0 && savedTime !== "done") {
                 event.target.seekTo(parseFloat(savedTime), true);
                 lastTime = parseFloat(savedTime);
-                showiOSToast('fa-solid fa-play', 'เล่นต่อจากที่ค้างไว้', 'bg-purple-100', 'text-purple-600');
+                showiOSToast('fa-solid fa-play', 'เล่นต่อจากที่ค้างไว้', 'bg-[#f05a28]/20', 'text-[#f05a28]');
             } else {
                 lastTime = 0;
             }
@@ -687,7 +764,7 @@
                             let warnUI = document.getElementById('antiSkipWarning');
                             if(warnUI) { 
                                 warnUI.classList.remove('opacity-0'); 
-                                setTimeout(() => { warnUI.classList.add('opacity-0'); }, 1500); // หายเร็วขึ้น
+                                setTimeout(() => { warnUI.classList.add('opacity-0'); }, 1500); 
                             }
                         } else {
                             if (currentTime > maxTimeWatched) {
@@ -789,11 +866,11 @@
                     document.getElementById('quizForm').classList.remove('hidden'); 
                     document.getElementById('quizCompletedMsg').classList.add('hidden');
                     if(totalQs === 0) {
-                        document.getElementById('quizContainer').innerHTML = `<div class="text-center py-8"><button type="button" onclick="submitQuiz(true,0)" class="bg-[#6d28d9] text-white font-bold px-10 py-4 rounded-full shadow-lg hover:bg-purple-800 transition">บันทึกการเรียนจบ</button></div>`;
+                        document.getElementById('quizContainer').innerHTML = `<div class="text-center py-8"><button type="button" onclick="submitQuiz(true,0)" class="bg-[#f05a28] text-white font-bold px-10 py-4 rounded-full shadow-lg hover:bg-[#d94a1d] transition">บันทึกการเรียนจบ</button></div>`;
                     } else { 
                         let qh = ""; 
-                        vQs.forEach((q, i) => { qh += `<div class="bg-white p-5 lg:p-8 rounded-2xl lg:rounded-3xl border mb-6 shadow-sm"><p class="font-bold text-base lg:text-lg mb-5 text-slate-800">${i+1}. ${q.q}</p><div class="grid grid-cols-1 gap-3 text-sm"><label class="p-4 bg-[#f8fafc] border border-slate-200 rounded-xl cursor-pointer flex items-center hover:bg-purple-50 hover:border-purple-300 transition-all active:scale-[0.98]"><input type="radio" name="ans${i+1}" value="1" class="mr-3 accent-purple-600 w-4 h-4"> ก. ${q.c1}</label><label class="p-4 bg-[#f8fafc] border border-slate-200 rounded-xl cursor-pointer flex items-center hover:bg-purple-50 hover:border-purple-300 transition-all active:scale-[0.98]"><input type="radio" name="ans${i+1}" value="2" class="mr-3 accent-purple-600 w-4 h-4"> ข. ${q.c2}</label><label class="p-4 bg-[#f8fafc] border border-slate-200 rounded-xl cursor-pointer flex items-center hover:bg-purple-50 hover:border-purple-300 transition-all active:scale-[0.98]"><input type="radio" name="ans${i+1}" value="3" class="mr-3 accent-purple-600 w-4 h-4"> ค. ${q.c3}</label><label class="p-4 bg-[#f8fafc] border border-slate-200 rounded-xl cursor-pointer flex items-center hover:bg-purple-50 hover:border-purple-300 transition-all active:scale-[0.98]"><input type="radio" name="ans${i+1}" value="4" class="mr-3 accent-purple-600 w-4 h-4"> ง. ${q.c4}</label></div></div>`; }); 
-                        document.getElementById('quizContainer').innerHTML = qh + `<button type="button" onclick="submitQuiz()" class="w-full bg-[#6d28d9] text-white font-bold py-4 rounded-full mt-4 text-lg shadow-lg hover:bg-purple-800 transition">ส่งคำตอบ</button>`; 
+                        vQs.forEach((q, i) => { qh += `<div class="bg-white/50 dark:bg-black/30 backdrop-blur-sm p-5 lg:p-8 rounded-2xl lg:rounded-3xl border border-white/50 dark:border-slate-700 mb-6 shadow-sm"><p class="font-bold text-base lg:text-lg mb-5 text-slate-800 dark:text-slate-100">${i+1}. ${q.q}</p><div class="grid grid-cols-1 gap-3 text-sm text-slate-700 dark:text-slate-300"><label class="p-4 bg-white/50 dark:bg-black/30 border border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer flex items-center hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:border-orange-300 dark:hover:border-orange-700 transition-all active:scale-[0.98]"><input type="radio" name="ans${i+1}" value="1" class="mr-3 accent-[#f05a28] w-4 h-4"> ก. ${q.c1}</label><label class="p-4 bg-white/50 dark:bg-black/30 border border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer flex items-center hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:border-orange-300 dark:hover:border-orange-700 transition-all active:scale-[0.98]"><input type="radio" name="ans${i+1}" value="2" class="mr-3 accent-[#f05a28] w-4 h-4"> ข. ${q.c2}</label><label class="p-4 bg-white/50 dark:bg-black/30 border border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer flex items-center hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:border-orange-300 dark:hover:border-orange-700 transition-all active:scale-[0.98]"><input type="radio" name="ans${i+1}" value="3" class="mr-3 accent-[#f05a28] w-4 h-4"> ค. ${q.c3}</label><label class="p-4 bg-white/50 dark:bg-black/30 border border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer flex items-center hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:border-orange-300 dark:hover:border-orange-700 transition-all active:scale-[0.98]"><input type="radio" name="ans${i+1}" value="4" class="mr-3 accent-[#f05a28] w-4 h-4"> ง. ${q.c4}</label></div></div>`; }); 
+                        document.getElementById('quizContainer').innerHTML = qh + `<button type="button" onclick="submitQuiz()" class="w-full bg-[#f05a28] text-white font-bold py-4 rounded-full mt-4 text-lg shadow-lg hover:bg-[#d94a1d] transition">ส่งคำตอบ</button>`; 
                     }
                 }
             }
@@ -810,7 +887,7 @@
             if(!noQ && vQs.length > 0) { 
                 for(let i=1; i<=vQs.length; i++) { 
                     let a = document.querySelector(`input[name="ans${i}"]:checked`); 
-                    if(!a) return showiOSToast('fa-solid fa-circle-exclamation', 'กรุณาทำข้อสอบให้ครบครับ', 'bg-amber-100', 'text-amber-600');
+                    if(!a) return showiOSToast('fa-solid fa-circle-exclamation', 'กรุณาทำข้อสอบให้ครบ', 'bg-amber-100 dark:bg-amber-900', 'text-amber-600 dark:text-amber-400');
                     if(a.value === vQs[i-1].ans) sc++; 
                 } 
             }
@@ -826,8 +903,8 @@
                 openLesson(allLessons.indexOf(currentLesson)); 
                 loadDashboardData(); 
                 
-                let titleMsg = vQs.length > 0 ? `บันทึกคะแนนเรียบร้อย 🎉` : `บันทึกประวัติการเรียนเรียบร้อย 🎓`;
-                showiOSToast('fa-solid fa-check-double', titleMsg, 'bg-emerald-100', 'text-emerald-600');
+                let titleMsg = vQs.length > 0 ? `บันทึกคะแนนเรียบร้อย 🎉` : `บันทึกประวัติการเรียนแล้ว 🎓`;
+                showiOSToast('fa-solid fa-check-double', titleMsg, 'bg-emerald-100 dark:bg-emerald-900', 'text-emerald-600 dark:text-emerald-400');
             });
         }
 
@@ -873,32 +950,32 @@
             if(latestText.length > 25) latestText = latestText.substring(0, 25) + "...";
 
             if (type === "sidebar") {
-                let subjectBadge = c.room && c.room !== "-" && c.role === 'Teacher' ? `<p class="text-[9px] text-slate-500 mt-1 bg-slate-50 px-2 py-0.5 rounded-md w-max border border-slate-200"><i class="fa-solid fa-book mr-1 text-slate-400"></i> วิชา: ${c.room}</p>` : '';
+                let subjectBadge = c.room && c.room !== "-" && c.role === 'Teacher' ? `<p class="text-[9px] text-slate-500 dark:text-slate-400 mt-1 bg-white/40 dark:bg-black/30 px-2 py-0.5 rounded-md w-max border border-white/50 dark:border-white/10"><i class="fa-solid fa-book mr-1 text-slate-400"></i> วิชา: ${c.room}</p>` : '';
                 return `
-                <div class="flex items-center justify-between group p-3 rounded-2xl border border-slate-100 hover:border-purple-200 shadow-sm transition mb-3 bg-white cursor-pointer" onclick="nav('inbox'); openChat('${c.name}')">
+                <div class="flex items-center justify-between group p-3 rounded-2xl border border-slate-200/50 dark:border-slate-700/50 hover:border-orange-300 dark:hover:border-orange-700 shadow-sm transition mb-3 bg-white/50 dark:bg-black/30 backdrop-blur-sm cursor-pointer" onclick="nav('inbox'); openChat('${c.name}')">
                     <div class="flex items-start gap-3">
-                        <div class="relative w-12 h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm shrink-0 flex items-center justify-center border border-white">${pPic}
+                        <div class="relative w-12 h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm shrink-0 flex items-center justify-center border border-white/50">${pPic}
                             ${badgeHtml}
                         </div>
                         <div class="flex flex-col max-w-[130px] lg:max-w-[150px]">
-                            <p class="text-sm font-bold text-slate-800 leading-tight truncate">${c.name}</p>
-                            <p class="text-[10px] text-slate-500 truncate mt-0.5 ${unreadCount > 0 ? 'font-bold text-slate-800' : ''}" title="${latestText}">${latestText}</p>
+                            <p class="text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight truncate">${c.name}</p>
+                            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5 ${unreadCount > 0 ? 'font-bold text-slate-800 dark:text-white' : ''}" title="${latestText}">${latestText}</p>
                             ${subjectBadge}
                         </div>
                     </div>
-                    <button class="w-9 h-9 rounded-full border border-purple-100 text-purple-600 flex items-center justify-center hover:bg-[#6d28d9] hover:text-white transition shadow-sm shrink-0">
+                    <button class="w-9 h-9 rounded-full border border-orange-200/50 dark:border-orange-900/50 text-[#f05a28] flex items-center justify-center hover:bg-[#f05a28] hover:text-white transition shadow-sm shrink-0">
                         <i class="fa-regular fa-comment-dots text-sm pointer-events-none"></i>
                     </button>
                 </div>`;
             } else {
                 return `
-                <div class="chat-contact ${isActive} flex items-center gap-3 p-3 lg:p-4 rounded-xl cursor-pointer hover:bg-slate-50 transition mb-1 border border-transparent shadow-sm" onclick="openChat('${c.name}')">
-                    <div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm border border-white shrink-0 flex items-center justify-center">${pPic}
+                <div class="chat-contact ${isActive} flex items-center gap-3 p-3 lg:p-4 rounded-xl cursor-pointer hover:bg-white/50 dark:hover:bg-black/30 transition mb-1 border border-transparent shadow-sm" onclick="openChat('${c.name}')">
+                    <div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm border border-white/50 shrink-0 flex items-center justify-center">${pPic}
                         ${badgeHtml}
                     </div>
                     <div class="flex-1 min-w-0">
-                        <h4 class="font-bold text-xs lg:text-sm truncate text-slate-800">${c.name}</h4>
-                        <p class="text-[10px] text-slate-400 truncate ${unreadCount > 0 ? 'font-bold text-slate-800' : ''}" title="${latestText}">${latestText}</p>
+                        <h4 class="font-bold text-xs lg:text-sm truncate text-slate-800 dark:text-slate-200">${c.name}</h4>
+                        <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate ${unreadCount > 0 ? 'font-bold text-slate-800 dark:text-white' : ''}" title="${latestText}">${latestText}</p>
                     </div>
                 </div>`;
             }
@@ -912,11 +989,11 @@
             let htmlRightSidebar = "";
 
             if(mentors.length === 0) {
-                 htmlInboxList = '<div class="text-center p-4 text-xs text-slate-400 border-2 border-dashed rounded-xl mx-4 mt-4">ไม่มีผู้ติดต่อ</div>';
-                 htmlRightSidebar = '<div class="text-xs text-slate-400 text-center py-4 border-2 border-dashed border-slate-100 rounded-2xl mx-2">ไม่มีข้อมูลอาจารย์</div>';
+                 htmlInboxList = '<div class="text-center p-4 text-xs text-slate-500 dark:text-slate-400 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl mx-4 mt-4">ไม่มีผู้ติดต่อ</div>';
+                 htmlRightSidebar = '<div class="text-xs text-slate-500 dark:text-slate-400 text-center py-4 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl mx-2">ไม่มีข้อมูลอาจารย์</div>';
             } else {
                 if(tList.length > 0) {
-                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-400 mb-3 uppercase tracking-widest mt-2">รายชื่ออาจารย์</p>`;
+                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-widest mt-2">รายชื่ออาจารย์</p>`;
                     tList.forEach(c => {
                         htmlInboxList += buildContactCard(c, "inbox");
                         htmlRightSidebar += buildContactCard(c, "sidebar");
@@ -924,7 +1001,7 @@
                 }
                 
                 if(aList.length > 0) {
-                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-400 mb-3 uppercase tracking-widest mt-4">แอดมิน</p>`;
+                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-widest mt-4">แอดมิน</p>`;
                     aList.forEach(c => {
                         htmlInboxList += buildContactCard(c, "inbox");
                         htmlRightSidebar += buildContactCard(c, "sidebar");
@@ -951,7 +1028,7 @@
             let contactInfo = mentors.find(x => x.name === n);
             let partnerPicHtml = (contactInfo && contactInfo.pic) ? `<img src="${contactInfo.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-sm">${getInitials(n)}</div>`;
 
-            let subjectBadgeHeader = (contactInfo && contactInfo.room && contactInfo.room !== "-" && contactInfo.role === 'Teacher') ? ` <span class="text-xs text-slate-400 font-normal ml-2">(วิชา: ${contactInfo.room})</span>` : '';
+            let subjectBadgeHeader = (contactInfo && contactInfo.room && contactInfo.room !== "-" && contactInfo.role === 'Teacher') ? ` <span class="text-xs text-slate-500 dark:text-slate-400 font-normal ml-2">(วิชา: ${contactInfo.room})</span>` : '';
             document.getElementById('chatHeaderName').innerHTML = `${n}${subjectBadgeHeader}`; 
             document.getElementById('chatHeaderAvatar').innerHTML = partnerPicHtml;
             
@@ -959,7 +1036,7 @@
             let sortedMsgs = [...msgs].sort((a,b) => new Date(a.date) - new Date(b.date));
 
             let h = "";
-            let myPicHtml = currentUser.pic ? `<img src="${currentUser.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-purple-100 text-purple-600 font-bold text-[8px]">${getInitials(currentUser.name)}</div>`;
+            let myPicHtml = currentUser.pic ? `<img src="${currentUser.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-orange-100 text-orange-600 font-bold text-[8px]">${getInitials(currentUser.name)}</div>`;
             
             sortedMsgs.forEach(m => {
                 let d = new Date(m.date).toLocaleString('th-TH', { hour:'2-digit', minute:'2-digit' });
@@ -967,22 +1044,22 @@
                 
                 if(m.senderName === currentUser.name) {
                     if (m.message && m.message.trim() !== "") {
-                        h += `<div class="flex flex-col items-end w-full mb-4"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400">${d} • คุณ</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${m.message}</div></div>`;
+                        h += `<div class="flex flex-col items-end w-full mb-4"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400 dark:text-slate-500">${d} • คุณ</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-white/50">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${m.message}</div></div>`;
                     }
                     if(m.reply && m.reply.trim() !== "") { 
                         let reps = m.reply.split('<br><br>').filter(x => x.trim() !== "");
                         reps.forEach(rep => {
-                            h += `<div class="flex flex-col items-start w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${sPicHtml}</div><p class="text-[9px] font-bold text-slate-500">${n}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm border border-slate-100">${rep}</div></div>`; 
+                            h += `<div class="flex flex-col items-start w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white/50 text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${sPicHtml}</div><p class="text-[9px] font-bold text-slate-500 dark:text-slate-400">${n}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm backdrop-blur-sm">${rep}</div></div>`; 
                         });
                     }
                 } else {
                     if (m.message && m.message.trim() !== "") {
-                        h += `<div class="flex flex-col items-start w-full mb-4"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${sPicHtml}</div><p class="text-[9px] font-bold text-slate-500">${n} • ${d}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm border border-slate-100">${m.message}</div></div>`;
+                        h += `<div class="flex flex-col items-start w-full mb-4"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white/50 text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${sPicHtml}</div><p class="text-[9px] font-bold text-slate-500 dark:text-slate-400">${n} • ${d}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm backdrop-blur-sm">${m.message}</div></div>`;
                     }
                     if(m.reply && m.reply.trim() !== "") { 
                         let reps = m.reply.split('<br><br>').filter(x => x.trim() !== "");
                         reps.forEach(rep => {
-                            h += `<div class="flex flex-col items-end w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400">คุณตอบแล้ว</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${rep}</div></div>`; 
+                            h += `<div class="flex flex-col items-end w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400 dark:text-slate-500">คุณตอบแล้ว</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-white/50">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${rep}</div></div>`; 
                         });
                     }
                 }
@@ -995,8 +1072,8 @@
             if(!currentUser.pic || !currentUser.email) return Swal.fire({icon:'warning', title:'โปรไฟล์ไม่สมบูรณ์', text:'กรุณาตั้งค่ารูปภาพและอีเมลก่อนส่งข้อความ'}).then(r => { if(r.isConfirmed) nav('settings'); });
             
             let cHist = document.getElementById('chatHistory');
-            let myPicHtml = currentUser.pic ? `<img src="${currentUser.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-purple-100 text-purple-600 font-bold text-[8px]">${getInitials(currentUser.name)}</div>`;
-            cHist.innerHTML += `<div class="flex flex-col items-end w-full mb-4 mt-2 opacity-50"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400">กำลังส่ง...</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-slate-200">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${msg}</div></div>`;
+            let myPicHtml = currentUser.pic ? `<img src="${currentUser.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-orange-100 text-orange-600 font-bold text-[8px]">${getInitials(currentUser.name)}</div>`;
+            cHist.innerHTML += `<div class="flex flex-col items-end w-full mb-4 mt-2 opacity-50"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400 dark:text-slate-500">กำลังส่ง...</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-white/50">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${msg}</div></div>`;
             cHist.scrollTop = cHist.scrollHeight;
             document.getElementById('chatInputMessage').value = "";
 
@@ -1013,7 +1090,7 @@
                     if(r.users && r.users.length > 0) {
                         allUsersData = r.users;
                         mentors = allUsersData.filter(u => u.role && ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({
-                            name: u.name || u.Name || "", role: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher', initials: getInitials(u.name || u.Name || "A"), pic: u.pic || u.ProfilePic || "", room: u.assigned || u.room || u.Room || "-", bgColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "bg-rose-100" : "bg-indigo-100", textColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "text-rose-600" : "text-indigo-600"
+                            name: u.name || u.Name || "", role: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher', initials: getInitials(u.name || u.Name || "A"), pic: u.pic || u.ProfilePic || "", room: u.assigned || u.room || u.Room || "-", bgColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "bg-rose-100 dark:bg-rose-900/50" : "bg-orange-100 dark:bg-orange-900/50", textColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "text-rose-600 dark:text-rose-400" : "text-orange-600 dark:text-orange-400"
                         })).sort((a, b) => {
                             if (a.role === 'Admin' && b.role !== 'Admin') return 1;
                             if (a.role !== 'Admin' && b.role === 'Admin') return -1;
@@ -1039,7 +1116,7 @@
                         if(r.users && r.users.length > 0) {
                             allUsersData = r.users;
                             mentors = allUsersData.filter(u => u.role && ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({
-                                name: u.name || u.Name || "", role: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher', initials: getInitials(u.name || u.Name || "A"), pic: u.pic || u.ProfilePic || "", room: u.assigned || u.room || u.Room || "-", bgColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "bg-rose-100" : "bg-indigo-100", textColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "text-rose-600" : "text-indigo-600"
+                                name: u.name || u.Name || "", role: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher', initials: getInitials(u.name || u.Name || "A"), pic: u.pic || u.ProfilePic || "", room: u.assigned || u.room || u.Room || "-", bgColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "bg-rose-100 dark:bg-rose-900/50" : "bg-orange-100 dark:bg-orange-900/50", textColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "text-rose-600 dark:text-rose-400" : "text-orange-600 dark:text-orange-400"
                             })).sort((a, b) => {
                                 if (a.role === 'Admin' && b.role !== 'Admin') return 1;
                                 if (a.role !== 'Admin' && b.role === 'Admin') return -1;
