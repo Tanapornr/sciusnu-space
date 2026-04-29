@@ -15,7 +15,8 @@
             font-family: 'Sarabun', sans-serif; 
             background-color: #ffdcc6; 
             margin: 0; 
-            overflow: hidden;
+            /* ปลดล็อก overflow hidden เพื่อให้มือถือเลื่อนจอได้เวลาคีย์บอร์ดเด้ง */
+            overflow-x: hidden; 
         }
         h1, h2, h3, .font-prompt { font-family: 'Prompt', sans-serif; }
         
@@ -46,43 +47,44 @@
         input::placeholder { color: #cbd5e1; font-size: 0.9rem; }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 sm:p-8 relative">
+<body class="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8 relative">
 
-    <div class="absolute top-10 left-10 w-72 h-72 bg-orange-300 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob z-0"></div>
-    <div class="absolute bottom-10 right-10 w-96 h-96 bg-rose-200 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000 z-0"></div>
+    <div class="absolute top-10 left-10 w-48 sm:w-72 h-48 sm:h-72 bg-orange-300 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob z-0"></div>
+    <div class="absolute bottom-10 right-10 w-64 sm:w-96 h-64 sm:h-96 bg-rose-200 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000 z-0"></div>
 
-    <div class="glass-container w-full max-w-[950px] rounded-[2.5rem] lg:rounded-[3rem] p-3 sm:p-4 flex flex-col md:flex-row relative z-10">
+    <div class="glass-container w-full max-w-[950px] rounded-[2rem] lg:rounded-[3rem] p-2 sm:p-4 flex flex-col md:flex-row relative z-10 mx-auto">
         
-        <div class="w-full md:w-[45%] bg-white rounded-[2rem] lg:rounded-[2.5rem] p-8 sm:p-10 lg:p-12 shadow-sm flex flex-col justify-center relative overflow-hidden">
+        <!-- ปรับ Padding และ Border Radius ให้พอดีกับหน้าจอมือถือ -->
+        <div class="w-full md:w-[45%] bg-white rounded-[1.5rem] lg:rounded-[2.5rem] p-6 sm:p-10 lg:p-12 shadow-sm flex flex-col justify-center relative overflow-hidden">
             
-            <div class="mb-8">
-                <p class="text-orange-500 font-bold text-xs uppercase tracking-widest mb-1">SCiUS Portal</p>
-                <h1 class="text-4xl font-black text-slate-800 font-prompt tracking-tight">Login</h1>
+            <div class="mb-6 sm:mb-8">
+                <p class="text-orange-500 font-bold text-[10px] sm:text-xs uppercase tracking-widest mb-1">SCiUS Portal</p>
+                <h1 class="text-3xl sm:text-4xl font-black text-slate-800 font-prompt tracking-tight">Login</h1>
             </div>
 
-            <div class="space-y-5">
+            <div class="space-y-4 sm:space-y-5">
                 <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wide">Username</label>
+                    <label class="block text-[10px] sm:text-xs font-bold text-slate-600 mb-2 uppercase tracking-wide">Username</label>
                     <div class="relative">
-                        <input type="text" id="username" placeholder="กรอกชื่อผู้ใช้งาน..." class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all text-sm font-medium text-slate-700">
+                        <input type="text" id="username" placeholder="กรอกชื่อผู้ใช้งาน..." class="w-full px-4 sm:px-5 py-3 sm:py-3.5 bg-slate-50 border border-slate-200 rounded-xl sm:rounded-2xl outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all text-sm font-medium text-slate-700">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wide">Password</label>
+                    <label class="block text-[10px] sm:text-xs font-bold text-slate-600 mb-2 uppercase tracking-wide">Password</label>
                     <div class="relative">
-                        <input type="password" id="password" placeholder="กรอกรหัสผ่าน..." class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all text-sm font-medium text-slate-700">
+                        <input type="password" id="password" placeholder="กรอกรหัสผ่าน..." class="w-full px-4 sm:px-5 py-3 sm:py-3.5 bg-slate-50 border border-slate-200 rounded-xl sm:rounded-2xl outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all text-sm font-medium text-slate-700">
                         <button type="button" onclick="togglePassword()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-orange-500 transition">
                             <i class="fa-regular fa-eye" id="eyeIcon"></i>
                         </button>
                     </div>
                     
                     <div class="text-right mt-2">
-                        <a href="#" onclick="forgotPassword()" class="text-[11px] font-bold text-orange-500 hover:text-orange-700 transition">Forgot Password?</a>
+                        <a href="#" onclick="forgotPassword()" class="text-[10px] sm:text-[11px] font-bold text-orange-500 hover:text-orange-700 transition">Forgot Password?</a>
                     </div>
                 </div>
 
-                <button onclick="login()" class="w-full bg-[#f05a28] hover:bg-[#d94a1d] text-white font-bold py-4 rounded-2xl shadow-[0_8px_20px_-6px_rgba(240,90,40,0.6)] active:scale-[0.98] transition-all duration-200 font-prompt text-lg mt-4">
+                <button onclick="login()" class="w-full bg-[#f05a28] hover:bg-[#d94a1d] text-white font-bold py-3.5 sm:py-4 rounded-xl sm:rounded-2xl shadow-[0_8px_20px_-6px_rgba(240,90,40,0.6)] active:scale-[0.98] transition-all duration-200 font-prompt text-base sm:text-lg mt-2 sm:mt-4">
                     Sign in
                 </button>
             </div>
@@ -90,7 +92,6 @@
         </div>
 
         <div class="hidden md:flex w-[55%] items-center justify-center p-8 relative">
-            <!-- ใส่ลิงก์รูปใหม่ของอาจารย์ตรงนี้ครับ -->
             <img src="https://i.postimg.cc/Df9Gq2s3/d-sin-th-y-ngmi-di-t-ngch-x-(15).png" 
                  alt="3D Character" 
                  class="w-[85%] lg:w-[75%] h-auto object-contain animate-float drop-shadow-2xl filter contrast-105">
@@ -164,8 +165,13 @@
                 didOpen: () => { Swal.showLoading(); }
             });
 
+            // ปรับแก้ Headers และการส่งค่า เพื่อป้องกันการโดนบล็อกจากการเชื่อมต่อข้ามโดเมน
             fetch(GAS_URL, {
+                redirect: "follow", // จำเป็นสำหรับ Google Apps Script
                 method: 'POST',
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8" // ใช้ text/plain เลี่ยงการตรวจจับ CORS Preflight
+                },
                 body: JSON.stringify({ action: "login", username: u, password: p })
             })
             .then(res => res.json())
@@ -207,10 +213,11 @@
                 }
             })
             .catch(err => {
+                console.error("Login Error: ", err);
                 Swal.fire({
                     icon: 'error',
                     title: 'เกิดข้อผิดพลาด',
-                    text: 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ กรุณาลองใหม่อีกครั้ง',
+                    text: 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ กรุณาลองใหม่อีกครั้ง หรือตรวจสอบลิงก์ระบบ',
                     confirmButtonColor: '#f05a28',
                     confirmButtonText: 'ตกลง',
                     customClass: { popup: 'rounded-3xl', confirmButton: 'rounded-full px-8 font-bold' }
