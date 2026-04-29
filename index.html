@@ -4,89 +4,239 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Login - SCiUS Portal</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <style>
-        body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; color: #334155; }
+        body { 
+            font-family: 'Sarabun', sans-serif; 
+            /* สีพื้นหลังโทนส้มพีช ตามเรฟเฟอเรนซ์ */
+            background-color: #ffdcc6; 
+            margin: 0; 
+            overflow: hidden;
+        }
         h1, h2, h3, .font-prompt { font-family: 'Prompt', sans-serif; }
         
-        /* ✨ iOS MINIMALIST SWEETALERT2 ✨ */
-        .swal2-popup.swal2-toast { background: rgba(255, 255, 255, 0.85) !important; backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important; border: 1px solid rgba(255, 255, 255, 0.5) !important; border-radius: 999px !important; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important; padding: 10px 24px 10px 10px !important; width: auto !important; margin-top: 20px !important; }
-        .swal2-toast .swal2-html-container { font-family: 'Prompt', sans-serif !important; margin: 0 !important; }
-        .ios-center-popup { background: rgba(255, 255, 255, 0.9) !important; backdrop-filter: blur(24px) !important; -webkit-backdrop-filter: blur(24px) !important; border: 1px solid rgba(255, 255, 255, 0.6) !important; border-radius: 28px !important; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1) !important; padding: 2rem 1.5rem !important; width: auto !important; min-width: 280px !important; max-width: 320px !important; }
-        .swal2-popup:not(.swal2-toast):not(.ios-center-popup) { border-radius: 28px !important; background: rgba(255, 255, 255, 0.95) !important; backdrop-filter: blur(20px) !important; -webkit-backdrop-filter: blur(20px) !important; box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important; padding: 2em 1.5em !important; width: 320px !important; border: 1px solid rgba(255, 255, 255, 0.8) !important; }
-        .swal2-title { font-family: 'Prompt', sans-serif !important; color: #1d1d1f !important; font-size: 1.15rem !important; margin-bottom: 0.5em !important; }
-        .swal2-html-container { font-family: 'Sarabun', sans-serif !important; color: #475569 !important; margin-top: 0.5em !important; font-size: 0.95rem !important;}
-        .swal2-confirm { border-radius: 999px !important; font-family: 'Prompt', sans-serif !important; font-weight: 600 !important; padding: 12px 32px !important; background-color: #6d28d9 !important; font-size: 0.95rem !important; box-shadow: 0 8px 20px -6px rgba(109, 40, 217, 0.5) !important; transition: all 0.2s ease !important; }
-        .swal2-confirm:hover { background-color: #5b21b6 !important; transform: translateY(-2px) !important; box-shadow: 0 12px 24px -6px rgba(109, 40, 217, 0.6) !important; }
-        .swal2-confirm:active { transform: scale(0.96) !important; }
-        .swal2-timer-progress-bar { background-color: rgba(109, 40, 217, 0.3) !important; height: 3px !important; }
+        /* อนิเมชั่นตกแต่งพื้นหลัง */
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .animate-blob { animation: blob 7s infinite; }
+        .animation-delay-2000 { animation-delay: 2s; }
+        @keyframes blob {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
+        }
+
+        /* เอฟเฟกต์ Glassmorphism */
+        .glass-container {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+        }
+
+        input::placeholder { color: #cbd5e1; font-size: 0.9rem; }
     </style>
 </head>
-<body class="h-screen w-screen flex items-center justify-center p-4 bg-gradient-to-br from-[#f8fafc] to-[#e2e8f0]">
-    <div class="bg-white rounded-[2rem] shadow-xl p-8 max-w-md w-full border border-slate-100">
-        <div class="text-center mb-8">
-            <div class="w-16 h-16 bg-[#6d28d9] text-white rounded-full flex items-center justify-center text-3xl mx-auto shadow-lg mb-4"><i class="fa-solid fa-sparkles"></i></div>
-            <h1 class="text-2xl font-bold font-prompt text-slate-800">เข้าสู่ระบบ</h1>
-            <p class="text-slate-500 text-sm mt-2">SCiUS Online Learning Portal</p>
+<body class="min-h-screen flex items-center justify-center p-4 sm:p-8 relative">
+
+    <!-- วงกลมเบลอตกแต่งพื้นหลัง -->
+    <div class="absolute top-10 left-10 w-72 h-72 bg-orange-300 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob z-0"></div>
+    <div class="absolute bottom-10 right-10 w-96 h-96 bg-rose-200 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-2000 z-0"></div>
+
+    <!-- Container หลัก (กรอบกระจกใส) -->
+    <div class="glass-container w-full max-w-[950px] rounded-[2.5rem] lg:rounded-[3rem] p-3 sm:p-4 flex flex-col md:flex-row relative z-10">
+        
+        <!-- ส่วนซ้าย: กล่องฟอร์มล็อกอิน (สีขาว) -->
+        <div class="w-full md:w-[45%] bg-white rounded-[2rem] lg:rounded-[2.5rem] p-8 sm:p-10 lg:p-12 shadow-sm flex flex-col justify-center relative overflow-hidden">
+            
+            <div class="mb-8">
+                <p class="text-orange-500 font-bold text-xs uppercase tracking-widest mb-1">SCiUS Portal</p>
+                <h1 class="text-4xl font-black text-slate-800 font-prompt tracking-tight">Login</h1>
+            </div>
+
+            <div class="space-y-5">
+                <!-- Username -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wide">Username</label>
+                    <div class="relative">
+                        <input type="text" id="username" placeholder="กรอกชื่อผู้ใช้งาน..." class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all text-sm font-medium text-slate-700">
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wide">Password</label>
+                    <div class="relative">
+                        <input type="password" id="password" placeholder="กรอกรหัสผ่าน..." class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all text-sm font-medium text-slate-700">
+                        <!-- ปุ่มดูรหัสผ่าน -->
+                        <button type="button" onclick="togglePassword()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-orange-500 transition">
+                            <i class="fa-regular fa-eye" id="eyeIcon"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="text-right mt-2">
+                        <a href="#" onclick="forgotPassword()" class="text-[11px] font-bold text-orange-500 hover:text-orange-700 transition">Forgot Password?</a>
+                    </div>
+                </div>
+
+                <!-- ปุ่ม Login สีส้มสดใส -->
+                <button onclick="login()" class="w-full bg-[#f05a28] hover:bg-[#d94a1d] text-white font-bold py-4 rounded-2xl shadow-[0_8px_20px_-6px_rgba(240,90,40,0.6)] active:scale-[0.98] transition-all duration-200 font-prompt text-lg mt-4">
+                    Sign in
+                </button>
+            </div>
+            
         </div>
-        <form id="loginForm" class="space-y-5" onsubmit="event.preventDefault(); login();">
-            <div>
-                <label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wide">ชื่อผู้ใช้งาน</label>
-                <div class="relative">
-                    <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                    <input type="text" id="username" class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-300 transition text-sm" placeholder="Username" required>
-                </div>
-            </div>
-            <div>
-                <label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wide">รหัสผ่าน</label>
-                <div class="relative">
-                    <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                    <input type="password" id="password" class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-300 transition text-sm" placeholder="Password" required>
-                </div>
-            </div>
-            <button type="submit" class="w-full bg-[#6d28d9] text-white font-bold font-prompt py-4 rounded-xl shadow-lg hover:bg-purple-800 transition active:scale-[0.98]">เข้าสู่ระบบ</button>
-        </form>
+
+        <!-- ส่วนขวา: รูปภาพ 3D ตกแต่ง (ซ่อนในมือถือ โชว์ในไอแพด/คอม) -->
+        <div class="hidden md:flex w-[55%] items-center justify-center p-8 relative">
+            <!-- 
+                อาจารย์สามารถเปลี่ยนลิงก์รูปตรง src="..." ด้านล่าง 
+                ให้เป็นภาพตัวละคร 3D หรือภาพที่อาจารย์มีได้เลยครับ 
+            -->
+            <img src="https://cdn3d.iconscout.com/3d/premium/thumb/boy-studying-online-6780795-5590983.png" 
+                 alt="3D Character" 
+                 class="w-[85%] lg:w-[75%] h-auto object-contain animate-float drop-shadow-2xl filter contrast-105">
+            
+            <!-- ใบไม้/จุดตกแต่งลอยๆ -->
+            <div class="absolute top-20 right-20 w-4 h-4 bg-yellow-400 rounded-full animate-float" style="animation-delay: 1s;"></div>
+            <div class="absolute bottom-32 left-20 w-6 h-6 bg-green-400 rounded-full animate-float" style="animation-delay: 2s; border-radius: 40% 60% 70% 30%;"></div>
+            <div class="absolute top-1/2 right-10 w-3 h-3 bg-orange-400 rounded-full animate-float" style="animation-delay: 0.5s;"></div>
+        </div>
     </div>
 
     <script>
+        // URL ของ Google Apps Script ตัวปัจจุบัน
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbze1x9SSRsoZSE__Cm6iMzLv9A45ry3eTHB2fkJNktUmRs4yyLgh96s7wUdaPBPSzgIew/exec';
 
-        // Custom iOS Toast Function
-        function showiOSToast(iconClass, text, iconColorBg, iconColorText) {
-            Swal.fire({ 
-                toast: false, position: 'center', showConfirmButton: false, timer: 2500, customClass: { popup: 'ios-center-popup' },
-                html: `<div class="flex flex-col items-center gap-3 text-center"><div class="w-14 h-14 rounded-full ${iconColorBg} ${iconColorText} flex items-center justify-center shadow-sm"><i class="${iconClass} text-2xl"></i></div><span class="font-bold text-slate-800 text-base tracking-wide leading-snug">${text}</span></div>` 
+        // เคลียร์ข้อมูลเก่าเมื่อเข้าหน้าแรก
+        window.onload = () => { sessionStorage.clear(); localStorage.clear(); };
+
+        // กด Enter ในช่องรหัสผ่านเพื่อล็อกอิน
+        document.getElementById("password").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                login();
+            }
+        });
+
+        // ฟังก์ชันซ่อน/โชว์ รหัสผ่าน
+        function togglePassword() {
+            let pwdInput = document.getElementById("password");
+            let eyeIcon = document.getElementById("eyeIcon");
+            if (pwdInput.type === "password") {
+                pwdInput.type = "text";
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
+            } else {
+                pwdInput.type = "password";
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
+            }
+        }
+
+        // ฟังก์ชันลืมรหัสผ่าน
+        function forgotPassword() {
+            Swal.fire({
+                icon: 'info',
+                title: 'ลืมรหัสผ่าน?',
+                text: 'กรุณาติดต่อคุณครูหรือแอดมินผู้ดูแลระบบเพื่อขอรีเซ็ตรหัสผ่านใหม่ครับ',
+                confirmButtonColor: '#f05a28',
+                confirmButtonText: 'เข้าใจแล้ว',
+                customClass: {
+                    popup: 'rounded-3xl',
+                    confirmButton: 'rounded-full px-8 font-prompt font-bold'
+                }
             });
         }
 
+        // ฟังก์ชันล็อกอินเข้าสู่ระบบ
         function login() {
             let u = document.getElementById('username').value.trim();
             let p = document.getElementById('password').value.trim();
-            if(!u || !p) return showiOSToast('fa-solid fa-circle-exclamation', 'กรุณากรอกข้อมูลให้ครบ', 'bg-amber-100', 'text-amber-600');
 
-            Swal.fire({ title: 'กำลังตรวจสอบ...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+            if (!u || !p) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'ข้อมูลไม่ครบ',
+                    text: 'กรุณากรอก Username และ Password ให้ครบถ้วน',
+                    confirmButtonColor: '#f05a28',
+                    confirmButtonText: 'ตกลง',
+                    customClass: { popup: 'rounded-3xl', confirmButton: 'rounded-full px-8 font-bold' }
+                });
+                return;
+            }
 
-            fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "login", username: u, password: p }) })
-            .then(r => r.json())
+            Swal.fire({
+                title: 'กำลังเข้าสู่ระบบ...',
+                text: 'กรุณารอสักครู่',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+
+            fetch(GAS_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: "login", username: u, password: p })
+            })
+            .then(res => res.json())
             .then(data => {
-                if(data.status === "success") {
-                    let user = data.user;
-                    sessionStorage.setItem('currentUser', JSON.stringify(user));
-                    showiOSToast('fa-solid fa-check', 'เข้าสู่ระบบสำเร็จ', 'bg-emerald-100', 'text-emerald-600');
-                    setTimeout(() => {
-                        let r = String(user.role).toLowerCase().trim();
-                        if(r === "admin") window.location.href = "admin.html";
-                        else if(r === "teacher") window.location.href = "teacher.html";
-                        else window.location.href = "student.html";
-                    }, 1500);
+                if (data.status === "success") {
+                    let userObj = {
+                        id: data.user.id,
+                        name: data.user.name,
+                        role: data.user.role,
+                        assigned: data.user.assigned,
+                        pic: data.user.pic || "",
+                        email: data.user.email || "",
+                        phone: data.user.phone || ""
+                    };
+                    
+                    // บันทึกข้อมูลลง Session
+                    sessionStorage.setItem('currentUser', JSON.stringify(userObj));
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ยินดีต้อนรับ!',
+                        text: `เข้าสู่ระบบสำเร็จในฐานะ ${data.user.role}`,
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        let r = String(data.user.role).toLowerCase();
+                        if (r === 'admin') window.location.href = 'admin.html';
+                        else if (r === 'teacher') window.location.href = 'teacher.html';
+                        else window.location.href = 'student.html';
+                    });
                 } else {
-                    showiOSToast('fa-solid fa-xmark', 'รหัสผ่านไม่ถูกต้อง', 'bg-rose-100', 'text-rose-600');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'เข้าสู่ระบบไม่สำเร็จ',
+                        text: data.message || 'Username หรือ Password ไม่ถูกต้อง',
+                        confirmButtonColor: '#f05a28',
+                        confirmButtonText: 'ลองอีกครั้ง',
+                        customClass: { popup: 'rounded-3xl', confirmButton: 'rounded-full px-8 font-bold' }
+                    });
                 }
-            }).catch(e => {
-                showiOSToast('fa-solid fa-triangle-exclamation', 'ไม่สามารถเชื่อมต่อได้', 'bg-rose-100', 'text-rose-600');
+            })
+            .catch(err => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'เกิดข้อผิดพลาด',
+                    text: 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ กรุณาลองใหม่อีกครั้ง',
+                    confirmButtonColor: '#f05a28',
+                    confirmButtonText: 'ตกลง',
+                    customClass: { popup: 'rounded-3xl', confirmButton: 'rounded-full px-8 font-bold' }
+                });
             });
         }
     </script>
