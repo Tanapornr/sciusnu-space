@@ -54,19 +54,20 @@
             #sidebarOverlay.active { display: block; }
         }
 
-        /* Glassmorphism Menu & Cards */
+        /* ✨ อัปเดต Glassmorphism ให้ทึบขาวขึ้นเพื่อความคมชัด ✨ */
         .glass-panel {
-            background: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.75); /* ปรับให้ขาวขึ้นจาก 0.4 เป็น 0.75 */
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.9); /* ขอบขาวชัดขึ้น */
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); /* เพิ่มเงาเบาๆ ให้กล่องลอยขึ้น */
         }
         .dark .glass-panel {
-            background: rgba(20, 20, 20, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(30, 30, 30, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
         }
 
-        /* แก้สีตัวหนังสือตอน Hover ให้ชัดขึ้น */
         .menu-item { transition: all 0.2s ease-in-out; border-left: 4px solid transparent; cursor: pointer; }
         .menu-item:hover { color: #f05a28; background-color: rgba(240, 90, 40, 0.05); }
         .dark .menu-item:hover { background-color: rgba(240, 90, 40, 0.1); color: #f05a28; }
@@ -74,7 +75,7 @@
         .dark .menu-item.active { background-color: rgba(240, 90, 40, 0.2); color: #f05a28 !important;}
         
         .course-card { transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); cursor: pointer; }
-        .course-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1); }
+        .course-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15); }
         .course-card:active { transform: scale(0.97); }
 
         .chat-bubble-sent { background: linear-gradient(135deg, #f05a28 0%, #fb923c 100%); color: white; border-radius: 18px 18px 4px 18px; }
@@ -85,17 +86,17 @@
            ✨ iOS MINIMALIST POP-UP ✨
            ======================================================== */
         .ios-center-popup {
-            background: rgba(255, 255, 255, 0.85) !important;
+            background: rgba(255, 255, 255, 0.9) !important;
             backdrop-filter: blur(24px) !important;
             -webkit-backdrop-filter: blur(24px) !important;
-            border: 1px solid rgba(255, 255, 255, 0.5) !important;
+            border: 1px solid rgba(255, 255, 255, 0.6) !important;
             border-radius: 24px !important;
             box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1) !important;
             padding: 1.5rem !important;
             width: auto !important; min-width: 260px !important; max-width: 300px !important;
         }
         .dark .ios-center-popup {
-            background: rgba(30, 30, 30, 0.85) !important;
+            background: rgba(30, 30, 30, 0.9) !important;
             border: 1px solid rgba(255, 255, 255, 0.1) !important;
         }
         
@@ -135,15 +136,13 @@
 
     <div id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
-    <!-- อัปเดตพื้นหลังเมนูด้านซ้ายให้ทึบขึ้น เพื่อให้อ่านง่าย -->
-    <aside id="mainSidebar" class="w-72 lg:w-64 flex flex-col flex-shrink-0 z-50 bg-white/90 dark:bg-[#1a1614]/95 backdrop-blur-2xl border-r border-white/50 dark:border-white/5 shadow-2xl">
+    <aside id="mainSidebar" class="w-72 lg:w-64 flex flex-col flex-shrink-0 z-50 bg-white/90 dark:bg-[#1a1614]/95 backdrop-blur-2xl border-r border-white/80 dark:border-white/5 shadow-2xl lg:bg-white/60 lg:backdrop-blur-xl">
         <div class="h-20 lg:h-24 flex items-center px-8 border-b border-slate-200/50 dark:border-white/5 cursor-pointer" onclick="nav('home')">
             <div class="w-8 h-8 bg-[#f05a28] text-white rounded-full flex items-center justify-center text-sm shadow-md mr-3"><i class="fa-solid fa-sparkles"></i></div>
             <h1 class="text-xl font-black font-prompt text-[#f05a28] uppercase">Coursue</h1>
         </div>
 
         <div class="flex-1 overflow-y-auto py-6 hide-scroll flex flex-col gap-6">
-            <!-- ปรับสีตัวหนังสือเป็นสีเทาเข้มเกือบดำ (text-slate-800) และให้หนาขึ้น (font-semibold) -->
             <nav class="flex flex-col font-prompt text-slate-800 dark:text-slate-200 font-semibold text-sm" id="sidebarMenu"></nav>
         </div>
 
@@ -157,20 +156,20 @@
 
     <main class="flex-1 flex flex-col overflow-hidden relative z-10">
         
-        <header class="h-20 lg:h-24 flex items-center justify-between px-4 lg:px-10 border-b border-white/30 dark:border-white/5 glass-panel shrink-0 shadow-sm lg:shadow-none">
+        <header class="h-20 lg:h-24 flex items-center justify-between px-4 lg:px-10 border-b border-white/60 dark:border-white/5 glass-panel shrink-0 shadow-sm lg:shadow-none">
             <div class="flex items-center gap-3">
-                <button onclick="toggleSidebar()" class="lg:hidden w-10 h-10 flex items-center justify-center text-slate-600 dark:text-slate-300 bg-white/80 dark:bg-black/50 backdrop-blur-md rounded-xl shadow-sm"><i class="fa-solid fa-bars-staggered text-xl"></i></button>
+                <button onclick="toggleSidebar()" class="lg:hidden w-10 h-10 flex items-center justify-center text-slate-700 dark:text-slate-300 bg-white/90 dark:bg-black/50 backdrop-blur-md rounded-xl shadow-sm"><i class="fa-solid fa-bars-staggered text-xl"></i></button>
                 <div class="lg:hidden font-black font-prompt text-[#f05a28] text-xl">COURSUE</div>
             </div>
 
             <div class="flex-1 max-w-lg mx-4 relative hidden sm:block">
-                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                <input type="text" id="globalSearchInput" onkeyup="searchLesson(this.value)" placeholder="ค้นหาบทเรียนหรือรายวิชา..." class="w-full pl-11 pr-4 py-2.5 bg-white/50 dark:bg-black/30 backdrop-blur-sm border border-white/50 dark:border-white/10 rounded-full outline-none focus:ring-2 focus:ring-orange-400 transition text-sm dark:text-white dark:placeholder-slate-400 shadow-inner">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400"></i>
+                <input type="text" id="globalSearchInput" onkeyup="searchLesson(this.value)" placeholder="ค้นหาบทเรียนหรือรายวิชา..." class="w-full pl-11 pr-4 py-2.5 bg-white/80 dark:bg-black/40 backdrop-blur-md border border-white dark:border-white/10 rounded-full outline-none focus:ring-2 focus:ring-orange-400 transition text-sm text-slate-800 dark:text-white dark:placeholder-slate-400 shadow-inner font-medium">
             </div>
 
             <div class="flex items-center gap-3 ml-auto">
-                <button onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-md border border-white/50 dark:border-white/10 shadow-sm transition-all hover:scale-105">
-                    <i id="themeIcon" class="fa-solid fa-moon text-slate-600 dark:text-yellow-400 text-lg"></i>
+                <button onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/90 dark:bg-black/50 backdrop-blur-md border border-white dark:border-white/10 shadow-sm transition-all hover:scale-105">
+                    <i id="themeIcon" class="fa-solid fa-moon text-slate-700 dark:text-yellow-400 text-lg"></i>
                 </button>
 
                 <button onclick="toggleRightSidebar()" class="lg:hidden w-10 h-10 rounded-full overflow-hidden border-2 border-white dark:border-slate-700 shadow-sm">
@@ -183,11 +182,11 @@
         <div class="flex-1 overflow-y-auto p-4 md:p-8 lg:p-10 hide-scroll" id="mainScrollArea">
             
             <div id="view_home" class="hidden max-w-5xl mx-auto">
-                <div class="bg-gradient-to-br from-[#f05a28] to-[#fb923c] dark:from-[#c2410c] dark:to-[#ea580c] rounded-[2rem] p-6 lg:p-10 text-white mb-8 lg:mb-10 relative overflow-hidden shadow-lg border border-white/20">
+                <div class="bg-gradient-to-br from-[#f05a28] to-[#fb923c] dark:from-[#c2410c] dark:to-[#ea580c] rounded-[2rem] p-6 lg:p-10 text-white mb-8 lg:mb-10 relative overflow-hidden shadow-lg border border-white/40 dark:border-white/10">
                     <div class="relative z-10">
-                        <span class="text-orange-100 text-[10px] lg:text-xs font-bold tracking-widest uppercase bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">Online Education</span>
-                        <h2 class="text-2xl lg:text-4xl font-prompt font-bold leading-tight my-4 lg:my-6">ยกระดับทักษะของคุณ<br>กับห้องเรียนออนไลน์ วมว.</h2>
-                        <button onclick="clickMenuLessons()" class="bg-slate-900 text-white px-6 lg:px-8 py-3 rounded-full font-bold text-xs lg:text-sm shadow-md hover:bg-black active:scale-95 transition">เริ่มเรียนเลย</button>
+                        <span class="text-orange-100 text-[10px] lg:text-xs font-bold tracking-widest uppercase bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm border border-white/20">Online Education</span>
+                        <h2 class="text-2xl lg:text-4xl font-prompt font-bold leading-tight my-4 lg:my-6 drop-shadow-md">ยกระดับทักษะของคุณ<br>กับห้องเรียนออนไลน์ วมว.</h2>
+                        <button onclick="clickMenuLessons()" class="bg-slate-900 text-white px-6 lg:px-8 py-3 rounded-full font-bold text-xs lg:text-sm shadow-xl hover:bg-black active:scale-95 transition border border-slate-700">เริ่มเรียนเลย</button>
                     </div>
                     <i class="fa-solid fa-sparkles absolute -right-4 -bottom-4 text-9xl text-white/10"></i>
                 </div>
@@ -203,7 +202,7 @@
                     <div id="lessonGrid_fav_home" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 pb-6"></div>
                 </div>
 
-                <div id="continueWatchingSection" class="hidden mb-10 border-t border-slate-300/30 dark:border-white/10 pt-8 mt-4">
+                <div id="continueWatchingSection" class="hidden mb-10 border-t border-slate-300/40 dark:border-white/10 pt-8 mt-4">
                     <div class="flex items-center justify-between mb-5">
                         <h3 class="text-xl lg:text-2xl font-bold font-prompt text-slate-800 dark:text-slate-100 flex items-center">
                             <div class="w-10 h-10 bg-amber-100 dark:bg-amber-900/50 text-amber-500 dark:text-amber-400 rounded-full flex items-center justify-center mr-3 shadow-inner"><i class="fa-solid fa-fire text-sm"></i></div> 🔥 เรียนค้างไว้... มาลุยต่อ!
@@ -212,7 +211,7 @@
                     <div id="lessonGrid_continue" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 pb-6"></div>
                 </div>
 
-                <div id="recommendedSection" class="mb-10 border-t border-slate-300/30 dark:border-white/10 pt-8 mt-4">
+                <div id="recommendedSection" class="mb-10 border-t border-slate-300/40 dark:border-white/10 pt-8 mt-4">
                     <div class="flex items-center justify-between mb-5">
                         <h3 class="text-xl lg:text-2xl font-bold font-prompt text-slate-800 dark:text-slate-100 flex items-center">
                             <div class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-500 dark:text-indigo-400 rounded-full flex items-center justify-center mr-3 shadow-inner"><i class="fa-solid fa-sparkles text-sm"></i></div> แนะนำสำหรับคุณ
@@ -224,8 +223,8 @@
 
             <div id="view_lessons" class="hidden max-w-5xl mx-auto">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-                    <h2 class="text-2xl lg:text-3xl font-black text-slate-800 dark:text-slate-100 font-prompt" id="allSubjectTitle">บทเรียนทั้งหมด</h2>
-                    <button onclick="toggleShowFavorites()" id="favFilterBtn" class="glass-panel px-5 py-2.5 rounded-full text-sm font-bold text-slate-600 dark:text-slate-300 shadow-sm active:scale-95 transition">
+                    <h2 class="text-2xl lg:text-3xl font-black text-slate-800 dark:text-slate-100 font-prompt drop-shadow-sm" id="allSubjectTitle">บทเรียนทั้งหมด</h2>
+                    <button onclick="toggleShowFavorites()" id="favFilterBtn" class="glass-panel px-5 py-2.5 rounded-full text-sm font-bold text-slate-700 dark:text-slate-200 shadow-md active:scale-95 transition">
                         <i class="fa-regular fa-heart mr-2 text-rose-500"></i> <span>รายการโปรด</span>
                     </button>
                 </div>
@@ -236,105 +235,105 @@
             </div>
 
             <div id="view_lesson_detail" class="hidden max-w-4xl mx-auto">
-                <button onclick="nav('lessons')" class="mb-4 lg:mb-6 flex items-center glass-panel px-4 py-2 rounded-full shadow-sm text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-black/50 transition"><i class="fa-solid fa-arrow-left mr-2"></i> กลับ</button>
-                <div class="glass-panel rounded-[1.5rem] lg:rounded-[2rem] p-4 lg:p-8 mb-6 shadow-sm">
-                    <div id="det_video_container" class="w-full aspect-video bg-black rounded-xl lg:rounded-[1.5rem] mb-6 overflow-hidden hidden shadow-inner relative group border border-white/10">
+                <button onclick="nav('lessons')" class="mb-4 lg:mb-6 flex items-center glass-panel px-5 py-2.5 rounded-full shadow-md text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-white/80 dark:hover:bg-black/50 transition"><i class="fa-solid fa-arrow-left mr-2"></i> กลับ</button>
+                <div class="glass-panel rounded-[1.5rem] lg:rounded-[2rem] p-4 lg:p-8 mb-6 shadow-md">
+                    <div id="det_video_container" class="w-full aspect-video bg-black rounded-xl lg:rounded-[1.5rem] mb-6 overflow-hidden hidden shadow-inner relative group border border-white/20">
                         <div id="ytplayer_div" class="w-full h-full absolute inset-0"></div>
                         <div id="antiSkipWarning" class="absolute top-4 left-1/2 -translate-x-1/2 bg-rose-500 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg transition-opacity duration-300 opacity-0 pointer-events-none z-50">
                             <i class="fa-solid fa-ban mr-1"></i> ห้ามข้ามวิดีโอนะครับ
                         </div>
                     </div>
-                    <div id="det_image_container" class="w-full h-48 lg:h-80 bg-slate-900 rounded-xl lg:rounded-[1.5rem] mb-6 overflow-hidden relative border border-white/10">
+                    <div id="det_image_container" class="w-full h-48 lg:h-80 bg-slate-900 rounded-xl lg:rounded-[1.5rem] mb-6 overflow-hidden relative border border-white/20">
                         <img id="det_img_src" src="" class="w-full h-full object-cover opacity-70">
                         <div class="absolute bottom-4 left-4 lg:bottom-8 lg:left-8 text-white">
                             <span id="det_ep" class="bg-[#f05a28] px-3 py-1 rounded-lg text-[10px] lg:text-xs font-bold mb-2 inline-block shadow-md border border-white/20">EP.X</span>
                             <h2 id="det_title" class="text-xl lg:text-3xl font-bold font-prompt drop-shadow-md">Title</h2>
                         </div>
                     </div>
-                    <div id="det_content" class="rich-text whitespace-pre-wrap px-1 lg:px-2 text-slate-700 dark:text-slate-300"></div>
+                    <div id="det_content" class="rich-text whitespace-pre-wrap px-1 lg:px-2 text-slate-800 dark:text-slate-200 font-medium"></div>
                 </div>
                 
                 <div id="quizSectionWrapper" class="glass-panel rounded-[1.5rem] lg:rounded-[2rem] p-5 lg:p-8 border-t-8 border-[#f05a28] shadow-md hidden">
-                    <h3 id="quizSectionTitle" class="text-xl lg:text-2xl font-bold mb-6 border-b border-slate-200/50 dark:border-slate-700/50 pb-4 font-prompt dark:text-white">แบบทดสอบประจำบท</h3>
-                    <div id="quizCompletedMsg" class="hidden bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl p-8 lg:p-10 text-center border border-emerald-100 dark:border-emerald-800">
-                        <i class="fa-solid fa-circle-check text-5xl text-emerald-500 mb-4"></i>
+                    <h3 id="quizSectionTitle" class="text-xl lg:text-2xl font-bold mb-6 border-b border-slate-300/50 dark:border-slate-700/50 pb-4 font-prompt dark:text-white">แบบทดสอบประจำบท</h3>
+                    <div id="quizCompletedMsg" class="hidden bg-emerald-50/80 dark:bg-emerald-900/40 rounded-2xl p-8 lg:p-10 text-center border border-emerald-200 dark:border-emerald-800">
+                        <i class="fa-solid fa-circle-check text-5xl text-emerald-500 mb-4 drop-shadow-sm"></i>
                         <h4 id="quizCompletedTitle" class="text-xl font-bold text-emerald-900 dark:text-emerald-300 mb-2 font-prompt">คุณทำคะแนนได้:</h4>
-                        <div id="quizCompletedScoreBox" class="text-4xl lg:text-5xl font-black text-emerald-600 dark:text-emerald-400"><span id="quizScoreResult">0</span><span id="quizMaxScore" class="text-xl text-emerald-400/50"></span></div>
+                        <div id="quizCompletedScoreBox" class="text-4xl lg:text-5xl font-black text-emerald-600 dark:text-emerald-400"><span id="quizScoreResult">0</span><span id="quizMaxScore" class="text-xl text-emerald-400/60"></span></div>
                     </div>
                     <form id="quizForm" class="space-y-4 lg:space-y-6"><div id="quizContainer"></div></form>
                 </div>
             </div>
 
             <div id="view_inbox" class="hidden h-[calc(100vh-120px)] w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-4 lg:gap-6">
-                <div class="w-full lg:w-1/3 glass-panel rounded-2xl lg:rounded-3xl flex flex-col overflow-hidden shadow-sm lg:h-full h-1/3 shrink-0">
-                    <div class="p-4 lg:p-6 border-b border-slate-200/50 dark:border-slate-700/50"><h2 class="text-lg lg:text-2xl font-bold font-prompt text-slate-800 dark:text-white">กล่องข้อความ</h2></div>
+                <div class="w-full lg:w-1/3 glass-panel rounded-2xl lg:rounded-3xl flex flex-col overflow-hidden shadow-md lg:h-full h-1/3 shrink-0">
+                    <div class="p-4 lg:p-6 border-b border-slate-300/50 dark:border-slate-700/50"><h2 class="text-lg lg:text-2xl font-bold font-prompt text-slate-800 dark:text-white">กล่องข้อความ</h2></div>
                     <div class="flex-1 overflow-y-auto p-2 lg:p-4 hide-scroll" id="chatContactList"></div>
                 </div>
-                <div class="w-full lg:w-2/3 glass-panel rounded-2xl lg:rounded-3xl flex flex-col overflow-hidden shadow-sm relative lg:h-full h-2/3">
-                    <div id="chatPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center bg-white/40 dark:bg-black/40 backdrop-blur-sm z-10 text-slate-500 dark:text-slate-400">
-                        <div class="w-20 h-20 bg-orange-100 dark:bg-orange-900/50 text-orange-400 rounded-full flex items-center justify-center text-3xl mb-4 shadow-inner"><i class="fa-regular fa-comment"></i></div>
+                <div class="w-full lg:w-2/3 glass-panel rounded-2xl lg:rounded-3xl flex flex-col overflow-hidden shadow-md relative lg:h-full h-2/3">
+                    <div id="chatPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center bg-white/60 dark:bg-black/60 backdrop-blur-md z-10 text-slate-600 dark:text-slate-300">
+                        <div class="w-20 h-20 bg-orange-100 dark:bg-orange-900/50 text-orange-500 rounded-full flex items-center justify-center text-3xl mb-4 shadow-inner border border-white/50"><i class="fa-regular fa-comment"></i></div>
                         <p class="font-bold text-sm lg:text-base">เลือกที่ปรึกษาเพื่อเริ่มสนทนา</p>
                     </div>
-                    <div class="p-4 lg:p-5 border-b border-slate-200/50 dark:border-slate-700/50 flex items-center justify-between z-0 bg-white/30 dark:bg-black/20" id="chatHeader">
+                    <div class="p-4 lg:p-5 border-b border-slate-300/50 dark:border-slate-700/50 flex items-center justify-between z-0 bg-white/40 dark:bg-black/30" id="chatHeader">
                         <div class="flex items-center gap-3 lg:gap-4">
-                            <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shadow-sm bg-slate-200 dark:bg-slate-700 flex items-center justify-center font-bold text-orange-600 dark:text-orange-400 border border-white/50" id="chatHeaderAvatar"></div>
+                            <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shadow-sm bg-slate-200 dark:bg-slate-700 flex items-center justify-center font-bold text-orange-600 dark:text-orange-400 border border-white/80" id="chatHeaderAvatar"></div>
                             <div><h3 class="font-bold text-sm lg:text-lg text-slate-800 dark:text-white mt-1 flex items-center" id="chatHeaderName">Name</h3></div>
                         </div>
                     </div>
                     <div class="flex-1 overflow-y-auto p-4 lg:p-6 bg-transparent flex flex-col space-y-4 hide-scroll z-0" id="chatHistory"></div>
-                    <div class="p-3 lg:p-5 border-t border-slate-200/50 dark:border-slate-700/50 flex items-center gap-2 lg:gap-3 shrink-0 z-0 bg-white/30 dark:bg-black/20">
-                        <input type="text" id="chatInputMessage" placeholder="พิมพ์ข้อความ..." class="flex-1 px-4 lg:px-6 py-3 lg:py-4 bg-white/60 dark:bg-black/50 border border-white/50 dark:border-white/10 rounded-full outline-none focus:ring-2 focus:ring-orange-400 text-sm lg:text-base dark:text-white dark:placeholder-slate-400 shadow-inner">
-                        <button onclick="sendChatMessage()" class="w-12 h-12 lg:w-14 lg:h-14 bg-[#f05a28] text-white rounded-full flex items-center justify-center shadow-lg hover:bg-[#d94a1d] transition"><i class="fa-solid fa-paper-plane text-lg"></i></button>
+                    <div class="p-3 lg:p-5 border-t border-slate-300/50 dark:border-slate-700/50 flex items-center gap-2 lg:gap-3 shrink-0 z-0 bg-white/40 dark:bg-black/30">
+                        <input type="text" id="chatInputMessage" placeholder="พิมพ์ข้อความ..." class="flex-1 px-4 lg:px-6 py-3 lg:py-4 bg-white/80 dark:bg-black/60 border border-white dark:border-white/10 rounded-full outline-none focus:ring-2 focus:ring-orange-400 text-sm lg:text-base text-slate-800 dark:text-white dark:placeholder-slate-400 shadow-inner font-medium">
+                        <button onclick="sendChatMessage()" class="w-12 h-12 lg:w-14 lg:h-14 bg-[#f05a28] text-white rounded-full flex items-center justify-center shadow-lg hover:bg-[#d94a1d] transition border border-white/20"><i class="fa-solid fa-paper-plane text-lg"></i></button>
                     </div>
                 </div>
             </div>
 
             <div id="view_settings" class="hidden max-w-3xl mx-auto">
-                <div class="glass-panel rounded-2xl lg:rounded-[2rem] p-6 lg:p-10 shadow-sm">
+                <div class="glass-panel rounded-2xl lg:rounded-[2rem] p-6 lg:p-10 shadow-md">
                     <div class="flex flex-col items-center mb-8">
-                        <div class="relative w-24 h-24 lg:w-32 lg:h-32 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden border-4 border-white dark:border-slate-700 shadow-md group">
+                        <div class="relative w-24 h-24 lg:w-32 lg:h-32 rounded-full bg-white dark:bg-slate-800 overflow-hidden border-4 border-white dark:border-slate-700 shadow-xl group">
                             <img id="previewSettingPic" src="" class="w-full h-full object-cover hidden">
-                            <div id="previewSettingInitials" class="w-full h-full flex items-center justify-center text-4xl lg:text-5xl font-bold text-orange-600 bg-orange-100 dark:bg-orange-900/50 dark:text-orange-400">A</div>
-                            <label class="absolute inset-0 flex flex-col items-center justify-center bg-black/50 text-white cursor-pointer opacity-0 group-hover:opacity-100 transition backdrop-blur-[2px]">
+                            <div id="previewSettingInitials" class="w-full h-full flex items-center justify-center text-4xl lg:text-5xl font-bold text-orange-600 bg-orange-50 dark:bg-orange-900/50 dark:text-orange-400">A</div>
+                            <label class="absolute inset-0 flex flex-col items-center justify-center bg-black/60 text-white cursor-pointer opacity-0 group-hover:opacity-100 transition backdrop-blur-[2px]">
                                 <i class="fa-solid fa-camera mb-1 text-2xl"></i>
                                 <input type="file" class="hidden" accept="image/*" onchange="handleImageUpload(event)">
                             </label>
                         </div>
-                        <h3 class="font-bold text-2xl font-prompt text-slate-800 dark:text-white mt-4" id="settingNameDisplay">-</h3>
-                        <p class="text-xs font-bold text-orange-600 dark:text-orange-400 bg-orange-100/50 dark:bg-orange-900/30 px-3 py-1 rounded-full uppercase mt-2 border border-orange-200 dark:border-orange-800/50">Student Account</p>
+                        <h3 class="font-bold text-2xl font-prompt text-slate-800 dark:text-white mt-4 drop-shadow-sm" id="settingNameDisplay">-</h3>
+                        <p class="text-xs font-bold text-orange-700 dark:text-orange-400 bg-orange-100/80 dark:bg-orange-900/50 px-3 py-1 rounded-full uppercase mt-2 border border-orange-200 dark:border-orange-800/50 shadow-sm">Student Account</p>
                     </div>
                     <form id="profileForm" class="space-y-5">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <div><label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-2 uppercase tracking-widest">Email *</label><input type="email" id="set_email" class="w-full px-4 py-3 bg-white/50 dark:bg-black/30 border border-white/50 dark:border-white/10 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm dark:text-white" required></div>
-                            <div><label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-2 uppercase tracking-widest">Phone *</label><input type="tel" id="set_phone" class="w-full px-4 py-3 bg-white/50 dark:bg-black/30 border border-white/50 dark:border-white/10 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm dark:text-white" required></div>
+                            <div><label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-widest">Email *</label><input type="email" id="set_email" class="w-full px-4 py-3.5 bg-white/80 dark:bg-black/40 border border-white dark:border-white/10 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white font-medium shadow-inner" required></div>
+                            <div><label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-widest">Phone *</label><input type="tel" id="set_phone" class="w-full px-4 py-3.5 bg-white/80 dark:bg-black/40 border border-white dark:border-white/10 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white font-medium shadow-inner" required></div>
                         </div>
-                        <button type="button" onclick="saveProfile()" class="w-full bg-[#f05a28] text-white font-bold py-4 rounded-xl shadow-lg mt-4 active:scale-[0.98] transition font-prompt uppercase text-sm tracking-widest hover:bg-[#d94a1d]">Update Profile</button>
+                        <button type="button" onclick="saveProfile()" class="w-full bg-[#f05a28] text-white font-bold py-4 rounded-xl shadow-lg mt-4 active:scale-[0.98] transition font-prompt uppercase text-sm tracking-widest hover:bg-[#d94a1d] border border-white/20">Update Profile</button>
                     </form>
                 </div>
             </div>
         </div>
     </main>
 
-    <aside id="rightSidebar" class="w-72 flex-shrink-0 hidden lg:flex flex-col h-full shadow-sm relative border-l border-white/50 dark:border-white/10 bg-white/90 dark:bg-[#1a1614]/95 backdrop-blur-2xl">
+    <aside id="rightSidebar" class="glass-panel w-72 flex-shrink-0 hidden lg:flex flex-col h-full shadow-2xl relative border-l border-white/80 dark:border-white/5">
         <div class="p-8 overflow-y-auto flex-1 hide-scroll pb-24">
-            <div class="text-right lg:hidden mb-4"><button onclick="document.getElementById('rightSidebar').classList.add('hidden')" class="text-slate-500 bg-slate-100 dark:bg-slate-800 w-8 h-8 rounded-full shadow-sm"><i class="fa-solid fa-xmark"></i></button></div>
+            <div class="text-right lg:hidden mb-4"><button onclick="document.getElementById('rightSidebar').classList.add('hidden')" class="text-slate-600 bg-white/80 dark:bg-black/50 w-8 h-8 rounded-full shadow-sm"><i class="fa-solid fa-xmark"></i></button></div>
             <div class="flex justify-between items-center mb-8"><h3 class="font-bold text-slate-800 dark:text-slate-200 text-sm font-prompt uppercase tracking-widest">STUDENT PROFILE</h3></div>
             
             <div class="text-center mb-10">
-                <div class="relative w-28 h-28 mx-auto mb-5 border-[5px] border-white/80 dark:border-slate-800/80 shadow-xl rounded-full overflow-hidden bg-orange-50 dark:bg-orange-900/50 flex items-center justify-center backdrop-blur-sm">
+                <div class="relative w-28 h-28 mx-auto mb-5 border-[5px] border-white dark:border-slate-800/80 shadow-xl rounded-full overflow-hidden bg-orange-50 dark:bg-orange-900/50 flex items-center justify-center backdrop-blur-sm">
                     <img id="rightProfileImage" src="" class="w-full h-full object-cover hidden">
                     <div id="rightProfileInitials" class="w-full h-full flex items-center justify-center text-4xl font-bold text-orange-600 dark:text-orange-400">A</div>
                 </div>
-                <h3 class="font-bold text-xl font-prompt text-slate-800 dark:text-white mb-3" id="rightProfileFullName">-</h3>
+                <h3 class="font-bold text-xl font-prompt text-slate-800 dark:text-white mb-3 drop-shadow-sm" id="rightProfileFullName">-</h3>
                 <div class="flex justify-center gap-2 mt-2 items-center">
-                    <span class="bg-orange-100/80 dark:bg-orange-900/50 text-orange-700 dark:text-orange-300 font-bold px-3 py-1.5 rounded-full text-[11px] shadow-sm border border-orange-200/50 dark:border-orange-800/50" id="rightProfileId">ID: -</span>
-                    <span class="bg-slate-100/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 font-bold px-3 py-1.5 rounded-full text-[11px] shadow-sm border border-slate-200/50 dark:border-slate-700/50" id="rightProfileClass">Class: -</span>
+                    <span class="bg-orange-100/90 dark:bg-orange-900/60 text-orange-700 dark:text-orange-300 font-bold px-3 py-1.5 rounded-full text-[11px] shadow-sm border border-orange-200/80 dark:border-orange-800/50" id="rightProfileId">ID: -</span>
+                    <span class="bg-white/90 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 font-bold px-3 py-1.5 rounded-full text-[11px] shadow-sm border border-slate-200/80 dark:border-slate-700/50" id="rightProfileClass">Class: -</span>
                 </div>
             </div>
 
             <h4 class="font-bold text-slate-800 dark:text-slate-200 font-prompt text-sm mb-5 uppercase tracking-widest mt-8">TEACHER</h4>
             <div class="space-y-3" id="mentorListUI">
-                <div class="text-[10px] text-slate-500 dark:text-slate-400 text-center py-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">กำลังโหลดข้อมูลอาจารย์...</div>
+                <div class="text-[10px] text-slate-600 dark:text-slate-400 font-medium text-center py-4 bg-white/60 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-400/50 dark:border-slate-600/50 shadow-inner">กำลังโหลดข้อมูลอาจารย์...</div>
             </div>
         </div>
     </aside>
@@ -376,9 +375,9 @@
             const isDark = document.documentElement.classList.contains('dark');
             const icon = document.getElementById('themeIcon');
             if (isDark) {
-                icon.className = 'fa-solid fa-sun text-yellow-400 text-lg';
+                icon.className = 'fa-solid fa-sun text-yellow-500 text-lg';
             } else {
-                icon.className = 'fa-solid fa-moon text-slate-600 text-lg';
+                icon.className = 'fa-solid fa-moon text-slate-700 text-lg';
             }
         }
 
@@ -387,7 +386,7 @@
         function extractYouTubeID(u) { let m = u.match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/); return (m && m[7].length === 11) ? m[7] : false; }
         function getImageUrl(t) { return `https://picsum.photos/seed/${encodeURIComponent(t)}/800/600`; }
         function formatContent(t) {
-            if(!t) return ""; t = t.replace(/\[YT:(.*?)\]\n?/g, ""); t = t.replace(/(สำคัญมาก|ข้อควรระวัง)(:|\s)/g, '<span class="bg-rose-100 text-rose-700 px-2 py-0.5 rounded font-bold text-xs ml-1 shadow-sm">$1$2</span>'); t = t.replace(/\*\*(.*?)\*\*/g, '<span class="text-orange-600 font-bold bg-orange-50 dark:bg-orange-900/30 px-1 py-0.5 rounded">$1</span>'); t = t.replace(/^### (.*$)/gim, '<h4 class="text-lg font-bold text-[#f05a28] mt-4 mb-2 font-prompt">$1</h4>'); t = t.replace(/^- (.*$)/gim, '<div class="flex items-start my-1 text-sm"><i class="fa-solid fa-circle-check text-[#f05a28] mt-1 mr-2"></i> <span>$1</span></div>'); return t;
+            if(!t) return ""; t = t.replace(/\[YT:(.*?)\]\n?/g, ""); t = t.replace(/(สำคัญมาก|ข้อควรระวัง)(:|\s)/g, '<span class="bg-rose-100 text-rose-700 px-2 py-0.5 rounded font-bold text-xs ml-1 shadow-sm border border-rose-200">$1$2</span>'); t = t.replace(/\*\*(.*?)\*\*/g, '<span class="text-orange-700 font-bold bg-orange-50 dark:bg-orange-900/40 px-1 py-0.5 rounded border border-orange-200/50">$1</span>'); t = t.replace(/^### (.*$)/gim, '<h4 class="text-lg font-bold text-[#f05a28] mt-4 mb-2 font-prompt drop-shadow-sm">$1</h4>'); t = t.replace(/^- (.*$)/gim, '<div class="flex items-start my-1 text-sm font-medium"><i class="fa-solid fa-circle-check text-[#f05a28] mt-1 mr-2"></i> <span>$1</span></div>'); return t;
         }
 
         function showiOSToast(iconClass, text, iconColorBg, iconColorText) {
@@ -398,8 +397,8 @@
                 timer: 2000, 
                 customClass: { popup: 'ios-center-popup' },
                 html: `<div class="flex flex-col items-center gap-3 text-center">
-                          <div class="w-12 h-12 rounded-full ${iconColorBg} ${iconColorText} flex items-center justify-center shadow-sm border border-white/20">
-                              <i class="${iconClass} text-2xl"></i>
+                          <div class="w-12 h-12 rounded-full ${iconColorBg} ${iconColorText} flex items-center justify-center shadow-sm border border-white/50">
+                              <i class="${iconClass} text-2xl drop-shadow-sm"></i>
                           </div>
                           <span class="font-bold text-slate-800 dark:text-slate-100 text-base tracking-wide leading-snug">${text}</span>
                        </div>` 
@@ -409,7 +408,7 @@
         function toggleSidebar() { document.getElementById('mainSidebar').classList.toggle('active'); document.getElementById('sidebarOverlay').classList.toggle('active'); }
         function toggleRightSidebar() {
             const rs = document.getElementById('rightSidebar'); rs.classList.toggle('hidden');
-            if(!rs.classList.contains('hidden')) { rs.style.position = 'fixed'; rs.style.right = '0'; rs.style.top = '0'; rs.style.zIndex = '100'; rs.style.height = '100vh'; rs.style.width = '300px'; showiOSToast('fa-solid fa-xmark', 'แตะที่ว่างเพื่อปิด', 'bg-slate-100 dark:bg-slate-700', 'text-slate-500 dark:text-slate-300'); }
+            if(!rs.classList.contains('hidden')) { rs.style.position = 'fixed'; rs.style.right = '0'; rs.style.top = '0'; rs.style.zIndex = '100'; rs.style.height = '100vh'; rs.style.width = '300px'; showiOSToast('fa-solid fa-xmark', 'แตะที่ว่างเพื่อปิด', 'bg-white/80 dark:bg-slate-700', 'text-slate-600 dark:text-slate-200'); }
         }
 
         window.onload = () => { 
@@ -422,7 +421,7 @@
             document.getElementById('sidebarMenu').innerHTML = `
                 <a onclick="nav('home')" id="nav_home" class="menu-item px-8 py-4 flex items-center active"><i class="fa-solid fa-house w-6 mr-3 text-lg"></i> <span>แดชบอร์ด</span></a>
                 <a onclick="clickMenuLessons()" id="nav_lessons" class="menu-item px-8 py-4 flex items-center relative"><i class="fa-solid fa-book-open w-6 mr-3 text-lg"></i> <span>บทเรียน</span></a>
-                <a onclick="nav('inbox')" id="nav_inbox" class="menu-item px-8 py-4 flex items-center relative"><i class="fa-solid fa-inbox w-6 mr-3 text-lg"></i> <span>ข้อความ</span><span class="inbox-badge hidden absolute right-6 bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">0</span></a>
+                <a onclick="nav('inbox')" id="nav_inbox" class="menu-item px-8 py-4 flex items-center relative"><i class="fa-solid fa-inbox w-6 mr-3 text-lg"></i> <span>ข้อความ</span><span class="inbox-badge hidden absolute right-6 bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md border border-white/30">0</span></a>
             `;
             updateUnreadBadges(); 
         }
@@ -430,7 +429,7 @@
         function clickMenuLessons() { 
             currentSubject = ""; showFavoritesOnly = false; 
             let btn = document.getElementById('favFilterBtn');
-            if(btn) { btn.className = "glass-panel px-5 py-2.5 rounded-full text-sm font-bold text-slate-600 dark:text-slate-300 shadow-sm active:scale-95 transition"; btn.innerHTML = `<i class="fa-regular fa-heart mr-2 text-rose-500"></i> <span>รายการโปรด</span>`; }
+            if(btn) { btn.className = "glass-panel px-5 py-2.5 rounded-full text-sm font-bold text-slate-700 dark:text-slate-200 shadow-md active:scale-95 transition"; btn.innerHTML = `<i class="fa-regular fa-heart mr-2 text-rose-500"></i> <span>รายการโปรด</span>`; }
             document.getElementById('allSubjectTitle').innerText = "บทเรียนทั้งหมด"; 
             nav('lessons'); 
         }
@@ -438,8 +437,8 @@
         function toggleShowFavorites() {
             showFavoritesOnly = !showFavoritesOnly;
             let btn = document.getElementById('favFilterBtn');
-            if(showFavoritesOnly) { btn.className = "bg-rose-500/10 border border-rose-500/20 px-5 py-2.5 rounded-full text-sm font-bold text-rose-600 dark:text-rose-400 shadow-sm active:scale-95 transition backdrop-blur-sm"; btn.innerHTML = `<i class="fa-solid fa-heart mr-2 text-rose-500"></i> <span>รายการโปรด</span>`; } 
-            else { btn.className = "glass-panel px-5 py-2.5 rounded-full text-sm font-bold text-slate-600 dark:text-slate-300 shadow-sm active:scale-95 transition"; btn.innerHTML = `<i class="fa-regular fa-heart mr-2 text-rose-500"></i> <span>รายการโปรด</span>`; }
+            if(showFavoritesOnly) { btn.className = "bg-rose-50/90 border border-rose-200 px-5 py-2.5 rounded-full text-sm font-bold text-rose-600 dark:text-rose-400 dark:bg-rose-900/40 dark:border-rose-700/50 shadow-md active:scale-95 transition backdrop-blur-md"; btn.innerHTML = `<i class="fa-solid fa-heart mr-2 text-rose-500"></i> <span>รายการโปรด</span>`; } 
+            else { btn.className = "glass-panel px-5 py-2.5 rounded-full text-sm font-bold text-slate-700 dark:text-slate-200 shadow-md active:scale-95 transition"; btn.innerHTML = `<i class="fa-regular fa-heart mr-2 text-rose-500"></i> <span>รายการโปรด</span>`; }
             renderStudentLessons();
         }
 
@@ -515,14 +514,14 @@
                         
                         sH += `
                         <div class="glass-panel subject-card rounded-[2rem] p-5 lg:p-6 flex flex-col justify-between h-32 w-full" onclick="selectSubject('${s}')">
-                            <div class="absolute -right-2 -bottom-4 w-24 h-24 bg-white/20 dark:bg-white/5 rounded-full flex items-center justify-center z-0">
-                                <i class="fa-solid fa-book-open text-4xl text-slate-400/30 transform -rotate-12"></i>
+                            <div class="absolute -right-2 -bottom-4 w-24 h-24 bg-white/40 dark:bg-white/5 rounded-full flex items-center justify-center z-0">
+                                <i class="fa-solid fa-book-open text-4xl text-slate-400/40 transform -rotate-12"></i>
                             </div>
                             <div class="relative z-10">
-                                <h3 class="font-bold text-base lg:text-lg font-prompt leading-tight text-slate-800 dark:text-slate-100">${s}</h3>
+                                <h3 class="font-bold text-base lg:text-lg font-prompt leading-tight text-slate-800 dark:text-slate-100 drop-shadow-sm">${s}</h3>
                             </div>
                             <div class="flex items-center gap-2 mt-auto relative z-10">
-                                <div class="bg-white/50 dark:bg-black/40 text-slate-600 dark:text-slate-300 px-3 py-1 rounded-full text-[10px] lg:text-xs font-bold border border-white/40 dark:border-white/10">
+                                <div class="bg-white/90 dark:bg-black/60 text-slate-800 dark:text-slate-200 px-3 py-1 rounded-full text-[10px] lg:text-xs font-bold border border-white dark:border-white/10 shadow-sm">
                                     <i class="fa-solid fa-layer-group mr-1"></i> ${lessonCount} บทเรียน
                                 </div>
                             </div>
@@ -550,14 +549,18 @@
             let favs = JSON.parse(localStorage.getItem('favs_'+currentUser.id)||'[]');
 
             if(currentSubject !== "") { filtered = filtered.filter(l => String(l.subject).trim() === String(currentSubject).trim()); } 
-            else if(!showFavoritesOnly) { document.getElementById('lessonGrid_student').innerHTML = '<div class="col-span-full py-10 lg:py-20 text-center text-slate-500 dark:text-slate-400 font-bold border-2 border-dashed border-slate-300/50 dark:border-slate-700/50 rounded-[2rem] text-sm px-4"><i class="fa-solid fa-arrow-up block text-3xl mb-4 text-[#f05a28]/50"></i> กรุณาเลือก "รายวิชา" ด้านบน เพื่อดูบทเรียน</div>'; return; }
+            else if(!showFavoritesOnly) { 
+                // ✨ อัปเดตสีเส้นประและพื้นหลังให้ชัดเจนในหน้าเลือกวิชา ✨
+                document.getElementById('lessonGrid_student').innerHTML = '<div class="col-span-full py-10 lg:py-20 text-center text-slate-700 dark:text-slate-300 font-bold border-2 border-dashed border-slate-400/60 dark:border-slate-600/60 rounded-[2rem] text-base px-4 bg-white/30 dark:bg-black/20 backdrop-blur-sm shadow-sm"><i class="fa-solid fa-arrow-up block text-4xl mb-4 text-[#f05a28] drop-shadow-md"></i> กรุณาเลือก "รายวิชา" ด้านบน เพื่อดูบทเรียน</div>'; 
+                return; 
+            }
 
             if(showFavoritesOnly) {
                 filtered = filtered.filter(l => favs.includes(l.title));
                 document.getElementById('allSubjectTitle').innerText = currentSubject !== "" ? "วิชา: " + currentSubject + " (เฉพาะรายการโปรด)" : "รายการโปรดทั้งหมด";
             } else { document.getElementById('allSubjectTitle').innerText = currentSubject !== "" ? "วิชา: " + currentSubject : "บทเรียนทั้งหมด"; }
 
-            document.getElementById('lessonGrid_student').innerHTML = filtered.length > 0 ? filtered.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'grid')).join('') : '<div class="col-span-full py-20 text-center text-slate-500 dark:text-slate-400 font-bold border-2 border-dashed border-slate-300/50 dark:border-slate-700/50 rounded-[2rem]">ไม่พบข้อมูลบทเรียน</div>';
+            document.getElementById('lessonGrid_student').innerHTML = filtered.length > 0 ? filtered.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'grid')).join('') : '<div class="col-span-full py-20 text-center text-slate-700 dark:text-slate-300 font-bold border-2 border-dashed border-slate-400/60 dark:border-slate-600/60 rounded-[2rem] bg-white/30 dark:bg-black/20 backdrop-blur-sm">ไม่พบข้อมูลบทเรียน</div>';
         }
 
         function searchLesson(val) {
@@ -568,7 +571,7 @@
             let filtered = allLessons.filter(l => l.title.toLowerCase().includes(q) || l.subject.toLowerCase().includes(q));
             if (showFavoritesOnly) { let favs = JSON.parse(localStorage.getItem('favs_'+currentUser.id)||'[]'); filtered = filtered.filter(l => favs.includes(l.title)); }
 
-            document.getElementById('lessonGrid_student').innerHTML = filtered.length > 0 ? filtered.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'grid')).join('') : '<div class="col-span-full py-20 text-center text-slate-500 dark:text-slate-400 font-bold border-2 border-dashed border-slate-300/50 dark:border-slate-700/50 rounded-[2rem]">ไม่พบสิ่งที่ค้นหา</div>';
+            document.getElementById('lessonGrid_student').innerHTML = filtered.length > 0 ? filtered.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'grid')).join('') : '<div class="col-span-full py-20 text-center text-slate-700 dark:text-slate-300 font-bold border-2 border-dashed border-slate-400/60 dark:border-slate-600/60 rounded-[2rem] bg-white/30 dark:bg-black/20 backdrop-blur-sm">ไม่พบสิ่งที่ค้นหา</div>';
         }
 
         function renderLessonCard(l, idx, isNew = false, layoutType = 'grid') {
@@ -583,7 +586,7 @@
             let newBadge = isNew ? `<div class="absolute top-3 left-3 bg-gradient-to-r from-rose-500 to-pink-500 text-white px-3 py-1 rounded-full text-[10px] font-bold shadow-md tracking-wider animate-pulse border border-white/20 z-20">NEW</div>` : '';
 
             if (!isC && progStatus && progStatus !== "done") {
-                newBadge = `<div class="absolute top-3 left-3 bg-amber-400/90 text-amber-900 px-2 py-0.5 rounded-md text-[9px] font-bold shadow-md z-20 flex items-center backdrop-blur-sm border border-amber-300/50"><i class="fa-solid fa-clock-rotate-left mr-1"></i> ดูค้างไว้</div>`;
+                newBadge = `<div class="absolute top-3 left-3 bg-amber-400/95 text-amber-900 px-2 py-0.5 rounded-md text-[9px] font-bold shadow-md z-20 flex items-center backdrop-blur-md border border-white/40"><i class="fa-solid fa-clock-rotate-left mr-1"></i> ดูค้างไว้</div>`;
                 progressIndicator = `<div class="absolute bottom-0 left-0 w-full h-1.5 bg-slate-200/50 dark:bg-slate-700/50 z-20"><div class="h-full bg-amber-400" style="width: ${progPct}%"></div></div>`;
             }
 
@@ -591,19 +594,19 @@
             let scoreHtml = '';
             
             if (totalQs > 0) {
-                scoreHtml = `<div class="mt-auto border-t border-slate-200/50 dark:border-slate-700/50 pt-4"><span class="text-xs font-bold text-[#f05a28]"><i class="fa-solid fa-star text-yellow-500 mr-1"></i> Score: ${isC ? l.studentScore : 0}/${totalQs}</span></div>`;
+                scoreHtml = `<div class="mt-auto border-t border-slate-300/40 dark:border-slate-600/40 pt-4"><span class="text-xs font-bold text-[#f05a28]"><i class="fa-solid fa-star text-yellow-500 mr-1"></i> Score: ${isC ? l.studentScore : 0}/${totalQs}</span></div>`;
             } else {
                 if(isC) {
-                    scoreHtml = `<div class="mt-auto border-t border-slate-200/50 dark:border-slate-700/50 pt-4"><span class="text-xs font-bold text-emerald-500"><i class="fa-solid fa-circle-check mr-1"></i>เรียนจบแล้ว</span></div>`;
+                    scoreHtml = `<div class="mt-auto border-t border-slate-300/40 dark:border-slate-600/40 pt-4"><span class="text-xs font-bold text-emerald-600 dark:text-emerald-500"><i class="fa-solid fa-circle-check mr-1"></i>เรียนจบแล้ว</span></div>`;
                 } else {
-                    scoreHtml = `<div class="mt-auto border-t border-slate-200/50 dark:border-slate-700/50 pt-4"><span class="text-[10px] font-bold text-slate-500 dark:text-slate-400">ไม่มีแบบทดสอบ</span></div>`;
+                    scoreHtml = `<div class="mt-auto border-t border-slate-300/40 dark:border-slate-600/40 pt-4"><span class="text-[10px] font-bold text-slate-500 dark:text-slate-400">ไม่มีแบบทดสอบ</span></div>`;
                 }
             }
 
             let hasVideo = (l.content || "").includes("[YT:");
             let playIcon = hasVideo ? `
                 <div class="absolute inset-0 flex items-center justify-center z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div class="w-14 h-14 bg-white/30 dark:bg-black/30 backdrop-blur-md rounded-full flex items-center justify-center text-white shadow-xl border border-white/50">
+                    <div class="w-14 h-14 bg-white/40 dark:bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center text-white shadow-xl border border-white/60">
                         <i class="fa-solid fa-play text-2xl ml-1 drop-shadow-md"></i>
                     </div>
                 </div>` : '';
@@ -612,21 +615,21 @@
 
             return `
             <div class="glass-panel course-card rounded-[2rem] p-4 lg:p-5 flex flex-col h-full relative w-full ${widthClass}" onclick="openLesson(${idx})">
-                <div class="h-32 lg:h-40 w-full rounded-[1.5rem] mb-4 lg:mb-5 relative overflow-hidden bg-slate-100 dark:bg-slate-800 group shrink-0 border border-white/20 dark:border-white/5">
+                <div class="h-32 lg:h-40 w-full rounded-[1.5rem] mb-4 lg:mb-5 relative overflow-hidden bg-slate-200/50 dark:bg-slate-800 group shrink-0 border border-white/40 dark:border-white/10">
                     <img src="${getImageUrl(l.title)}" class="w-full h-full object-cover transition duration-700 group-hover:scale-105 ${isC?'grayscale':''}">
                     <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent z-0 pointer-events-none"></div>
                     
                     ${playIcon}
                     ${newBadge}
                     
-                    <div class="absolute top-3 right-3 w-8 h-8 bg-white/50 dark:bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center shadow-sm z-20 transition hover:bg-white dark:hover:bg-slate-700 hover:scale-110 border border-white/50 dark:border-white/10" onclick="toggleFavorite(event, '${l.title}')"><i class="${heartClass} fa-heart text-sm pointer-events-none"></i></div>
-                    ${isC ? `<div class="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[1px] z-10"><div class="bg-emerald-500 text-white px-3 py-1 rounded-lg text-[10px] font-bold shadow-md">Completed</div></div>` : ''}
+                    <div class="absolute top-3 right-3 w-8 h-8 bg-white/70 dark:bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center shadow-md z-20 transition hover:bg-white dark:hover:bg-slate-700 hover:scale-110 border border-white/60 dark:border-white/10" onclick="toggleFavorite(event, '${l.title}')"><i class="${heartClass} fa-heart text-sm pointer-events-none"></i></div>
+                    ${isC ? `<div class="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[1px] z-10"><div class="bg-emerald-500 text-white px-3 py-1 rounded-lg text-[10px] font-bold shadow-md border border-white/20">Completed</div></div>` : ''}
                     ${progressIndicator}
                 </div>
                 <div class="flex-1 flex flex-col justify-between px-1">
                     <div>
-                        <span class="text-[9px] lg:text-xs font-bold text-orange-600 dark:text-orange-400 bg-white/50 dark:bg-black/30 border border-orange-200/50 dark:border-orange-900/50 px-2 py-0.5 rounded-full mb-2 inline-block">${l.subject}</span>
-                        <h3 class="font-bold text-base lg:text-lg mb-4 leading-snug text-slate-800 dark:text-slate-100 line-clamp-2">${l.title}</h3>
+                        <span class="text-[9px] lg:text-xs font-bold text-orange-700 dark:text-orange-400 bg-white/80 dark:bg-black/40 border border-white dark:border-orange-900/50 shadow-sm px-2 py-0.5 rounded-full mb-2 inline-block">${l.subject}</span>
+                        <h3 class="font-bold text-base lg:text-lg mb-4 leading-snug text-slate-800 dark:text-slate-100 line-clamp-2 drop-shadow-sm">${l.title}</h3>
                     </div>
                     ${scoreHtml}
                 </div>
@@ -675,18 +678,18 @@
 
             let html = `
                 <div class="text-left font-prompt mt-1">
-                    <p class="font-bold text-base lg:text-lg mb-4 text-slate-800 dark:text-slate-100 leading-snug">${questionObj.q}</p>
-                    <div class="space-y-3 text-sm font-medium">
-                        <label class="block p-3 bg-white/50 dark:bg-black/30 border border-slate-200 dark:border-slate-700 rounded-2xl cursor-pointer hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:border-orange-300 dark:hover:border-orange-700 transition-all active:scale-[0.98] text-slate-700 dark:text-slate-300 backdrop-blur-sm">
+                    <p class="font-bold text-base lg:text-lg mb-4 text-slate-800 dark:text-slate-100 leading-snug drop-shadow-sm">${questionObj.q}</p>
+                    <div class="space-y-3 text-sm font-semibold">
+                        <label class="block p-3.5 bg-white/70 dark:bg-black/40 border border-white dark:border-slate-700 rounded-2xl cursor-pointer hover:bg-orange-50 dark:hover:bg-orange-900/30 hover:border-orange-300 dark:hover:border-orange-600 transition-all active:scale-[0.98] text-slate-800 dark:text-slate-200 backdrop-blur-md shadow-sm">
                             <input type="radio" name="popupAns" value="1" class="mr-3 accent-[#f05a28] w-4 h-4 align-middle"> ก. ${questionObj.c1}
                         </label>
-                        <label class="block p-3 bg-white/50 dark:bg-black/30 border border-slate-200 dark:border-slate-700 rounded-2xl cursor-pointer hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:border-orange-300 dark:hover:border-orange-700 transition-all active:scale-[0.98] text-slate-700 dark:text-slate-300 backdrop-blur-sm">
+                        <label class="block p-3.5 bg-white/70 dark:bg-black/40 border border-white dark:border-slate-700 rounded-2xl cursor-pointer hover:bg-orange-50 dark:hover:bg-orange-900/30 hover:border-orange-300 dark:hover:border-orange-600 transition-all active:scale-[0.98] text-slate-800 dark:text-slate-200 backdrop-blur-md shadow-sm">
                             <input type="radio" name="popupAns" value="2" class="mr-3 accent-[#f05a28] w-4 h-4 align-middle"> ข. ${questionObj.c2}
                         </label>
-                        <label class="block p-3 bg-white/50 dark:bg-black/30 border border-slate-200 dark:border-slate-700 rounded-2xl cursor-pointer hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:border-orange-300 dark:hover:border-orange-700 transition-all active:scale-[0.98] text-slate-700 dark:text-slate-300 backdrop-blur-sm">
+                        <label class="block p-3.5 bg-white/70 dark:bg-black/40 border border-white dark:border-slate-700 rounded-2xl cursor-pointer hover:bg-orange-50 dark:hover:bg-orange-900/30 hover:border-orange-300 dark:hover:border-orange-600 transition-all active:scale-[0.98] text-slate-800 dark:text-slate-200 backdrop-blur-md shadow-sm">
                             <input type="radio" name="popupAns" value="3" class="mr-3 accent-[#f05a28] w-4 h-4 align-middle"> ค. ${questionObj.c3}
                         </label>
-                        <label class="block p-3 bg-white/50 dark:bg-black/30 border border-slate-200 dark:border-slate-700 rounded-2xl cursor-pointer hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:border-orange-300 dark:hover:border-orange-700 transition-all active:scale-[0.98] text-slate-700 dark:text-slate-300 backdrop-blur-sm">
+                        <label class="block p-3.5 bg-white/70 dark:bg-black/40 border border-white dark:border-slate-700 rounded-2xl cursor-pointer hover:bg-orange-50 dark:hover:bg-orange-900/30 hover:border-orange-300 dark:hover:border-orange-600 transition-all active:scale-[0.98] text-slate-800 dark:text-slate-200 backdrop-blur-md shadow-sm">
                             <input type="radio" name="popupAns" value="4" class="mr-3 accent-[#f05a28] w-4 h-4 align-middle"> ง. ${questionObj.c4}
                         </label>
                     </div>
@@ -882,11 +885,11 @@
                     document.getElementById('quizForm').classList.remove('hidden'); 
                     document.getElementById('quizCompletedMsg').classList.add('hidden');
                     if(totalQs === 0) {
-                        document.getElementById('quizContainer').innerHTML = `<div class="text-center py-8"><button type="button" onclick="submitQuiz(true,0)" class="bg-[#f05a28] text-white font-bold px-10 py-4 rounded-full shadow-lg hover:bg-[#d94a1d] transition">บันทึกการเรียนจบ</button></div>`;
+                        document.getElementById('quizContainer').innerHTML = `<div class="text-center py-8"><button type="button" onclick="submitQuiz(true,0)" class="bg-[#f05a28] text-white font-bold px-10 py-4 rounded-full shadow-lg hover:bg-[#d94a1d] transition border border-white/20">บันทึกการเรียนจบ</button></div>`;
                     } else { 
                         let qh = ""; 
-                        vQs.forEach((q, i) => { qh += `<div class="bg-white/50 dark:bg-black/30 backdrop-blur-sm p-5 lg:p-8 rounded-2xl lg:rounded-3xl border border-white/50 dark:border-slate-700 mb-6 shadow-sm"><p class="font-bold text-base lg:text-lg mb-5 text-slate-800 dark:text-slate-100">${i+1}. ${q.q}</p><div class="grid grid-cols-1 gap-3 text-sm text-slate-700 dark:text-slate-300"><label class="p-4 bg-white/50 dark:bg-black/30 border border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer flex items-center hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:border-orange-300 dark:hover:border-orange-700 transition-all active:scale-[0.98]"><input type="radio" name="ans${i+1}" value="1" class="mr-3 accent-[#f05a28] w-4 h-4"> ก. ${q.c1}</label><label class="p-4 bg-white/50 dark:bg-black/30 border border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer flex items-center hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:border-orange-300 dark:hover:border-orange-700 transition-all active:scale-[0.98]"><input type="radio" name="ans${i+1}" value="2" class="mr-3 accent-[#f05a28] w-4 h-4"> ข. ${q.c2}</label><label class="p-4 bg-white/50 dark:bg-black/30 border border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer flex items-center hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:border-orange-300 dark:hover:border-orange-700 transition-all active:scale-[0.98]"><input type="radio" name="ans${i+1}" value="3" class="mr-3 accent-[#f05a28] w-4 h-4"> ค. ${q.c3}</label><label class="p-4 bg-white/50 dark:bg-black/30 border border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer flex items-center hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:border-orange-300 dark:hover:border-orange-700 transition-all active:scale-[0.98]"><input type="radio" name="ans${i+1}" value="4" class="mr-3 accent-[#f05a28] w-4 h-4"> ง. ${q.c4}</label></div></div>`; }); 
-                        document.getElementById('quizContainer').innerHTML = qh + `<button type="button" onclick="submitQuiz()" class="w-full bg-[#f05a28] text-white font-bold py-4 rounded-full mt-4 text-lg shadow-lg hover:bg-[#d94a1d] transition">ส่งคำตอบ</button>`; 
+                        vQs.forEach((q, i) => { qh += `<div class="glass-panel p-5 lg:p-8 rounded-2xl lg:rounded-3xl border border-white dark:border-slate-700 mb-6 shadow-sm"><p class="font-bold text-base lg:text-lg mb-5 text-slate-800 dark:text-slate-100">${i+1}. ${q.q}</p><div class="grid grid-cols-1 gap-3 text-sm text-slate-800 dark:text-slate-200 font-medium"><label class="p-4 bg-white/70 dark:bg-black/40 border border-white dark:border-slate-700 rounded-xl cursor-pointer flex items-center hover:bg-orange-50 dark:hover:bg-orange-900/30 hover:border-orange-300 dark:hover:border-orange-600 transition-all active:scale-[0.98] shadow-sm"><input type="radio" name="ans${i+1}" value="1" class="mr-3 accent-[#f05a28] w-4 h-4"> ก. ${q.c1}</label><label class="p-4 bg-white/70 dark:bg-black/40 border border-white dark:border-slate-700 rounded-xl cursor-pointer flex items-center hover:bg-orange-50 dark:hover:bg-orange-900/30 hover:border-orange-300 dark:hover:border-orange-600 transition-all active:scale-[0.98] shadow-sm"><input type="radio" name="ans${i+1}" value="2" class="mr-3 accent-[#f05a28] w-4 h-4"> ข. ${q.c2}</label><label class="p-4 bg-white/70 dark:bg-black/40 border border-white dark:border-slate-700 rounded-xl cursor-pointer flex items-center hover:bg-orange-50 dark:hover:bg-orange-900/30 hover:border-orange-300 dark:hover:border-orange-600 transition-all active:scale-[0.98] shadow-sm"><input type="radio" name="ans${i+1}" value="3" class="mr-3 accent-[#f05a28] w-4 h-4"> ค. ${q.c3}</label><label class="p-4 bg-white/70 dark:bg-black/40 border border-white dark:border-slate-700 rounded-xl cursor-pointer flex items-center hover:bg-orange-50 dark:hover:bg-orange-900/30 hover:border-orange-300 dark:hover:border-orange-600 transition-all active:scale-[0.98] shadow-sm"><input type="radio" name="ans${i+1}" value="4" class="mr-3 accent-[#f05a28] w-4 h-4"> ง. ${q.c4}</label></div></div>`; }); 
+                        document.getElementById('quizContainer').innerHTML = qh + `<button type="button" onclick="submitQuiz()" class="w-full bg-[#f05a28] text-white font-bold py-4 rounded-full mt-4 text-lg shadow-lg hover:bg-[#d94a1d] transition border border-white/20">ส่งคำตอบ</button>`; 
                     }
                 }
             }
@@ -966,32 +969,32 @@
             if(latestText.length > 25) latestText = latestText.substring(0, 25) + "...";
 
             if (type === "sidebar") {
-                let subjectBadge = c.room && c.room !== "-" && c.role === 'Teacher' ? `<p class="text-[9px] text-slate-500 dark:text-slate-400 mt-1 bg-white/40 dark:bg-black/30 px-2 py-0.5 rounded-md w-max border border-white/50 dark:border-white/10"><i class="fa-solid fa-book mr-1 text-slate-400"></i> วิชา: ${c.room}</p>` : '';
+                let subjectBadge = c.room && c.room !== "-" && c.role === 'Teacher' ? `<p class="text-[9px] text-slate-600 dark:text-slate-300 font-medium mt-1 bg-white/60 dark:bg-black/30 px-2 py-0.5 rounded-md w-max border border-white/80 dark:border-white/10"><i class="fa-solid fa-book mr-1 text-slate-500"></i> วิชา: ${c.room}</p>` : '';
                 return `
-                <div class="flex items-center justify-between group p-3 rounded-2xl border border-slate-200/50 dark:border-slate-700/50 hover:border-orange-300 dark:hover:border-orange-700 shadow-sm transition mb-3 bg-white/50 dark:bg-black/30 backdrop-blur-sm cursor-pointer" onclick="nav('inbox'); openChat('${c.name}')">
+                <div class="flex items-center justify-between group p-3 rounded-2xl border border-white dark:border-slate-700/50 hover:border-orange-300 dark:hover:border-orange-700 shadow-sm transition mb-3 bg-white/60 dark:bg-black/30 backdrop-blur-md cursor-pointer" onclick="nav('inbox'); openChat('${c.name}')">
                     <div class="flex items-start gap-3">
-                        <div class="relative w-12 h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm shrink-0 flex items-center justify-center border border-white/50">${pPic}
+                        <div class="relative w-12 h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm shrink-0 flex items-center justify-center border border-white/80">${pPic}
                             ${badgeHtml}
                         </div>
                         <div class="flex flex-col max-w-[130px] lg:max-w-[150px]">
                             <p class="text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight truncate">${c.name}</p>
-                            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5 ${unreadCount > 0 ? 'font-bold text-slate-800 dark:text-white' : ''}" title="${latestText}">${latestText}</p>
+                            <p class="text-[10px] text-slate-600 dark:text-slate-400 font-medium truncate mt-0.5 ${unreadCount > 0 ? 'font-bold text-slate-800 dark:text-white' : ''}" title="${latestText}">${latestText}</p>
                             ${subjectBadge}
                         </div>
                     </div>
-                    <button class="w-9 h-9 rounded-full border border-orange-200/50 dark:border-orange-900/50 text-[#f05a28] flex items-center justify-center hover:bg-[#f05a28] hover:text-white transition shadow-sm shrink-0">
+                    <button class="w-9 h-9 rounded-full border border-orange-200 dark:border-orange-900/50 text-[#f05a28] flex items-center justify-center hover:bg-[#f05a28] hover:text-white transition shadow-sm shrink-0 bg-white/50 dark:bg-transparent">
                         <i class="fa-regular fa-comment-dots text-sm pointer-events-none"></i>
                     </button>
                 </div>`;
             } else {
                 return `
-                <div class="chat-contact ${isActive} flex items-center gap-3 p-3 lg:p-4 rounded-xl cursor-pointer hover:bg-white/50 dark:hover:bg-black/30 transition mb-1 border border-transparent shadow-sm" onclick="openChat('${c.name}')">
-                    <div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm border border-white/50 shrink-0 flex items-center justify-center">${pPic}
+                <div class="chat-contact ${isActive} flex items-center gap-3 p-3 lg:p-4 rounded-xl cursor-pointer hover:bg-white/80 dark:hover:bg-black/40 transition mb-1 border border-transparent shadow-sm" onclick="openChat('${c.name}')">
+                    <div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm border border-white/80 shrink-0 flex items-center justify-center">${pPic}
                         ${badgeHtml}
                     </div>
                     <div class="flex-1 min-w-0">
                         <h4 class="font-bold text-xs lg:text-sm truncate text-slate-800 dark:text-slate-200">${c.name}</h4>
-                        <p class="text-[10px] text-slate-400 truncate ${unreadCount > 0 ? 'font-bold text-slate-800 dark:text-white' : ''}" title="${latestText}">${latestText}</p>
+                        <p class="text-[10px] text-slate-600 dark:text-slate-400 font-medium truncate ${unreadCount > 0 ? 'font-bold text-slate-800 dark:text-white' : ''}" title="${latestText}">${latestText}</p>
                     </div>
                 </div>`;
             }
@@ -1005,11 +1008,11 @@
             let htmlRightSidebar = "";
 
             if(mentors.length === 0) {
-                 htmlInboxList = '<div class="text-center p-4 text-xs text-slate-500 dark:text-slate-400 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl mx-4 mt-4">ไม่มีผู้ติดต่อ</div>';
-                 htmlRightSidebar = '<div class="text-xs text-slate-500 dark:text-slate-400 text-center py-4 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl mx-2">ไม่มีข้อมูลอาจารย์</div>';
+                 htmlInboxList = '<div class="text-center p-4 text-xs text-slate-600 dark:text-slate-400 font-medium border-2 border-dashed border-slate-400/50 dark:border-slate-600/50 rounded-xl mx-4 mt-4 bg-white/40 dark:bg-transparent">ไม่มีผู้ติดต่อ</div>';
+                 htmlRightSidebar = '<div class="text-xs text-slate-600 dark:text-slate-400 font-medium text-center py-4 border-2 border-dashed border-slate-400/50 dark:border-slate-600/50 rounded-2xl mx-2 bg-white/40 dark:bg-transparent">ไม่มีข้อมูลอาจารย์</div>';
             } else {
                 if(tList.length > 0) {
-                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-widest mt-2">รายชื่ออาจารย์</p>`;
+                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-widest mt-2">รายชื่ออาจารย์</p>`;
                     tList.forEach(c => {
                         htmlInboxList += buildContactCard(c, "inbox");
                         htmlRightSidebar += buildContactCard(c, "sidebar");
@@ -1017,7 +1020,7 @@
                 }
                 
                 if(aList.length > 0) {
-                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-widest mt-4">แอดมิน</p>`;
+                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-widest mt-4">แอดมิน</p>`;
                     aList.forEach(c => {
                         htmlInboxList += buildContactCard(c, "inbox");
                         htmlRightSidebar += buildContactCard(c, "sidebar");
@@ -1044,7 +1047,7 @@
             let contactInfo = mentors.find(x => x.name === n);
             let partnerPicHtml = (contactInfo && contactInfo.pic) ? `<img src="${contactInfo.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-sm">${getInitials(n)}</div>`;
 
-            let subjectBadgeHeader = (contactInfo && contactInfo.room && contactInfo.room !== "-" && contactInfo.role === 'Teacher') ? ` <span class="text-xs text-slate-500 dark:text-slate-400 font-normal ml-2">(วิชา: ${contactInfo.room})</span>` : '';
+            let subjectBadgeHeader = (contactInfo && contactInfo.room && contactInfo.room !== "-" && contactInfo.role === 'Teacher') ? ` <span class="text-xs text-slate-600 dark:text-slate-400 font-medium ml-2">(วิชา: ${contactInfo.room})</span>` : '';
             document.getElementById('chatHeaderName').innerHTML = `${n}${subjectBadgeHeader}`; 
             document.getElementById('chatHeaderAvatar').innerHTML = partnerPicHtml;
             
@@ -1060,22 +1063,22 @@
                 
                 if(m.senderName === currentUser.name) {
                     if (m.message && m.message.trim() !== "") {
-                        h += `<div class="flex flex-col items-end w-full mb-4"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400 dark:text-slate-500">${d} • คุณ</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-white/50">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${m.message}</div></div>`;
+                        h += `<div class="flex flex-col items-end w-full mb-4"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-500 dark:text-slate-400">${d} • คุณ</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-white/80">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${m.message}</div></div>`;
                     }
                     if(m.reply && m.reply.trim() !== "") { 
                         let reps = m.reply.split('<br><br>').filter(x => x.trim() !== "");
                         reps.forEach(rep => {
-                            h += `<div class="flex flex-col items-start w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white/50 text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${sPicHtml}</div><p class="text-[9px] font-bold text-slate-500 dark:text-slate-400">${n}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm backdrop-blur-sm">${rep}</div></div>`; 
+                            h += `<div class="flex flex-col items-start w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white/80 text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${sPicHtml}</div><p class="text-[9px] font-bold text-slate-600 dark:text-slate-400">${n}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm backdrop-blur-md font-medium">${rep}</div></div>`; 
                         });
                     }
                 } else {
                     if (m.message && m.message.trim() !== "") {
-                        h += `<div class="flex flex-col items-start w-full mb-4"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white/50 text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${sPicHtml}</div><p class="text-[9px] font-bold text-slate-500 dark:text-slate-400">${n} • ${d}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm backdrop-blur-sm">${m.message}</div></div>`;
+                        h += `<div class="flex flex-col items-start w-full mb-4"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white/80 text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${sPicHtml}</div><p class="text-[9px] font-bold text-slate-600 dark:text-slate-400">${n} • ${d}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm backdrop-blur-md font-medium">${m.message}</div></div>`;
                     }
                     if(m.reply && m.reply.trim() !== "") { 
                         let reps = m.reply.split('<br><br>').filter(x => x.trim() !== "");
                         reps.forEach(rep => {
-                            h += `<div class="flex flex-col items-end w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400 dark:text-slate-500">คุณตอบแล้ว</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-white/50">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${rep}</div></div>`; 
+                            h += `<div class="flex flex-col items-end w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-500 dark:text-slate-400">คุณตอบแล้ว</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-white/80">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${rep}</div></div>`; 
                         });
                     }
                 }
@@ -1089,7 +1092,7 @@
             
             let cHist = document.getElementById('chatHistory');
             let myPicHtml = currentUser.pic ? `<img src="${currentUser.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-orange-100 text-orange-600 font-bold text-[8px]">${getInitials(currentUser.name)}</div>`;
-            cHist.innerHTML += `<div class="flex flex-col items-end w-full mb-4 mt-2 opacity-50"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400 dark:text-slate-500">กำลังส่ง...</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-white/50">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${msg}</div></div>`;
+            cHist.innerHTML += `<div class="flex flex-col items-end w-full mb-4 mt-2 opacity-50"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-500 dark:text-slate-400">กำลังส่ง...</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-white/80">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${msg}</div></div>`;
             cHist.scrollTop = cHist.scrollHeight;
             document.getElementById('chatInputMessage').value = "";
 
