@@ -148,7 +148,6 @@
             </div>
 
             <div class="flex items-center gap-3 ml-auto">
-                <button onclick="toggleLanguage()" class="hidden md:block px-3 py-1.5 bg-white/80 dark:bg-black/40 backdrop-blur-md text-slate-700 dark:text-slate-200 rounded-lg text-xs font-bold uppercase shadow-sm border border-white dark:border-white/10" id="langToggleBtn">EN</button>
                 <button onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/90 dark:bg-black/50 backdrop-blur-md border border-white dark:border-white/10 shadow-sm transition-all hover:scale-105">
                     <i id="themeIcon" class="fa-solid fa-moon text-slate-700 dark:text-yellow-400 text-lg"></i>
                 </button>
@@ -178,18 +177,28 @@
                     </div>
 
                     <div class="glass-panel rounded-[1.5rem] lg:rounded-[2rem] p-6 lg:p-8 shadow-md">
-                        <h3 class="text-lg font-bold mb-6 font-prompt text-[#f05a28] drop-shadow-sm"><i class="fa-solid fa-user-tie mr-2"></i> ลงทะเบียนครูผู้สอน</h3>
+                        <h3 class="text-lg font-bold mb-6 font-prompt text-[#f05a28] drop-shadow-sm"><i class="fa-solid fa-user-tie mr-2"></i> ลงทะเบียนบุคลากร</h3>
                         <div class="space-y-4">
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div><label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-2 uppercase">Username</label><input type="text" id="a_tUser" placeholder="ชื่อผู้ใช้งาน" class="w-full px-4 py-3 bg-white/80 dark:bg-black/50 border border-white dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white shadow-inner"></div>
                                 <div><label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-2 uppercase">Password</label><input type="password" id="a_tPass" placeholder="รหัสผ่าน" class="w-full px-4 py-3 bg-white/80 dark:bg-black/50 border border-white dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white shadow-inner"></div>
                             </div>
                             <div><label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-2 uppercase">ชื่อ-นามสกุล</label><input type="text" id="a_tName" placeholder="ชื่อที่จะแสดงผล" class="w-full px-4 py-3 bg-white/80 dark:bg-black/50 border border-white dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white shadow-inner"></div>
-                            <div class="bg-white/60 dark:bg-black/30 p-4 rounded-xl border border-white dark:border-slate-700 backdrop-blur-sm shadow-sm">
+                            
+                            <!-- ✨ เลือกระดับสิทธิ์ (Admin / Teacher) ✨ -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-2 uppercase">ระดับสิทธิ์ (Role)</label>
+                                <select id="a_tRole" onchange="toggleSubjectSelection(this.value)" class="w-full px-4 py-3 bg-white/80 dark:bg-black/50 border border-white dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white shadow-inner font-bold">
+                                    <option value="teacher">ครูผู้สอน (Teacher)</option>
+                                    <option value="admin">ผู้ดูแลระบบ (Admin)</option>
+                                </select>
+                            </div>
+
+                            <div id="subjectSelectionBox" class="bg-white/60 dark:bg-black/30 p-4 rounded-xl border border-white dark:border-slate-700 backdrop-blur-sm shadow-sm mt-4">
                                 <p class="font-bold text-slate-800 dark:text-slate-200 text-sm mb-3">วิชาที่รับผิดชอบ</p>
                                 <div id="a_subjectCheckboxes" class="flex flex-wrap gap-2"></div>
                             </div>
-                            <button onclick="adminAddTeacher()" class="w-full bg-[#f05a28] hover:bg-[#d94a1d] text-white font-bold py-3.5 rounded-xl mt-2 font-prompt transition shadow-lg border border-white/20">เพิ่มครูผู้สอน</button>
+                            <button onclick="adminAddTeacher()" class="w-full bg-[#f05a28] hover:bg-[#d94a1d] text-white font-bold py-3.5 rounded-xl mt-2 font-prompt transition shadow-lg border border-white/20">เพิ่มบุคลากร</button>
                         </div>
                     </div>
                 </div>
@@ -291,7 +300,11 @@
                             <div><label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-widest">Email</label><input type="email" id="set_email" class="w-full px-4 py-3.5 bg-white/80 dark:bg-black/40 border border-white dark:border-white/10 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white font-medium shadow-inner"></div>
                             <div><label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-widest">Phone</label><input type="tel" id="set_phone" class="w-full px-4 py-3.5 bg-white/80 dark:bg-black/40 border border-white dark:border-white/10 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white font-medium shadow-inner"></div>
                         </div>
-                        <button type="button" onclick="saveProfile()" class="w-full bg-[#f05a28] text-white font-bold py-4 rounded-xl shadow-lg mt-4 active:scale-[0.98] transition font-prompt uppercase text-sm tracking-widest hover:bg-[#d94a1d] border border-white/20">Update Profile</button>
+                        <!-- ✨ ปุ่ม 2 ปุ่ม ตีคู่กัน ✨ -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                            <button type="button" onclick="saveProfile()" class="w-full bg-[#f05a28] text-white font-bold py-4 rounded-xl shadow-lg active:scale-[0.98] transition font-prompt uppercase text-sm tracking-widest hover:bg-[#d94a1d] border border-white/20">อัปเดตโปรไฟล์</button>
+                            <button type="button" onclick="openChangePassword()" class="w-full bg-slate-800 dark:bg-slate-700 text-white font-bold py-4 rounded-xl shadow-lg active:scale-[0.98] transition font-prompt uppercase text-sm tracking-widest hover:bg-slate-900 dark:hover:bg-slate-600 border border-white/10"><i class="fa-solid fa-lock mr-2"></i>เปลี่ยนรหัสผ่าน</button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -299,10 +312,9 @@
         </div>
     </main>
 
-    <!-- เมนูด้านขวา (Overview) -->
     <aside id="rightSidebar" class="glass-panel w-72 flex-shrink-0 hidden lg:flex flex-col h-full shadow-2xl relative border-l border-white/80 dark:border-white/5 bg-white/90 dark:bg-[#1a1614]/95 backdrop-blur-2xl">
         <div class="p-8 overflow-y-auto flex-1 hide-scroll pb-24">
-            <div class="text-right lg:hidden mb-4"><button onclick="document.getElementById('rightSidebar').classList.add('hidden')" class="text-slate-600 bg-white/80 dark:bg-black/50 w-8 h-8 rounded-full shadow-sm"><i class="fa-solid fa-xmark"></i></button></div>
+            <div class="text-right lg:hidden mb-4"><button onclick="document.getElementById('rightSidebar').classList.add('hidden')" class="text-slate-500 bg-white/80 dark:bg-black/50 w-8 h-8 rounded-full shadow-sm"><i class="fa-solid fa-xmark"></i></button></div>
             <div class="flex justify-between items-center mb-8"><h3 class="font-bold text-slate-800 dark:text-slate-200 text-sm font-prompt uppercase tracking-widest">ADMIN OVERVIEW</h3></div>
             
             <div class="text-center mb-10">
@@ -330,7 +342,8 @@
     </aside>
 
     <script>
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbyDcg8d6HS5ul8_3vkJCgqOZnano4kNmgvqMgsdYl5vYzOAJmBin11VBkVULmWcnHBuAA/exec';
+        // ✨ อัปเดต URL ล่าสุด ✨
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbwtGzLlfhD4cbEc8GakUM3QoVtlvqeoolK82gbssv15jf5xa6fsfDetTvIZuVRS-asZow/exec';
         
         let currentUser = JSON.parse(sessionStorage.getItem('currentUser')) || JSON.parse(localStorage.getItem('currentUser'));
         if (!currentUser || String(currentUser.role).toLowerCase().trim() !== 'admin') { window.location.replace('index.html'); }
@@ -467,6 +480,16 @@
             });
         }
 
+        // ✨ ฟังก์ชันเปิดปิดกล่องเลือกวิชา (Admin ไม่ต้องเลือกวิชา) ✨
+        function toggleSubjectSelection(role) {
+            let box = document.getElementById('subjectSelectionBox');
+            if (role === 'admin') {
+                box.style.display = 'none';
+            } else {
+                box.style.display = 'block';
+            }
+        }
+
         function adminAddSubject() { 
             let sub = document.getElementById('a_subName').value.trim(); if(!sub) return showiOSToast('fa-solid fa-circle-exclamation', 'กรุณากรอกชื่อรายวิชา', 'bg-amber-100', 'text-amber-600'); 
             Swal.fire({title:'กำลังบันทึก...', customClass: {popup: 'ios-popup'}, didOpen:()=>Swal.showLoading()}); 
@@ -476,13 +499,22 @@
         }
 
         function adminAddTeacher() { 
-            let u = document.getElementById('a_tUser').value.trim(), p = document.getElementById('a_tPass').value.trim(), n = document.getElementById('a_tName').value.trim(); 
-            let cbs = document.querySelectorAll('.t-cb:checked'); let subs = Array.from(cbs).map(cb => cb.value).join(', '); 
+            let u = document.getElementById('a_tUser').value.trim();
+            let p = document.getElementById('a_tPass').value.trim();
+            let n = document.getElementById('a_tName').value.trim();
+            let role = document.getElementById('a_tRole').value;
+            
+            let cbs = document.querySelectorAll('.t-cb:checked'); 
+            let subs = role === 'admin' ? 'All Subjects' : Array.from(cbs).map(cb => cb.value).join(', '); 
+            
             if(!u || !p || !n) return showiOSToast('fa-solid fa-circle-exclamation', 'กรุณากรอกข้อมูลให้ครบถ้วน', 'bg-amber-100', 'text-amber-600'); 
+            if(role === 'teacher' && !subs) return showiOSToast('fa-solid fa-circle-exclamation', 'กรุณาเลือกวิชาที่รับผิดชอบอย่างน้อย 1 วิชา', 'bg-amber-100', 'text-amber-600'); 
+            
             Swal.fire({title:'กำลังบันทึก...', customClass: {popup: 'ios-popup'}, didOpen:()=>Swal.showLoading()}); 
-            fetchGAS({action:"addTeacher", t_username:u, t_password:p, t_name:n, t_subjects:subs}).then(r => { 
+            // ✨ ส่งค่า t_role ไปด้วย เพื่อให้ Code.gs บันทึกสิทธิ์ได้ถูกต้อง ✨
+            fetchGAS({action:"addTeacher", t_username:u, t_password:p, t_name:n, t_role:role, t_subjects:subs}).then(r => { 
                 if(r.status==="success") { 
-                    showiOSToast('fa-solid fa-check', 'ลงทะเบียนครูผู้สอนเรียบร้อย', 'bg-emerald-100', 'text-emerald-600'); 
+                    showiOSToast('fa-solid fa-check', 'ลงทะเบียนบุคลากรเรียบร้อย', 'bg-emerald-100', 'text-emerald-600'); 
                     document.getElementById('a_tUser').value=""; document.getElementById('a_tPass').value=""; document.getElementById('a_tName').value=""; 
                     Array.from(cbs).forEach(cb=>cb.checked=false); loadDashboardData();
                 }
@@ -511,12 +543,44 @@
             let grid = document.getElementById('lessonGrid_admin'); if(grid) grid.innerHTML = h;
         }
 
-        function addAdminQuizField() {
-            let c = document.getElementById('t_quizFields'); if(c.children.length >= 5) return showiOSToast('fa-solid fa-circle-exclamation', 'สร้างได้สูงสุด 5 ข้อ', 'bg-amber-100', 'text-amber-600');
-            let v = document.createElement('div'); v.className = "quiz-item bg-white/60 dark:bg-black/30 p-4 lg:p-6 rounded-xl lg:rounded-2xl border border-white dark:border-slate-700 mb-4 relative shadow-sm backdrop-blur-sm";
-            v.innerHTML = `<button type="button" onclick="this.parentElement.remove(); updateQuizNumbers();" class="absolute top-3 right-3 lg:top-4 lg:right-4 w-8 h-8 rounded-full bg-rose-100/80 text-rose-500 hover:bg-rose-500 hover:text-white transition shadow-sm"><i class="fa-solid fa-trash text-xs"></i></button><label class="quiz-number block font-bold mb-3 text-xs text-[#f05a28] bg-orange-100/80 dark:bg-orange-900/50 w-max px-3 py-1 rounded-lg border border-orange-200 dark:border-orange-800/50 shadow-sm">ข้อ X.</label><input type="text" class="t_q w-full p-3 border border-white dark:border-slate-700 rounded-xl mb-4 bg-white/80 dark:bg-black/50 outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white shadow-inner" placeholder="พิมพ์คำถาม..." required><div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4"><div class="flex items-center"><span class="w-6 text-slate-500 font-bold text-xs">ก.</span><input type="text" class="t_c1 p-2 border border-white dark:border-slate-700 bg-white/80 dark:bg-black/50 rounded-lg w-full text-sm text-slate-800 dark:text-white outline-none focus:border-[#f05a28] shadow-inner"></div><div class="flex items-center"><span class="w-6 text-slate-500 font-bold text-xs">ข.</span><input type="text" class="t_c2 p-2 border border-white dark:border-slate-700 bg-white/80 dark:bg-black/50 rounded-lg w-full text-sm text-slate-800 dark:text-white outline-none focus:border-[#f05a28] shadow-inner"></div><div class="flex items-center"><span class="w-6 text-slate-500 font-bold text-xs">ค.</span><input type="text" class="t_c3 p-2 border border-white dark:border-slate-700 bg-white/80 dark:bg-black/50 rounded-lg w-full text-sm text-slate-800 dark:text-white outline-none focus:border-[#f05a28] shadow-inner"></div><div class="flex items-center"><span class="w-6 text-slate-500 font-bold text-xs">ง.</span><input type="text" class="t_c4 p-2 border border-white dark:border-slate-700 bg-white/80 dark:bg-black/50 rounded-lg w-full text-sm text-slate-800 dark:text-white outline-none focus:border-[#f05a28] shadow-inner"></div></div><div class="text-sm bg-white/80 dark:bg-black/50 p-3 rounded-lg border border-white dark:border-slate-700 flex items-center shadow-inner"><span class="mr-2 font-bold text-slate-700 dark:text-slate-300 text-xs">เฉลย:</span> <select class="t_ans p-1.5 border border-slate-200 dark:border-slate-600 rounded-md font-bold text-emerald-600 dark:text-emerald-400 text-xs bg-white dark:bg-slate-800 outline-none"><option value="1">ข้อ ก.</option><option value="2">ข้อ ข.</option><option value="3">ข้อ ค.</option><option value="4">ข้อ ง.</option></select></div>`;
-            c.appendChild(v); updateQuizNumbers();
+        // ✨ ดึงคำถามเก่ามาแก้ไข (รับ Parameter qData) ✨
+        function addAdminQuizField(qData = null) {
+            let c = document.getElementById('t_quizFields'); 
+            if(c.children.length >= 5) return showiOSToast('fa-solid fa-circle-exclamation', 'สร้างได้สูงสุด 5 ข้อ', 'bg-amber-100', 'text-amber-600');
+            
+            let v = document.createElement('div'); 
+            v.className = "quiz-item bg-white/60 dark:bg-black/30 p-4 lg:p-6 rounded-xl lg:rounded-2xl border border-white dark:border-slate-700 mb-4 relative shadow-sm backdrop-blur-sm";
+            
+            let qText = qData ? (qData.q || "") : "";
+            let c1 = qData ? (qData.c1 || "") : "";
+            let c2 = qData ? (qData.c2 || "") : "";
+            let c3 = qData ? (qData.c3 || "") : "";
+            let c4 = qData ? (qData.c4 || "") : "";
+            let ans = qData ? (qData.ans || "1") : "1";
+
+            v.innerHTML = `
+                <button type="button" onclick="this.parentElement.remove(); updateQuizNumbers();" class="absolute top-3 right-3 lg:top-4 lg:right-4 w-8 h-8 rounded-full bg-rose-100/80 text-rose-500 hover:bg-rose-500 hover:text-white transition shadow-sm"><i class="fa-solid fa-trash text-xs"></i></button>
+                <label class="quiz-number block font-bold mb-3 text-xs text-[#f05a28] bg-orange-100/80 dark:bg-orange-900/50 w-max px-3 py-1 rounded-lg border border-orange-200 dark:border-orange-800/50 shadow-sm">ข้อ X.</label>
+                <input type="text" class="t_q w-full p-3 border border-white dark:border-slate-700 rounded-xl mb-4 bg-white/80 dark:bg-black/50 outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white shadow-inner" placeholder="พิมพ์คำถาม..." value="${qText.replace(/"/g, '&quot;')}" required>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                    <div class="flex items-center"><span class="w-6 text-slate-500 font-bold text-xs">ก.</span><input type="text" class="t_c1 p-2 border border-white dark:border-slate-700 bg-white/80 dark:bg-black/50 rounded-lg w-full text-sm text-slate-800 dark:text-white outline-none focus:border-[#f05a28] shadow-inner" value="${c1.replace(/"/g, '&quot;')}"></div>
+                    <div class="flex items-center"><span class="w-6 text-slate-500 font-bold text-xs">ข.</span><input type="text" class="t_c2 p-2 border border-white dark:border-slate-700 bg-white/80 dark:bg-black/50 rounded-lg w-full text-sm text-slate-800 dark:text-white outline-none focus:border-[#f05a28] shadow-inner" value="${c2.replace(/"/g, '&quot;')}"></div>
+                    <div class="flex items-center"><span class="w-6 text-slate-500 font-bold text-xs">ค.</span><input type="text" class="t_c3 p-2 border border-white dark:border-slate-700 bg-white/80 dark:bg-black/50 rounded-lg w-full text-sm text-slate-800 dark:text-white outline-none focus:border-[#f05a28] shadow-inner" value="${c3.replace(/"/g, '&quot;')}"></div>
+                    <div class="flex items-center"><span class="w-6 text-slate-500 font-bold text-xs">ง.</span><input type="text" class="t_c4 p-2 border border-white dark:border-slate-700 bg-white/80 dark:bg-black/50 rounded-lg w-full text-sm text-slate-800 dark:text-white outline-none focus:border-[#f05a28] shadow-inner" value="${c4.replace(/"/g, '&quot;')}"></div>
+                </div>
+                <div class="text-sm bg-white/80 dark:bg-black/50 p-3 rounded-lg border border-white dark:border-slate-700 flex items-center shadow-inner">
+                    <span class="mr-2 font-bold text-slate-700 dark:text-slate-300 text-xs">เฉลย:</span> 
+                    <select class="t_ans p-1.5 border border-slate-200 dark:border-slate-600 rounded-md font-bold text-emerald-600 dark:text-emerald-400 text-xs bg-white dark:bg-slate-800 outline-none">
+                        <option value="1" ${ans == '1' ? 'selected' : ''}>ข้อ ก.</option>
+                        <option value="2" ${ans == '2' ? 'selected' : ''}>ข้อ ข.</option>
+                        <option value="3" ${ans == '3' ? 'selected' : ''}>ข้อ ค.</option>
+                        <option value="4" ${ans == '4' ? 'selected' : ''}>ข้อ ง.</option>
+                    </select>
+                </div>`;
+            c.appendChild(v); 
+            updateQuizNumbers();
         }
+
         function updateQuizNumbers() { document.querySelectorAll('.quiz-item').forEach((it, i) => it.querySelector('.quiz-number').innerText = `ข้อ ${i + 1}.`); }
 
         function saveLesson() {
@@ -527,16 +591,29 @@
             Swal.fire({title:'กำลังบันทึก...', customClass: {popup: 'ios-popup'}, didOpen:()=>Swal.showLoading()});
             fetchGAS(req).then(r => { if(r.status==="success") { showiOSToast('fa-solid fa-check', 'บันทึกบทเรียนเรียบร้อย', 'bg-emerald-100', 'text-emerald-600'); resetAdminForm(); loadDashboardData(); }});
         }
+
         function resetAdminForm() { document.getElementById('adminForm').reset(); document.getElementById('t_mode').value="add"; document.getElementById('t_quizFields').innerHTML=""; document.getElementById('cancelEditBtn').classList.add('hidden'); document.getElementById('formActionTitle').innerHTML='<i class="fa-solid fa-plus-circle mr-2"></i> สร้างบทเรียนใหม่'; }
         
         function editLessonSetup(idx) { 
-            let l = allLessons[idx]; document.getElementById('t_mode').value="edit"; document.getElementById('t_oldTitle').value=l.title; document.getElementById('t_subject').value=l.subject; document.getElementById('t_ep').value=l.ep; document.getElementById('t_title').value=l.title; 
-            let yt = (l.content||"").match(/\[YT:(.*?)\]/); document.getElementById('t_youtube').value = yt ? yt[1] : ""; 
-            document.getElementById('t_content').value = (l.content||"").replace(/\[YT:.*?\]\n?/, ""); document.getElementById('t_quizFields').innerHTML=""; 
-            (l.questions||[]).filter(q=>q.q).forEach(q=>addAdminQuizField(q)); document.getElementById('cancelEditBtn').classList.remove('hidden'); 
+            let l = allLessons[idx]; 
+            document.getElementById('t_mode').value="edit"; 
+            document.getElementById('t_oldTitle').value=l.title; 
+            document.getElementById('t_subject').value=l.subject; 
+            document.getElementById('t_ep').value=l.ep; 
+            document.getElementById('t_title').value=l.title; 
+            let yt = (l.content||"").match(/\[YT:(.*?)\]/); 
+            document.getElementById('t_youtube').value = yt ? yt[1] : ""; 
+            document.getElementById('t_content').value = (l.content||"").replace(/\[YT:.*?\]\n?/, ""); 
+            document.getElementById('t_quizFields').innerHTML=""; 
+            
+            // ✨ ส่งข้อมูลคำถามเก่าเข้าไปวาดกล่องใหม่ ✨
+            (l.questions||[]).filter(q=>q.q && q.q.trim() !== "").forEach(q=>addAdminQuizField(q)); 
+            
+            document.getElementById('cancelEditBtn').classList.remove('hidden'); 
             document.getElementById('formActionTitle').innerHTML='<i class="fa-solid fa-pen mr-2 text-amber-500"></i> กำลังแก้ไข'; 
             document.getElementById('lessonFormCard').scrollIntoView({ behavior: 'smooth', block: 'start' }); 
         }
+
         function deleteLesson(t) { Swal.fire({title:'ลบบทเรียน?', text: 'คุณแน่ใจหรือไม่ที่จะลบเนื้อหานี้?', icon:'warning', showCancelButton:true, customClass:{popup:'ios-popup'}, confirmButtonColor:'#f05a28', confirmButtonText:'ยืนยันการลบ', cancelButtonText:'ยกเลิก'}).then(r=>{if(r.isConfirmed) { Swal.fire({title:'Deleting...', customClass:{popup:'ios-popup'}, didOpen:()=>Swal.showLoading()}); fetchGAS({action:"deleteLesson", title:t}).then(()=>loadDashboardData()); }}); }
 
         function buildContactCard(c) {
@@ -616,6 +693,26 @@
             if(document.getElementById('chatHistory')) { document.getElementById('chatHistory').innerHTML = h; document.getElementById('chatHistory').scrollTop = document.getElementById('chatHistory').scrollHeight; }
         }
 
+        function loadMessagesForChat() { 
+            fetchGAS({ action: "getMessages", myId: currentUser.id, myName: currentUser.name, role: currentUser.role })
+            .then(r => { 
+                if(r.status === "success") { 
+                    let rawUsers = r.users || r.data || [];
+                    if(rawUsers.length > 0) allUsersData = rawUsers;
+                    
+                    let isChanged = false;
+                    if(JSON.stringify(cachedMessages) !== JSON.stringify(r.data)) isChanged = true;
+                    if(!isChanged && r.users) isChanged = true; 
+
+                    if(isChanged) {
+                        cachedMessages = r.data || []; 
+                        if(activeChatContact) openChat(activeChatContact); 
+                        else renderChatContacts(); 
+                    }
+                } 
+            }); 
+        }
+
         function sendChatMessage() {
             let msg = document.getElementById('chatInputMessage').value.trim(); if(!msg || !activeChatContact) return;
             let msgs = cachedMessages.filter(m => m.senderName === activeChatContact || m.receiver === activeChatContact);
@@ -637,24 +734,6 @@
             targetMsg.reply = newReply;
             fetchGAS({ action: "replyMessage", row: targetMsg.row, replyText: newReply });
             setTimeout(loadMessagesForChat, 1500);
-        }
-
-        function loadMessagesForChat() { 
-            fetchGAS({ action: "getMessages", myId: currentUser.id, myName: currentUser.name, role: currentUser.role })
-            .then(r => { 
-                if(r.status === "success") { 
-                    if(r.users) allUsersData = r.users;
-                    let isChanged = false;
-                    if(JSON.stringify(cachedMessages) !== JSON.stringify(r.data)) isChanged = true;
-                    if(!isChanged && r.users) isChanged = true; 
-
-                    if(isChanged) {
-                        cachedMessages = r.data || []; 
-                        if(activeChatContact) openChat(activeChatContact); 
-                        else renderChatContacts(); 
-                    }
-                } 
-            }); 
         }
 
         function updateProfileUI() {
@@ -697,7 +776,81 @@
                 if(r.status === "success") { currentUser.pic = c; currentUser.email = e; currentUser.phone = p; sessionStorage.setItem('currentUser', JSON.stringify(currentUser)); updateProfileUI(); showiOSToast('fa-solid fa-check', 'บันทึกโปรไฟล์เรียบร้อย', 'bg-emerald-100', 'text-emerald-600'); }
             });
         }
-        function toggleLanguage() { showiOSToast('fa-solid fa-language', 'กำลังแปลภาษา...', 'bg-sky-100', 'text-sky-600'); }
+
+        // ✨ ฟังก์ชันเปลี่ยนรหัสผ่าน ✨
+        function openChangePassword() {
+            Swal.fire({
+                title: 'เปลี่ยนรหัสผ่าน',
+                html: `
+                    <div class="space-y-4 mt-4 font-prompt text-left">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">รหัสผ่านเดิม</label>
+                            <input type="password" id="cp_old" class="w-full px-4 py-3 bg-slate-100 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-600 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white" placeholder="กรอกรหัสผ่านปัจจุบัน">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">รหัสผ่านใหม่</label>
+                            <input type="password" id="cp_new" class="w-full px-4 py-3 bg-slate-100 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-600 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white" placeholder="รหัสผ่านใหม่อย่างน้อย 4 ตัว">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">ยืนยันรหัสผ่านใหม่</label>
+                            <input type="password" id="cp_confirm" class="w-full px-4 py-3 bg-slate-100 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-600 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white" placeholder="พิมพ์รหัสใหม่อีกครั้ง">
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonColor: '#f05a28',
+                cancelButtonColor: '#94a3b8',
+                confirmButtonText: 'บันทึกรหัสผ่าน',
+                cancelButtonText: 'ยกเลิก',
+                preConfirm: () => {
+                    const oldP = document.getElementById('cp_old').value;
+                    const newP = document.getElementById('cp_new').value;
+                    const confP = document.getElementById('cp_confirm').value;
+
+                    if (!oldP || !newP || !confP) {
+                        Swal.showValidationMessage('กรุณากรอกข้อมูลให้ครบทุกช่อง');
+                        return false;
+                    }
+                    if (newP !== confP) {
+                        Swal.showValidationMessage('รหัสผ่านใหม่และการยืนยันไม่ตรงกัน!');
+                        return false;
+                    }
+                    if (newP.length < 4) {
+                        Swal.showValidationMessage('รหัสผ่านต้องมีอย่างน้อย 4 ตัวอักษร');
+                        return false;
+                    }
+                    return { oldPass: oldP, newPass: newP };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({title:'กำลังตรวจสอบ...', customClass: {popup: 'ios-popup'}, didOpen:()=>Swal.showLoading()});
+                    fetchGAS({
+                        action: "changePassword",
+                        username: currentUser.id, 
+                        oldPassword: result.value.oldPass,
+                        newPassword: result.value.newPass
+                    }).then(r => {
+                        if (r.status === "success") {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'สำเร็จ!',
+                                text: 'เปลี่ยนรหัสผ่านของคุณเรียบร้อยแล้ว',
+                                confirmButtonColor: '#f05a28',
+                                customClass: {popup: 'ios-popup'}
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'ไม่สามารถเปลี่ยนได้',
+                                text: r.message,
+                                confirmButtonColor: '#f05a28',
+                                customClass: {popup: 'ios-popup'}
+                            });
+                        }
+                    });
+                }
+            });
+        }
     </script>
 </body>
 </html>
