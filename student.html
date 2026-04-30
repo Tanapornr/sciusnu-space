@@ -1060,27 +1060,36 @@
         }
 
         function renderChatContacts() {
-            let tList = mentors.filter(m => m.role === 'Teacher');
-            let aList = mentors.filter(m => m.role === 'Admin');
-            
             let htmlInboxList = "";
             let htmlRightSidebar = "";
 
-            if(mentors.length === 0) {
-                 htmlInboxList = '<div class="text-center p-4 text-xs text-slate-500 dark:text-slate-400 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl mx-4 mt-4 bg-white/40 dark:bg-transparent">ไม่มีผู้ติดต่อ</div>';
-                 htmlRightSidebar = '<div class="text-xs text-slate-500 dark:text-slate-400 text-center py-4 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl mx-2 bg-white/40 dark:bg-transparent">ไม่มีข้อมูลอาจารย์</div>';
+            let admins = allUsersData.filter(u => String(u.role || u.Role || "").toLowerCase().trim() === 'admin').map(u => ({
+                name: u.name || u.Name || "ไม่มีชื่อ",
+                role: 'Admin',
+                initials: getInitials(u.name || u.Name || "A"),
+                pic: u.pic || u.ProfilePic || "",
+                class: "Admin",
+                bgColor: "bg-rose-100 dark:bg-rose-900/50",
+                textColor: "text-rose-600 dark:text-rose-400"
+            }));
+
+            let allContacts = [...admins, ...myStudents];
+
+            if(allContacts.length === 0) {
+                 htmlInboxList = '<div class="text-center p-4 text-xs text-slate-600 dark:text-slate-400 font-medium border-2 border-dashed border-slate-400/50 dark:border-slate-600/50 rounded-xl mx-4 mt-4 bg-white/40 dark:bg-transparent">ไม่มีผู้ติดต่อ</div>';
+                 htmlRightSidebar = '<div class="text-xs text-slate-600 dark:text-slate-400 font-medium text-center py-4 border-2 border-dashed border-slate-400/50 dark:border-slate-600/50 rounded-2xl mx-2 bg-white/40 dark:bg-transparent">ไม่มีผู้ติดต่อ</div>';
             } else {
-                if(tList.length > 0) {
-                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-widest mt-2">รายชื่ออาจารย์</p>`;
-                    tList.forEach(c => {
+                if(admins.length > 0) {
+                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-widest mt-2">แอดมิน</p>`;
+                    admins.forEach(c => {
                         htmlInboxList += buildContactCard(c, "inbox");
                         htmlRightSidebar += buildContactCard(c, "sidebar");
                     });
                 }
-                
-                if(aList.length > 0) {
-                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-widest mt-4">แอดมิน</p>`;
-                    aList.forEach(c => {
+
+                if(myStudents.length > 0) {
+                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-widest mt-4">รายชื่อนักเรียน</p>`;
+                    myStudents.forEach(c => {
                         htmlInboxList += buildContactCard(c, "inbox");
                         htmlRightSidebar += buildContactCard(c, "sidebar");
                     });
@@ -1090,7 +1099,7 @@
             let clist = document.getElementById('chatContactList');
             if(clist) clist.innerHTML = htmlInboxList;
             
-            let mentorUI = document.getElementById('mentorListUI');
+            let mentorUI = document.getElementById('studentListRightUI');
             if(mentorUI) mentorUI.innerHTML = htmlRightSidebar;
 
             updateUnreadBadges(); 
@@ -1102,7 +1111,17 @@
             markChatAsRead(n); // ✨ เคลียร์แจ้งเตือนเมื่อเปิดอ่าน
             renderChatContacts(); 
             
-            let contactInfo = mentors.find(x => x.name === n);
+            let contactInfo = [...allUsersData].map(u => {
+                let roleStr = String(u.role || u.Role || "").toLowerCase().trim();
+                return {
+                    name: u.name || u.Name || "", 
+                    role: roleStr === 'admin' ? 'Admin' : (roleStr === 'teacher' ? 'Teacher' : 'Student'), 
+                    initials: getInitials(u.name || u.Name || "A"), 
+                    pic: u.pic || u.ProfilePic || "", 
+                    room: u.assigned || u.room || u.Room || "-"
+                }
+            }).find(x => x.name === n);
+
             let partnerPicHtml = (contactInfo && contactInfo.pic) ? `<img src="${contactInfo.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-sm">${getInitials(n)}</div>`;
 
             let subjectBadgeHeader = '';
@@ -1110,7 +1129,7 @@
                 if (contactInfo.role === 'Admin') {
                     subjectBadgeHeader = ` <span class="text-xs text-rose-500 font-bold ml-2">(Admin)</span>`;
                 } else if (contactInfo.room && contactInfo.room !== "-") {
-                    subjectBadgeHeader = ` <span class="text-xs text-slate-500 dark:text-slate-400 font-normal ml-2">(วิชา: ${contactInfo.room})</span>`;
+                    subjectBadgeHeader = ` <span class="text-xs text-slate-500 dark:text-slate-400 font-normal ml-2">(Class: ${contactInfo.room})</span>`;
                 }
             }
 
@@ -1139,7 +1158,8 @@
                         </div>`;
                     }
                     if(m.reply && m.reply.trim() !== "") { 
-                        m.reply.split('<br><br>').filter(x => x.trim() !== "").forEach(rep => {
+                        let reps = m.reply.split('<br><br>').filter(x => x.trim() !== "");
+                        reps.forEach(rep => {
                             h += `<div class="flex flex-col items-start w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white/80 text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${sPicHtml}</div><p class="text-[9px] font-bold text-slate-600 dark:text-slate-400">${n}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm backdrop-blur-md font-medium">${rep}</div></div>`; 
                         });
                     }
@@ -1201,13 +1221,6 @@
                 if(r.status === "success") { 
                     if(r.users && r.users.length > 0) {
                         allUsersData = r.users;
-                        mentors = allUsersData.filter(u => u.role && ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({
-                            name: u.name || u.Name || "", role: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher', initials: getInitials(u.name || u.Name || "A"), pic: u.pic || u.ProfilePic || "", room: u.assigned || u.room || u.Room || "-", bgColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "bg-rose-100 dark:bg-rose-900/50" : "bg-orange-100 dark:bg-orange-900/50", textColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "text-rose-600 dark:text-rose-400" : "text-orange-600 dark:text-orange-400"
-                        })).sort((a, b) => {
-                            if (a.role === 'Admin' && b.role !== 'Admin') return 1;
-                            if (a.role !== 'Admin' && b.role === 'Admin') return -1;
-                            return 0;
-                        });
                     }
                     cachedMessages = r.data || []; 
                     if(activeChatContact) openChat(activeChatContact); 
@@ -1324,7 +1337,6 @@
             });
         }
 
-        // ✨ เปลี่ยนรหัสผ่าน ✨
         function openChangePassword() {
             Swal.fire({
                 title: 'เปลี่ยนรหัสผ่าน',
@@ -1398,6 +1410,8 @@
                 }
             });
         }
+
+        function logout() { sessionStorage.clear(); window.location.replace('index.html'); }
     </script>
 </body>
 </html>
