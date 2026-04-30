@@ -118,7 +118,8 @@
     <aside id="mainSidebar" class="glass-panel w-72 lg:w-64 flex flex-col flex-shrink-0 z-50 border-r border-white/80 dark:border-white/5 shadow-2xl lg:bg-white/60 lg:backdrop-blur-xl">
         <div class="h-20 lg:h-24 flex items-center px-8 border-b border-slate-200/50 dark:border-white/5 cursor-pointer" onclick="location.reload()">
             <div class="w-8 h-8 bg-[#f05a28] text-white rounded-full flex items-center justify-center text-sm shadow-md mr-3"><i class="fa-solid fa-sparkles"></i></div>
-            <h1 class="text-xl font-black font-prompt text-[#f05a28] uppercase">Coursue</h1>
+            <!-- ✨ เปลี่ยนโลโก้เป็น SCiUSNU SPACE ✨ -->
+            <h1 class="text-xl font-black font-prompt text-[#f05a28] uppercase tracking-wide">SCiUSNU SPACE</h1>
         </div>
 
         <div class="flex-1 overflow-y-auto py-6 hide-scroll flex flex-col gap-6">
@@ -143,7 +144,8 @@
             <div class="flex items-center gap-3">
                 <button onclick="toggleSidebar()" class="lg:hidden w-10 h-10 flex items-center justify-center text-slate-700 dark:text-slate-300 bg-white/90 dark:bg-black/50 backdrop-blur-md rounded-xl shadow-sm"><i class="fa-solid fa-bars-staggered text-xl"></i></button>
                 <div class="hidden lg:flex items-center font-bold text-[#f05a28] bg-orange-50 dark:bg-orange-900/30 px-5 py-2.5 rounded-full border border-orange-200/50 dark:border-orange-800/50 text-sm shadow-sm"><i class="fa-solid fa-chalkboard-user mr-2"></i> โหมดอาจารย์ผู้สอน</div>
-                <div class="lg:hidden font-black font-prompt text-[#f05a28] text-xl">COURSUE</div>
+                <!-- ✨ เปลี่ยนโลโก้มือถือเป็น SCiUSNU SPACE ✨ -->
+                <div class="lg:hidden font-black font-prompt text-[#f05a28] text-lg tracking-wide">SCiUSNU SPACE</div>
             </div>
 
             <div class="flex-1 max-w-lg mx-4 relative hidden sm:block">
@@ -259,7 +261,7 @@
                 </div>
             </div>
 
-            <!-- หน้าตั้งค่า (เพิ่มปุ่มเปลี่ยนรหัสผ่าน) -->
+            <!-- หน้าตั้งค่า -->
             <div id="view_settings" class="hidden max-w-3xl mx-auto">
                 <div class="glass-panel rounded-2xl lg:rounded-[2rem] p-6 lg:p-10 shadow-md">
                     <div class="flex flex-col items-center mb-8">
@@ -295,9 +297,9 @@
     </main>
 
     <!-- เมนูด้านขวา (Overview) -->
-    <aside id="rightSidebar" class="glass-panel w-72 flex-shrink-0 hidden lg:flex flex-col h-full shadow-2xl relative border-l border-white/80 dark:border-white/5">
+    <aside id="rightSidebar" class="glass-panel w-72 flex-shrink-0 hidden lg:flex flex-col h-full shadow-2xl relative border-l border-white/80 dark:border-white/5 bg-white/90 dark:bg-[#1a1614]/95 backdrop-blur-2xl">
         <div class="p-8 overflow-y-auto flex-1 hide-scroll pb-24">
-            <div class="text-right lg:hidden mb-4"><button onclick="document.getElementById('rightSidebar').classList.add('hidden')" class="text-slate-600 bg-white/80 dark:bg-black/50 w-8 h-8 rounded-full shadow-sm"><i class="fa-solid fa-xmark"></i></button></div>
+            <div class="text-right lg:hidden mb-4"><button onclick="document.getElementById('rightSidebar').classList.add('hidden')" class="text-slate-500 bg-white/80 dark:bg-black/50 w-8 h-8 rounded-full shadow-sm"><i class="fa-solid fa-xmark"></i></button></div>
             <div class="flex justify-between items-center mb-8"><h3 class="font-bold text-slate-800 dark:text-slate-200 text-sm font-prompt uppercase tracking-widest">TEACHER PROFILE</h3></div>
             
             <div class="text-center mb-10">
@@ -867,6 +869,43 @@
             document.getElementById('chatHistory').innerHTML = h; document.getElementById('chatHistory').scrollTop = document.getElementById('chatHistory').scrollHeight;
         }
 
+        function sendChatMessage() {
+            let msg = document.getElementById('chatInputMessage').value.trim(); if(!msg || !activeChatContact) return;
+            if(!currentUser.pic || !currentUser.email) return Swal.fire({icon:'warning', title:'โปรไฟล์ไม่สมบูรณ์', text:'กรุณาตั้งค่ารูปภาพและอีเมลก่อนส่งข้อความ'}).then(r => { if(r.isConfirmed) nav('settings'); });
+            
+            let cHist = document.getElementById('chatHistory');
+            let myPicHtml = currentUser.pic ? `<img src="${currentUser.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-orange-100 text-orange-600 font-bold text-[8px]">${getInitials(currentUser.name)}</div>`;
+            cHist.innerHTML += `<div class="flex flex-col items-end w-full mb-4 mt-2 opacity-50"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-400 dark:text-slate-500">กำลังส่ง...</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-white/50">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${msg}</div></div>`;
+            cHist.scrollTop = cHist.scrollHeight;
+            document.getElementById('chatInputMessage').value = "";
+
+            fetchGAS({ action: "sendMessage", senderId: currentUser.id, senderName: currentUser.name, senderRoom: currentUser.assigned, senderPic: currentUser.pic, receiver: activeChatContact, message: msg }).then(() => { forceRefreshChat(); });
+        }
+
+        function forceRefreshChat() {
+            let btn = document.querySelector('#chatHeader button i');
+            if(btn) btn.classList.add('fa-spin');
+            fetchGAS({ action: "getMessages", myId: currentUser.id, myName: currentUser.name, role: currentUser.role })
+            .then(r => { 
+                if(btn) btn.classList.remove('fa-spin');
+                if(r.status === "success") { 
+                    if(r.users && r.users.length > 0) {
+                        allUsersData = r.users;
+                        mentors = allUsersData.filter(u => u.role && ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({
+                            name: u.name || u.Name || "", role: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher', initials: getInitials(u.name || u.Name || "A"), pic: u.pic || u.ProfilePic || "", room: u.assigned || u.room || u.Room || "-", bgColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "bg-rose-100 dark:bg-rose-900/50" : "bg-orange-100 dark:bg-orange-900/50", textColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "text-rose-600 dark:text-rose-400" : "text-orange-600 dark:text-orange-400"
+                        })).sort((a, b) => {
+                            if (a.role === 'Admin' && b.role !== 'Admin') return 1;
+                            if (a.role !== 'Admin' && b.role === 'Admin') return -1;
+                            return 0;
+                        });
+                    }
+                    cachedMessages = r.data || []; 
+                    if(activeChatContact) openChat(activeChatContact); 
+                    else renderChatContacts(); 
+                } 
+            }); 
+        }
+
         function loadMessagesForChat() { 
             fetchGAS({ action: "getMessages", myId: currentUser.id, myName: currentUser.name, role: currentUser.role })
             .then(r => { 
@@ -881,46 +920,19 @@
                     if(isChanged) {
                         cachedMessages = r.data || []; 
                         
-                        myStudents = allUsersData.filter(u => String(u.role || u.Role || "").toLowerCase().trim() === 'student').map(u => ({
-                            name: u.name || u.Name || "ไม่มีชื่อ", 
-                            role: 'Student', 
-                            initials: getInitials(u.name || u.Name || "A"), 
-                            pic: u.pic || u.ProfilePic || "", 
-                            class: u.assigned || u.room || u.Room || "-", 
-                            bgColor: "bg-blue-100 dark:bg-blue-900/50", 
-                            textColor: "text-blue-600 dark:text-blue-400"
-                        }));
+                        mentors = allUsersData.filter(u => u.role && ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({
+                            name: u.name || u.Name || "", role: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher', initials: getInitials(u.name || u.Name || "A"), pic: u.pic || u.ProfilePic || "", room: u.assigned || u.room || u.Room || "-", bgColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "bg-rose-100 dark:bg-rose-900/50" : "bg-orange-100 dark:bg-orange-900/50", textColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "text-rose-600 dark:text-rose-400" : "text-orange-600 dark:text-orange-400"
+                        })).sort((a, b) => {
+                            if (a.role === 'Admin' && b.role !== 'Admin') return 1;
+                            if (a.role !== 'Admin' && b.role === 'Admin') return -1;
+                            return 0;
+                        });
 
                         if(activeChatContact) openChat(activeChatContact); 
                         else renderChatContacts(); 
                     }
                 } 
             }); 
-        }
-
-        function sendChatMessage() {
-            let msg = document.getElementById('chatInputMessage').value.trim(); if(!msg || !activeChatContact) return;
-            
-            let msgs = cachedMessages.filter(m => m.senderName === activeChatContact || m.receiver === activeChatContact);
-            let targetMsg = msgs.filter(m => m.senderName === activeChatContact).pop();
-            
-            if(!targetMsg) return showiOSToast('fa-solid fa-info-circle', 'ต้องรอให้อีกฝ่ายทักมาก่อนครับ', 'bg-sky-100', 'text-sky-600');
-            
-            let newReply = msg;
-            if(targetMsg.reply && targetMsg.reply.trim() !== "") {
-                newReply = targetMsg.reply + "<br><br>" + msg;
-            }
-
-            let cHist = document.getElementById('chatHistory');
-            let myPicHtml = currentUser.pic ? `<img src="${currentUser.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-orange-100 text-orange-600 font-bold text-[8px]">${getInitials(currentUser.name)}</div>`;
-            cHist.innerHTML += `<div class="flex flex-col items-end w-full mb-4 mt-2 opacity-50"><div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-500 dark:text-slate-400">กำลังส่ง...</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-white/80">${myPicHtml}</div></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${msg}</div></div>`;
-            cHist.scrollTop = cHist.scrollHeight;
-            document.getElementById('chatInputMessage').value = "";
-
-            targetMsg.reply = newReply;
-
-            fetchGAS({ action: "replyMessage", row: targetMsg.row, replyText: newReply });
-            setTimeout(loadMessagesForChat, 1500);
         }
 
         function updateProfileUI() {
@@ -973,7 +985,7 @@
             let e = document.getElementById('set_email').value.trim();
             let p = document.getElementById('set_phone').value.trim();
             let c = uploadedImageBase64 || currentUser.pic;
-            if(!e || !p) return showiOSToast('fa-solid fa-circle-exclamation', 'กรุณากรอกข้อมูลให้ครบถ้วน', 'bg-amber-100', 'text-amber-600');
+            if(!e || !p) return showiOSToast('fa-solid fa-circle-exclamation', 'กรุณากรอกข้อมูลให้ครบถ้วน', 'bg-amber-100 dark:bg-amber-900', 'text-amber-600 dark:text-amber-400');
             
             Swal.fire({title:'กำลังบันทึก...', customClass: {popup: 'ios-popup'}, didOpen:()=>Swal.showLoading()});
             fetchGAS({action:"updateProfile", username:currentUser.id, pic:c, email:e, phone:p}).then(r => {
@@ -981,8 +993,9 @@
                     currentUser.pic = c; currentUser.email = e; currentUser.phone = p; 
                     sessionStorage.setItem('currentUser', JSON.stringify(currentUser)); 
                     updateProfileUI(); 
-                    updateRightSidebar();
-                    showiOSToast('fa-solid fa-check', 'บันทึกโปรไฟล์เรียบร้อย', 'bg-emerald-100', 'text-emerald-600');
+                    
+                    if(document.getElementById('view_inbox').style.display !== 'none') { forceRefreshChat(); }
+                    showiOSToast('fa-solid fa-check', 'บันทึกโปรไฟล์เรียบร้อย', 'bg-emerald-100 dark:bg-emerald-900', 'text-emerald-600 dark:text-emerald-400');
                 }
             });
         }
@@ -1062,7 +1075,6 @@
             });
         }
 
-        function toggleLanguage() { showiOSToast('fa-solid fa-language', 'กำลังแปลภาษา...', 'bg-sky-100', 'text-sky-600'); }
         function logout() { sessionStorage.clear(); window.location.replace('index.html'); }
     </script>
 </body>
