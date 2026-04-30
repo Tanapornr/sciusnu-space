@@ -387,8 +387,11 @@
             });
         }
 
+        // ✨ เปลี่ยนให้ลบเฉพาะ Auth Token ไม่ให้ความจำการอ่านแชทหาย ✨
         function logout() { 
-            sessionStorage.clear(); localStorage.clear(); window.location.replace('index.html'); 
+            sessionStorage.removeItem('currentUser'); 
+            localStorage.removeItem('currentUser'); 
+            window.location.replace('index.html'); 
         }
 
         function toggleSidebar() { document.getElementById('mainSidebar').classList.toggle('active'); document.getElementById('sidebarOverlay').classList.toggle('active'); }
@@ -623,13 +626,13 @@
 
         function deleteLesson(t) { Swal.fire({title:'ลบบทเรียน?', text: 'คุณแน่ใจหรือไม่ที่จะลบเนื้อหานี้?', icon:'warning', showCancelButton:true, customClass:{popup:'ios-popup'}, confirmButtonColor:'#f05a28', confirmButtonText:'ยืนยันการลบ', cancelButtonText:'ยกเลิก'}).then(r=>{if(r.isConfirmed) { Swal.fire({title:'Deleting...', customClass:{popup:'ios-popup'}, didOpen:()=>Swal.showLoading()}); fetchGAS({action:"deleteLesson", title:t}).then(()=>loadDashboardData()); }}); }
 
-        function buildContactCard(c) {
+        function buildContactCard(c, type) {
             let isActive = activeChatContact === c.name ? "active" : "";
             let pPic = c.pic ? `<img src="${c.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center font-bold text-xs lg:text-sm">${c.initials}</div>`;
             
             let unreadCount = getUnreadCount(c.name);
-            let badgeHtml = unreadCount > 0 ? `<div class="absolute -bottom-1 -right-1 w-4 h-4 bg-rose-500 rounded-full flex items-center justify-center text-white text-[8px] font-bold shadow-sm border-2 border-white">${unreadCount}</div>` : '';
-            
+            let badgeHtml = unreadCount > 0 ? `<div class="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 rounded-full flex items-center justify-center text-white text-[8px] font-bold shadow-sm border-2 border-white">${unreadCount}</div>` : '';
+
             let latestText = "คลิกเพื่อสนทนา";
             let contactMsgs = cachedMessages.filter(m => (m.senderName === currentUser.name && m.receiver === c.name) || (m.senderName === c.name && m.receiver === currentUser.name));
             if(contactMsgs.length > 0) {
@@ -639,7 +642,8 @@
                 else { latestText = lastMsg.reply && lastMsg.reply.trim() !== "" ? "คุณ: " + lastMsg.reply.split('<br><br>').pop() : c.name + ": " + lastMsg.message; }
             }
             let tmp = document.createElement("DIV"); tmp.innerHTML = latestText; latestText = tmp.textContent || tmp.innerText || "";
-            
+            if(latestText.length > 25) latestText = latestText.substring(0, 25) + "...";
+
             let displayName = c.name; let displayDetails = ""; let rRole = String(c.role || "").toLowerCase();
             if(rRole === 'teacher') {
                 if(c.room && c.room !== "-") displayName += ` <span class="text-[10px] text-slate-500 dark:text-slate-400 font-normal ml-1 truncate">(วิชา: ${c.room})</span>`;
@@ -649,53 +653,104 @@
                 if(sInfo.length > 0) displayDetails = `<p class="text-[9px] text-[#f05a28] font-bold mb-0.5 mt-0.5">${sInfo.join(' | ')}</p>`;
                 displayDetails += `<p class="text-[10px] text-slate-600 dark:text-slate-400 font-medium truncate ${unreadCount > 0 ? 'font-bold text-slate-800 dark:text-white' : ''}" title="${latestText}">${latestText}</p>`;
             }
-            return `<div class="chat-contact ${isActive} flex items-center gap-3 p-3 lg:p-4 rounded-xl cursor-pointer hover:bg-white/80 dark:hover:bg-black/40 transition mb-1 border border-transparent shadow-sm" onclick="openChat('${c.name}')"><div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm border border-white/80 shrink-0 flex items-center justify-center">${pPic}${badgeHtml}</div><div class="flex-1 min-w-0 flex flex-col justify-center"><h4 class="font-bold text-xs lg:text-sm truncate text-slate-800 dark:text-slate-200 leading-tight flex items-center">${displayName}</h4>${displayDetails}</div></div>`;
+
+            if (type === "sidebar") {
+                return `
+                <div class="flex items-center justify-between group p-3 rounded-2xl border border-slate-200/50 dark:border-slate-700/50 hover:border-orange-300 dark:hover:border-orange-700 shadow-sm transition mb-3 bg-white/50 dark:bg-black/30 backdrop-blur-sm cursor-pointer" onclick="nav('inbox'); openChat('${c.name}')">
+                    <div class="flex items-start gap-3">
+                        <div class="relative w-12 h-12 rounded-full ${c.bgColor || 'bg-slate-200'} ${c.textColor || 'text-slate-600'} overflow-hidden shadow-sm shrink-0 flex items-center justify-center border border-white/50">${pPic}
+                            ${badgeHtml}
+                        </div>
+                        <div class="flex flex-col max-w-[130px] lg:max-w-[150px]">
+                            <p class="text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight truncate">${displayName}</p>
+                            ${displayDetails}
+                        </div>
+                    </div>
+                    <button class="w-9 h-9 rounded-full border border-orange-200/50 dark:border-orange-900/50 text-[#f05a28] flex items-center justify-center hover:bg-[#f05a28] hover:text-white transition shadow-sm shrink-0">
+                        <i class="fa-regular fa-comment-dots text-sm pointer-events-none"></i>
+                    </button>
+                </div>`;
+            } else {
+                return `
+                <div class="chat-contact ${isActive} flex items-center gap-3 p-3 lg:p-4 rounded-xl cursor-pointer hover:bg-white/80 dark:hover:bg-black/40 transition mb-1 border border-transparent shadow-sm" onclick="openChat('${c.name}')">
+                    <div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor || 'bg-slate-200'} ${c.textColor || 'text-slate-600'} overflow-hidden shadow-sm border border-white/80 shrink-0 flex items-center justify-center">${pPic}
+                        ${badgeHtml}
+                    </div>
+                    <div class="flex-1 min-w-0 flex flex-col justify-center">
+                        <h4 class="font-bold text-xs lg:text-sm truncate text-slate-800 dark:text-slate-200 leading-tight flex items-center">${displayName}</h4>
+                        ${displayDetails}
+                    </div>
+                </div>`;
+            }
         }
 
         function renderChatContacts() {
-            let tList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'teacher').map(u => ({...u, bgColor:'bg-indigo-100', textColor:'text-indigo-600', initials:getInitials(u.name || u.Name || "A"), room:u.assigned || u.room || u.Room || "-"}));
+            let tList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'teacher').map(u => ({...u, bgColor:'bg-indigo-100 dark:bg-indigo-900/50', textColor:'text-indigo-600 dark:text-indigo-400', initials:getInitials(u.name || u.Name || "A"), room:u.assigned || u.room || u.Room || "-"}));
             let sList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'student').map(u => {
                 let sId = u.id || u.username || u.Username || "-";
                 if(sId === "-") { let fMsg = cachedMessages.find(m => m.senderName === (u.name || u.Name)); if(fMsg) sId = fMsg.senderId; }
                 return {...u, bgColor:'bg-slate-200 dark:bg-slate-700', textColor:'text-slate-600 dark:text-slate-300', initials:getInitials(u.name || u.Name || "A"), room:u.assigned || u.room || u.Room || "-", id: sId};
             });
             let h = "";
-            if(tList.length > 0) { h += `<p class="px-4 text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-widest mt-2">อาจารย์</p>`; tList.forEach(c => h += buildContactCard(c)); }
-            if(sList.length > 0) { h += `<p class="px-4 text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-widest mt-4">นักเรียน</p>`; sList.forEach(c => h += buildContactCard(c)); }
+            let sb = "";
+            if(tList.length > 0) { 
+                h += `<p class="px-4 text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-widest mt-2">อาจารย์</p>`; 
+                tList.forEach(c => { h += buildContactCard(c, "inbox"); sb += buildContactCard(c, "sidebar"); }); 
+            }
+            if(sList.length > 0) { 
+                h += `<p class="px-4 text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-widest mt-4">นักเรียน</p>`; 
+                sList.forEach(c => { h += buildContactCard(c, "inbox"); sb += buildContactCard(c, "sidebar"); }); 
+            }
             let clist = document.getElementById('chatContactList'); if(clist) clist.innerHTML = h || '<div class="text-center p-4 text-xs text-slate-600 dark:text-slate-400 font-medium border-2 border-dashed border-slate-400/50 dark:border-slate-600/50 rounded-xl mx-4 mt-4 bg-white/40 dark:bg-transparent">ไม่มีผู้ติดต่อ</div>';
+            
+            // เพิ่มการอัปเดตแถบ Sidebar ของแอดมินด้วยเผื่อไว้
+            let mentorUI = document.getElementById('studentListRightUI');
+            if(mentorUI) mentorUI.innerHTML = sb || '<div class="text-[10px] text-slate-600 dark:text-slate-400 font-medium text-center py-4 bg-white/60 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-400/50 dark:border-slate-600/50 shadow-inner">ไม่มีข้อมูลผู้ติดต่อ</div>';
+
             updateUnreadBadges(); 
         }
 
         function openChat(n) {
             activeChatContact = n; document.getElementById('chatPlaceholder').classList.add('hidden'); 
             
-            markChatAsRead(n); // เคลียร์แจ้งเตือนเมื่อเปิดอ่าน
+            markChatAsRead(n); // ✨ เคลียร์แจ้งเตือนเมื่อเปิดอ่าน
             renderChatContacts(); 
             
-            let userObj = allUsersData.find(x => (x.name === n || x.Name === n));
-            let partnerPicHtml = (userObj && (userObj.pic || userObj.ProfilePic)) ? `<img src="${userObj.pic || userObj.ProfilePic}" class="w-full h-full object-cover">` : `<div class="w-full h-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-sm">${getInitials(n)}</div>`;
-            let hName = document.getElementById('chatHeaderName'); let roleStr = "";
-            if (userObj) {
-                let rRole = String(userObj.role || userObj.Role || "").toLowerCase();
-                if(rRole === 'teacher') { roleStr = ` <span class="text-xs text-slate-500 dark:text-slate-400 font-medium ml-2">(วิชา: ${userObj.assigned || userObj.room || userObj.Room || "-"})</span>`; }
-                else if(rRole === 'student') { 
-                    let sId = userObj.id || userObj.username || userObj.Username || "-";
-                    roleStr = ` <span class="text-xs text-slate-500 dark:text-slate-400 font-medium ml-2">(ID: ${sId} | Class: ${userObj.assigned || userObj.room || userObj.Room || "-"})</span>`; 
+            let contactInfo = [...allUsersData].map(u => {
+                let roleStr = String(u.role || u.Role || "").toLowerCase().trim();
+                return {
+                    name: u.name || u.Name || "", 
+                    role: roleStr === 'admin' ? 'Admin' : (roleStr === 'teacher' ? 'Teacher' : 'Student'), 
+                    initials: getInitials(u.name || u.Name || "A"), 
+                    pic: u.pic || u.ProfilePic || "", 
+                    room: u.assigned || u.room || u.Room || "-"
+                }
+            }).find(x => x.name === n);
+
+            let partnerPicHtml = (contactInfo && contactInfo.pic) ? `<img src="${contactInfo.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-sm">${getInitials(n)}</div>`;
+
+            let subjectBadgeHeader = '';
+            if (contactInfo) {
+                if (contactInfo.role === 'Admin') {
+                    subjectBadgeHeader = ` <span class="text-xs text-rose-500 font-bold ml-2">(Admin)</span>`;
+                } else if (contactInfo.room && contactInfo.room !== "-") {
+                    subjectBadgeHeader = ` <span class="text-xs text-slate-500 dark:text-slate-400 font-normal ml-2">(Class: ${contactInfo.room})</span>`;
                 }
             }
-            if(hName) hName.innerHTML = n + roleStr;
-            if(document.getElementById('chatHeaderAvatar')) document.getElementById('chatHeaderAvatar').innerHTML = partnerPicHtml;
+
+            document.getElementById('chatHeaderName').innerHTML = `${n}${subjectBadgeHeader}`; 
+            document.getElementById('chatHeaderAvatar').innerHTML = partnerPicHtml;
             
             let msgs = cachedMessages.filter(m => (m.senderName === currentUser.name && m.receiver === n) || (m.senderName === n && m.receiver === currentUser.name));
             let sortedMsgs = [...msgs].sort((a,b) => new Date(a.date) - new Date(b.date));
-            
-            let h = ""; 
-            let myPicHtml = currentUser.pic ? `<img src="${currentUser.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-rose-100 text-rose-600 font-bold text-[8px]">${getInitials(currentUser.name)}</div>`;
+
+            let h = "";
+            let myPicHtml = currentUser.pic ? `<img src="${currentUser.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-orange-100 text-orange-600 font-bold text-[8px]">${getInitials(currentUser.name)}</div>`;
             
             sortedMsgs.forEach((m, index) => {
                 let d = new Date(m.date).toLocaleString('th-TH', { hour:'2-digit', minute:'2-digit' });
                 let sPicHtml = partnerPicHtml.replace('text-sm', 'text-[8px]');
-                let isLastMsg = (index === sortedMsgs.length - 1); // เช็คว่าเป็นข้อความสุดท้ายใน Array หรือไม่
+                let isLastMsg = (index === sortedMsgs.length - 1);
                 
                 if(m.senderName === currentUser.name) {
                     if (m.message && m.message.trim() !== "") {
@@ -708,8 +763,9 @@
                         </div>`;
                     }
                     if(m.reply && m.reply.trim() !== "") { 
-                        m.reply.split('<br><br>').filter(x => x.trim() !== "").forEach(rep => {
-                            h += `<div class="flex flex-col items-start w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white/80 text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${sPicHtml}</div><p class="text-[9px] font-bold text-slate-600 dark:text-slate-400">${n}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm backdrop-blur-md font-medium">${rep}</div></div>`;
+                        let reps = m.reply.split('<br><br>').filter(x => x.trim() !== "");
+                        reps.forEach(rep => {
+                            h += `<div class="flex flex-col items-start w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white/80 text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${sPicHtml}</div><p class="text-[9px] font-bold text-slate-600 dark:text-slate-400">${n}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm backdrop-blur-md font-medium">${rep}</div></div>`; 
                         });
                     }
                 } else {
@@ -730,16 +786,17 @@
                     }
                 }
             });
-            if(document.getElementById('chatHistory')) { document.getElementById('chatHistory').innerHTML = h; document.getElementById('chatHistory').scrollTop = document.getElementById('chatHistory').scrollHeight; }
+            document.getElementById('chatHistory').innerHTML = h; document.getElementById('chatHistory').scrollTop = document.getElementById('chatHistory').scrollHeight;
         }
 
         // ✨ อัปเดตตรรกะการส่งข้อความใหม่ ไม่ต้องรอให้อีกฝ่ายทักมาก่อน
         function sendChatMessage() {
             let msg = document.getElementById('chatInputMessage').value.trim(); 
             if(!msg || !activeChatContact) return;
+            if(!currentUser.pic || !currentUser.email) return Swal.fire({icon:'warning', title:'โปรไฟล์ไม่สมบูรณ์', text:'กรุณาตั้งค่ารูปภาพและอีเมลก่อนส่งข้อความ'}).then(r => { if(r.isConfirmed) nav('settings'); });
             
             let cHist = document.getElementById('chatHistory');
-            let myPicHtml = currentUser.pic ? `<img src="${currentUser.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-rose-100 text-rose-600 font-bold text-[8px]">${getInitials(currentUser.name)}</div>`;
+            let myPicHtml = currentUser.pic ? `<img src="${currentUser.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-orange-100 text-orange-600 font-bold text-[8px]">${getInitials(currentUser.name)}</div>`;
             cHist.innerHTML += `
             <div class="flex flex-col items-end w-full mb-4 mt-2 opacity-50">
                 <div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-500 dark:text-slate-400">กำลังส่ง...</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-white/80">${myPicHtml}</div></div>
@@ -838,6 +895,7 @@
             });
         }
 
+        // ✨ เปลี่ยนรหัสผ่าน ✨
         function openChangePassword() {
             Swal.fire({
                 title: 'เปลี่ยนรหัสผ่าน',
@@ -910,6 +968,12 @@
                     });
                 }
             });
+        }
+
+        function logout() { 
+            sessionStorage.removeItem('currentUser'); 
+            localStorage.removeItem('currentUser'); 
+            window.location.replace('index.html'); 
         }
     </script>
 </body>
