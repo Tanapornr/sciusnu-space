@@ -118,7 +118,6 @@
     <aside id="mainSidebar" class="glass-panel w-72 lg:w-64 flex flex-col flex-shrink-0 z-50 border-r border-white/80 dark:border-white/5 shadow-2xl lg:bg-white/60 lg:backdrop-blur-xl">
         <div class="h-20 lg:h-24 flex items-center px-8 border-b border-slate-200/50 dark:border-white/5 cursor-pointer" onclick="location.reload()">
             <div class="w-8 h-8 bg-[#f05a28] text-white rounded-full flex items-center justify-center text-sm shadow-md mr-3"><i class="fa-solid fa-sparkles"></i></div>
-            <!-- ✨ เปลี่ยนโลโก้เป็น SCiUSNU SPACE ✨ -->
             <h1 class="text-xl font-black font-prompt text-[#f05a28] uppercase tracking-wide">SCiUSNU SPACE</h1>
         </div>
 
@@ -144,7 +143,6 @@
             <div class="flex items-center gap-3">
                 <button onclick="toggleSidebar()" class="lg:hidden w-10 h-10 flex items-center justify-center text-slate-700 dark:text-slate-300 bg-white/90 dark:bg-black/50 backdrop-blur-md rounded-xl shadow-sm"><i class="fa-solid fa-bars-staggered text-xl"></i></button>
                 <div class="hidden lg:flex items-center font-bold text-[#f05a28] bg-orange-50 dark:bg-orange-900/30 px-5 py-2.5 rounded-full border border-orange-200/50 dark:border-orange-800/50 text-sm shadow-sm"><i class="fa-solid fa-chalkboard-user mr-2"></i> โหมดอาจารย์ผู้สอน</div>
-                <!-- ✨ เปลี่ยนโลโก้มือถือเป็น SCiUSNU SPACE ✨ -->
                 <div class="lg:hidden font-black font-prompt text-[#f05a28] text-lg tracking-wide">SCiUSNU SPACE</div>
             </div>
 
@@ -217,7 +215,7 @@
                 </div>
             </div>
 
-            <!-- หน้าสถิติ (ตัดปุ่มรีเฟรช และดึงอัตโนมัติ) -->
+            <!-- หน้าสถิติ -->
             <div id="view_stats" class="hidden max-w-5xl mx-auto">
                 <h2 class="text-2xl lg:text-3xl font-bold font-prompt text-slate-800 dark:text-slate-100 mb-6 lg:mb-8 drop-shadow-sm">สถิติการเรียน</h2>
                 <div class="glass-panel rounded-[1.5rem] lg:rounded-[2rem] p-5 lg:p-8 mb-6 lg:mb-8 shadow-md">
@@ -281,13 +279,9 @@
                             <div><label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-widest">Email *</label><input type="email" id="set_email" class="w-full px-4 py-3.5 bg-white/80 dark:bg-black/40 border border-white dark:border-white/10 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white font-medium shadow-inner" required></div>
                             <div><label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-widest">Phone *</label><input type="tel" id="set_phone" class="w-full px-4 py-3.5 bg-white/80 dark:bg-black/40 border border-white dark:border-white/10 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white font-medium shadow-inner" required></div>
                         </div>
-                        <!-- ✨ ปุ่มอัปเดตและเปลี่ยนรหัสผ่าน ✨ -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
                             <button type="button" onclick="saveProfile()" class="w-full bg-[#f05a28] text-white font-bold py-4 rounded-xl shadow-lg active:scale-[0.98] transition font-prompt uppercase text-sm tracking-widest hover:bg-[#d94a1d] border border-white/20">อัปเดตโปรไฟล์</button>
-                            
-                            <button type="button" onclick="openChangePassword()" class="w-full bg-slate-800 dark:bg-slate-700 text-white font-bold py-4 rounded-xl shadow-lg active:scale-[0.98] transition font-prompt uppercase text-sm tracking-widest hover:bg-slate-900 dark:hover:bg-slate-600 border border-white/10">
-                                <i class="fa-solid fa-lock mr-2"></i> เปลี่ยนรหัสผ่าน
-                            </button>
+                            <button type="button" onclick="openChangePassword()" class="w-full bg-slate-800 dark:bg-slate-700 text-white font-bold py-4 rounded-xl shadow-lg active:scale-[0.98] transition font-prompt uppercase text-sm tracking-widest hover:bg-slate-900 dark:hover:bg-slate-600 border border-white/10"><i class="fa-solid fa-lock mr-2"></i> เปลี่ยนรหัสผ่าน</button>
                         </div>
                     </form>
                 </div>
@@ -457,6 +451,7 @@
             let uniqueContacts = [...new Set(allContacts)];
 
             uniqueContacts.forEach(cName => {
+                if(!cName) return;
                 globalUnread += getUnreadCount(cName);
             });
             document.querySelectorAll('.inbox-badge').forEach(b => { if(globalUnread > 0) { b.innerText = globalUnread; b.classList.remove('hidden'); } else { b.classList.add('hidden'); } });
@@ -689,7 +684,6 @@
             document.getElementById('t_content').value = (l.content||"").replace(/\[YT:.*?\]\n?/, ""); 
             document.getElementById('t_quizFields').innerHTML=""; 
             
-            // ✨ ส่งข้อมูลคำถามเก่าเข้าไปวาดกล่องใหม่
             (l.questions||[]).filter(q=>q.q && q.q.trim() !== "").forEach(q=>addTeacherQuizField(q)); 
             
             document.getElementById('cancelEditBtn').classList.remove('hidden'); 
@@ -706,7 +700,7 @@
             let unreadCount = getUnreadCount(c.name);
             let badgeHtml = unreadCount > 0 ? `<div class="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 rounded-full flex items-center justify-center text-white text-[8px] font-bold shadow-sm border-2 border-white">${unreadCount}</div>` : '';
 
-            let latestText = "";
+            let latestText = "คลิกเพื่อสนทนา";
             let contactMsgs = cachedMessages.filter(m => (m.senderName === currentUser.name && m.receiver === c.name) || (m.senderName === c.name && m.receiver === currentUser.name));
             if(contactMsgs.length > 0) {
                 let sorted = [...contactMsgs].sort((a,b) => new Date(a.date) - new Date(b.date));
@@ -727,8 +721,6 @@
                         latestText = c.name + ": " + lastMsg.message;
                     }
                 }
-            } else {
-                latestText = "เริ่มการสนทนา...";
             }
             
             let tmp = document.createElement("DIV");
@@ -936,6 +928,13 @@
                 if(r.status === "success") { 
                     if(r.users && r.users.length > 0) {
                         allUsersData = r.users;
+                        mentors = allUsersData.filter(u => u.role && ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({
+                            name: u.name || u.Name || "", role: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher', initials: getInitials(u.name || u.Name || "A"), pic: u.pic || u.ProfilePic || "", room: u.assigned || u.room || u.Room || "-", bgColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "bg-rose-100 dark:bg-rose-900/50" : "bg-orange-100 dark:bg-orange-900/50", textColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "text-rose-600 dark:text-rose-400" : "text-orange-600 dark:text-orange-400"
+                        })).sort((a, b) => {
+                            if (a.role === 'Admin' && b.role !== 'Admin') return 1;
+                            if (a.role !== 'Admin' && b.role === 'Admin') return -1;
+                            return 0;
+                        });
                     }
                     cachedMessages = r.data || []; 
                     if(activeChatContact) openChat(activeChatContact); 
@@ -975,7 +974,7 @@
 
         function updateProfileUI() {
             if(!currentUser) return;
-            const fullName = currentUser.name || "Student";
+            const fullName = currentUser.name || "Teacher";
             const inits = getInitials(fullName);
 
             let setDisplay = document.getElementById('settingNameDisplay');
@@ -1001,20 +1000,6 @@
                 if(setPic) setPic.classList.add('hidden');
                 if(mobInit) { mobInit.innerText = inits; mobInit.classList.remove('hidden'); }
                 if(mobPic) mobPic.classList.add('hidden');
-            }
-            
-            document.getElementById('rightProfileFullName').innerText = fullName;
-            document.getElementById('rightProfileId').innerText = "ID: " + currentUser.id;
-            document.getElementById('rightProfileClass').innerText = "Class: " + (currentUser.assigned || "-");
-
-            let rightPic = document.getElementById('rightProfileImage');
-            let rightInit = document.getElementById('rightProfileInitials');
-            if(currentUser.pic && currentUser.pic.trim() !== "") { 
-                if(rightPic) { rightPic.src = currentUser.pic; rightPic.classList.remove('hidden'); }
-                if(rightInit) rightInit.classList.add('hidden'); 
-            } else {
-                if(rightInit) { rightInit.innerText = inits; rightInit.classList.remove('hidden'); }
-                if(rightPic) rightPic.classList.add('hidden');
             }
         }
 
