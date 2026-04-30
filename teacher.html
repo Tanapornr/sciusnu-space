@@ -115,6 +115,7 @@
 
     <div id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
+    <!-- เมนูด้านซ้าย -->
     <aside id="mainSidebar" class="glass-panel w-72 lg:w-64 flex flex-col flex-shrink-0 z-50 border-r border-white/80 dark:border-white/5 shadow-2xl lg:bg-white/60 lg:backdrop-blur-xl">
         <div class="h-20 lg:h-24 flex items-center px-8 border-b border-slate-200/50 dark:border-white/5 cursor-pointer" onclick="location.reload()">
             <div class="w-8 h-8 bg-[#f05a28] text-white rounded-full flex items-center justify-center text-sm shadow-md mr-3"><i class="fa-solid fa-sparkles"></i></div>
@@ -125,7 +126,7 @@
             <nav class="flex flex-col font-prompt text-slate-800 dark:text-slate-200 font-semibold text-sm" id="sidebarMenu">
                 <a onclick="nav('manage')" id="nav_manage" class="menu-item px-8 py-4 flex items-center active"><i class="fa-solid fa-pen-ruler w-6 mr-3 text-lg"></i> <span>จัดการเนื้อหา</span></a>
                 <a onclick="nav('stats')" id="nav_stats" class="menu-item px-8 py-4 flex items-center relative"><i class="fa-solid fa-chart-pie w-6 mr-3 text-lg"></i> <span>สถิติการเรียน</span></a>
-                <a onclick="nav('inbox')" id="nav_inbox" class="menu-item px-8 py-4 flex items-center relative"><i class="fa-solid fa-inbox w-6 mr-3 text-lg"></i> <span>กล่องข้อความ</span><span class="inbox-badge hidden absolute right-6 bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm border border-white/30">0</span></a>
+                <a onclick="nav('inbox')" id="nav_inbox" class="menu-item px-8 py-4 flex items-center relative"><i class="fa-solid fa-inbox w-6 mr-3 text-lg"></i> <span>กล่องข้อความ</span><span class="inbox-badge hidden absolute right-6 bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">0</span></a>
             </nav>
         </div>
 
@@ -276,12 +277,13 @@
                     </div>
                     <form id="profileForm" class="space-y-5">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <div><label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-widest">Email *</label><input type="email" id="set_email" class="w-full px-4 py-3.5 bg-white/80 dark:bg-black/40 border border-white dark:border-white/10 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white font-medium shadow-inner" required></div>
-                            <div><label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-widest">Phone *</label><input type="tel" id="set_phone" class="w-full px-4 py-3.5 bg-white/80 dark:bg-black/40 border border-white dark:border-white/10 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white font-medium shadow-inner" required></div>
+                            <div><label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-widest">Email</label><input type="email" id="set_email" class="w-full px-4 py-3.5 bg-white/80 dark:bg-black/40 border border-white dark:border-white/10 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white font-medium shadow-inner"></div>
+                            <div><label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-widest">Phone</label><input type="tel" id="set_phone" class="w-full px-4 py-3.5 bg-white/80 dark:bg-black/40 border border-white dark:border-white/10 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white font-medium shadow-inner"></div>
                         </div>
+                        <!-- ✨ ปุ่ม 2 ปุ่ม ตีคู่กัน ✨ -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
                             <button type="button" onclick="saveProfile()" class="w-full bg-[#f05a28] text-white font-bold py-4 rounded-xl shadow-lg active:scale-[0.98] transition font-prompt uppercase text-sm tracking-widest hover:bg-[#d94a1d] border border-white/20">อัปเดตโปรไฟล์</button>
-                            <button type="button" onclick="openChangePassword()" class="w-full bg-slate-800 dark:bg-slate-700 text-white font-bold py-4 rounded-xl shadow-lg active:scale-[0.98] transition font-prompt uppercase text-sm tracking-widest hover:bg-slate-900 dark:hover:bg-slate-600 border border-white/10"><i class="fa-solid fa-lock mr-2"></i> เปลี่ยนรหัสผ่าน</button>
+                            <button type="button" onclick="openChangePassword()" class="w-full bg-slate-800 dark:bg-slate-700 text-white font-bold py-4 rounded-xl shadow-lg active:scale-[0.98] transition font-prompt uppercase text-sm tracking-widest hover:bg-slate-900 dark:hover:bg-slate-600 border border-white/10"><i class="fa-solid fa-lock mr-2"></i>เปลี่ยนรหัสผ่าน</button>
                         </div>
                     </form>
                 </div>
@@ -290,7 +292,6 @@
         </div>
     </main>
 
-    <!-- เมนูด้านขวา (Overview) -->
     <aside id="rightSidebar" class="glass-panel w-72 flex-shrink-0 hidden lg:flex flex-col h-full shadow-2xl relative border-l border-white/80 dark:border-white/5 bg-white/90 dark:bg-[#1a1614]/95 backdrop-blur-2xl">
         <div class="p-8 overflow-y-auto flex-1 hide-scroll pb-24">
             <div class="text-right lg:hidden mb-4"><button onclick="document.getElementById('rightSidebar').classList.add('hidden')" class="text-slate-500 bg-white/80 dark:bg-black/50 w-8 h-8 rounded-full shadow-sm"><i class="fa-solid fa-xmark"></i></button></div>
@@ -316,8 +317,10 @@
     </aside>
 
     <script>
+        // ✨ อัปเดต URL ล่าสุด ✨
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbwYBNodvxzHMwjZwnOJW6w7ElpkYtYrAkGaoN0IOktGvfKPBenqYb_869cclbWvvttoXg/exec';
-        let currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+        
+        let currentUser = JSON.parse(sessionStorage.getItem('currentUser')) || JSON.parse(localStorage.getItem('currentUser'));
         if (!currentUser || String(currentUser.role).toLowerCase().trim() !== 'teacher') { window.location.replace('index.html'); }
 
         let allSubjects = [], allLessons = [], cachedMessages = [], allUsersData = [], myStudents = [], uploadedImageBase64 = "", activeChatContact = null;
@@ -597,7 +600,7 @@
                 if(setInit) { setInit.innerText = inits; setInit.classList.remove('hidden'); }
                 if(setPic) setPic.classList.add('hidden');
                 if(mobInit) { mobInit.innerText = inits; mobInit.classList.remove('hidden'); }
-                if(mobPic) mobPic.classList.add('hidden');
+                if(mobPic) mobInit.classList.add('hidden');
             }
         }
 
@@ -684,6 +687,7 @@
             document.getElementById('t_content').value = (l.content||"").replace(/\[YT:.*?\]\n?/, ""); 
             document.getElementById('t_quizFields').innerHTML=""; 
             
+            // ✨ ส่งข้อมูลคำถามเก่าเข้าไปวาดกล่องใหม่
             (l.questions||[]).filter(q=>q.q && q.q.trim() !== "").forEach(q=>addTeacherQuizField(q)); 
             
             document.getElementById('cancelEditBtn').classList.remove('hidden'); 
@@ -693,6 +697,7 @@
 
         function deleteLesson(t) { Swal.fire({title:'ลบบทเรียน?', text: 'คุณแน่ใจหรือไม่ที่จะลบเนื้อหานี้?', icon:'warning', showCancelButton:true, customClass:{popup:'ios-popup'}, confirmButtonColor:'#f05a28', confirmButtonText:'ยืนยันการลบ', cancelButtonText:'ยกเลิก'}).then(r=>{if(r.isConfirmed) { Swal.fire({title:'Deleting...', customClass:{popup:'ios-popup'}, didOpen:()=>Swal.showLoading()}); fetchGAS({action:"deleteLesson", title:t}).then(()=>loadDashboardData()); }}); }
 
+        // ✨ แก้ไขส่วน Sidebar ให้นำข้อมูล วิชา/แอดมิน ลงมาบรรทัดล่างไม่ให้ล้น ✨
         function buildContactCard(c, type) {
             let isActive = activeChatContact === c.name ? "active" : "";
             let pPic = c.pic ? `<img src="${c.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center font-bold text-xs lg:text-sm">${c.initials}</div>`;
@@ -728,39 +733,47 @@
             latestText = tmp.textContent || tmp.innerText || "";
             if(latestText.length > 25) latestText = latestText.substring(0, 25) + "...";
 
-            if (type === "sidebar") {
-                let subjectBadge = '';
-                if (c.role === 'Admin') {
-                    subjectBadge = `<p class="text-[9px] text-rose-600 dark:text-rose-400 font-bold mt-1 bg-white/60 dark:bg-black/30 px-2 py-0.5 rounded-md w-max border border-white/80 dark:border-white/10"><i class="fa-solid fa-user-shield mr-1 text-rose-500"></i> Admin</p>`;
-                } else if (c.class && c.class !== "-") {
-                    subjectBadge = `<p class="text-[9px] text-slate-600 dark:text-slate-400 font-medium mt-1 bg-white/60 dark:bg-black/30 px-2 py-0.5 rounded-md w-max border border-white/80 dark:border-white/10"><i class="fa-solid fa-graduation-cap mr-1 text-slate-500"></i> ${c.class}</p>`;
-                }
+            let rRole = String(c.role || "").toLowerCase();
+            let subText = "";
+            if (rRole === 'admin') {
+                subText = `<span class="text-rose-500 font-bold"><i class="fa-solid fa-user-shield"></i> Admin</span>`;
+            } else if (c.class && c.class !== "-") {
+                subText = `<i class="fa-solid fa-graduation-cap mr-1 text-slate-400"></i> ${c.class}`;
+            } else if (c.room && c.room !== "-") {
+                subText = `<i class="fa-solid fa-book mr-1 text-slate-400"></i> วิชา: ${c.room}`;
+            }
 
+            let unreadClass = unreadCount > 0 ? 'font-bold text-slate-800 dark:text-white' : 'font-medium text-slate-500 dark:text-slate-400';
+
+            if (type === "sidebar") {
                 return `
                 <div class="flex items-center justify-between group p-3 rounded-2xl border border-slate-200/50 dark:border-slate-700/50 hover:border-orange-300 dark:hover:border-orange-700 shadow-sm transition mb-3 bg-white/50 dark:bg-black/30 backdrop-blur-sm cursor-pointer" onclick="nav('inbox'); openChat('${c.name}')">
-                    <div class="flex items-start gap-3">
-                        <div class="relative w-12 h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm shrink-0 flex items-center justify-center border border-white/50">${pPic}
+                    <div class="flex items-center gap-3 w-full overflow-hidden pr-2">
+                        <div class="relative w-11 h-11 rounded-full ${c.bgColor || 'bg-slate-200'} ${c.textColor || 'text-slate-600'} overflow-hidden shadow-sm shrink-0 flex items-center justify-center border border-white/50">
+                            ${pPic}
                             ${badgeHtml}
                         </div>
-                        <div class="flex flex-col max-w-[130px] lg:max-w-[150px]">
-                            <p class="text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight truncate">${c.name}</p>
-                            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5 ${unreadCount > 0 ? 'font-bold text-slate-800 dark:text-white' : ''}" title="${latestText}">${latestText}</p>
-                            ${subjectBadge}
+                        <div class="flex flex-col flex-1 min-w-0">
+                            <p class="text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight truncate w-full">${c.name}</p>
+                            <p class="text-[10px] mt-0.5 w-full truncate ${unreadClass}" title="${latestText}">${latestText}</p>
+                            ${subText ? `<p class="text-[9px] text-slate-500 dark:text-slate-400 truncate mt-0.5 w-full">${subText}</p>` : ''}
                         </div>
                     </div>
-                    <button class="w-9 h-9 rounded-full border border-orange-200/50 dark:border-orange-900/50 text-[#f05a28] flex items-center justify-center hover:bg-[#f05a28] hover:text-white transition shadow-sm shrink-0">
+                    <button class="w-8 h-8 rounded-full border border-orange-200/50 dark:border-orange-900/50 text-[#f05a28] flex items-center justify-center hover:bg-[#f05a28] hover:text-white transition shadow-sm shrink-0">
                         <i class="fa-regular fa-comment-dots text-sm pointer-events-none"></i>
                     </button>
                 </div>`;
             } else {
                 return `
-                <div class="chat-contact ${isActive} flex items-center gap-3 p-3 lg:p-4 rounded-xl cursor-pointer hover:bg-white/50 dark:hover:bg-black/30 transition mb-1 border border-transparent shadow-sm" onclick="openChat('${c.name}')">
-                    <div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm border border-white/50 shrink-0 flex items-center justify-center">${pPic}
+                <div class="chat-contact ${isActive} flex items-center gap-3 p-3 lg:p-4 rounded-xl cursor-pointer hover:bg-white/80 dark:hover:bg-black/40 transition mb-1 border border-transparent shadow-sm" onclick="openChat('${c.name}')">
+                    <div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor || 'bg-slate-200'} ${c.textColor || 'text-slate-600'} overflow-hidden shadow-sm border border-white/80 shrink-0 flex items-center justify-center">
+                        ${pPic}
                         ${badgeHtml}
                     </div>
-                    <div class="flex-1 min-w-0">
-                        <h4 class="font-bold text-xs lg:text-sm truncate text-slate-800 dark:text-slate-200">${c.name}</h4>
-                        <p class="text-[10px] text-slate-400 truncate ${unreadCount > 0 ? 'font-bold text-slate-800 dark:text-white' : ''}" title="${latestText}">${latestText}</p>
+                    <div class="flex-1 min-w-0 flex flex-col justify-center">
+                        <h4 class="font-bold text-xs lg:text-sm truncate w-full text-slate-800 dark:text-slate-200 leading-tight">${c.name}</h4>
+                        <p class="text-[10px] mt-0.5 w-full truncate ${unreadClass}" title="${latestText}">${latestText}</p>
+                        ${subText ? `<p class="text-[9px] text-slate-500 dark:text-slate-400 truncate mt-0.5 w-full">${subText}</p>` : ''}
                     </div>
                 </div>`;
             }
@@ -836,7 +849,7 @@
                 if (contactInfo.role === 'Admin') {
                     subjectBadgeHeader = ` <span class="text-xs text-rose-500 font-bold ml-2">(Admin)</span>`;
                 } else if (contactInfo.room && contactInfo.room !== "-") {
-                    subjectBadgeHeader = ` <span class="text-xs text-slate-500 dark:text-slate-400 font-normal ml-2">(Class: ${contactInfo.room})</span>`;
+                    subjectBadgeHeader = ` <span class="text-xs text-slate-500 dark:text-slate-400 font-normal ml-2">(วิชา: ${contactInfo.room})</span>`;
                 }
             }
 
@@ -928,13 +941,6 @@
                 if(r.status === "success") { 
                     if(r.users && r.users.length > 0) {
                         allUsersData = r.users;
-                        mentors = allUsersData.filter(u => u.role && ['teacher','admin'].includes(String(u.role).toLowerCase().trim())).map(u => ({
-                            name: u.name || u.Name || "", role: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? 'Admin' : 'Teacher', initials: getInitials(u.name || u.Name || "A"), pic: u.pic || u.ProfilePic || "", room: u.assigned || u.room || u.Room || "-", bgColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "bg-rose-100 dark:bg-rose-900/50" : "bg-orange-100 dark:bg-orange-900/50", textColor: String(u.role || u.Role).toLowerCase().trim() === 'admin' ? "text-rose-600 dark:text-rose-400" : "text-orange-600 dark:text-orange-400"
-                        })).sort((a, b) => {
-                            if (a.role === 'Admin' && b.role !== 'Admin') return 1;
-                            if (a.role !== 'Admin' && b.role === 'Admin') return -1;
-                            return 0;
-                        });
                     }
                     cachedMessages = r.data || []; 
                     if(activeChatContact) openChat(activeChatContact); 
@@ -1111,7 +1117,12 @@
             });
         }
 
-        function logout() { sessionStorage.clear(); window.location.replace('index.html'); }
+        // ✨ แก้ไขฟังก์ชันออกจากระบบให้ล้างข้อมูลอย่างสมบูรณ์
+        function logout() { 
+            sessionStorage.removeItem('currentUser'); 
+            localStorage.removeItem('currentUser'); 
+            window.location.replace('index.html'); 
+        }
     </script>
 </body>
 </html>
