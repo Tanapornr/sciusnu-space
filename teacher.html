@@ -215,12 +215,11 @@
                 </div>
             </div>
 
-            <!-- หน้าสถิติ -->
+            <!-- หน้าสถิติ (ตัดปุ่มรีเฟรช และดึงอัตโนมัติ) -->
             <div id="view_stats" class="hidden max-w-5xl mx-auto">
                 <h2 class="text-2xl lg:text-3xl font-bold font-prompt text-slate-800 dark:text-slate-100 mb-6 lg:mb-8 drop-shadow-sm">สถิติการเรียน</h2>
-                <div class="glass-panel rounded-[1.5rem] lg:rounded-[2rem] p-5 lg:p-8 mb-6 lg:mb-8 flex flex-col md:flex-row gap-4 lg:gap-5 items-stretch md:items-center shadow-md">
-                    <select id="statLessonSelect" onchange="renderTeacherTables()" class="w-full md:flex-1 px-4 py-3 border border-white dark:border-slate-700 rounded-xl font-bold text-orange-700 dark:text-orange-400 bg-white/80 dark:bg-black/50 outline-none shadow-inner text-sm"></select>
-                    <button onclick="loadAnalytics()" class="w-full md:w-auto bg-slate-800 text-white px-6 py-3 rounded-xl font-bold shadow-md text-sm hover:bg-black transition border border-slate-700"><i class="fa-solid fa-rotate mr-2"></i> รีเฟรช</button>
+                <div class="glass-panel rounded-[1.5rem] lg:rounded-[2rem] p-5 lg:p-8 mb-6 lg:mb-8 shadow-md">
+                    <select id="statLessonSelect" onchange="renderTeacherTables()" class="w-full px-4 py-3 border border-white dark:border-slate-700 rounded-xl font-bold text-orange-700 dark:text-orange-400 bg-white/80 dark:bg-black/50 outline-none shadow-inner text-sm cursor-pointer hover:border-orange-300 dark:hover:border-orange-600 transition"></select>
                 </div>
                 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
@@ -260,7 +259,7 @@
                 </div>
             </div>
 
-            <!-- หน้าตั้งค่า -->
+            <!-- หน้าตั้งค่า (เพิ่มปุ่มเปลี่ยนรหัสผ่าน) -->
             <div id="view_settings" class="hidden max-w-3xl mx-auto">
                 <div class="glass-panel rounded-2xl lg:rounded-[2rem] p-6 lg:p-10 shadow-md">
                     <div class="flex flex-col items-center mb-8">
@@ -280,7 +279,14 @@
                             <div><label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-widest">Email *</label><input type="email" id="set_email" class="w-full px-4 py-3.5 bg-white/80 dark:bg-black/40 border border-white dark:border-white/10 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white font-medium shadow-inner" required></div>
                             <div><label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-widest">Phone *</label><input type="tel" id="set_phone" class="w-full px-4 py-3.5 bg-white/80 dark:bg-black/40 border border-white dark:border-white/10 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white font-medium shadow-inner" required></div>
                         </div>
-                        <button type="button" onclick="saveProfile()" class="w-full bg-[#f05a28] text-white font-bold py-4 rounded-xl shadow-lg mt-4 active:scale-[0.98] transition font-prompt uppercase text-sm tracking-widest hover:bg-[#d94a1d] border border-white/20">Update Profile</button>
+                        <!-- ✨ ปุ่มอัปเดตและเปลี่ยนรหัสผ่าน ✨ -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                            <button type="button" onclick="saveProfile()" class="w-full bg-[#f05a28] text-white font-bold py-4 rounded-xl shadow-lg active:scale-[0.98] transition font-prompt uppercase text-sm tracking-widest hover:bg-[#d94a1d] border border-white/20">อัปเดตโปรไฟล์</button>
+                            
+                            <button type="button" onclick="openChangePassword()" class="w-full bg-slate-800 dark:bg-slate-700 text-white font-bold py-4 rounded-xl shadow-lg active:scale-[0.98] transition font-prompt uppercase text-sm tracking-widest hover:bg-slate-900 dark:hover:bg-slate-600 border border-white/10">
+                                <i class="fa-solid fa-lock mr-2"></i> เปลี่ยนรหัสผ่าน
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -305,7 +311,7 @@
                 </div>
             </div>
 
-            <!-- เปลี่ยนหัวข้อเพื่อครอบคลุมทั้ง Admin และ นักเรียน -->
+            <!-- หัวข้อเปลี่ยนเป็น CONTACTS เพื่อครอบคลุม Admin และ นักเรียน -->
             <h4 class="font-bold text-slate-800 dark:text-slate-200 font-prompt text-sm mb-5 uppercase tracking-widest mt-8">CONTACTS</h4>
             <div class="space-y-3" id="studentListRightUI">
                 <div class="text-[10px] text-slate-600 dark:text-slate-400 font-medium text-center py-4 bg-white/60 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-400/50 dark:border-slate-600/50 shadow-inner">กำลังโหลดข้อมูลผู้ติดต่อ...</div>
@@ -314,7 +320,7 @@
     </aside>
 
     <script>
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbyDcg8d6HS5ul8_3vkJCgqOZnano4kNmgvqMgsdYl5vYzOAJmBin11VBkVULmWcnHBuAA/exec';
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbwtGzLlfhD4cbEc8GakUM3QoVtlvqeoolK82gbssv15jf5xa6fsfDetTvIZuVRS-asZow/exec';
         let currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
         if (!currentUser || String(currentUser.role).toLowerCase().trim() !== 'teacher') { window.location.replace('index.html'); }
 
@@ -399,8 +405,7 @@
             }
 
             if(target === 'stats') {
-                if(globalStatData.students.length === 0) loadAnalytics();
-                else renderTeacherTables();
+                loadAnalytics(); // ✨ โหลดอัตโนมัติทุกครั้งเมื่อเข้าเมนูสถิติ
             }
             if(target === 'settings') { updateProfileUI(); }
             
@@ -660,6 +665,7 @@
             document.getElementById('t_content').value = (l.content||"").replace(/\[YT:.*?\]\n?/, ""); 
             document.getElementById('t_quizFields').innerHTML=""; 
             
+            // ✨ ส่งข้อมูลคำถามเก่าเข้าไปวาดกล่องใหม่
             (l.questions||[]).filter(q=>q.q && q.q.trim() !== "").forEach(q=>addTeacherQuizField(q)); 
             
             document.getElementById('cancelEditBtn').classList.remove('hidden'); 
@@ -689,7 +695,7 @@
                 if(lastMsg.senderName === currentUser.name) {
                     if(lastMsg.reply && lastMsg.reply.trim() !== "") {
                         let reps = lastMsg.reply.split('<br><br>').filter(x => x.trim() !== "");
-                        latestText = c.name + ": " + reps[reps.length - 1];
+                        latestText = "คุณ: " + reps[reps.length - 1];
                     } else {
                         latestText = "คุณ: " + lastMsg.message;
                     }
@@ -977,6 +983,81 @@
                     updateProfileUI(); 
                     updateRightSidebar();
                     showiOSToast('fa-solid fa-check', 'บันทึกโปรไฟล์เรียบร้อย', 'bg-emerald-100', 'text-emerald-600');
+                }
+            });
+        }
+
+        // ✨ เปลี่ยนรหัสผ่าน ✨
+        function openChangePassword() {
+            Swal.fire({
+                title: 'เปลี่ยนรหัสผ่าน',
+                html: `
+                    <div class="space-y-4 mt-4 font-prompt text-left">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">รหัสผ่านเดิม</label>
+                            <input type="password" id="cp_old" class="w-full px-4 py-3 bg-slate-100 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-600 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white" placeholder="กรอกรหัสผ่านปัจจุบัน">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">รหัสผ่านใหม่</label>
+                            <input type="password" id="cp_new" class="w-full px-4 py-3 bg-slate-100 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-600 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white" placeholder="รหัสผ่านใหม่อย่างน้อย 4 ตัว">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">ยืนยันรหัสผ่านใหม่</label>
+                            <input type="password" id="cp_confirm" class="w-full px-4 py-3 bg-slate-100 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-600 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white" placeholder="พิมพ์รหัสใหม่อีกครั้ง">
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonColor: '#f05a28',
+                cancelButtonColor: '#94a3b8',
+                confirmButtonText: 'บันทึกรหัสผ่าน',
+                cancelButtonText: 'ยกเลิก',
+                preConfirm: () => {
+                    const oldP = document.getElementById('cp_old').value;
+                    const newP = document.getElementById('cp_new').value;
+                    const confP = document.getElementById('cp_confirm').value;
+
+                    if (!oldP || !newP || !confP) {
+                        Swal.showValidationMessage('กรุณากรอกข้อมูลให้ครบทุกช่อง');
+                        return false;
+                    }
+                    if (newP !== confP) {
+                        Swal.showValidationMessage('รหัสผ่านใหม่และการยืนยันไม่ตรงกัน!');
+                        return false;
+                    }
+                    if (newP.length < 4) {
+                        Swal.showValidationMessage('รหัสผ่านต้องมีอย่างน้อย 4 ตัวอักษร');
+                        return false;
+                    }
+                    return { oldPass: oldP, newPass: newP };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({title:'กำลังตรวจสอบ...', customClass: {popup: 'ios-popup'}, didOpen:()=>Swal.showLoading()});
+                    fetchGAS({
+                        action: "changePassword",
+                        username: currentUser.id, 
+                        oldPassword: result.value.oldPass,
+                        newPassword: result.value.newPass
+                    }).then(r => {
+                        if (r.status === "success") {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'สำเร็จ!',
+                                text: 'เปลี่ยนรหัสผ่านของคุณเรียบร้อยแล้ว',
+                                confirmButtonColor: '#f05a28',
+                                customClass: {popup: 'ios-popup'}
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'ไม่สามารถเปลี่ยนได้',
+                                text: r.message,
+                                confirmButtonColor: '#f05a28',
+                                customClass: {popup: 'ios-popup'}
+                            });
+                        }
+                    });
                 }
             });
         }
