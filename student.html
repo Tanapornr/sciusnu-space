@@ -86,14 +86,9 @@
         .dark .chat-bubble-received { background-color: rgba(40, 40, 40, 0.9); color: #f8fafc; border: 1px solid rgba(255,255,255,0.05); }
 
         .ios-center-popup {
-            background: rgba(255, 255, 255, 0.9) !important;
-            backdrop-filter: blur(24px) !important;
-            -webkit-backdrop-filter: blur(24px) !important;
-            border: 1px solid rgba(255, 255, 255, 0.6) !important;
-            border-radius: 24px !important;
-            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1) !important;
-            padding: 1.5rem !important;
-            width: auto !important; min-width: 260px !important; max-width: 300px !important;
+            background: rgba(255, 255, 255, 0.9) !important; backdrop-filter: blur(24px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.6) !important; border-radius: 24px !important;
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1) !important; padding: 1.5rem !important; width: auto !important; min-width: 260px !important;
         }
         .dark .ios-center-popup { background: rgba(30, 30, 30, 0.9) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; }
         
@@ -226,6 +221,29 @@
 
             <div id="view_lesson_detail" class="hidden max-w-4xl mx-auto">
                 <button onclick="nav('lessons')" class="mb-4 lg:mb-6 flex items-center glass-panel px-5 py-2.5 rounded-full shadow-md text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-white/80 dark:hover:bg-black/50 transition"><i class="fa-solid fa-arrow-left mr-2"></i> กลับ</button>
+                
+                <div id="lessonTopScoreBanner" class="hidden mb-6 transition-all duration-500 ease-out transform translate-y-0">
+                    <div class="bg-gradient-to-r from-emerald-500 to-teal-400 rounded-[1.5rem] p-1 shadow-lg shadow-emerald-500/20">
+                        <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-[1.3rem] p-4 lg:p-5 flex flex-wrap items-center justify-between gap-4">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 lg:w-14 lg:h-14 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center text-2xl shadow-inner shrink-0">
+                                    <i class="fa-solid fa-medal"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-800 dark:text-white text-base lg:text-lg font-prompt leading-tight">ผ่านบทเรียนแล้ว! ยอดเยี่ยมมาก 🎉</h4>
+                                    <p class="text-xs lg:text-sm text-slate-500 dark:text-slate-400 mt-0.5" id="topScoreDesc">ระบบได้บันทึกความคืบหน้าเรียบร้อยแล้ว</p>
+                                </div>
+                            </div>
+                            <div class="bg-emerald-50 dark:bg-emerald-900/30 px-5 py-2.5 rounded-xl border border-emerald-100 dark:border-emerald-800/50 text-center min-w-[100px]" id="topScoreDisplayBox">
+                                <p class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1">คะแนนของคุณ</p>
+                                <div class="text-2xl lg:text-3xl font-black text-emerald-600 dark:text-emerald-400 leading-none drop-shadow-sm">
+                                    <span id="topScoreResult">0</span><span id="topMaxScore" class="text-sm opacity-60">/1</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="glass-panel rounded-[1.5rem] lg:rounded-[2rem] p-4 lg:p-8 mb-6 shadow-md">
                     <div id="det_video_container" class="w-full aspect-video bg-black rounded-xl lg:rounded-[1.5rem] mb-6 overflow-hidden hidden shadow-inner relative group border border-white/20">
                         <div id="ytplayer_div" class="w-full h-full absolute inset-0"></div>
@@ -239,11 +257,6 @@
                 
                 <div id="quizSectionWrapper" class="glass-panel rounded-[1.5rem] lg:rounded-[2rem] p-5 lg:p-8 border-t-8 border-[#f05a28] shadow-md hidden">
                     <h3 id="quizSectionTitle" class="text-xl lg:text-2xl font-bold mb-6 border-b border-slate-300/50 dark:border-slate-700/50 pb-4 font-prompt dark:text-white">แบบทดสอบประจำบท</h3>
-                    <div id="quizCompletedMsg" class="hidden bg-emerald-50/80 dark:bg-emerald-900/40 rounded-2xl p-8 lg:p-10 text-center border border-emerald-200 dark:border-emerald-800">
-                        <i class="fa-solid fa-circle-check text-5xl text-emerald-500 mb-4 drop-shadow-sm"></i>
-                        <h4 id="quizCompletedTitle" class="text-xl font-bold text-emerald-900 dark:text-emerald-300 mb-2 font-prompt">คุณทำคะแนนได้:</h4>
-                        <div id="quizCompletedScoreBox" class="text-4xl lg:text-5xl font-black text-emerald-600 dark:text-emerald-400"><span id="quizScoreResult">0</span><span id="quizMaxScore" class="text-xl text-emerald-400/60"></span></div>
-                    </div>
                     <form id="quizForm" class="space-y-4 lg:space-y-6"><div id="quizContainer"></div></form>
                 </div>
             </div>
@@ -324,7 +337,7 @@
 
             <h4 class="font-bold text-slate-800 dark:text-slate-200 font-prompt text-sm mb-5 uppercase tracking-widest mt-8">CONTACTS</h4>
             <div class="space-y-3" id="mentorListUI">
-                <div class="text-[10px] text-slate-500 dark:text-slate-400 text-center py-4 bg-white/40 dark:bg-black/20 rounded-xl border border-dashed border-slate-400/50 dark:border-slate-600/50 shadow-inner">กำลังโหลดข้อมูลผู้ติดต่อ...</div>
+                <div class="text-[10px] text-slate-600 dark:text-slate-400 font-medium text-center py-4 bg-white/40 dark:bg-black/20 rounded-xl border border-dashed border-slate-400/50 dark:border-slate-600/50 shadow-inner">กำลังโหลดข้อมูลผู้ติดต่อ...</div>
             </div>
         </div>
     </aside>
@@ -333,7 +346,6 @@
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbwy0aqA_Am-Ey1iG3VNpcwhvL_QW536rVNrMNUeN7_ZH2lgDWHlfiQXnfIMa4hG6gSJKQ/exec';
         let currentUser = JSON.parse(sessionStorage.getItem('currentUser')) || JSON.parse(localStorage.getItem('currentUser'));
         
-        // เช็คเผื่อ ID หาไม่เจอ
         if (currentUser && currentUser.username && !currentUser.id) {
             currentUser.id = currentUser.username;
         }
@@ -511,16 +523,6 @@
             }
 
             if(target === 'inbox') { 
-                let admins = allUsersData.filter(u => String(u.role || u.Role || "").toLowerCase().trim() === 'admin');
-                let teachers = allUsersData.filter(u => String(u.role || u.Role || "").toLowerCase().trim() === 'teacher');
-                let allContacts = [...admins.map(a => a.name || a.Name), ...teachers.map(s => s.name || s.Name)];
-                
-                [...new Set(allContacts)].forEach(cName => {
-                    if(!cName) return;
-                    let totalMsgs = countMessages(cName);
-                    localStorage.setItem('readMsgs_' + currentUser.id + '_' + cName, totalMsgs);
-                });
-
                 renderChatContacts(); 
                 if(activeChatContact) openChat(activeChatContact); 
                 if(!chatTimer) chatTimer = setInterval(loadMessagesForChat, 5000); 
@@ -553,6 +555,7 @@
                 }
             });
             localStorage.setItem('readMsgs_' + currentUser.id + '_' + contactName, receivedCount);
+            updateUnreadBadges();
         }
 
         function countMessages(contactName) {
@@ -656,7 +659,6 @@
             let scoreHtml = '';
             
             if (totalQs > 0) {
-                // แก้ให้คะแนนเต็มแสดงตามจำนวนข้อจริง
                 scoreHtml = `<div class="mt-auto border-t border-slate-300/40 dark:border-slate-600/40 pt-4"><span class="text-xs font-bold text-[#f05a28]"><i class="fa-solid fa-star text-yellow-500 mr-1"></i> Score: ${isC ? l.studentScore : 0}/${totalQs}</span></div>`;
             } else {
                 if(isC) {
@@ -908,6 +910,7 @@
             }
         }
 
+        // ✨ แสดง UI คะแนนสวยๆ ด้านบนวิดีโอทันทีที่เรียนจบ ✨
         function openLesson(idx) {
             currentLesson = allLessons[idx]; 
             nav('lesson_detail');
@@ -918,15 +921,22 @@
             let ytId = extractYouTubeID(currentLesson.content.match(/\[YT:(.*?)\]/)?.[1] || "");
             let vQs = (currentLesson.questions || []).filter(q => q && q.q && q.q.trim() !== "");
             let totalQs = vQs.length;
+            
+            let topBanner = document.getElementById('lessonTopScoreBanner');
             let quizWrapper = document.getElementById('quizSectionWrapper');
 
-            if (totalQs === 0) {
-                document.getElementById('quizCompletedTitle').innerText = "เยี่ยมมาก! คุณเรียนจบบทนี้แล้ว 🎉";
-                document.getElementById('quizCompletedScoreBox').classList.add('hidden');
+            // จัดการเปิด/ปิด ป้ายคะแนนด้านบน
+            if (currentLesson.studentScore !== null && currentLesson.studentScore !== undefined) {
+                topBanner.classList.remove('hidden');
+                document.getElementById('topScoreResult').innerText = currentLesson.studentScore;
+                document.getElementById('topMaxScore').innerText = "/" + (totalQs > 0 ? totalQs : 0);
+                
+                // ซ่อนช่องทำข้อสอบด้านล่างเพื่อความสะอาดตา
+                quizWrapper.classList.add('hidden');
             } else {
-                document.getElementById('quizCompletedTitle').innerText = "คุณทำคะแนนได้:";
-                document.getElementById('quizCompletedScoreBox').classList.remove('hidden');
-                document.getElementById('quizMaxScore').innerText = "/" + totalQs;
+                topBanner.classList.add('hidden');
+                if(!ytId) quizWrapper.classList.remove('hidden'); // ถ้าไม่มีวิดีโอ ให้โชว์แบบทดสอบด้านล่าง
+                else quizWrapper.classList.add('hidden'); // ถ้ามีวิดีโอ แบบทดสอบจะเด้งขึ้นมาระหว่างดูเอง
             }
 
             if(ytId) { 
@@ -942,15 +952,6 @@
                     playerVars: { 'rel': 0, 'playsinline': 1, 'modestbranding': 1, 'enablejsapi': 1 },
                     events: { 'onReady': onYouTubePlayerReady, 'onStateChange': onYouTubePlayerStateChange }
                 });
-
-                if(currentLesson.studentScore !== null && currentLesson.studentScore !== undefined) {
-                    quizWrapper.classList.remove('hidden');
-                    document.getElementById('quizForm').classList.add('hidden'); 
-                    document.getElementById('quizCompletedMsg').classList.remove('hidden'); 
-                    document.getElementById('quizScoreResult').innerText = currentLesson.studentScore; 
-                } else {
-                    quizWrapper.classList.add('hidden'); 
-                }
 
             } else { 
                 document.getElementById('det_video_container').classList.add('hidden'); 
@@ -970,15 +971,10 @@
                 `;
                 imgContainer.classList.remove('hidden');
                 
-                quizWrapper.classList.remove('hidden');
-                
-                if(currentLesson.studentScore !== null && currentLesson.studentScore !== undefined) { 
-                    document.getElementById('quizForm').classList.add('hidden'); 
-                    document.getElementById('quizCompletedMsg').classList.remove('hidden'); 
-                    document.getElementById('quizScoreResult').innerText = currentLesson.studentScore; 
-                } else {
+                if (currentLesson.studentScore === null || currentLesson.studentScore === undefined) {
                     document.getElementById('quizForm').classList.remove('hidden'); 
                     document.getElementById('quizCompletedMsg').classList.add('hidden');
+                    
                     if(totalQs === 0) {
                         document.getElementById('quizContainer').innerHTML = `<div class="text-center py-8"><button type="button" onclick="submitQuiz(true,0)" class="bg-[#f05a28] text-white font-bold px-10 py-4 rounded-full shadow-lg hover:bg-[#d94a1d] transition border border-white/20">บันทึกการเรียนจบ</button></div>`;
                     } else { 
@@ -1020,7 +1016,7 @@
             });
         }
 
-        // ✨ แก้ไขระบบวาดการ์ดรายชื่อ ให้แสดงข้อมูลชัดเจน ไม่หาย และเรียงสวยงาม
+        // ✨ สร้างกล่องรายชื่อ ป้องกันรายชื่อหาย
         function buildContactCard(c, type) {
             let isActive = activeChatContact === c.name ? "active" : "";
             let pPic = c.pic ? `<img src="${c.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center font-bold text-xs lg:text-sm">${c.initials}</div>`;
@@ -1060,7 +1056,7 @@
             let subText = "";
             if (rRole === 'admin') {
                 subText = `<span class="text-rose-500 font-bold"><i class="fa-solid fa-user-shield"></i> Admin</span>`;
-            } else if (rRole === 'teacher' && c.room && c.room !== "-") {
+            } else if (c.room && c.room !== "-") {
                 subText = `<i class="fa-solid fa-book mr-1 text-slate-400"></i> วิชา: ${c.room}`;
             }
 
@@ -1069,30 +1065,28 @@
             if (type === "sidebar") {
                 return `
                 <div class="flex items-center justify-between group p-3 rounded-2xl border border-slate-200/50 dark:border-slate-700/50 hover:border-orange-300 dark:hover:border-orange-700 shadow-sm transition mb-3 bg-white/50 dark:bg-black/30 backdrop-blur-sm cursor-pointer" onclick="nav('inbox'); openChat('${(c.name||'').replace(/'/g, "\\'")}')">
-                    <div class="flex items-center gap-3 w-full overflow-hidden pr-2">
-                        <div class="relative w-11 h-11 rounded-full ${c.bgColor || 'bg-slate-200'} ${c.textColor || 'text-slate-600'} overflow-hidden shadow-sm shrink-0 flex items-center justify-center border border-white/50">
-                            ${pPic}
+                    <div class="flex items-start gap-3">
+                        <div class="relative w-12 h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm shrink-0 flex items-center justify-center border border-white/50">${pPic}
                             ${badgeHtml}
                         </div>
-                        <div class="flex flex-col flex-1 min-w-0">
-                            <p class="text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight truncate w-full">${c.name}</p>
-                            ${subText ? `<p class="text-[9px] text-slate-500 dark:text-slate-400 truncate mt-0.5 w-full">${subText}</p>` : ''}
-                            <p class="text-[10px] mt-0.5 w-full truncate ${unreadClass}" title="${latestText}">${latestText}</p>
+                        <div class="flex flex-col max-w-[130px] lg:max-w-[150px]">
+                            <p class="text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight truncate">${c.name}</p>
+                            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5 ${unreadClass}" title="${latestText}">${latestText}</p>
+                            ${subText}
                         </div>
                     </div>
-                    <button class="w-8 h-8 rounded-full border border-orange-200/50 dark:border-orange-900/50 text-[#f05a28] flex items-center justify-center hover:bg-[#f05a28] hover:text-white transition shadow-sm shrink-0">
+                    <button class="w-9 h-9 rounded-full border border-orange-200/50 dark:border-orange-900/50 text-[#f05a28] flex items-center justify-center hover:bg-[#f05a28] hover:text-white transition shadow-sm shrink-0">
                         <i class="fa-regular fa-comment-dots text-sm pointer-events-none"></i>
                     </button>
                 </div>`;
             } else {
                 return `
-                <div class="chat-contact ${isActive} flex items-center gap-3 p-3 lg:p-4 rounded-xl cursor-pointer hover:bg-white/80 dark:hover:bg-black/40 transition mb-1 border border-transparent shadow-sm" onclick="openChat('${(c.name||'').replace(/'/g, "\\'")}')">
-                    <div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor || 'bg-slate-200'} ${c.textColor || 'text-slate-600'} overflow-hidden shadow-sm border border-white/80 shrink-0 flex items-center justify-center">
-                        ${pPic}
+                <div class="chat-contact ${isActive} flex items-center gap-3 p-3 lg:p-4 rounded-xl cursor-pointer hover:bg-white/50 dark:hover:bg-black/30 transition mb-1 border border-transparent shadow-sm" onclick="openChat('${(c.name||'').replace(/'/g, "\\'")}')">
+                    <div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm border border-white/50 shrink-0 flex items-center justify-center">${pPic}
                         ${badgeHtml}
                     </div>
                     <div class="flex-1 min-w-0 flex flex-col justify-center">
-                        <h4 class="font-bold text-xs lg:text-sm truncate w-full text-slate-800 dark:text-slate-200 leading-tight">${c.name}</h4>
+                        <h4 class="font-bold text-xs lg:text-sm truncate text-slate-800 dark:text-slate-200 leading-tight">${c.name}</h4>
                         ${subText ? `<p class="text-[9px] text-slate-500 dark:text-slate-400 truncate mt-0.5 w-full">${subText}</p>` : ''}
                         <p class="text-[10px] mt-0.5 w-full truncate ${unreadClass}" title="${latestText}">${latestText}</p>
                     </div>
@@ -1100,46 +1094,34 @@
             }
         }
 
-        // ✨ วาดรายชื่อครูและแอดมิน เพื่อให้นักเรียนแชทหาได้ ไม่หายตอนโหลดใหม่
         function renderChatContacts() {
             let tList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'teacher').map(u => ({...u, bgColor:'bg-indigo-100 dark:bg-indigo-900/50', textColor:'text-indigo-600 dark:text-indigo-400', initials:getInitials(u.name || u.Name || "T"), room:u.assigned || u.room || u.Room || "-"}));
-            
             let aList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'admin').map(u => ({...u, bgColor:'bg-rose-100 dark:bg-rose-900/50', textColor:'text-rose-600 dark:text-rose-400', initials:getInitials(u.name || u.Name || "A"), room:"-"}));
             
             let htmlInboxList = "";
             let htmlRightSidebar = "";
 
             if(tList.length === 0 && aList.length === 0) {
-                 htmlInboxList = '<div class="text-center p-4 text-xs text-slate-600 dark:text-slate-400 font-medium border-2 border-dashed border-slate-400/50 dark:border-slate-600/50 rounded-xl mx-4 mt-4 bg-white/40 dark:bg-transparent">ไม่มีผู้ติดต่อ</div>';
-                 htmlRightSidebar = '<div class="text-[10px] text-slate-600 dark:text-slate-400 font-medium text-center py-4 bg-white/60 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-400/50 dark:border-slate-600/50 shadow-inner">ไม่มีข้อมูลผู้ติดต่อ</div>';
+                 htmlInboxList = '<div class="text-center p-4 text-xs text-slate-500 dark:text-slate-400 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl mx-4 mt-4 bg-white/40 dark:bg-transparent">ไม่มีผู้ติดต่อ</div>';
+                 htmlRightSidebar = '<div class="text-[10px] text-slate-500 dark:text-slate-400 text-center py-4 bg-white/40 dark:bg-black/20 rounded-xl border border-dashed border-slate-400/50 dark:border-slate-600/50 shadow-inner">ไม่มีข้อมูลผู้ติดต่อ</div>';
             } else {
                 if(tList.length > 0) {
-                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-widest mt-2">อาจารย์ผู้สอน</p>`;
-                    tList.forEach(c => {
-                        htmlInboxList += buildContactCard(c, "inbox");
-                        htmlRightSidebar += buildContactCard(c, "sidebar");
-                    });
+                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-widest mt-2">อาจารย์ผู้สอน</p>`;
+                    tList.forEach(c => { htmlInboxList += buildContactCard(c, "inbox"); htmlRightSidebar += buildContactCard(c, "sidebar"); });
                 }
-                
                 if(aList.length > 0) {
-                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-widest mt-4">ผู้ดูแลระบบ</p>`;
-                    aList.forEach(c => {
-                        htmlInboxList += buildContactCard(c, "inbox");
-                        htmlRightSidebar += buildContactCard(c, "sidebar");
-                    });
+                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-widest mt-4">ผู้ดูแลระบบ</p>`;
+                    aList.forEach(c => { htmlInboxList += buildContactCard(c, "inbox"); htmlRightSidebar += buildContactCard(c, "sidebar"); });
                 }
             }
             
-            let clist = document.getElementById('chatContactList');
-            if(clist) clist.innerHTML = htmlInboxList;
-            
-            let mentorUI = document.getElementById('mentorListUI');
-            if(mentorUI) mentorUI.innerHTML = htmlRightSidebar;
+            let clist = document.getElementById('chatContactList'); if(clist) clist.innerHTML = htmlInboxList;
+            let mentorUI = document.getElementById('mentorListUI'); if(mentorUI) mentorUI.innerHTML = htmlRightSidebar;
 
             updateUnreadBadges(); 
         }
 
-        // ✨ ตรรกะใหม่ แสดงการอ่านเหมือนแอปแชทจริง
+        // ✨ ตรรกะใหม่ แสดงการอ่าน (Read Receipts)
         function openChat(n) {
             activeChatContact = n; document.getElementById('chatPlaceholder').classList.add('hidden'); 
             
@@ -1148,14 +1130,12 @@
             
             let contactInfo = [...allUsersData].map(u => {
                 let roleStr = String(u.role || u.Role || "").toLowerCase().trim();
-                let sId = u.id || u.username || u.Username || "-";
                 return {
                     name: u.name || u.Name || "", 
                     role: roleStr === 'admin' ? 'Admin' : (roleStr === 'teacher' ? 'Teacher' : 'Student'), 
                     initials: getInitials(u.name || u.Name || "A"), 
                     pic: u.pic || u.ProfilePic || "", 
-                    room: u.assigned || u.room || u.Room || "-",
-                    id: sId
+                    room: u.assigned || u.room || u.Room || "-"
                 }
             }).find(x => x.name === n);
 
@@ -1183,8 +1163,8 @@
                 let msgDate = new Date(m.date);
                 let d = msgDate.toLocaleString('th-TH', { hour:'2-digit', minute:'2-digit' });
                 let sPicHtml = partnerPicHtml.replace('text-sm', 'text-[8px]');
-                let isLastMsg = (index === sortedMsgs.length - 1);
                 
+                // ตรวจสอบว่ามีข้อความตอบกลับจากอีกฝั่งหลังจากข้อความนี้ไหม เพื่อดูว่าอ่านหรือยัง
                 let isRead = false;
                 let diffMins = (new Date() - msgDate) / 60000;
 
@@ -1200,6 +1180,8 @@
                         }
                     }
                 }
+                
+                let isLastMsg = (index === sortedMsgs.length - 1);
                 
                 if(m.senderName === currentUser.name) {
                     if (m.message && m.message.trim() !== "") {
@@ -1242,11 +1224,11 @@
             document.getElementById('chatHistory').innerHTML = h; document.getElementById('chatHistory').scrollTop = document.getElementById('chatHistory').scrollHeight;
         }
 
+        // ✨ ป้องกันรายชื่อหายตอนแชท
         function sendChatMessage() {
             let msg = document.getElementById('chatInputMessage').value.trim(); 
             if(!msg || !activeChatContact) return;
             
-            // Backup ตัวแปรสำคัญ ป้องกันรายชื่อหาย
             let savedContacts = [...allUsersData];
             let activeContactBackup = activeChatContact;
             
@@ -1310,7 +1292,6 @@
 
                     if(isChanged) {
                         cachedMessages = r.data || []; 
-                        
                         if(activeChatContact) openChat(activeChatContact); 
                         else renderChatContacts(); 
                     }
