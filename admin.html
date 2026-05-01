@@ -124,7 +124,7 @@
             <nav class="flex flex-col font-prompt text-slate-800 dark:text-slate-200 font-semibold text-sm" id="sidebarMenu">
                 <a onclick="nav('system')" id="nav_system" class="menu-item px-8 py-4 flex items-center active"><i class="fa-solid fa-gear w-6 mr-3 text-lg"></i> <span>ตั้งค่าระบบ</span></a>
                 <a onclick="nav('manage')" id="nav_manage" class="menu-item px-8 py-4 flex items-center relative"><i class="fa-solid fa-pen-ruler w-6 mr-3 text-lg"></i> <span>จัดการเนื้อหา</span></a>
-                <a onclick="nav('inbox')" id="nav_inbox" class="menu-item px-8 py-4 flex items-center relative"><i class="fa-solid fa-inbox w-6 mr-3 text-lg"></i> <span>กล่องข้อความ</span><span class="inbox-badge hidden absolute right-6 bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm border border-white/30">0</span></a>
+                <a onclick="nav('inbox')" id="nav_inbox" class="menu-item px-8 py-4 flex items-center relative"><i class="fa-solid fa-inbox w-6 mr-3 text-lg"></i> <span>กล่องข้อความ</span><span class="inbox-badge hidden absolute right-6 bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">0</span></a>
             </nav>
         </div>
 
@@ -269,7 +269,8 @@
                         <div class="flex items-center gap-3 lg:gap-4 w-full pr-2">
                             <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shadow-sm bg-slate-200 dark:bg-slate-700 flex items-center justify-center font-bold text-indigo-600 dark:text-indigo-400 border border-white/80 shrink-0" id="chatHeaderAvatar"></div>
                             <div class="flex flex-col flex-1 min-w-0">
-                                <h3 class="font-bold text-sm lg:text-lg text-slate-800 dark:text-white leading-tight truncate w-full" id="chatHeaderName">Name</h3>
+                                <h3 class="font-bold text-sm lg:text-lg text-slate-800 dark:text-white mt-1 flex items-center truncate w-full" id="chatHeaderName">Name</h3>
+                                <div id="chatHeaderSub" class="w-full"></div>
                             </div>
                         </div>
                     </div>
@@ -387,7 +388,6 @@
             });
         }
 
-        // ✨ เปลี่ยนให้ลบเฉพาะ Auth Token ไม่ให้ความจำการอ่านแชทหาย ✨
         function logout() { 
             sessionStorage.removeItem('currentUser'); 
             window.location.replace('index.html'); 
@@ -401,6 +401,10 @@
 
         window.onload = () => { 
             initTheme();
+            // เช็คว่ามีข้อมูลเดิมไหมตอนโหลดหน้าใหม่
+            if(!currentUser && localStorage.getItem('currentUser')) {
+                 currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            }
             updateProfileUI(); nav('system'); loadDashboardData(); 
             let chatInput = document.getElementById("chatInputMessage"); if(chatInput) { chatInput.addEventListener("keypress", (e) => { if(e.key === "Enter") sendChatMessage(); }); }
         };
@@ -426,15 +430,13 @@
             document.getElementById('mainScrollArea').scrollTop = 0;
         }
 
-        // ✨ ตรรกะใหม่: นับเฉพาะข้อความที่มีผู้ส่งหาเรา (เราเป็นผู้รับ) ✨
+        // ✨ ตรรกะใหม่: นับเฉพาะข้อความที่มีผู้ส่งหาเรา และเช็คการดึงค่าให้ถูกต้อง ✨
         function getUnreadCount(contactName) {
             let receivedCount = 0;
             cachedMessages.forEach(m => {
-                // นับข้อความที่ contact ส่งหาเรา
                 if (m.senderName === contactName && m.receiver === currentUser.name && m.message && m.message.trim() !== "") {
                     receivedCount++;
                 }
-                // นับการ Reply ที่ contact ตอบกลับข้อความของเรา
                 if (m.senderName === currentUser.name && m.receiver === contactName && m.reply && m.reply.trim() !== "") {
                     receivedCount += m.reply.split('<br><br>').filter(x => x.trim() !== "").length;
                 }
@@ -444,7 +446,7 @@
             return unread > 0 ? unread : 0;
         }
 
-        // ✨ บันทึกจำนวนข้อความ "ที่เราได้รับทั้งหมด" ลง LocalStorage
+        // ✨ บันทึกจำนวนข้อความที่อ่านแล้วลง LocalStorage ✨
         function markChatAsRead(contactName) {
             let receivedCount = 0;
             cachedMessages.forEach(m => {
@@ -461,13 +463,21 @@
         function updateUnreadBadges() {
             let globalUnread = 0;
             
-            // หาผู้ติดต่อทั้งหมดที่มีในระบบ
-            let tList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'teacher');
-            let sList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'student');
-            let allContacts = [...tList.map(t => t.name || t.Name), ...sList.map(s => s.name || s.Name)];
-            let uniqueContacts = [...new Set(allContacts)];
+            // หาผู้ติดต่อทั้งหมดที่มีในระบบและมีประวัติการแชท
+            let contactSet = new Set();
+            if(allUsersData && allUsersData.length > 0) {
+                allUsersData.forEach(u => {
+                    if (u.name && u.name !== currentUser.name) contactSet.add(u.name);
+                });
+            }
+            
+            // สำรองด้วยคนที่เคยแชทกับเรา
+            cachedMessages.forEach(m => {
+                if (m.senderName !== currentUser.name) contactSet.add(m.senderName);
+                if (m.receiver !== currentUser.name) contactSet.add(m.receiver);
+            });
 
-            uniqueContacts.forEach(cName => {
+            contactSet.forEach(cName => {
                 if(cName) { globalUnread += getUnreadCount(cName); }
             });
 
@@ -634,7 +644,7 @@
 
         function deleteLesson(t) { Swal.fire({title:'ลบบทเรียน?', text: 'คุณแน่ใจหรือไม่ที่จะลบเนื้อหานี้?', icon:'warning', showCancelButton:true, customClass:{popup:'ios-popup'}, confirmButtonColor:'#f05a28', confirmButtonText:'ยืนยันการลบ', cancelButtonText:'ยกเลิก'}).then(r=>{if(r.isConfirmed) { Swal.fire({title:'Deleting...', customClass:{popup:'ios-popup'}, didOpen:()=>Swal.showLoading()}); fetchGAS({action:"deleteLesson", title:t}).then(()=>loadDashboardData()); }}); }
 
-        // ✨ ปรับแต่งให้ดึง ID (Username) ของผู้ใช้มาแสดงในกล่องรายชื่อผู้ติดต่อ
+        // ✨ แก้ไขฟังก์ชันสร้างการ์ดรายชื่อ ให้แสดง ID ของนักเรียน และตัดคำไม่ให้ล้น ✨
         function buildContactCard(c, type) {
             let isActive = activeChatContact === c.name ? "active" : "";
             let pPic = c.pic ? `<img src="${c.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center font-bold text-xs lg:text-sm">${c.initials}</div>`;
@@ -674,15 +684,13 @@
             let subText = "";
             if (rRole === 'admin') {
                 subText = `<span class="text-rose-500 font-bold"><i class="fa-solid fa-user-shield"></i> Admin</span>`;
-            } else if (c.class && c.class !== "-") {
-                subText = `<i class="fa-solid fa-graduation-cap mr-1 text-slate-400"></i> ${c.class}`;
-            } else if (c.room && c.room !== "-") {
+            } else if (rRole === 'teacher' && c.room && c.room !== "-") {
                 subText = `<i class="fa-solid fa-book mr-1 text-slate-400"></i> วิชา: ${c.room}`;
-            }
-
-            // ถ้ามี ID ให้เพิ่มเข้าไป
-            if(c.id && c.id !== "-") {
-                subText = `<span class="text-indigo-500 dark:text-indigo-400 font-bold">ID: ${c.id}</span> ` + (subText ? ` | ${subText}` : "");
+            } else if (rRole === 'student') {
+                let sInfo = []; 
+                if(c.id && c.id !== "-") sInfo.push(`<span class="text-indigo-500 dark:text-indigo-400 font-bold">ID: ${c.id}</span>`); 
+                if(c.class && c.class !== "-") sInfo.push(`Class: ${c.class}`);
+                subText = sInfo.join(' | ');
             }
 
             let unreadClass = unreadCount > 0 ? 'font-bold text-slate-800 dark:text-white' : 'font-medium text-slate-500 dark:text-slate-400';
@@ -722,10 +730,12 @@
         }
 
         function renderChatContacts() {
-            let tList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'teacher').map(u => ({...u, bgColor:'bg-indigo-100 dark:bg-indigo-900/50', textColor:'text-indigo-600 dark:text-indigo-400', initials:getInitials(u.name || u.Name || "T"), room:u.assigned || u.room || u.Room || "-", id: u.username || u.Username || "-"}));
+            let tList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'teacher').map(u => ({...u, bgColor:'bg-indigo-100 dark:bg-indigo-900/50', textColor:'text-indigo-600 dark:text-indigo-400', initials:getInitials(u.name || u.Name || "T"), room:u.assigned || u.room || u.Room || "-"}));
             
+            // ดึง ID เพิ่มเติมสำหรับนักเรียน
             let sList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'student').map(u => {
                 let sId = u.id || u.username || u.Username || "-";
+                // ใช้ Username เป็น ID หากไม่มีฟิลด์ ID โดยตรง และหาเพิ่มจาก history
                 if(sId === "-") { let fMsg = cachedMessages.find(m => m.senderName === (u.name || u.Name)); if(fMsg) sId = fMsg.senderId || "-"; }
                 return {...u, bgColor:'bg-slate-200 dark:bg-slate-700', textColor:'text-slate-600 dark:text-slate-300', initials:getInitials(u.name || u.Name || "S"), class:u.assigned || u.room || u.Room || "-", id: sId};
             });
@@ -890,7 +900,6 @@
 
                     if(isChanged) {
                         cachedMessages = r.data || []; 
-                        
                         if(activeChatContact) openChat(activeChatContact); 
                         else renderChatContacts(); 
                     }
@@ -1016,7 +1025,6 @@
         // ✨ เปลี่ยนให้ลบเฉพาะ Auth Token ไม่ให้ความจำการอ่านแชทหาย ✨
         function logout() { 
             sessionStorage.removeItem('currentUser'); 
-            // เอา localStorage.removeItem('currentUser') ออก เพื่อไม่ให้กระทบกับข้อมูลการอ่านแชทที่บันทึกไว้ใน LocalStorage ตัวอื่นๆ
             window.location.replace('index.html'); 
         }
     </script>
