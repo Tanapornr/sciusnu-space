@@ -114,7 +114,7 @@
 
     <div id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
-    <aside id="mainSidebar" class="w-72 lg:w-64 flex flex-col flex-shrink-0 z-50 bg-white/90 dark:bg-[#1a1614]/95 backdrop-blur-2xl border-r border-white/80 dark:border-white/5 shadow-2xl lg:bg-white/60 lg:backdrop-blur-xl">
+    <aside id="mainSidebar" class="glass-panel w-72 lg:w-64 flex flex-col flex-shrink-0 z-50 border-r border-white/80 dark:border-white/5 shadow-2xl lg:bg-white/60 lg:backdrop-blur-xl">
         <div class="h-20 lg:h-24 flex items-center px-8 border-b border-slate-200/50 dark:border-white/5 cursor-pointer" onclick="location.reload()">
             <div class="w-8 h-8 bg-[#f05a28] text-white rounded-full flex items-center justify-center text-sm shadow-md mr-3"><i class="fa-solid fa-sparkles"></i></div>
             <h1 class="text-xl font-black font-prompt text-[#f05a28] uppercase tracking-wide">SCiUSNU SPACE</h1>
@@ -124,7 +124,7 @@
             <nav class="flex flex-col font-prompt text-slate-800 dark:text-slate-200 font-semibold text-sm" id="sidebarMenu">
                 <a onclick="nav('system')" id="nav_system" class="menu-item px-8 py-4 flex items-center active"><i class="fa-solid fa-gear w-6 mr-3 text-lg"></i> <span>ตั้งค่าระบบ</span></a>
                 <a onclick="nav('manage')" id="nav_manage" class="menu-item px-8 py-4 flex items-center relative"><i class="fa-solid fa-pen-ruler w-6 mr-3 text-lg"></i> <span>จัดการเนื้อหา</span></a>
-                <a onclick="nav('inbox')" id="nav_inbox" class="menu-item px-8 py-4 flex items-center relative"><i class="fa-solid fa-inbox w-6 mr-3 text-lg"></i> <span>กล่องข้อความ</span><span class="inbox-badge hidden absolute right-6 bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">0</span></a>
+                <a onclick="nav('inbox')" id="nav_inbox" class="menu-item px-8 py-4 flex items-center relative"><i class="fa-solid fa-inbox w-6 mr-3 text-lg"></i> <span>กล่องข้อความ</span><span class="inbox-badge hidden absolute right-6 bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm border border-white/30">0</span></a>
             </nav>
         </div>
 
@@ -143,6 +143,11 @@
                 <button onclick="toggleSidebar()" class="lg:hidden w-10 h-10 flex items-center justify-center text-slate-700 dark:text-slate-300 bg-white/90 dark:bg-black/50 backdrop-blur-md rounded-xl shadow-sm"><i class="fa-solid fa-bars-staggered text-xl"></i></button>
                 <div class="hidden lg:flex items-center font-bold text-rose-600 bg-rose-50 dark:bg-rose-900/30 px-5 py-2.5 rounded-full border border-rose-200/50 dark:border-rose-800/50 text-sm shadow-sm"><i class="fa-solid fa-user-shield mr-2"></i> โหมดผู้ดูแลระบบ (Admin)</div>
                 <div class="lg:hidden font-black font-prompt text-[#f05a28] text-lg tracking-wide">SCiUSNU SPACE</div>
+            </div>
+
+            <div class="flex-1 max-w-lg mx-4 relative hidden sm:block">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400"></i>
+                <input type="text" id="globalSearchInput" placeholder="ค้นหานักเรียนหรือบทเรียน..." class="w-full pl-11 pr-4 py-2.5 bg-white/80 dark:bg-black/40 backdrop-blur-md border border-white dark:border-white/10 rounded-full outline-none focus:ring-2 focus:ring-orange-400 transition text-sm text-slate-800 dark:text-white dark:placeholder-slate-400 shadow-inner font-medium">
             </div>
 
             <div class="flex items-center gap-3 ml-auto">
@@ -264,8 +269,7 @@
                         <div class="flex items-center gap-3 lg:gap-4 w-full pr-2">
                             <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shadow-sm bg-slate-200 dark:bg-slate-700 flex items-center justify-center font-bold text-indigo-600 dark:text-indigo-400 border border-white/80 shrink-0" id="chatHeaderAvatar"></div>
                             <div class="flex flex-col flex-1 min-w-0">
-                                <h3 class="font-bold text-sm lg:text-lg text-slate-800 dark:text-white mt-1 flex items-center truncate w-full" id="chatHeaderName">Name</h3>
-                                <div id="chatHeaderSub" class="w-full"></div>
+                                <h3 class="font-bold text-sm lg:text-lg text-slate-800 dark:text-white leading-tight truncate w-full" id="chatHeaderName">Name</h3>
                             </div>
                         </div>
                     </div>
@@ -630,7 +634,7 @@
 
         function deleteLesson(t) { Swal.fire({title:'ลบบทเรียน?', text: 'คุณแน่ใจหรือไม่ที่จะลบเนื้อหานี้?', icon:'warning', showCancelButton:true, customClass:{popup:'ios-popup'}, confirmButtonColor:'#f05a28', confirmButtonText:'ยืนยันการลบ', cancelButtonText:'ยกเลิก'}).then(r=>{if(r.isConfirmed) { Swal.fire({title:'Deleting...', customClass:{popup:'ios-popup'}, didOpen:()=>Swal.showLoading()}); fetchGAS({action:"deleteLesson", title:t}).then(()=>loadDashboardData()); }}); }
 
-        // ✨ แก้ไขส่วน Sidebar ให้นำข้อมูล วิชา/แอดมิน ลงมาบรรทัดล่างไม่ให้ล้น ✨
+        // ✨ ปรับแต่งให้ดึง ID (Username) ของผู้ใช้มาแสดงในกล่องรายชื่อผู้ติดต่อ
         function buildContactCard(c, type) {
             let isActive = activeChatContact === c.name ? "active" : "";
             let pPic = c.pic ? `<img src="${c.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center font-bold text-xs lg:text-sm">${c.initials}</div>`;
@@ -668,11 +672,17 @@
 
             let rRole = String(c.role || "").toLowerCase();
             let subText = "";
-            if (rRole === 'teacher' && c.room && c.room !== "-") {
+            if (rRole === 'admin') {
+                subText = `<span class="text-rose-500 font-bold"><i class="fa-solid fa-user-shield"></i> Admin</span>`;
+            } else if (c.class && c.class !== "-") {
+                subText = `<i class="fa-solid fa-graduation-cap mr-1 text-slate-400"></i> ${c.class}`;
+            } else if (c.room && c.room !== "-") {
                 subText = `<i class="fa-solid fa-book mr-1 text-slate-400"></i> วิชา: ${c.room}`;
-            } else if (rRole === 'student') {
-                let sInfo = []; if(c.id && c.id !== "-") sInfo.push(`ID: ${c.id}`); if(c.class && c.class !== "-") sInfo.push(`Class: ${c.class}`);
-                subText = sInfo.join(' | ');
+            }
+
+            // ถ้ามี ID ให้เพิ่มเข้าไป
+            if(c.id && c.id !== "-") {
+                subText = `<span class="text-indigo-500 dark:text-indigo-400 font-bold">ID: ${c.id}</span> ` + (subText ? ` | ${subText}` : "");
             }
 
             let unreadClass = unreadCount > 0 ? 'font-bold text-slate-800 dark:text-white' : 'font-medium text-slate-500 dark:text-slate-400';
@@ -712,12 +722,10 @@
         }
 
         function renderChatContacts() {
-            let tList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'teacher').map(u => ({...u, bgColor:'bg-indigo-100 dark:bg-indigo-900/50', textColor:'text-indigo-600 dark:text-indigo-400', initials:getInitials(u.name || u.Name || "T"), room:u.assigned || u.room || u.Room || "-"}));
+            let tList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'teacher').map(u => ({...u, bgColor:'bg-indigo-100 dark:bg-indigo-900/50', textColor:'text-indigo-600 dark:text-indigo-400', initials:getInitials(u.name || u.Name || "T"), room:u.assigned || u.room || u.Room || "-", id: u.username || u.Username || "-"}));
             
-            // เพิ่มการรองรับชื่อนักเรียนแบบตรงไปตรงมา
             let sList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'student').map(u => {
                 let sId = u.id || u.username || u.Username || "-";
-                // ใช้ Username เป็น ID หากไม่มีฟิลด์ ID โดยตรง
                 if(sId === "-") { let fMsg = cachedMessages.find(m => m.senderName === (u.name || u.Name)); if(fMsg) sId = fMsg.senderId || "-"; }
                 return {...u, bgColor:'bg-slate-200 dark:bg-slate-700', textColor:'text-slate-600 dark:text-slate-300', initials:getInitials(u.name || u.Name || "S"), class:u.assigned || u.room || u.Room || "-", id: sId};
             });
@@ -765,7 +773,9 @@
 
             let subjectBadgeHeader = '';
             if (contactInfo) {
-                if (contactInfo.role === 'Student') {
+                if (contactInfo.role === 'Admin') {
+                    subjectBadgeHeader = ` <span class="text-xs text-rose-500 font-bold ml-2">(Admin)</span>`;
+                } else if (contactInfo.role === 'Student') {
                     subjectBadgeHeader = ` <span class="text-xs text-slate-500 dark:text-slate-400 font-normal ml-2">(ID: ${contactInfo.id} | Class: ${contactInfo.room})</span>`;
                 } else if (contactInfo.room && contactInfo.room !== "-") {
                     subjectBadgeHeader = ` <span class="text-xs text-slate-500 dark:text-slate-400 font-normal ml-2">(วิชา: ${contactInfo.room})</span>`;
@@ -880,6 +890,7 @@
 
                     if(isChanged) {
                         cachedMessages = r.data || []; 
+                        
                         if(activeChatContact) openChat(activeChatContact); 
                         else renderChatContacts(); 
                     }
@@ -1000,6 +1011,13 @@
                     });
                 }
             });
+        }
+
+        // ✨ เปลี่ยนให้ลบเฉพาะ Auth Token ไม่ให้ความจำการอ่านแชทหาย ✨
+        function logout() { 
+            sessionStorage.removeItem('currentUser'); 
+            // เอา localStorage.removeItem('currentUser') ออก เพื่อไม่ให้กระทบกับข้อมูลการอ่านแชทที่บันทึกไว้ใน LocalStorage ตัวอื่นๆ
+            window.location.replace('index.html'); 
         }
     </script>
 </body>
