@@ -154,6 +154,7 @@
                 <button onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/90 dark:bg-black/50 backdrop-blur-md border border-white dark:border-white/10 shadow-sm transition-all hover:scale-105">
                     <i id="themeIcon" class="fa-solid fa-moon text-slate-700 dark:text-yellow-400 text-lg"></i>
                 </button>
+
                 <button onclick="toggleRightSidebar()" class="lg:hidden w-10 h-10 rounded-full overflow-hidden border-2 border-white dark:border-slate-700 shadow-sm">
                     <img id="mobileHeaderProfileImg" src="" class="w-full h-full object-cover hidden">
                     <div id="mobileHeaderProfileInitials" class="w-full h-full bg-orange-100 text-orange-600 flex items-center justify-center text-xs font-bold">T</div>
@@ -279,7 +280,7 @@
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
                             <button type="button" onclick="saveProfile()" class="w-full bg-[#f05a28] text-white font-bold py-4 rounded-xl shadow-lg active:scale-[0.98] transition font-prompt uppercase text-sm tracking-widest hover:bg-[#d94a1d] border border-white/20">อัปเดตโปรไฟล์</button>
-                            <button type="button" onclick="openChangePassword()" class="w-full bg-slate-800 dark:bg-slate-700 text-white font-bold py-4 rounded-xl shadow-lg active:scale-[0.98] transition font-prompt uppercase text-sm tracking-widest hover:bg-slate-900 dark:hover:bg-slate-600 border border-white/10"><i class="fa-solid fa-lock mr-2"></i>เปลี่ยนรหัสผ่าน</button>
+                            <button type="button" onclick="openChangePassword()" class="w-full bg-slate-800 dark:bg-slate-700 text-white font-bold py-4 rounded-xl shadow-lg active:scale-[0.98] transition font-prompt uppercase text-sm tracking-widest hover:bg-slate-900 dark:hover:bg-slate-600 border border-white/10"><i class="fa-solid fa-lock mr-2"></i> เปลี่ยนรหัสผ่าน</button>
                         </div>
                     </form>
                 </div>
@@ -306,7 +307,7 @@
 
             <h4 class="font-bold text-slate-800 dark:text-slate-200 font-prompt text-sm mb-5 uppercase tracking-widest mt-8">CONTACTS</h4>
             <div class="space-y-3" id="studentListRightUI">
-                <div class="text-[10px] text-slate-500 dark:text-slate-400 text-center py-4 bg-white/40 dark:bg-black/20 rounded-xl border border-dashed border-slate-400/50 dark:border-slate-600/50 shadow-inner">กำลังโหลดข้อมูลผู้ติดต่อ...</div>
+                <div class="text-[10px] text-slate-600 dark:text-slate-400 font-medium text-center py-4 bg-white/60 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-400/50 dark:border-slate-600/50 shadow-inner">กำลังโหลดข้อมูลผู้ติดต่อ...</div>
             </div>
         </div>
     </aside>
@@ -343,7 +344,7 @@
 
         function fetchGAS(payload) { return fetch(GAS_URL, { method: 'POST', headers: {"Content-Type": "text/plain;charset=utf-8"}, body: JSON.stringify(payload) }).then(r => r.json()); }
         function getInitials(n) { let p = n.trim().split(/\s+/); return p.length >= 2 ? (p[0][0] + p[1][0]).toUpperCase() : n.substring(0, 2).toUpperCase(); }
-
+        
         function showiOSToast(iconClass, text, iconColorBg, iconColorText) {
             Swal.fire({ 
                 toast: false, position: 'center', showConfirmButton: false, timer: 2000, 
@@ -360,7 +361,7 @@
         function toggleSidebar() { document.getElementById('mainSidebar').classList.toggle('active'); document.getElementById('sidebarOverlay').classList.toggle('active'); }
         function toggleRightSidebar() {
             const rs = document.getElementById('rightSidebar'); rs.classList.toggle('hidden');
-            if(!rs.classList.contains('hidden')) { rs.style.position = 'fixed'; rs.style.right = '0'; rs.style.top = '0'; rs.style.zIndex = '100'; rs.style.height = '100vh'; rs.style.width = '300px'; showiOSToast('fa-solid fa-xmark', 'แตะที่ว่างเพื่อปิด', 'bg-white/80 dark:bg-slate-700', 'text-slate-600 dark:text-slate-200'); }
+            if(!rs.classList.contains('hidden')) { rs.style.position = 'fixed'; rs.style.right = '0'; rs.style.top = '0'; rs.style.zIndex = '100'; rs.style.height = '100vh'; rs.style.width = '280px'; showiOSToast('fa-solid fa-xmark', 'แตะที่ว่างเพื่อปิด', 'bg-white/80 dark:bg-slate-700', 'text-slate-600 dark:text-slate-200'); }
         }
 
         window.onload = () => { 
@@ -380,16 +381,6 @@
             if(target !== 'inbox' && chatTimer) { clearInterval(chatTimer); chatTimer = null; }
 
             if(target === 'inbox') {
-                let admins = allUsersData.filter(u => String(u.role || u.Role || "").toLowerCase().trim() === 'admin');
-                let allContacts = [...admins.map(a => a.name || a.Name), ...myStudents.map(s => s.name)];
-                
-                [...new Set(allContacts)].forEach(cName => {
-                    if(!cName) return;
-                    let totalMsgs = countMessages(cName);
-                    localStorage.setItem('readMsgs_' + currentUser.id + '_' + cName, totalMsgs);
-                });
-                
-                updateUnreadBadges();
                 renderChatContacts();
                 if(activeChatContact) openChat(activeChatContact);
                 if(!chatTimer) chatTimer = setInterval(loadMessagesForChat, 5000);
@@ -453,15 +444,6 @@
                 }
             });
             localStorage.setItem('readMsgs_' + currentUser.id + '_' + contactName, receivedCount);
-        }
-
-        function countMessages(contactName) {
-            let count = 0;
-            cachedMessages.forEach(m => {
-                if (m.senderName === contactName && m.receiver === currentUser.name && m.message && m.message.trim() !== "") count += 1;
-                if (m.senderName === currentUser.name && m.receiver === contactName && m.reply && m.reply.trim() !== "") { count += m.reply.split('<br><br>').filter(x => x.trim() !== "").length; }
-            });
-            return count;
         }
 
         function updateUnreadBadges() {
@@ -824,7 +806,6 @@
                 subText = `<i class="fa-solid fa-book mr-1 text-slate-400"></i> วิชา: ${c.assigned}`;
             }
 
-            // แทรก ID สำหรับนักเรียน
             if (rRole === 'student' && c.id && c.id !== "-") {
                 subText = `<span class="text-indigo-500 dark:text-indigo-400 font-bold">ID: ${c.id}</span> ` + (subText ? ` | ${subText}` : "");
             }
@@ -868,7 +849,7 @@
         function renderChatContacts() {
             let aList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'admin').map(u => ({...u, bgColor:'bg-rose-100 dark:bg-rose-900/50', textColor:'text-rose-600 dark:text-rose-400', initials:getInitials(u.name || u.Name || "A"), room:"-"}));
             let sList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'student').map(u => {
-                let sId = u.id || u.username || u.Username || u.StudentID || u.studentId || "-";
+                let sId = u.id || u.username || u.Username || "-";
                 if(sId === "-") { let fMsg = cachedMessages.find(m => m.senderName === (u.name || u.Name)); if(fMsg) sId = fMsg.senderId || "-"; }
                 return {...u, bgColor:'bg-slate-200 dark:bg-slate-700', textColor:'text-slate-600 dark:text-slate-300', initials:getInitials(u.name || u.Name || "S"), class:u.assigned || u.room || u.Room || "-", id: sId};
             });
@@ -893,15 +874,16 @@
             updateUnreadBadges(); 
         }
 
+        // ✨ แสดงเครื่องหมาย "ส่งแล้ว/อ่านแล้ว"
         function openChat(n) {
             activeChatContact = n; document.getElementById('chatPlaceholder').classList.add('hidden'); 
             
-            markChatAsRead(n); // ✨ เคลียร์แจ้งเตือนเมื่อเปิดอ่าน
+            markChatAsRead(n); 
             renderChatContacts(); 
             
             let contactInfo = [...allUsersData].map(u => {
                 let roleStr = String(u.role || u.Role || "").toLowerCase().trim();
-                let sId = u.id || u.username || u.Username || u.StudentID || u.studentId || "-";
+                let sId = u.id || u.username || u.Username || "-";
                 return {
                     name: u.name || u.Name || "", 
                     role: roleStr === 'admin' ? 'Admin' : (roleStr === 'teacher' ? 'Teacher' : 'Student'), 
@@ -941,12 +923,14 @@
                 
                 if(m.senderName === currentUser.name) {
                     if (m.message && m.message.trim() !== "") {
-                        let status = (isLastMsg && !m.reply) ? "ส่งแล้ว" : "อ่านแล้ว";
+                        let statusText = (isLastMsg && !m.reply) ? "ส่งแล้ว" : "อ่านแล้ว";
+                        let statusColor = statusText === "อ่านแล้ว" ? "text-emerald-500" : "text-slate-400";
+                        let statusIcon = statusText === "อ่านแล้ว" ? "fa-check-double" : "fa-check";
                         h += `
                         <div class="flex flex-col items-end w-full mb-4">
                             <div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-500 dark:text-slate-400">${d} • คุณ</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-white/80">${myPicHtml}</div></div>
                             <div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${m.message}</div>
-                            <p class="text-[9px] text-slate-400 mt-1 mr-8"><i class="fa-solid fa-check-double text-[8px]"></i> ${status}</p>
+                            <p class="text-[9px] font-bold ${statusColor} mt-1 mr-8"><i class="fa-solid ${statusIcon} text-[8px]"></i> ${statusText}</p>
                         </div>`;
                     }
                     if(m.reply && m.reply.trim() !== "") { 
@@ -962,12 +946,14 @@
                     if(m.reply && m.reply.trim() !== "") { 
                         let reps = m.reply.split('<br><br>').filter(x => x.trim() !== "");
                         reps.forEach((rep, rIdx) => {
-                            let status = (isLastMsg && rIdx === reps.length - 1) ? "ส่งแล้ว" : "อ่านแล้ว";
+                            let statusText = (isLastMsg && rIdx === reps.length - 1) ? "ส่งแล้ว" : "อ่านแล้ว";
+                            let statusColor = statusText === "อ่านแล้ว" ? "text-emerald-500" : "text-slate-400";
+                            let statusIcon = statusText === "อ่านแล้ว" ? "fa-check-double" : "fa-check";
                             h += `
                             <div class="flex flex-col items-end w-full mb-4 mt-2">
                                 <div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-500 dark:text-slate-400">คุณตอบแล้ว</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-white/80">${myPicHtml}</div></div>
                                 <div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${rep}</div>
-                                <p class="text-[9px] text-slate-400 mt-1 mr-8"><i class="fa-solid fa-check-double text-[8px]"></i> ${status}</p>
+                                <p class="text-[9px] font-bold ${statusColor} mt-1 mr-8"><i class="fa-solid ${statusIcon} text-[8px]"></i> ${statusText}</p>
                             </div>`; 
                         });
                     }
@@ -976,9 +962,14 @@
             document.getElementById('chatHistory').innerHTML = h; document.getElementById('chatHistory').scrollTop = document.getElementById('chatHistory').scrollHeight;
         }
 
+        // ✨ ล็อกรายชื่อไม่ให้หายเวลาพิมพ์ส่งข้อความ
         function sendChatMessage() {
             let msg = document.getElementById('chatInputMessage').value.trim(); 
             if(!msg || !activeChatContact) return;
+            
+            // Backup ตัวแปรสำคัญ
+            let savedContacts = [...allUsersData];
+            let activeContactBackup = activeChatContact;
             
             let cHist = document.getElementById('chatHistory');
             let myPicHtml = currentUser.pic ? `<img src="${currentUser.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-orange-100 text-orange-600 font-bold text-[8px]">${getInitials(currentUser.name)}</div>`;
@@ -990,27 +981,35 @@
             cHist.scrollTop = cHist.scrollHeight;
             document.getElementById('chatInputMessage').value = "";
 
-            // ส่งข้อมูลไปสร้าง Row ใหม่เสมอ
             fetchGAS({ 
                 action: "sendMessage", 
                 senderId: currentUser.id, 
                 senderName: currentUser.name, 
                 senderRoom: currentUser.assigned || "-", 
                 senderPic: currentUser.pic || "", 
-                receiver: activeChatContact, 
+                receiver: activeContactBackup, 
                 message: msg 
-            }).then(() => { forceRefreshChat(); });
+            }).then(() => { 
+                allUsersData = savedContacts;
+                activeChatContact = activeContactBackup;
+                forceRefreshChat(); 
+            });
         }
 
         function forceRefreshChat() {
             let btn = document.querySelector('#chatHeader button i');
             if(btn) btn.classList.add('fa-spin');
+            
+            let savedContacts = [...allUsersData]; // สำรองรายชื่ออีกรอบ
+            
             fetchGAS({ action: "getMessages", myId: currentUser.id, myName: currentUser.name, role: currentUser.role })
             .then(r => { 
                 if(btn) btn.classList.remove('fa-spin');
                 if(r.status === "success") { 
                     if(r.users && r.users.length > 0) {
                         allUsersData = r.users;
+                    } else {
+                        allUsersData = savedContacts;
                     }
                     cachedMessages = r.data || []; 
                     if(activeChatContact) openChat(activeChatContact); 
@@ -1042,7 +1041,7 @@
 
         function updateProfileUI() {
             if(!currentUser) return;
-            const fullName = currentUser.name || "Teacher";
+            const fullName = currentUser.name || "Student";
             const inits = getInitials(fullName);
 
             let setDisplay = document.getElementById('settingNameDisplay');
@@ -1068,6 +1067,20 @@
                 if(setPic) setPic.classList.add('hidden');
                 if(mobInit) { mobInit.innerText = inits; mobInit.classList.remove('hidden'); }
                 if(mobPic) mobInit.classList.add('hidden');
+            }
+            
+            document.getElementById('rightProfileFullName').innerText = fullName;
+            document.getElementById('rightProfileId').innerText = "ID: " + currentUser.id;
+            document.getElementById('rightProfileClass').innerText = "Class: " + (currentUser.assigned || "-");
+
+            let rightPic = document.getElementById('rightProfileImage');
+            let rightInit = document.getElementById('rightProfileInitials');
+            if(currentUser.pic && currentUser.pic.trim() !== "") { 
+                if(rightPic) { rightPic.src = currentUser.pic; rightPic.classList.remove('hidden'); }
+                if(rightInit) rightInit.classList.add('hidden'); 
+            } else {
+                if(rightInit) { rightInit.innerText = inits; rightInit.classList.remove('hidden'); }
+                if(rightPic) rightPic.classList.add('hidden');
             }
         }
 
@@ -1179,7 +1192,6 @@
             });
         }
 
-        // ✨ แก้ไขฟังก์ชันออกจากระบบให้ล้างข้อมูลอย่างสมบูรณ์
         function logout() { 
             sessionStorage.removeItem('currentUser'); 
             localStorage.removeItem('currentUser'); 
