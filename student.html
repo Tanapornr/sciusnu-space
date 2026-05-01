@@ -139,7 +139,7 @@
     <div id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
     <aside id="mainSidebar" class="glass-panel w-72 lg:w-64 flex flex-col flex-shrink-0 z-50 border-r border-white/80 dark:border-white/5 shadow-2xl lg:bg-white/60 lg:backdrop-blur-xl">
-        <div class="h-20 lg:h-24 flex items-center px-8 border-b border-slate-200/50 dark:border-white/5 cursor-pointer" onclick="location.reload()">
+        <div class="h-20 lg:h-24 flex items-center px-8 border-b border-slate-200/50 dark:border-white/5 cursor-pointer" onclick="nav('home')">
             <div class="w-8 h-8 bg-[#f05a28] text-white rounded-full flex items-center justify-center text-sm shadow-md mr-3"><i class="fa-solid fa-sparkles"></i></div>
             <h1 class="text-xl font-black font-prompt text-[#f05a28] uppercase tracking-wide">SCiUSNU SPACE</h1>
         </div>
@@ -271,12 +271,9 @@
                         <p class="font-bold text-sm lg:text-base">เลือกที่ปรึกษาเพื่อเริ่มสนทนา</p>
                     </div>
                     <div class="p-4 lg:p-5 border-b border-slate-300/50 dark:border-slate-700/50 flex items-center justify-between z-0 bg-white/40 dark:bg-black/30" id="chatHeader">
-                        <div class="flex items-center gap-3 lg:gap-4 w-full pr-2">
-                            <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shadow-sm bg-slate-200 dark:bg-slate-700 flex items-center justify-center font-bold text-indigo-600 dark:text-indigo-400 border border-white/80 shrink-0" id="chatHeaderAvatar"></div>
-                            <div class="flex flex-col flex-1 min-w-0">
-                                <h3 class="font-bold text-sm lg:text-lg text-slate-800 dark:text-white leading-tight truncate w-full" id="chatHeaderName">Name</h3>
-                                <div id="chatHeaderSub" class="w-full"></div>
-                            </div>
+                        <div class="flex items-center gap-3 lg:gap-4">
+                            <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shadow-sm bg-slate-200 dark:bg-slate-700 flex items-center justify-center font-bold text-orange-600 dark:text-orange-400 border border-white/80" id="chatHeaderAvatar"></div>
+                            <div><h3 class="font-bold text-sm lg:text-lg text-slate-800 dark:text-white mt-1 flex items-center" id="chatHeaderName">Name</h3></div>
                         </div>
                     </div>
                     <div class="flex-1 overflow-y-auto p-4 lg:p-6 bg-transparent flex flex-col space-y-4 hide-scroll z-0" id="chatHistory"></div>
@@ -335,7 +332,7 @@
             </div>
 
             <h4 class="font-bold text-slate-800 dark:text-slate-200 font-prompt text-sm mb-5 uppercase tracking-widest mt-8">CONTACTS</h4>
-            <div class="space-y-3" id="studentListRightUI">
+            <div class="space-y-3" id="mentorListUI">
                 <div class="text-[10px] text-slate-500 dark:text-slate-400 text-center py-4 bg-white/40 dark:bg-black/20 rounded-xl border border-dashed border-slate-400/50 dark:border-slate-600/50 shadow-inner">กำลังโหลดข้อมูลผู้ติดต่อ...</div>
             </div>
         </div>
@@ -343,11 +340,12 @@
 
     <script>
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbwy0aqA_Am-Ey1iG3VNpcwhvL_QW536rVNrMNUeN7_ZH2lgDWHlfiQXnfIMa4hG6gSJKQ/exec';
-        let currentUser = JSON.parse(sessionStorage.getItem('currentUser')) || JSON.parse(localStorage.getItem('currentUser'));
+        let currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
         if (!currentUser || String(currentUser.role).toLowerCase().trim() !== 'student') { window.location.replace('index.html'); }
 
         let allSubjects = [], allLessons = [], cachedMessages = [], allUsersData = [], currentSubject = "", currentLesson = null, uploadedImageBase64 = "", activeChatContact = null;
         let chatTimer = null;
+        let mentors = []; 
         let ytPlayer = null; 
         let ytProgressTimer = null; 
         let showFavoritesOnly = false; 
@@ -550,16 +548,17 @@
                     allSubjects.forEach((s) => { 
                         let lessonCount = allLessons.filter(l => String(l.subject).trim() === String(s).trim()).length;
                         
+                        // ✨ เปลี่ยนมาใช้ CSS คลาส hover:xxx ของ Tailwind ✨
                         sH += `
-                        <div class="glass-panel subject-card rounded-[2rem] p-5 lg:p-6 flex flex-col justify-between h-32 w-full" onclick="selectSubject('${s}')">
-                            <div class="absolute -right-2 -bottom-4 w-24 h-24 bg-white/40 dark:bg-white/5 rounded-full flex items-center justify-center z-0">
-                                <i class="fa-solid fa-book-open text-4xl text-slate-400/40 transform -rotate-12"></i>
+                        <div class="glass-panel subject-card cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-xl active:scale-95 group rounded-[2rem] p-5 lg:p-6 flex flex-col justify-between h-32 w-full" onclick="selectSubject('${s}')">
+                            <div class="absolute -right-2 -bottom-4 w-24 h-24 bg-white/40 dark:bg-white/5 rounded-full flex items-center justify-center z-0 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-12">
+                                <i class="fa-solid fa-book-open text-4xl text-slate-400/40 transform -rotate-12 group-hover:text-[#f05a28]/50 transition-colors duration-300"></i>
                             </div>
                             <div class="relative z-10">
-                                <h3 class="font-bold text-base lg:text-lg font-prompt leading-tight text-slate-800 dark:text-slate-100 drop-shadow-sm">${s}</h3>
+                                <h3 class="font-bold text-base lg:text-lg font-prompt leading-tight text-slate-800 dark:text-slate-100 drop-shadow-sm group-hover:text-[#f05a28] transition-colors">${s}</h3>
                             </div>
                             <div class="flex items-center gap-2 mt-auto relative z-10">
-                                <div class="bg-white/90 dark:bg-black/60 text-slate-800 dark:text-slate-200 px-3 py-1 rounded-full text-[10px] lg:text-xs font-bold border border-white dark:border-white/10 shadow-sm">
+                                <div class="bg-white/90 dark:bg-black/60 text-slate-800 dark:text-slate-200 px-3 py-1 rounded-full text-[10px] lg:text-xs font-bold border border-white dark:border-white/10 shadow-sm group-hover:bg-[#f05a28] group-hover:text-white group-hover:border-[#f05a28] transition-colors">
                                     <i class="fa-solid fa-layer-group mr-1"></i> ${lessonCount} บทเรียน
                                 </div>
                             </div>
@@ -994,7 +993,6 @@
             });
         }
 
-        // ✨ สร้างหน้าตารายชื่อผู้ติดต่อ โดยแสดงข้อมูลละเอียด และเช็คสถานะการอ่าน
         function buildContactCard(c, type) {
             let isActive = activeChatContact === c.name ? "active" : "";
             let pPic = c.pic ? `<img src="${c.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center font-bold text-xs lg:text-sm">${c.initials}</div>`;
@@ -1030,78 +1028,65 @@
             latestText = tmp.textContent || tmp.innerText || "";
             if(latestText.length > 25) latestText = latestText.substring(0, 25) + "...";
 
-            let rRole = String(c.role || "").toLowerCase();
-            let subText = "";
-            if (rRole === 'admin') {
-                subText = `<span class="text-rose-500 font-bold"><i class="fa-solid fa-user-shield"></i> Admin</span>`;
-            } else if (c.room && c.room !== "-") {
-                subText = `<i class="fa-solid fa-book mr-1 text-slate-400"></i> วิชา: ${c.room}`;
-            }
-
-            let unreadClass = unreadCount > 0 ? 'font-bold text-slate-800 dark:text-white' : 'font-medium text-slate-500 dark:text-slate-400';
-
             if (type === "sidebar") {
+                let subjectBadge = '';
+                if (c.role === 'Admin') {
+                    subjectBadge = `<p class="text-[9px] text-rose-600 dark:text-rose-400 font-bold mt-1 bg-white/60 dark:bg-black/30 px-2 py-0.5 rounded-md w-max border border-white/80 dark:border-white/10"><i class="fa-solid fa-user-shield mr-1 text-rose-500"></i> Admin</p>`;
+                } else if (c.room && c.room !== "-") {
+                    subjectBadge = `<p class="text-[9px] text-slate-500 dark:text-slate-400 font-normal mt-1 bg-white/40 dark:bg-black/30 px-2 py-0.5 rounded-md w-max border border-white/50 dark:border-white/10"><i class="fa-solid fa-book mr-1 text-slate-400"></i> วิชา: ${c.room}</p>`;
+                }
+
                 return `
                 <div class="flex items-center justify-between group p-3 rounded-2xl border border-slate-200/50 dark:border-slate-700/50 hover:border-orange-300 dark:hover:border-orange-700 shadow-sm transition mb-3 bg-white/50 dark:bg-black/30 backdrop-blur-sm cursor-pointer" onclick="nav('inbox'); openChat('${c.name}')">
-                    <div class="flex items-center gap-3 w-full overflow-hidden pr-2">
-                        <div class="relative w-11 h-11 rounded-full ${c.bgColor || 'bg-slate-200'} ${c.textColor || 'text-slate-600'} overflow-hidden shadow-sm shrink-0 flex items-center justify-center border border-white/50">
-                            ${pPic}
+                    <div class="flex items-start gap-3">
+                        <div class="relative w-12 h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm shrink-0 flex items-center justify-center border border-white/50">${pPic}
                             ${badgeHtml}
                         </div>
-                        <div class="flex flex-col flex-1 min-w-0">
-                            <p class="text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight truncate w-full">${c.name}</p>
-                            ${subText ? `<p class="text-[9px] text-slate-500 dark:text-slate-400 truncate mt-0.5 w-full">${subText}</p>` : ''}
-                            <p class="text-[10px] mt-0.5 w-full truncate ${unreadClass}" title="${latestText}">${latestText}</p>
+                        <div class="flex flex-col max-w-[130px] lg:max-w-[150px]">
+                            <p class="text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight truncate">${c.name}</p>
+                            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5 ${unreadCount > 0 ? 'font-bold text-slate-800 dark:text-white' : ''}" title="${latestText}">${latestText}</p>
+                            ${subjectBadge}
                         </div>
                     </div>
-                    <button class="w-8 h-8 rounded-full border border-orange-200/50 dark:border-orange-900/50 text-[#f05a28] flex items-center justify-center hover:bg-[#f05a28] hover:text-white transition shadow-sm shrink-0">
+                    <button class="w-9 h-9 rounded-full border border-orange-200/50 dark:border-orange-900/50 text-[#f05a28] flex items-center justify-center hover:bg-[#f05a28] hover:text-white transition shadow-sm shrink-0">
                         <i class="fa-regular fa-comment-dots text-sm pointer-events-none"></i>
                     </button>
                 </div>`;
             } else {
                 return `
-                <div class="chat-contact ${isActive} flex items-center gap-3 p-3 lg:p-4 rounded-xl cursor-pointer hover:bg-white/80 dark:hover:bg-black/40 transition mb-1 border border-transparent shadow-sm" onclick="openChat('${c.name}')">
-                    <div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor || 'bg-slate-200'} ${c.textColor || 'text-slate-600'} overflow-hidden shadow-sm border border-white/80 shrink-0 flex items-center justify-center">
-                        ${pPic}
+                <div class="chat-contact ${isActive} flex items-center gap-3 p-3 lg:p-4 rounded-xl cursor-pointer hover:bg-white/50 dark:hover:bg-black/30 transition mb-1 border border-transparent shadow-sm" onclick="openChat('${c.name}')">
+                    <div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm border border-white/50 shrink-0 flex items-center justify-center">${pPic}
                         ${badgeHtml}
                     </div>
-                    <div class="flex-1 min-w-0 flex flex-col justify-center">
-                        <h4 class="font-bold text-xs lg:text-sm truncate w-full text-slate-800 dark:text-slate-200 leading-tight">${c.name}</h4>
-                        ${subText ? `<p class="text-[9px] text-slate-500 dark:text-slate-400 truncate mt-0.5 w-full">${subText}</p>` : ''}
-                        <p class="text-[10px] mt-0.5 w-full truncate ${unreadClass}" title="${latestText}">${latestText}</p>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="font-bold text-xs lg:text-sm truncate text-slate-800 dark:text-slate-200">${c.name}</h4>
+                        <p class="text-[10px] text-slate-400 truncate ${unreadCount > 0 ? 'font-bold text-slate-800 dark:text-white' : ''}" title="${latestText}">${latestText}</p>
                     </div>
                 </div>`;
             }
         }
 
-        // ✨ แก้ไขฟังก์ชันการวาดรายชื่อทั้งหมด ใช้วิธีดึงจาก allUsersData แทนตัวแปร mentors เก่า
         function renderChatContacts() {
-            let tList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'teacher').map(u => ({
-                ...u, bgColor:'bg-indigo-100 dark:bg-indigo-900/50', textColor:'text-indigo-600 dark:text-indigo-400', 
-                initials:getInitials(u.name || u.Name || "T"), room:u.assigned || u.room || u.Room || "-"
-            }));
+            let tList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'teacher').map(u => ({...u, bgColor:'bg-indigo-100 dark:bg-indigo-900/50', textColor:'text-indigo-600 dark:text-indigo-400', initials:getInitials(u.name || u.Name || "T"), room:u.assigned || u.room || u.Room || "-"}));
+            let aList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'admin').map(u => ({...u, bgColor:'bg-rose-100 dark:bg-rose-900/50', textColor:'text-rose-600 dark:text-rose-400', initials:getInitials(u.name || u.Name || "A"), room:"-"}));
             
-            let aList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'admin').map(u => ({
-                ...u, bgColor:'bg-rose-100 dark:bg-rose-900/50', textColor:'text-rose-600 dark:text-rose-400', 
-                initials:getInitials(u.name || u.Name || "A"), room: "-"
-            }));
-
             let htmlInboxList = "";
             let htmlRightSidebar = "";
 
             if(tList.length === 0 && aList.length === 0) {
-                 htmlInboxList = '<div class="text-center p-4 text-xs text-slate-600 dark:text-slate-400 font-medium border-2 border-dashed border-slate-400/50 dark:border-slate-600/50 rounded-xl mx-4 mt-4 bg-white/40 dark:bg-transparent">ไม่มีผู้ติดต่อ</div>';
-                 htmlRightSidebar = '<div class="text-[10px] text-slate-600 dark:text-slate-400 font-medium text-center py-4 bg-white/60 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-400/50 dark:border-slate-600/50 shadow-inner">ไม่มีข้อมูลผู้ติดต่อ</div>';
+                 htmlInboxList = '<div class="text-center p-4 text-xs text-slate-500 dark:text-slate-400 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl mx-4 mt-4 bg-white/40 dark:bg-transparent">ไม่มีผู้ติดต่อ</div>';
+                 htmlRightSidebar = '<div class="text-[10px] text-slate-500 dark:text-slate-400 text-center py-4 bg-white/40 dark:bg-black/20 rounded-xl border border-dashed border-slate-400/50 dark:border-slate-600/50 shadow-inner">กำลังโหลดข้อมูลผู้ติดต่อ...</div>';
             } else {
                 if(tList.length > 0) {
-                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-widest mt-2">อาจารย์ผู้สอน</p>`;
+                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-widest mt-2">อาจารย์ผู้สอน</p>`;
                     tList.forEach(c => {
                         htmlInboxList += buildContactCard(c, "inbox");
                         htmlRightSidebar += buildContactCard(c, "sidebar");
                     });
                 }
+                
                 if(aList.length > 0) {
-                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-widest mt-4">ผู้ดูแลระบบ</p>`;
+                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-widest mt-4">ผู้ดูแลระบบ</p>`;
                     aList.forEach(c => {
                         htmlInboxList += buildContactCard(c, "inbox");
                         htmlRightSidebar += buildContactCard(c, "sidebar");
@@ -1118,7 +1103,6 @@
             updateUnreadBadges(); 
         }
 
-        // ✨ การเปิดแชท แสดงติ๊กถูกอ่านแล้ว/ส่งแล้ว
         function openChat(n) {
             activeChatContact = n; document.getElementById('chatPlaceholder').classList.add('hidden'); 
             
@@ -1202,7 +1186,9 @@
         function sendChatMessage() {
             let msg = document.getElementById('chatInputMessage').value.trim(); 
             if(!msg || !activeChatContact) return;
-            if(!currentUser.pic || !currentUser.email) return Swal.fire({icon:'warning', title:'โปรไฟล์ไม่สมบูรณ์', text:'กรุณาตั้งค่ารูปภาพและอีเมลก่อนส่งข้อความ'}).then(r => { if(r.isConfirmed) nav('settings'); });
+            
+            // ป้องกันรายชื่อคนหายเมื่อกดส่ง
+            let savedContacts = [...allUsersData];
             
             let cHist = document.getElementById('chatHistory');
             let myPicHtml = currentUser.pic ? `<img src="${currentUser.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-orange-100 text-orange-600 font-bold text-[8px]">${getInitials(currentUser.name)}</div>`;
@@ -1223,7 +1209,10 @@
                 senderPic: currentUser.pic || "", 
                 receiver: activeChatContact, 
                 message: msg 
-            }).then(() => { forceRefreshChat(); });
+            }).then(() => { 
+                allUsersData = savedContacts; // คืนค่าข้อมูลติดต่อเดิม
+                forceRefreshChat(); 
+            });
         }
 
         function forceRefreshChat() {
@@ -1233,7 +1222,6 @@
             .then(r => { 
                 if(btn) btn.classList.remove('fa-spin');
                 if(r.status === "success") { 
-                    // Update allUsersData without completely overwriting to ensure list persists
                     if(r.users && r.users.length > 0) {
                         allUsersData = r.users;
                     }
@@ -1418,10 +1406,10 @@
             });
         }
 
-        // ✨ แก้ไขฟังก์ชันออกจากระบบให้ล้างข้อมูลอย่างสมบูรณ์
+        // ✨ เปลี่ยนให้ลบเฉพาะ Auth Token ไม่ให้ความจำการอ่านแชทหาย ✨
         function logout() { 
             sessionStorage.removeItem('currentUser'); 
-            localStorage.removeItem('currentUser'); 
+            // เอา localStorage.removeItem('currentUser') ออก เพื่อไม่ให้กระทบกับข้อมูลการอ่านแชทที่บันทึกไว้ใน LocalStorage ตัวอื่นๆ
             window.location.replace('index.html'); 
         }
     </script>
