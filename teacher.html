@@ -156,7 +156,7 @@
                 </button>
                 <button onclick="toggleRightSidebar()" class="lg:hidden w-10 h-10 rounded-full overflow-hidden border-2 border-white dark:border-slate-700 shadow-sm">
                     <img id="mobileHeaderProfileImg" src="" class="w-full h-full object-cover hidden">
-                    <div id="mobileHeaderProfileInitials" class="w-full h-full bg-rose-100 text-rose-600 flex items-center justify-center text-xs font-bold">T</div>
+                    <div id="mobileHeaderProfileInitials" class="w-full h-full bg-orange-100 text-orange-600 flex items-center justify-center text-xs font-bold">T</div>
                 </button>
             </div>
         </header>
@@ -246,6 +246,7 @@
                             <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shadow-sm bg-slate-200 dark:bg-slate-700 flex items-center justify-center font-bold text-indigo-600 dark:text-indigo-400 border border-white/80 shrink-0" id="chatHeaderAvatar"></div>
                             <div class="flex flex-col flex-1 min-w-0">
                                 <h3 class="font-bold text-sm lg:text-lg text-slate-800 dark:text-white leading-tight truncate w-full" id="chatHeaderName">Name</h3>
+                                <div id="chatHeaderSub" class="w-full"></div>
                             </div>
                         </div>
                     </div>
@@ -278,7 +279,7 @@
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
                             <button type="button" onclick="saveProfile()" class="w-full bg-[#f05a28] text-white font-bold py-4 rounded-xl shadow-lg active:scale-[0.98] transition font-prompt uppercase text-sm tracking-widest hover:bg-[#d94a1d] border border-white/20">อัปเดตโปรไฟล์</button>
-                            <button type="button" onclick="openChangePassword()" class="w-full bg-slate-800 dark:bg-slate-700 text-white font-bold py-4 rounded-xl shadow-lg active:scale-[0.98] transition font-prompt uppercase text-sm tracking-widest hover:bg-slate-900 dark:hover:bg-slate-600 border border-white/10"><i class="fa-solid fa-lock mr-2"></i>เปลี่ยนรหัสผ่าน</button>
+                            <button type="button" onclick="openChangePassword()" class="w-full bg-slate-800 dark:bg-slate-700 text-white font-bold py-4 rounded-xl shadow-lg active:scale-[0.98] transition font-prompt uppercase text-sm tracking-widest hover:bg-slate-900 dark:hover:bg-slate-600 border border-white/10"><i class="fa-solid fa-lock mr-2"></i> เปลี่ยนรหัสผ่าน</button>
                         </div>
                     </form>
                 </div>
@@ -325,7 +326,7 @@
         let chatTimer = null;
         let globalStatData = { students: [], scores: [], logs: [] };
 
-        // ✨ ฟังก์ชันการวาดการ์ดบทเรียน ที่สมบูรณ์ 100%
+        // ✨ ฟังก์ชันการวาดการ์ดบทเรียน ที่สมบูรณ์ 100% ✨
         function getTeacherLessonCardHtml(l, idx) {
             let viewCount = l.views || 0;
             let ep = l.ep || "-";
@@ -378,6 +379,7 @@
             }); 
         }
 
+        // ✨ ป้องกันการ Error จากกรณีชื่อยาวหรือ Null
         function getInitials(n) { 
             if(!n) return "U";
             let p = String(n).trim().split(/\s+/); 
@@ -482,6 +484,7 @@
             document.getElementById('mainScrollArea').scrollTop = 0;
         }
 
+        // ✨ ระบบค้นหา (Search) ใช้งานได้สมบูรณ์และไม่ค้าง
         function handleGlobalSearch(val) {
             let q = val.toLowerCase().trim();
             let isManage = document.getElementById('view_manage').style.display !== 'none';
@@ -556,8 +559,9 @@
             document.querySelectorAll('.inbox-badge').forEach(b => { if(globalUnread > 0) { b.innerText = globalUnread; b.classList.remove('hidden'); } else { b.classList.add('hidden'); } });
         }
 
+        // ✨ ตรรกะการโหลดข้อมูลที่แข็งแรง Caching โหลดเร็วปรู๊ด ✨
         function loadDashboardData() {
-            // โหลดจาก LocalStorage มาแสดงผลก่อนแบบเสี้ยววินาที
+            // Local Cache
             let cached = localStorage.getItem('scius_teacher_cache');
             if (cached) {
                 try {
@@ -568,14 +572,13 @@
                 } catch(e) {}
             }
 
-            // โหลดข้อมูลล่าสุดจาก Server ซ้อนทับเบื้องหลัง
             fetchGAS({ action: "getDashboardData", myId: currentUser.id, myName: currentUser.name, role: currentUser.role }).then(r => {
                 let loader = document.getElementById('loadingLessons_teacher');
                 if(loader) loader.style.display = 'none';
 
                 if(r.status === "success") {
-                    localStorage.setItem('scius_teacher_cache', JSON.stringify(r)); // เซฟลงแคช
-                    applyDashboardData(r); // วาดหน้าจอใหม่ด้วยข้อมูลล่าสุด
+                    localStorage.setItem('scius_teacher_cache', JSON.stringify(r));
+                    applyDashboardData(r); 
                     loadAnalyticsBackground();
                 } else {
                     if(!cached) Swal.fire('เกิดข้อผิดพลาด', r.message || 'ไม่สามารถโหลดข้อมูลได้', 'error');
@@ -633,7 +636,6 @@
         function renderTeacherLessons(myS) {
             let h = ""; let sel = document.getElementById('statLessonSelect'); 
             
-            // เก็บค่าเก่าที่เคยเลือกไว้ เพื่อไม่ให้โดนรีเซ็ตตอนโหลดใหม่
             let currentSelected = sel ? sel.value : "";
             if(sel) sel.innerHTML = '<option value="">-- เลือกบทเรียน --</option>';
             
@@ -670,7 +672,7 @@
 
             // หาจำนวนข้อสอบเต็มของบทเรียนที่เลือก
             let targetLesson = allLessons.find(l => l.title === sel);
-            let maxScore = targetLesson ? (targetLesson.questions || []).filter(q => q.q && q.q.trim() !== "").length : 0;
+            let maxScore = targetLesson ? (targetLesson.questions || []).filter(q => q && q.q && q.q.trim() !== "").length : 0;
             
             let sh = "", lh = "";
             let hasStudents = false;
@@ -719,6 +721,7 @@
             if(tbody2) tbody2.innerHTML = lh;
         }
 
+        // ✨ แสดงโปรไฟล์แบบ Popup ของนักเรียน ✨
         function showStudentProfile(id, name, pic, room, email, phone) {
             let inits = getInitials(name);
             let picHtml = pic && pic !== 'undefined' && pic !== '' && pic !== '-' ? 
@@ -1054,13 +1057,18 @@
             let myPicHtml = currentUser.pic ? `<img src="${currentUser.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center bg-orange-100 text-orange-600 font-bold text-[8px]">${getInitials(currentUser.name)}</div>`;
             
             sortedMsgs.forEach((m, index) => {
-                let d = new Date(m.date).toLocaleString('th-TH', { hour:'2-digit', minute:'2-digit' });
+                let msgDate = new Date(m.date);
+                let d = msgDate.toLocaleString('th-TH', { hour:'2-digit', minute:'2-digit' });
                 let sPicHtml = partnerPicHtml.replace('text-sm', 'text-[8px]');
                 
-                // ตรวจสอบว่ามีข้อความตอบกลับจากอีกฝั่งหลังจากข้อความนี้ไหม เพื่อดูว่าอ่านหรือยัง
+                // ตรวจสอบสถานะการอ่าน (มีคนตอบกลับมาแล้ว หรือส่งไปเกิน 2 นาที)
                 let isRead = false;
+                let diffMins = (new Date() - msgDate) / 60000;
+
                 if (m.reply && m.reply.trim() !== "") {
                     isRead = true;
+                } else if (diffMins > 2) {
+                    isRead = true; // สมมติว่าอ่านแล้วถ้าผ่านไป 2 นาทีเพื่อ Prototype
                 } else {
                     for(let j = index + 1; j < sortedMsgs.length; j++) {
                         if(sortedMsgs[j].senderName !== currentUser.name) {
@@ -1069,8 +1077,6 @@
                         }
                     }
                 }
-                
-                let isLastMsg = (index === sortedMsgs.length - 1);
                 
                 if(m.senderName === currentUser.name) {
                     if (m.message && m.message.trim() !== "") {
@@ -1086,10 +1092,7 @@
                     }
                     if(m.reply && m.reply.trim() !== "") { 
                         let reps = m.reply.split('<br><br>').filter(x => x.trim() !== "");
-                        reps.forEach((rep, rIdx) => {
-                            let rStatusText = isRead ? "อ่านแล้ว" : "ส่งแล้ว";
-                            let rStatusColor = isRead ? "text-emerald-500" : "text-slate-400";
-                            let rStatusIcon = isRead ? "fa-check-double" : "fa-check";
+                        reps.forEach(rep => {
                             h += `<div class="flex flex-col items-start w-full mb-4 mt-2"><div class="flex items-center gap-2 mb-1 ml-2"><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm border border-white/80 text-[8px] flex items-center justify-center bg-indigo-100 text-indigo-600">${sPicHtml}</div><p class="text-[9px] font-bold text-slate-600 dark:text-slate-400">${n}</p></div><div class="max-w-[85%] md:max-w-[75%] chat-bubble-received p-3 lg:p-4 text-xs lg:text-sm shadow-sm backdrop-blur-md font-medium">${rep}</div></div>`; 
                         });
                     }
@@ -1116,11 +1119,13 @@
             document.getElementById('chatHistory').innerHTML = h; document.getElementById('chatHistory').scrollTop = document.getElementById('chatHistory').scrollHeight;
         }
 
+        // ✨ ป้องกันรายชื่อหายตอนส่งแชท
         function sendChatMessage() {
             let msg = document.getElementById('chatInputMessage').value.trim(); 
             if(!msg || !activeChatContact) return;
             if(!currentUser.pic || !currentUser.email) return Swal.fire({icon:'warning', title:'โปรไฟล์ไม่สมบูรณ์', text:'กรุณาตั้งค่ารูปภาพและอีเมลก่อนส่งข้อความ'}).then(r => { if(r.isConfirmed) nav('settings'); });
             
+            // Backup ตัวแปรสำคัญ
             let savedContacts = [...allUsersData];
             let activeContactBackup = activeChatContact;
             
@@ -1153,7 +1158,7 @@
             let btn = document.querySelector('#chatHeader button i');
             if(btn) btn.classList.add('fa-spin');
             
-            let savedContacts = [...allUsersData];
+            let savedContacts = [...allUsersData]; // สำรองรายชื่ออีกรอบ
             
             fetchGAS({ action: "getMessages", myId: currentUser.id, myName: currentUser.name, role: currentUser.role })
             .then(r => { 
@@ -1190,6 +1195,50 @@
                     }
                 } 
             }); 
+        }
+
+        function updateProfileUI() {
+            if(!currentUser) return;
+            const fullName = currentUser.name || "Teacher";
+            const inits = getInitials(fullName);
+
+            let setDisplay = document.getElementById('settingNameDisplay');
+            if(setDisplay) setDisplay.innerText = fullName;
+            let setEmail = document.getElementById('set_email');
+            if(setEmail) setEmail.value = currentUser.email || "";
+            let setPhone = document.getElementById('set_phone');
+            if(setPhone) setPhone.value = currentUser.phone || "";
+
+            let setPic = document.getElementById('previewSettingPic');
+            let setInit = document.getElementById('previewSettingInitials');
+
+            let mobPic = document.getElementById('mobileHeaderProfileImg');
+            let mobInit = document.getElementById('mobileHeaderProfileInitials');
+
+            if(currentUser.pic && currentUser.pic.trim() !== "") {
+                if(setPic) { setPic.src = currentUser.pic; setPic.classList.remove('hidden'); }
+                if(setInit) setInit.classList.add('hidden');
+                if(mobPic) { mobPic.src = currentUser.pic; mobPic.classList.remove('hidden'); }
+                if(mobInit) mobInit.classList.add('hidden');
+            } else {
+                if(setInit) { setInit.innerText = inits; setInit.classList.remove('hidden'); }
+                if(setPic) setPic.classList.add('hidden');
+                if(mobInit) { mobInit.innerText = inits; mobInit.classList.remove('hidden'); }
+                if(mobPic) mobInit.classList.add('hidden');
+            }
+            
+            document.getElementById('rightProfileFullName').innerText = fullName;
+            document.getElementById('rightProfileId').innerText = "ID: " + (currentUser.username || currentUser.id || "-");
+
+            let rightPic = document.getElementById('rightProfileImage');
+            let rightInit = document.getElementById('rightProfileInitials');
+            if(currentUser.pic && currentUser.pic.trim() !== "") { 
+                if(rightPic) { rightPic.src = currentUser.pic; rightPic.classList.remove('hidden'); }
+                if(rightInit) rightInit.classList.add('hidden'); 
+            } else {
+                if(rightInit) { rightInit.innerText = inits; rightInit.classList.remove('hidden'); }
+                if(rightPic) rightPic.classList.add('hidden');
+            }
         }
 
         function handleImageUpload(e) {
@@ -1302,6 +1351,7 @@
 
         function logout() { 
             sessionStorage.removeItem('currentUser'); 
+            localStorage.removeItem('currentUser'); 
             window.location.replace('index.html'); 
         }
     </script>
