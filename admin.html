@@ -264,7 +264,7 @@
                         <div class="flex items-center gap-3 lg:gap-4 w-full pr-2">
                             <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden shadow-sm bg-slate-200 dark:bg-slate-700 flex items-center justify-center font-bold text-indigo-600 dark:text-indigo-400 border border-white/80 shrink-0" id="chatHeaderAvatar"></div>
                             <div class="flex flex-col flex-1 min-w-0">
-                                <h3 class="font-bold text-sm lg:text-lg text-slate-800 dark:text-white leading-tight truncate w-full" id="chatHeaderName">Name</h3>
+                                <h3 class="font-bold text-sm lg:text-lg text-slate-800 dark:text-white mt-1 flex items-center truncate w-full" id="chatHeaderName">Name</h3>
                                 <div id="chatHeaderSub" class="w-full"></div>
                             </div>
                         </div>
@@ -383,6 +383,7 @@
             });
         }
 
+        // ✨ เปลี่ยนให้ลบเฉพาะ Auth Token ไม่ให้ความจำการอ่านแชทหาย ✨
         function logout() { 
             sessionStorage.removeItem('currentUser'); 
             window.location.replace('index.html'); 
@@ -670,7 +671,7 @@
             if (rRole === 'teacher' && c.room && c.room !== "-") {
                 subText = `<i class="fa-solid fa-book mr-1 text-slate-400"></i> วิชา: ${c.room}`;
             } else if (rRole === 'student') {
-                let sInfo = []; if(c.id && c.id !== "-") sInfo.push(`ID: ${c.id}`); if(c.room && c.room !== "-") sInfo.push(`Class: ${c.room}`);
+                let sInfo = []; if(c.id && c.id !== "-") sInfo.push(`ID: ${c.id}`); if(c.class && c.class !== "-") sInfo.push(`Class: ${c.class}`);
                 subText = sInfo.join(' | ');
             }
 
@@ -712,10 +713,13 @@
 
         function renderChatContacts() {
             let tList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'teacher').map(u => ({...u, bgColor:'bg-indigo-100 dark:bg-indigo-900/50', textColor:'text-indigo-600 dark:text-indigo-400', initials:getInitials(u.name || u.Name || "T"), room:u.assigned || u.room || u.Room || "-"}));
+            
+            // เพิ่มการรองรับชื่อนักเรียนแบบตรงไปตรงมา
             let sList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'student').map(u => {
                 let sId = u.id || u.username || u.Username || "-";
-                if(sId === "-") { let fMsg = cachedMessages.find(m => m.senderName === (u.name || u.Name)); if(fMsg) sId = fMsg.senderId; }
-                return {...u, bgColor:'bg-slate-200 dark:bg-slate-700', textColor:'text-slate-600 dark:text-slate-300', initials:getInitials(u.name || u.Name || "S"), room:u.assigned || u.room || u.Room || "-", id: sId};
+                // ใช้ Username เป็น ID หากไม่มีฟิลด์ ID โดยตรง
+                if(sId === "-") { let fMsg = cachedMessages.find(m => m.senderName === (u.name || u.Name)); if(fMsg) sId = fMsg.senderId || "-"; }
+                return {...u, bgColor:'bg-slate-200 dark:bg-slate-700', textColor:'text-slate-600 dark:text-slate-300', initials:getInitials(u.name || u.Name || "S"), class:u.assigned || u.room || u.Room || "-", id: sId};
             });
             
             let h = "";
@@ -876,7 +880,6 @@
 
                     if(isChanged) {
                         cachedMessages = r.data || []; 
-                        
                         if(activeChatContact) openChat(activeChatContact); 
                         else renderChatContacts(); 
                     }
@@ -997,12 +1000,6 @@
                     });
                 }
             });
-        }
-
-        // ✨ เปลี่ยนให้ลบเฉพาะ Auth Token ไม่ให้ความจำการอ่านแชทหาย ✨
-        function logout() { 
-            sessionStorage.removeItem('currentUser'); 
-            window.location.replace('index.html'); 
         }
     </script>
 </body>
