@@ -73,7 +73,7 @@
         .dark .menu-item.active { background-color: rgba(240, 90, 40, 0.2); color: #f05a28 !important;}
         
         .chat-contact.active { background-color: rgba(240, 90, 40, 0.05); border-right: 4px solid #f05a28; }
-        .dark .chat-contact.active { background-color: rgba(240, 90, 40, 0.1); }
+        .dark .chat-contact.active { background-color: rgba(240, 90, 40, 0.1); border-right-color: #f05a28; }
         
         .chat-bubble-sent { background: linear-gradient(135deg, #f05a28 0%, #fb923c 100%); color: white; border-radius: 18px 18px 4px 18px; }
         .chat-bubble-received { background-color: rgba(255, 255, 255, 0.9); color: #1e293b; border-radius: 18px 18px 18px 4px; border: 1px solid rgba(0,0,0,0.05); }
@@ -336,7 +336,6 @@
     </aside>
 
     <script>
-        // ✨ อัปเดต URL ล่าสุด ✨
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbwy0aqA_Am-Ey1iG3VNpcwhvL_QW536rVNrMNUeN7_ZH2lgDWHlfiQXnfIMa4hG6gSJKQ/exec';
         
         let currentUser = JSON.parse(sessionStorage.getItem('currentUser')) || JSON.parse(localStorage.getItem('currentUser'));
@@ -395,10 +394,7 @@
 
         window.onload = () => { 
             initTheme();
-            // เช็คว่ามีข้อมูลเดิมไหมตอนโหลดหน้าใหม่
-            if(!currentUser && localStorage.getItem('currentUser')) {
-                 currentUser = JSON.parse(localStorage.getItem('currentUser'));
-            }
+            if(!currentUser && localStorage.getItem('currentUser')) { currentUser = JSON.parse(localStorage.getItem('currentUser')); }
             updateProfileUI(); nav('system'); loadDashboardData(); 
             let chatInput = document.getElementById("chatInputMessage"); if(chatInput) { chatInput.addEventListener("keypress", (e) => { if(e.key === "Enter") sendChatMessage(); }); }
         };
@@ -424,7 +420,6 @@
             document.getElementById('mainScrollArea').scrollTop = 0;
         }
 
-        // ✨ ตรรกะใหม่: ดึงข้อความที่เราได้รับอย่างเดียว ✨
         function getUnreadCount(contactName) {
             let receivedCount = 0;
             cachedMessages.forEach(m => {
@@ -440,7 +435,6 @@
             return unread > 0 ? unread : 0;
         }
 
-        // ✨ บันทึกข้อความที่อ่านแล้วลง Storage ✨
         function markChatAsRead(contactName) {
             let receivedCount = 0;
             cachedMessages.forEach(m => {
@@ -456,9 +450,12 @@
 
         function updateUnreadBadges() {
             let globalUnread = 0;
-            
-            // ใช้รายชื่อคนที่มีประวัติแชทกับแอดมิน เพื่อกันเลขหลอน
             let contactSet = new Set();
+            if(allUsersData && allUsersData.length > 0) {
+                allUsersData.forEach(u => {
+                    if (u.name && u.name !== currentUser.name) contactSet.add(u.name);
+                });
+            }
             cachedMessages.forEach(m => {
                 if (m.senderName !== currentUser.name) contactSet.add(m.senderName);
                 if (m.receiver !== currentUser.name) contactSet.add(m.receiver);
@@ -479,10 +476,7 @@
                 if(r.status === "success") {
                     allSubjects = r.subjects || []; 
                     allLessons = r.lessons || []; 
-                    
-                    // ✨ คัดให้เห็นเฉพาะข้อความที่คุยกับแอดมินเท่านั้น จะได้ไม่มั่วกับคนอื่น
-                    cachedMessages = (r.messages || []).filter(m => m.senderName === currentUser.name || m.receiver === currentUser.name);
-                    
+                    cachedMessages = r.messages || []; 
                     if(r.users) allUsersData = r.users;
 
                     let ts = document.getElementById('t_subject'); 
@@ -504,11 +498,7 @@
 
         function toggleSubjectSelection(role) {
             let box = document.getElementById('subjectSelectionBox');
-            if (role === 'admin') {
-                box.style.display = 'none';
-            } else {
-                box.style.display = 'block';
-            }
+            if (role === 'admin') { box.style.display = 'none'; } else { box.style.display = 'block'; }
         }
 
         function adminAddSubject() { 
@@ -634,7 +624,7 @@
 
         function deleteLesson(t) { Swal.fire({title:'ลบบทเรียน?', text: 'คุณแน่ใจหรือไม่ที่จะลบเนื้อหานี้?', icon:'warning', showCancelButton:true, customClass:{popup:'ios-popup'}, confirmButtonColor:'#f05a28', confirmButtonText:'ยืนยันการลบ', cancelButtonText:'ยกเลิก'}).then(r=>{if(r.isConfirmed) { Swal.fire({title:'Deleting...', customClass:{popup:'ios-popup'}, didOpen:()=>Swal.showLoading()}); fetchGAS({action:"deleteLesson", title:t}).then(()=>loadDashboardData()); }}); }
 
-        // ✨ แก้ไขส่วน Sidebar ให้นำข้อมูล วิชา/แอดมิน ลงมาบรรทัดล่างไม่ให้ล้น ✨
+        // ✨ แก้ไขส่วนแสดงการ์ดรายชื่อ ให้แสดง ID ของนักเรียนและตัดข้อความยาวๆ ให้เป็น ... ✨
         function buildContactCard(c, type) {
             let isActive = activeChatContact === c.name ? "active" : "";
             let pPic = c.pic ? `<img src="${c.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center font-bold text-xs lg:text-sm">${c.initials}</div>`;
@@ -672,9 +662,7 @@
 
             let rRole = String(c.role || "").toLowerCase();
             let subText = "";
-            if (rRole === 'admin') {
-                subText = `<span class="text-rose-500 font-bold"><i class="fa-solid fa-user-shield"></i> Admin</span>`;
-            } else if (rRole === 'teacher' && c.room && c.room !== "-") {
+            if (rRole === 'teacher' && c.room && c.room !== "-") {
                 subText = `<i class="fa-solid fa-book mr-1 text-slate-400"></i> วิชา: ${c.room}`;
             } else if (rRole === 'student') {
                 let sInfo = []; 
@@ -721,8 +709,6 @@
 
         function renderChatContacts() {
             let tList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'teacher').map(u => ({...u, bgColor:'bg-indigo-100 dark:bg-indigo-900/50', textColor:'text-indigo-600 dark:text-indigo-400', initials:getInitials(u.name || u.Name || "T"), room:u.assigned || u.room || u.Room || "-", id: u.username || u.Username || "-"}));
-            
-            // ดึง ID เพิ่มเติมสำหรับนักเรียน
             let sList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'student').map(u => {
                 let sId = u.id || u.username || u.Username || "-";
                 if(sId === "-") { let fMsg = cachedMessages.find(m => m.senderName === (u.name || u.Name)); if(fMsg) sId = fMsg.senderId || "-"; }
@@ -864,9 +850,10 @@
             .then(r => { 
                 if(btn) btn.classList.remove('fa-spin');
                 if(r.status === "success") { 
-                    // ✨ คัดให้เห็นเฉพาะข้อความที่คุยกับแอดมินเท่านั้น
-                    cachedMessages = (r.messages || []).filter(m => m.senderName === currentUser.name || m.receiver === currentUser.name);
-                    if(r.users) allUsersData = r.users;
+                    if(r.users && r.users.length > 0) {
+                        allUsersData = r.users;
+                    }
+                    cachedMessages = r.data || []; 
                     if(activeChatContact) openChat(activeChatContact); 
                     else renderChatContacts(); 
                 } 
@@ -880,13 +867,12 @@
                     let rawUsers = r.users || r.data || [];
                     if(rawUsers.length > 0) allUsersData = rawUsers;
                     
-                    let newMsgs = (r.messages || r.data || []).filter(m => m.senderName === currentUser.name || m.receiver === currentUser.name);
                     let isChanged = false;
-                    if(JSON.stringify(cachedMessages) !== JSON.stringify(newMsgs)) isChanged = true;
+                    if(JSON.stringify(cachedMessages) !== JSON.stringify(r.data)) isChanged = true;
                     if(!isChanged && r.users) isChanged = true; 
 
                     if(isChanged) {
-                        cachedMessages = newMsgs;
+                        cachedMessages = r.data || []; 
                         if(activeChatContact) openChat(activeChatContact); 
                         else renderChatContacts(); 
                     }
