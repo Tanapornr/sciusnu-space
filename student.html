@@ -675,15 +675,15 @@
             document.getElementById('lessonGrid_student').innerHTML = filtered.length > 0 ? filtered.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'grid')).join('') : '<div class="col-span-full py-20 text-center text-slate-700 dark:text-slate-300 font-bold border-2 border-dashed border-slate-400/60 dark:border-slate-600/60 rounded-[2rem] bg-white/30 dark:bg-black/20 backdrop-blur-sm">ไม่พบข้อมูลบทเรียน</div>';
         }
 
-        // ✨ แสดงข้อมูลตารางคะแนนผลการเรียน ✨
+        // ✨ แสดงข้อมูลตารางคะแนนผลการเรียน (ลบระบบการกรองออกให้แสดงทั้งหมด) ✨
         function renderStudentScores() {
             let tbody = document.getElementById('studentScoreTableBody');
             let h = "";
             let completedCount = 0;
             let pendingCount = 0;
 
-            let myS = (currentUser.assigned ? String(currentUser.assigned) : "").split(',').map(s=>s.trim()).filter(s=>s);
-            let fLessons = (myS && myS.length > 0) ? allLessons.filter(l => myS.includes(l.subject)) : allLessons;
+            // นักเรียนดึงมาทุกวิชาได้เลย ไม่ต้องกรองตาม Class
+            let fLessons = allLessons;
 
             if (fLessons.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="4" class="text-center py-6 text-slate-500 font-medium border-0">ยังไม่มีข้อมูลบทเรียน</td></tr>';
@@ -820,7 +820,7 @@
             let continueGrid = document.getElementById('lessonGrid_continue');
             let continueLessons = allLessons.filter(l => {
                 let progStatus = localStorage.getItem('ytProg_' + currentUser.id + '_' + l.title);
-                return progStatus && progStatus !== "done" && (l.studentScore === null || l.studentScore === undefined);
+                return progStatus && progStatus !== "done" && l.studentScore === null;
             });
 
             if(continueLessons.length > 0) {
@@ -1012,6 +1012,7 @@
             }
         }
 
+        // ✨ เปิดบทเรียน และ ปรับปรุงป้ายคะแนนสไตล์ iOS ด้านบนวิดีโอ
         function openLesson(idx) {
             currentLesson = allLessons[idx]; 
             nav('lesson_detail');
@@ -1043,8 +1044,8 @@
                 quizWrapper.classList.add('hidden');
             } else {
                 topBanner.classList.add('hidden');
-                if(!ytId && totalQs > 0) quizWrapper.classList.remove('hidden'); 
-                else quizWrapper.classList.add('hidden'); 
+                if(!ytId && totalQs > 0) quizWrapper.classList.remove('hidden'); // ถ้าไม่มีวิดีโอ ให้โชว์แบบทดสอบด้านล่าง
+                else quizWrapper.classList.add('hidden'); // ถ้ามีวิดีโอ แบบทดสอบจะเด้งขึ้นมาระหว่างดูเอง
             }
 
             if(ytId) { 
@@ -1174,67 +1175,57 @@
             if (type === "sidebar") {
                 return `
                 <div class="flex items-center justify-between group p-3 rounded-2xl border border-slate-200/50 dark:border-slate-700/50 hover:border-orange-300 dark:hover:border-orange-700 shadow-sm transition mb-3 bg-white/50 dark:bg-black/30 backdrop-blur-sm cursor-pointer" onclick="nav('inbox'); openChat('${(c.name||'').replace(/'/g, "\\'")}')">
-                    <div class="flex items-start gap-3">
-                        <div class="relative w-12 h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm shrink-0 flex items-center justify-center border border-white/50">${pPic}
+                    <div class="flex items-center gap-3 w-full overflow-hidden pr-2">
+                        <div class="relative w-11 h-11 rounded-full ${c.bgColor || 'bg-slate-200'} ${c.textColor || 'text-slate-600'} overflow-hidden shadow-sm shrink-0 flex items-center justify-center border border-white/50">
+                            ${pPic}
                             ${badgeHtml}
                         </div>
-                        <div class="flex flex-col max-w-[130px] lg:max-w-[150px]">
-                            <p class="text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight truncate">${c.name}</p>
-                            <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5 ${unreadClass}" title="${latestText}">${latestText}</p>
-                            ${subText}
+                        <div class="flex flex-col flex-1 min-w-0">
+                            <p class="text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight truncate w-full">${c.name}</p>
+                            ${subText ? `<p class="text-[9px] text-slate-500 dark:text-slate-400 truncate mt-0.5 w-full">${subText}</p>` : ''}
+                            <p class="text-[10px] mt-0.5 w-full truncate ${unreadClass}" title="${latestText}">${latestText}</p>
                         </div>
                     </div>
-                    <button class="w-9 h-9 rounded-full border border-orange-200/50 dark:border-orange-900/50 text-[#f05a28] flex items-center justify-center hover:bg-[#f05a28] hover:text-white transition shadow-sm shrink-0">
+                    <button class="w-8 h-8 rounded-full border border-orange-200/50 dark:border-orange-900/50 text-[#f05a28] flex items-center justify-center hover:bg-[#f05a28] hover:text-white transition shadow-sm shrink-0">
                         <i class="fa-regular fa-comment-dots text-sm pointer-events-none"></i>
                     </button>
                 </div>`;
             } else {
                 return `
-                <div class="chat-contact ${isActive} flex items-center gap-3 p-3 lg:p-4 rounded-xl cursor-pointer hover:bg-white/50 dark:hover:bg-black/30 transition mb-1 border border-transparent shadow-sm" onclick="openChat('${(c.name||'').replace(/'/g, "\\'")}')">
-                    <div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor} ${c.textColor} overflow-hidden shadow-sm border border-white/50 shrink-0 flex items-center justify-center">${pPic}
+                <div class="chat-contact ${isActive} flex items-center gap-3 p-3 lg:p-4 rounded-xl cursor-pointer hover:bg-white/80 dark:hover:bg-black/40 transition mb-1 border border-transparent shadow-sm" onclick="openChat('${(c.name||'').replace(/'/g, "\\'")}')">
+                    <div class="relative w-10 h-10 lg:w-12 lg:h-12 rounded-full ${c.bgColor || 'bg-slate-200'} ${c.textColor || 'text-slate-600'} overflow-hidden shadow-sm border border-white/80 shrink-0 flex items-center justify-center">
+                        ${pPic}
                         ${badgeHtml}
                     </div>
-                    <div class="flex-1 min-w-0">
-                        <h4 class="font-bold text-xs lg:text-sm truncate text-slate-800 dark:text-slate-200">${c.name}</h4>
-                        <p class="text-[10px] text-slate-400 truncate ${unreadClass}" title="${latestText}">${latestText}</p>
+                    <div class="flex-1 min-w-0 flex flex-col justify-center">
+                        <h4 class="font-bold text-xs lg:text-sm truncate w-full text-slate-800 dark:text-slate-200 leading-tight">${c.name}</h4>
+                        ${subText ? `<p class="text-[9px] text-slate-500 dark:text-slate-400 truncate mt-0.5 w-full">${subText}</p>` : ''}
+                        <p class="text-[10px] mt-0.5 w-full truncate ${unreadClass}" title="${latestText}">${latestText}</p>
                     </div>
                 </div>`;
             }
         }
 
         function renderChatContacts() {
-            let tList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'teacher').map(u => ({...u, bgColor:'bg-indigo-100 dark:bg-indigo-900/50', textColor:'text-indigo-600 dark:text-indigo-400', initials:getInitials(u.name || u.Name || "T"), room:u.assigned || u.room || u.Room || "-"}));
             let aList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'admin').map(u => ({...u, bgColor:'bg-rose-100 dark:bg-rose-900/50', textColor:'text-rose-600 dark:text-rose-400', initials:getInitials(u.name || u.Name || "A"), room:"-"}));
+            let tList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'teacher').map(u => ({...u, bgColor:'bg-indigo-100 dark:bg-indigo-900/50', textColor:'text-indigo-600 dark:text-indigo-400', initials:getInitials(u.name || u.Name || "T"), room:u.assigned || u.room || u.Room || "-"}));
             
-            let htmlInboxList = "";
-            let htmlRightSidebar = "";
-
-            if(tList.length === 0 && aList.length === 0) {
-                 htmlInboxList = '<div class="text-center p-4 text-xs text-slate-500 dark:text-slate-400 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl mx-4 mt-4 bg-white/40 dark:bg-transparent">ไม่มีผู้ติดต่อ</div>';
-                 htmlRightSidebar = '<div class="text-[10px] text-slate-500 dark:text-slate-400 text-center py-4 bg-white/40 dark:bg-black/20 rounded-xl border border-dashed border-slate-400/50 dark:border-slate-600/50 shadow-inner">ไม่มีข้อมูลผู้ติดต่อ</div>';
-            } else {
-                if(tList.length > 0) {
-                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-widest mt-2">อาจารย์ผู้สอน</p>`;
-                    tList.forEach(c => {
-                        htmlInboxList += buildContactCard(c, "inbox");
-                        htmlRightSidebar += buildContactCard(c, "sidebar");
-                    });
-                }
-                
-                if(aList.length > 0) {
-                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-widest mt-4">ผู้ดูแลระบบ</p>`;
-                    aList.forEach(c => {
-                        htmlInboxList += buildContactCard(c, "inbox");
-                        htmlRightSidebar += buildContactCard(c, "sidebar");
-                    });
-                }
+            let h = "";
+            let sb = "";
+            
+            if(aList.length > 0) { 
+                h += `<p class="px-4 text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-widest mt-2">ผู้ดูแลระบบ</p>`; 
+                aList.forEach(c => { h += buildContactCard(c, "inbox"); sb += buildContactCard(c, "sidebar"); }); 
+            }
+            if(tList.length > 0) { 
+                h += `<p class="px-4 text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-widest mt-4">อาจารย์ผู้สอน</p>`; 
+                tList.forEach(c => { h += buildContactCard(c, "inbox"); sb += buildContactCard(c, "sidebar"); }); 
             }
             
-            let clist = document.getElementById('chatContactList');
-            if(clist) clist.innerHTML = htmlInboxList;
+            let clist = document.getElementById('chatContactList'); if(clist) clist.innerHTML = h || '<div class="text-center p-4 text-xs text-slate-600 dark:text-slate-400 font-medium border-2 border-dashed border-slate-400/50 dark:border-slate-600/50 rounded-xl mx-4 mt-4 bg-white/40 dark:bg-transparent">ไม่มีผู้ติดต่อ</div>';
             
             let mentorUI = document.getElementById('mentorListUI');
-            if(mentorUI) mentorUI.innerHTML = htmlRightSidebar;
+            if(mentorUI) mentorUI.innerHTML = sb || '<div class="text-[10px] text-slate-600 dark:text-slate-400 font-medium text-center py-4 bg-white/60 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-400/50 dark:border-slate-600/50 shadow-inner">ไม่มีข้อมูลผู้ติดต่อ</div>';
 
             updateUnreadBadges(); 
         }
@@ -1247,12 +1238,14 @@
             
             let contactInfo = [...allUsersData].map(u => {
                 let roleStr = String(u.role || u.Role || "").toLowerCase().trim();
+                let sId = u.id || u.username || u.Username || "-";
                 return {
                     name: u.name || u.Name || "", 
                     role: roleStr === 'admin' ? 'Admin' : (roleStr === 'teacher' ? 'Teacher' : 'Student'), 
                     initials: getInitials(u.name || u.Name || "A"), 
                     pic: u.pic || u.ProfilePic || "", 
-                    room: u.assigned || u.room || u.Room || "-"
+                    room: u.assigned || u.room || u.Room || "-",
+                    id: sId
                 }
             }).find(x => x.name === n);
 
@@ -1262,6 +1255,8 @@
             if (contactInfo) {
                 if (contactInfo.role === 'Admin') {
                     subjectBadgeHeader = ` <span class="text-xs text-rose-500 font-bold ml-2">(Admin)</span>`;
+                } else if (contactInfo.role === 'Student') {
+                    subjectBadgeHeader = ` <span class="text-xs text-slate-500 dark:text-slate-400 font-normal ml-2">(ID: ${contactInfo.id} | Class: ${contactInfo.room})</span>`;
                 } else if (contactInfo.room && contactInfo.room !== "-") {
                     subjectBadgeHeader = ` <span class="text-xs text-slate-500 dark:text-slate-400 font-normal ml-2">(วิชา: ${contactInfo.room})</span>`;
                 }
@@ -1343,6 +1338,7 @@
             let msg = document.getElementById('chatInputMessage').value.trim(); 
             if(!msg || !activeChatContact) return;
             
+            // Backup ตัวแปรสำคัญ
             let savedContacts = [...allUsersData];
             let activeContactBackup = activeChatContact;
             
