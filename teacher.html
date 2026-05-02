@@ -156,7 +156,7 @@
                 </button>
                 <button onclick="toggleRightSidebar()" class="lg:hidden w-10 h-10 rounded-full overflow-hidden border-2 border-white dark:border-slate-700 shadow-sm">
                     <img id="mobileHeaderProfileImg" src="" class="w-full h-full object-cover hidden">
-                    <div id="mobileHeaderProfileInitials" class="w-full h-full bg-orange-100 text-orange-600 flex items-center justify-center text-xs font-bold">T</div>
+                    <div id="mobileHeaderProfileInitials" class="w-full h-full bg-rose-100 text-rose-600 flex items-center justify-center text-xs font-bold">T</div>
                 </button>
             </div>
         </header>
@@ -215,8 +215,13 @@
 
             <div id="view_stats" class="hidden max-w-5xl mx-auto">
                 <h2 class="text-2xl lg:text-3xl font-bold font-prompt text-slate-800 dark:text-slate-100 mb-6 lg:mb-8 drop-shadow-sm">สถิติการเรียน</h2>
-                <div class="glass-panel rounded-[1.5rem] lg:rounded-[2rem] p-5 lg:p-8 mb-6 lg:mb-8 shadow-md">
-                    <select id="statLessonSelect" onchange="renderTeacherTables()" class="w-full px-4 py-3 border border-white dark:border-slate-700 rounded-xl font-bold text-orange-700 dark:text-orange-400 bg-white/80 dark:bg-black/50 outline-none shadow-inner text-sm cursor-pointer hover:border-orange-300 dark:hover:border-orange-600 transition"></select>
+                
+                <div class="glass-panel rounded-[1.5rem] lg:rounded-[2rem] p-5 lg:p-8 mb-6 lg:mb-8 shadow-md flex flex-col sm:flex-row gap-4">
+                    <select id="statLessonSelect" onchange="renderTeacherTables()" class="flex-1 px-4 py-3 border border-white dark:border-slate-700 rounded-xl font-bold text-orange-700 dark:text-orange-400 bg-white/80 dark:bg-black/50 outline-none shadow-inner text-sm cursor-pointer hover:border-orange-300 dark:hover:border-orange-600 transition"></select>
+                    
+                    <select id="statClassSelect" onchange="renderTeacherTables()" class="w-full sm:w-1/3 px-4 py-3 border border-white dark:border-slate-700 rounded-xl font-bold text-indigo-700 dark:text-indigo-400 bg-white/80 dark:bg-black/50 outline-none shadow-inner text-sm cursor-pointer hover:border-indigo-300 dark:hover:border-indigo-600 transition">
+                        <option value="all">-- ทุกห้องเรียน --</option>
+                    </select>
                 </div>
                 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
@@ -239,7 +244,7 @@
                 <div class="w-full lg:w-2/3 glass-panel rounded-2xl lg:rounded-3xl flex flex-col overflow-hidden shadow-md relative lg:h-full h-2/3">
                     <div id="chatPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center bg-white/60 dark:bg-black/60 backdrop-blur-md z-10 text-slate-600 dark:text-slate-300">
                         <div class="w-20 h-20 bg-orange-100 dark:bg-orange-900/50 text-orange-500 rounded-full flex items-center justify-center text-3xl mb-4 shadow-inner border border-white/50"><i class="fa-regular fa-comment"></i></div>
-                        <p class="font-bold text-sm lg:text-base">เลือกผู้ติดต่อเพื่อสนทนา</p>
+                        <p class="font-bold text-sm lg:text-base">เลือกบุคคลเพื่อเริ่มสนทนา</p>
                     </div>
                     <div class="p-4 lg:p-5 border-b border-slate-300/50 dark:border-slate-700/50 flex items-center justify-between z-0 bg-white/40 dark:bg-black/30" id="chatHeader">
                         <div class="flex items-center gap-3 lg:gap-4 w-full pr-2">
@@ -274,8 +279,8 @@
                     </div>
                     <form id="profileForm" class="space-y-5">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <div><label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-widest">Email *</label><input type="email" id="set_email" class="w-full px-4 py-3.5 bg-white/80 dark:bg-black/40 border border-white dark:border-white/10 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white font-medium shadow-inner" required></div>
-                            <div><label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-widest">Phone *</label><input type="tel" id="set_phone" class="w-full px-4 py-3.5 bg-white/80 dark:bg-black/40 border border-white dark:border-white/10 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white font-medium shadow-inner" required></div>
+                            <div><label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-widest">Email</label><input type="email" id="set_email" class="w-full px-4 py-3.5 bg-white/80 dark:bg-black/40 border border-white dark:border-white/10 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white font-medium shadow-inner"></div>
+                            <div><label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-widest">Phone</label><input type="tel" id="set_phone" class="w-full px-4 py-3.5 bg-white/80 dark:bg-black/40 border border-white dark:border-white/10 rounded-xl outline-none focus:ring-2 focus:ring-[#f05a28] text-sm text-slate-800 dark:text-white font-medium shadow-inner"></div>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
                             <button type="button" onclick="saveProfile()" class="w-full bg-[#f05a28] text-white font-bold py-4 rounded-xl shadow-lg active:scale-[0.98] transition font-prompt uppercase text-sm tracking-widest hover:bg-[#d94a1d] border border-white/20">อัปเดตโปรไฟล์</button>
@@ -315,7 +320,6 @@
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbwy0aqA_Am-Ey1iG3VNpcwhvL_QW536rVNrMNUeN7_ZH2lgDWHlfiQXnfIMa4hG6gSJKQ/exec';
         let currentUser = JSON.parse(sessionStorage.getItem('currentUser')) || JSON.parse(localStorage.getItem('currentUser'));
         
-        // ✨ ดึงค่า Username มาใช้เป็น ID ป้องกัน Error undefined
         if (currentUser && currentUser.username && !currentUser.id) {
             currentUser.id = currentUser.username;
         }
@@ -326,7 +330,6 @@
         let chatTimer = null;
         let globalStatData = { students: [], scores: [], logs: [] };
 
-        // ✨ ฟังก์ชันการวาดการ์ดบทเรียน ที่สมบูรณ์ 100% ✨
         function getTeacherLessonCardHtml(l, idx) {
             let viewCount = l.views || 0;
             let ep = l.ep || "-";
@@ -379,7 +382,6 @@
             }); 
         }
 
-        // ✨ ป้องกันการ Error จากกรณีชื่อยาวหรือ Null
         function getInitials(n) { 
             if(!n) return "U";
             let p = String(n).trim().split(/\s+/); 
@@ -405,7 +407,6 @@
             if(!rs.classList.contains('hidden')) { rs.style.position = 'fixed'; rs.style.right = '0'; rs.style.top = '0'; rs.style.zIndex = '100'; rs.style.height = '100vh'; rs.style.width = '280px'; showiOSToast('fa-solid fa-xmark', 'แตะที่ว่างเพื่อปิด', 'bg-white/80 dark:bg-slate-700', 'text-slate-600 dark:text-slate-200'); }
         }
 
-        // ✨ ฟังก์ชันการแสดงข้อมูลหน้าแดชบอร์ดล่วงหน้า (Caching) ช่วยให้โหลดทันทีในพริบตา ✨
         function applyDashboardData(r) {
             allLessons = r.lessons || []; 
             cachedMessages = r.messages || [];
@@ -484,7 +485,6 @@
             document.getElementById('mainScrollArea').scrollTop = 0;
         }
 
-        // ✨ ระบบค้นหา (Search) ใช้งานได้สมบูรณ์และไม่ค้าง
         function handleGlobalSearch(val) {
             let q = val.toLowerCase().trim();
             let isManage = document.getElementById('view_manage').style.display !== 'none';
@@ -559,9 +559,7 @@
             document.querySelectorAll('.inbox-badge').forEach(b => { if(globalUnread > 0) { b.innerText = globalUnread; b.classList.remove('hidden'); } else { b.classList.add('hidden'); } });
         }
 
-        // ✨ ตรรกะการโหลดข้อมูลที่แข็งแรง Caching โหลดเร็วปรู๊ด ✨
         function loadDashboardData() {
-            // Local Cache
             let cached = localStorage.getItem('scius_teacher_cache');
             if (cached) {
                 try {
@@ -577,7 +575,7 @@
                 if(loader) loader.style.display = 'none';
 
                 if(r.status === "success") {
-                    localStorage.setItem('scius_teacher_cache', JSON.stringify(r));
+                    localStorage.setItem('scius_teacher_cache', JSON.stringify(r)); 
                     applyDashboardData(r); 
                     loadAnalyticsBackground();
                 } else {
@@ -595,6 +593,9 @@
                 if(r.status === "success"){ 
                     globalStatData = r; 
                     localStorage.setItem('scius_teacher_stat_cache', JSON.stringify(r));
+                    
+                    // ✨ สร้างตัวเลือกคลาสใน Background ให้พร้อม
+                    updateClassFilterDropdown();
                 } 
             });
         }
@@ -607,6 +608,7 @@
             if (cachedStat) {
                 try {
                     globalStatData = JSON.parse(cachedStat);
+                    updateClassFilterDropdown();
                     renderTeacherTables();
                 } catch(e) {}
             } else {
@@ -618,6 +620,7 @@
                 if(r.status === "success"){ 
                     globalStatData = r; 
                     localStorage.setItem('scius_teacher_stat_cache', JSON.stringify(r));
+                    updateClassFilterDropdown();
                     renderTeacherTables(); 
                 } else {
                     if(!cachedStat) {
@@ -631,6 +634,26 @@
                     if(tbody2) tbody2.innerHTML = '<tr><td colspan="2" class="text-center text-rose-500 py-6 font-medium">เกิดข้อผิดพลาดในการโหลด</td></tr>';
                 }
             }); 
+        }
+
+        // ✨ ดึงข้อมูลห้องเรียนสร้างเป็น Dropdown อัตโนมัติ ✨
+        function updateClassFilterDropdown() {
+            let classSelect = document.getElementById('statClassSelect');
+            if(!classSelect) return;
+            let currentVal = classSelect.value;
+            classSelect.innerHTML = '<option value="all">-- ทุกห้องเรียน --</option>';
+            
+            let classes = [];
+            if (globalStatData && globalStatData.students) {
+                classes = [...new Set(globalStatData.students.map(s => s.room).filter(r => r && r !== '-'))].sort();
+            }
+            classes.forEach(c => {
+                classSelect.innerHTML += `<option value="${c}">ห้อง: ${c}</option>`;
+            });
+            
+            if(currentVal && classes.includes(currentVal)) {
+                classSelect.value = currentVal;
+            }
         }
 
         function renderTeacherLessons(myS) {
@@ -656,11 +679,15 @@
             if(globalStatData.students && globalStatData.students.length > 0) renderTeacherTables();
         }
 
-        // ✨ ตารางสวยงาม + ค้นหาคะแนนเต็มตามจริง ✨
+        // ✨ ตารางสวยงาม + ค้นหาคะแนนเต็มตามจริง + กรองตามห้องเรียน ✨
         function renderTeacherTables() {
             let selObj = document.getElementById('statLessonSelect');
+            let classObj = document.getElementById('statClassSelect');
+            
             if(!selObj) return;
             let sel = selObj.value; 
+            let classFilter = classObj ? classObj.value : 'all';
+            
             let tbody1 = document.getElementById('statTableBody');
             let tbody2 = document.getElementById('logTableBody');
             
@@ -677,7 +704,12 @@
             let sh = "", lh = "";
             let hasStudents = false;
 
-            (globalStatData.students || []).forEach(s => {
+            let targetStudents = globalStatData.students || [];
+            if(classFilter !== 'all') {
+                targetStudents = targetStudents.filter(s => s.room === classFilter);
+            }
+
+            targetStudents.forEach(s => {
                 hasStudents = true;
                 let sName = s.name || "ไม่มีชื่อ";
                 let uData = allUsersData.find(u => u.name === sName || u.Name === sName) || {};
@@ -703,7 +735,6 @@
 
                 let sc = (globalStatData.scores || []).find(x => x.id == s.id && x.lesson === sel);
                 
-                // แสดงคะแนนเป็น ตัวอย่าง "1/3" แทนที่จะเป็น "1/5" เสมอ
                 let scoreText = sc ? (maxScore > 0 ? sc.score + '/' + maxScore : 'ไม่มีควิซ') : 'ยังไม่สอบ';
                 
                 sh += `<tr class="border-b border-slate-200/50 dark:border-slate-700/50 last:border-0"><td class="py-2 px-2 w-full">${studentCell}</td><td class="py-2 px-2 text-right whitespace-nowrap"><span class="${sc?'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800':'bg-slate-100 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700'} px-3 py-1.5 rounded-lg font-bold shadow-sm text-[10px] lg:text-xs">${scoreText}</span></td></tr>`;
@@ -713,15 +744,14 @@
             });
 
             if(!hasStudents) {
-                sh = '<tr><td colspan="2" class="text-center py-6 text-slate-500 font-medium">ไม่มีข้อมูลนักเรียน</td></tr>';
-                lh = '<tr><td colspan="2" class="text-center py-6 text-slate-500 font-medium">ไม่มีข้อมูลนักเรียน</td></tr>';
+                sh = '<tr><td colspan="2" class="text-center py-6 text-slate-500 font-medium">ไม่มีข้อมูลนักเรียนในห้องนี้</td></tr>';
+                lh = '<tr><td colspan="2" class="text-center py-6 text-slate-500 font-medium">ไม่มีข้อมูลนักเรียนในห้องนี้</td></tr>';
             }
 
             if(tbody1) tbody1.innerHTML = sh; 
             if(tbody2) tbody2.innerHTML = lh;
         }
 
-        // ✨ แสดงโปรไฟล์แบบ Popup ของนักเรียน ✨
         function showStudentProfile(id, name, pic, room, email, phone) {
             let inits = getInitials(name);
             let picHtml = pic && pic !== 'undefined' && pic !== '' && pic !== '-' ? 
@@ -1014,7 +1044,6 @@
             updateUnreadBadges(); 
         }
 
-        // ✨ แสดงข้อความ อ่านแล้ว / ส่งแล้ว
         function openChat(n) {
             activeChatContact = n; document.getElementById('chatPlaceholder').classList.add('hidden'); 
             
@@ -1060,15 +1089,15 @@
                 let msgDate = new Date(m.date);
                 let d = msgDate.toLocaleString('th-TH', { hour:'2-digit', minute:'2-digit' });
                 let sPicHtml = partnerPicHtml.replace('text-sm', 'text-[8px]');
+                let isLastMsg = (index === sortedMsgs.length - 1);
                 
-                // ตรวจสอบสถานะการอ่าน (มีคนตอบกลับมาแล้ว หรือส่งไปเกิน 2 นาที)
                 let isRead = false;
                 let diffMins = (new Date() - msgDate) / 60000;
 
                 if (m.reply && m.reply.trim() !== "") {
                     isRead = true;
                 } else if (diffMins > 2) {
-                    isRead = true; // สมมติว่าอ่านแล้วถ้าผ่านไป 2 นาทีเพื่อ Prototype
+                    isRead = true; 
                 } else {
                     for(let j = index + 1; j < sortedMsgs.length; j++) {
                         if(sortedMsgs[j].senderName !== currentUser.name) {
@@ -1103,14 +1132,14 @@
                     if(m.reply && m.reply.trim() !== "") { 
                         let reps = m.reply.split('<br><br>').filter(x => x.trim() !== "");
                         reps.forEach((rep, rIdx) => {
-                            let statusText = isRead ? "อ่านแล้ว" : "ส่งแล้ว";
-                            let statusColor = isRead ? "text-emerald-500" : "text-slate-400";
-                            let statusIcon = isRead ? "fa-check-double" : "fa-check";
+                            let rStatusText = isRead ? "อ่านแล้ว" : "ส่งแล้ว";
+                            let rStatusColor = isRead ? "text-emerald-500" : "text-slate-400";
+                            let rStatusIcon = isRead ? "fa-check-double" : "fa-check";
                             h += `
                             <div class="flex flex-col items-end w-full mb-4 mt-2">
                                 <div class="flex items-center gap-2 mb-1 mr-2"><p class="text-[9px] font-bold text-slate-500 dark:text-slate-400">คุณตอบแล้ว</p><div class="w-5 h-5 rounded-full overflow-hidden shadow-sm shrink-0 border border-white/80">${myPicHtml}</div></div>
                                 <div class="max-w-[85%] md:max-w-[75%] chat-bubble-sent p-3 lg:p-4 text-xs lg:text-sm shadow-md">${rep}</div>
-                                <p class="text-[9px] font-bold ${statusColor} mt-1 mr-8"><i class="fa-solid ${statusIcon} text-[8px]"></i> ${statusText}</p>
+                                <p class="text-[9px] font-bold ${rStatusColor} mt-1 mr-8"><i class="fa-solid ${rStatusIcon} text-[8px]"></i> ${rStatusText}</p>
                             </div>`; 
                         });
                     }
@@ -1119,13 +1148,11 @@
             document.getElementById('chatHistory').innerHTML = h; document.getElementById('chatHistory').scrollTop = document.getElementById('chatHistory').scrollHeight;
         }
 
-        // ✨ ป้องกันรายชื่อหายตอนส่งแชท
         function sendChatMessage() {
             let msg = document.getElementById('chatInputMessage').value.trim(); 
             if(!msg || !activeChatContact) return;
             if(!currentUser.pic || !currentUser.email) return Swal.fire({icon:'warning', title:'โปรไฟล์ไม่สมบูรณ์', text:'กรุณาตั้งค่ารูปภาพและอีเมลก่อนส่งข้อความ'}).then(r => { if(r.isConfirmed) nav('settings'); });
             
-            // Backup ตัวแปรสำคัญ
             let savedContacts = [...allUsersData];
             let activeContactBackup = activeChatContact;
             
@@ -1158,7 +1185,7 @@
             let btn = document.querySelector('#chatHeader button i');
             if(btn) btn.classList.add('fa-spin');
             
-            let savedContacts = [...allUsersData]; // สำรองรายชื่ออีกรอบ
+            let savedContacts = [...allUsersData];
             
             fetchGAS({ action: "getMessages", myId: currentUser.id, myName: currentUser.name, role: currentUser.role })
             .then(r => { 
