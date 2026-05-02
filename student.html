@@ -267,31 +267,35 @@
             </div>
 
             <div id="view_scores" class="hidden max-w-5xl mx-auto">
-                <h2 class="text-2xl lg:text-3xl font-black text-slate-800 dark:text-slate-100 font-prompt drop-shadow-sm mb-6 lg:mb-8">ผลการเรียนของฉัน</h2>
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                    <h2 class="text-2xl lg:text-3xl font-black text-slate-800 dark:text-slate-100 font-prompt drop-shadow-sm">ผลการเรียนของฉัน</h2>
+                    <select id="scoreSubjectFilter" onchange="renderStudentScores()" class="glass-panel px-4 py-2 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-200 outline-none focus:ring-2 focus:ring-[#f05a28] cursor-pointer">
+                        <option value="all">ทุกรายวิชา (ทั้งหมด)</option>
+                    </select>
+                </div>
                 
                 <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                    <div class="glass-panel rounded-2xl p-4 text-center">
+                    <div class="glass-panel rounded-2xl p-4 text-center border-b-4 border-emerald-500">
                         <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase">เรียนจบแล้ว</p>
                         <p class="text-3xl font-black text-emerald-500" id="scoreStatCompleted">0</p>
                     </div>
-                    <div class="glass-panel rounded-2xl p-4 text-center">
+                    <div class="glass-panel rounded-2xl p-4 text-center border-b-4 border-slate-400">
                         <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase">ยังไม่เรียน</p>
                         <p class="text-3xl font-black text-slate-700 dark:text-slate-300" id="scoreStatPending">0</p>
                     </div>
                 </div>
 
-                <div class="glass-panel rounded-[1.5rem] lg:rounded-[2rem] p-5 lg:p-8 shadow-md">
+                <div class="glass-panel rounded-[1.5rem] lg:rounded-[2rem] p-4 lg:p-6 shadow-md">
                     <div class="overflow-x-auto hide-scroll">
                         <table class="w-full text-xs lg:text-sm text-left whitespace-nowrap">
                             <thead>
                                 <tr class="text-slate-500 dark:text-slate-400 border-b border-slate-300/50 dark:border-slate-700/50">
-                                    <th class="pb-3 px-3 font-bold">รายวิชา</th>
-                                    <th class="pb-3 px-3 font-bold">บทเรียน</th>
+                                    <th class="pb-3 px-4 font-bold">บทเรียน</th>
                                     <th class="pb-3 px-3 font-bold text-center">สถานะ</th>
-                                    <th class="pb-3 px-3 font-bold text-right">คะแนนที่ได้</th>
+                                    <th class="pb-3 px-4 font-bold text-right">คะแนนที่ได้</th>
                                 </tr>
                             </thead>
-                            <tbody id="studentScoreTableBody" class="divide-y divide-slate-200/50 dark:divide-slate-700/50">
+                            <tbody id="studentScoreTableBody" class="divide-y divide-slate-100 dark:divide-slate-800">
                             </tbody>
                         </table>
                     </div>
@@ -502,6 +506,17 @@
             
             document.getElementById('subjectGrid').innerHTML = sH; 
             document.getElementById('allSubjectGrid').innerHTML = sH;
+
+            // ✨ สร้าง Options สำหรับ Filter ในหน้าสถิติ ✨
+            let filterDropdown = document.getElementById('scoreSubjectFilter');
+            if(filterDropdown) {
+                let currentFilter = filterDropdown.value;
+                filterDropdown.innerHTML = '<option value="all">ทุกรายวิชา (ทั้งหมด)</option>';
+                [...new Set(allLessons.map(l => l.subject))].forEach(s => {
+                    if(s) filterDropdown.innerHTML += `<option value="${s}">${s}</option>`;
+                });
+                if(currentFilter) filterDropdown.value = currentFilter;
+            }
             
             renderHomeLessons(); renderHomeFavorites(); renderStudentLessons(); renderStudentScores(); updateStats(); renderChatContacts();
             
@@ -675,48 +690,61 @@
             document.getElementById('lessonGrid_student').innerHTML = filtered.length > 0 ? filtered.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'grid')).join('') : '<div class="col-span-full py-20 text-center text-slate-700 dark:text-slate-300 font-bold border-2 border-dashed border-slate-400/60 dark:border-slate-600/60 rounded-[2rem] bg-white/30 dark:bg-black/20 backdrop-blur-sm">ไม่พบข้อมูลบทเรียน</div>';
         }
 
-        // ✨ แสดงข้อมูลตารางคะแนนผลการเรียน (ลบระบบการกรองออกให้แสดงทั้งหมด) ✨
+        // ✨ ตารางแสดงคะแนนสไตล์ใหม่ Grouping ตามวิชา และโชว์คะแนนตามจริง ✨
         function renderStudentScores() {
+            let filterVal = document.getElementById('scoreSubjectFilter') ? document.getElementById('scoreSubjectFilter').value : 'all';
             let tbody = document.getElementById('studentScoreTableBody');
             let h = "";
             let completedCount = 0;
             let pendingCount = 0;
 
-            // นักเรียนดึงมาทุกวิชาได้เลย ไม่ต้องกรองตาม Class
-            let fLessons = allLessons;
+            let fLessons = allLessons; 
+            if(filterVal !== 'all') { fLessons = fLessons.filter(l => l.subject === filterVal); }
 
             if (fLessons.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="text-center py-6 text-slate-500 font-medium border-0">ยังไม่มีข้อมูลบทเรียน</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="3" class="text-center py-6 text-slate-500 font-medium border-0">ยังไม่มีข้อมูลบทเรียน</td></tr>';
                 document.getElementById('scoreStatCompleted').innerText = "0";
                 document.getElementById('scoreStatPending').innerText = "0";
                 return;
             }
 
-            fLessons.forEach((l) => {
-                let idx = allLessons.indexOf(l);
-                let isC = l.studentScore !== null && l.studentScore !== undefined;
-                let maxScore = (l.questions || []).filter(q => q && q.q && q.q.trim() !== "").length;
-                let scoreText = "-";
-                let statusBadge = "";
-
-                if (isC) {
-                    completedCount++;
-                    scoreText = maxScore > 0 ? `<span class="text-emerald-600 dark:text-emerald-400 font-black">${l.studentScore}/${maxScore}</span>` : `<span class="text-slate-400 font-medium">-</span>`;
-                    statusBadge = `<span class="bg-emerald-100 dark:bg-emerald-900/50 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 px-2 py-1 rounded-md text-[10px] font-bold shadow-sm"><i class="fa-solid fa-check mr-1"></i> จบแล้ว</span>`;
-                } else {
-                    pendingCount++;
-                    scoreText = maxScore > 0 ? `<span class="text-slate-400 dark:text-slate-500 font-medium">0/${maxScore}</span>` : `<span class="text-slate-400 font-medium">-</span>`;
-                    statusBadge = `<span class="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 px-2 py-1 rounded-md text-[10px] font-bold shadow-sm"><i class="fa-regular fa-clock mr-1"></i> ยังไม่เรียน</span>`;
-                }
-
-                h += `
-                <tr class="hover:bg-white/60 dark:hover:bg-black/30 transition cursor-pointer" onclick="openLesson(${idx})">
-                    <td class="py-3 px-3 text-slate-600 dark:text-slate-300 font-medium text-xs border-0">${l.subject}</td>
-                    <td class="py-3 px-3 text-slate-800 dark:text-slate-200 font-bold truncate max-w-[150px] lg:max-w-[250px] border-0">${l.title}</td>
-                    <td class="py-3 px-3 text-center border-0">${statusBadge}</td>
-                    <td class="py-3 px-3 text-right text-sm lg:text-base border-0">${scoreText}</td>
-                </tr>`;
+            // จัดกลุ่มบทเรียนตามรายวิชา
+            let grouped = {};
+            fLessons.forEach(l => {
+                if(!grouped[l.subject]) grouped[l.subject] = [];
+                grouped[l.subject].push(l);
             });
+
+            for(let subj in grouped) {
+                // แถบหัวข้อวิชาแบบสวยๆ
+                h += `<tr class="bg-slate-50 dark:bg-slate-800/50 border-y border-slate-200/50 dark:border-slate-700/50"><td colspan="3" class="py-3 px-4 font-black text-orange-600 dark:text-orange-400 text-sm font-prompt"><i class="fa-solid fa-layer-group mr-2"></i>วิชา: ${subj}</td></tr>`;
+                
+                grouped[subj].forEach(l => {
+                    let idx = allLessons.indexOf(l);
+                    let isC = l.studentScore !== null && l.studentScore !== undefined;
+                    let maxScore = (l.questions || []).filter(q => q && q.q && q.q.trim() !== "").length;
+                    let scoreText = "-";
+                    let statusBadge = "";
+
+                    if (isC) {
+                        completedCount++;
+                        scoreText = maxScore > 0 ? `<span class="text-emerald-600 dark:text-emerald-400 font-black">${l.studentScore}/${maxScore}</span>` : `<span class="text-emerald-500 font-bold"><i class="fa-solid fa-check mr-1"></i> ผ่าน</span>`;
+                        statusBadge = `<span class="bg-emerald-100 dark:bg-emerald-900/50 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 px-2 py-1 rounded-md text-[10px] font-bold shadow-sm"><i class="fa-solid fa-check mr-1"></i> จบแล้ว</span>`;
+                    } else {
+                        pendingCount++;
+                        scoreText = maxScore > 0 ? `<span class="text-slate-400 dark:text-slate-500 font-medium">0/${maxScore}</span>` : `<span class="text-slate-400 font-medium">-</span>`;
+                        statusBadge = `<span class="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 px-2 py-1 rounded-md text-[10px] font-bold shadow-sm"><i class="fa-regular fa-clock mr-1"></i> ยังไม่เรียน</span>`;
+                    }
+
+                    // แถวบทเรียนที่กดได้
+                    h += `
+                    <tr class="hover:bg-white/60 dark:hover:bg-black/30 transition cursor-pointer border-b border-slate-100 dark:border-slate-700/50 last:border-0" onclick="openLesson(${idx})">
+                        <td class="py-3 px-4 text-slate-800 dark:text-slate-200 font-bold truncate max-w-[200px] lg:max-w-[300px] border-0 pl-8"><i class="fa-solid fa-caret-right text-slate-300 dark:text-slate-600 mr-2"></i> ${l.title}</td>
+                        <td class="py-3 px-3 text-center border-0">${statusBadge}</td>
+                        <td class="py-3 px-4 text-right text-sm lg:text-base border-0">${scoreText}</td>
+                    </tr>`;
+                });
+            }
 
             document.getElementById('scoreStatCompleted').innerText = completedCount;
             document.getElementById('scoreStatPending').innerText = pendingCount;
@@ -734,7 +762,6 @@
             document.getElementById('lessonGrid_student').innerHTML = filtered.length > 0 ? filtered.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'grid')).join('') : '<div class="col-span-full py-20 text-center text-slate-700 dark:text-slate-300 font-bold border-2 border-dashed border-slate-400/60 dark:border-slate-600/60 rounded-[2rem] bg-white/30 dark:bg-black/20 backdrop-blur-sm">ไม่พบสิ่งที่ค้นหา</div>';
         }
 
-        // ✨ ปรับแก้การ์ดบทเรียน ไม่ให้แสดง Score 0/1 ตอนยังไม่สอบ ✨
         function renderLessonCard(l, idx, isNew = false, layoutType = 'grid') {
             let isC = l.studentScore !== null && l.studentScore !== undefined;
             let favs = JSON.parse(localStorage.getItem('favs_'+currentUser.id)||'[]');
@@ -1012,7 +1039,6 @@
             }
         }
 
-        // ✨ เปิดบทเรียน และ ปรับปรุงป้ายคะแนนสไตล์ iOS ด้านบนวิดีโอ
         function openLesson(idx) {
             currentLesson = allLessons[idx]; 
             nav('lesson_detail');
@@ -1044,8 +1070,8 @@
                 quizWrapper.classList.add('hidden');
             } else {
                 topBanner.classList.add('hidden');
-                if(!ytId && totalQs > 0) quizWrapper.classList.remove('hidden'); // ถ้าไม่มีวิดีโอ ให้โชว์แบบทดสอบด้านล่าง
-                else quizWrapper.classList.add('hidden'); // ถ้ามีวิดีโอ แบบทดสอบจะเด้งขึ้นมาระหว่างดูเอง
+                if(!ytId && totalQs > 0) quizWrapper.classList.remove('hidden'); 
+                else quizWrapper.classList.add('hidden'); 
             }
 
             if(ytId) { 
@@ -1207,25 +1233,28 @@
         }
 
         function renderChatContacts() {
-            let aList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'admin').map(u => ({...u, bgColor:'bg-rose-100 dark:bg-rose-900/50', textColor:'text-rose-600 dark:text-rose-400', initials:getInitials(u.name || u.Name || "A"), room:"-"}));
             let tList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'teacher').map(u => ({...u, bgColor:'bg-indigo-100 dark:bg-indigo-900/50', textColor:'text-indigo-600 dark:text-indigo-400', initials:getInitials(u.name || u.Name || "T"), room:u.assigned || u.room || u.Room || "-"}));
+            let aList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'admin').map(u => ({...u, bgColor:'bg-rose-100 dark:bg-rose-900/50', textColor:'text-rose-600 dark:text-rose-400', initials:getInitials(u.name || u.Name || "A"), room:"-"}));
             
-            let h = "";
-            let sb = "";
-            
-            if(aList.length > 0) { 
-                h += `<p class="px-4 text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-widest mt-2">ผู้ดูแลระบบ</p>`; 
-                aList.forEach(c => { h += buildContactCard(c, "inbox"); sb += buildContactCard(c, "sidebar"); }); 
+            let htmlInboxList = "";
+            let htmlRightSidebar = "";
+
+            if(tList.length === 0 && aList.length === 0) {
+                 htmlInboxList = '<div class="text-center p-4 text-xs text-slate-500 dark:text-slate-400 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl mx-4 mt-4 bg-white/40 dark:bg-transparent">ไม่มีผู้ติดต่อ</div>';
+                 htmlRightSidebar = '<div class="text-[10px] text-slate-500 dark:text-slate-400 text-center py-4 bg-white/40 dark:bg-black/20 rounded-xl border border-dashed border-slate-400/50 dark:border-slate-600/50 shadow-inner">ไม่มีข้อมูลผู้ติดต่อ</div>';
+            } else {
+                if(tList.length > 0) {
+                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-widest mt-2">อาจารย์ผู้สอน</p>`;
+                    tList.forEach(c => { htmlInboxList += buildContactCard(c, "inbox"); htmlRightSidebar += buildContactCard(c, "sidebar"); });
+                }
+                if(aList.length > 0) {
+                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-widest mt-4">ผู้ดูแลระบบ</p>`;
+                    aList.forEach(c => { htmlInboxList += buildContactCard(c, "inbox"); htmlRightSidebar += buildContactCard(c, "sidebar"); });
+                }
             }
-            if(tList.length > 0) { 
-                h += `<p class="px-4 text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-widest mt-4">อาจารย์ผู้สอน</p>`; 
-                tList.forEach(c => { h += buildContactCard(c, "inbox"); sb += buildContactCard(c, "sidebar"); }); 
-            }
             
-            let clist = document.getElementById('chatContactList'); if(clist) clist.innerHTML = h || '<div class="text-center p-4 text-xs text-slate-600 dark:text-slate-400 font-medium border-2 border-dashed border-slate-400/50 dark:border-slate-600/50 rounded-xl mx-4 mt-4 bg-white/40 dark:bg-transparent">ไม่มีผู้ติดต่อ</div>';
-            
-            let mentorUI = document.getElementById('mentorListUI');
-            if(mentorUI) mentorUI.innerHTML = sb || '<div class="text-[10px] text-slate-600 dark:text-slate-400 font-medium text-center py-4 bg-white/60 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-400/50 dark:border-slate-600/50 shadow-inner">ไม่มีข้อมูลผู้ติดต่อ</div>';
+            let clist = document.getElementById('chatContactList'); if(clist) clist.innerHTML = htmlInboxList;
+            let mentorUI = document.getElementById('mentorListUI'); if(mentorUI) mentorUI.innerHTML = htmlRightSidebar;
 
             updateUnreadBadges(); 
         }
@@ -1238,14 +1267,12 @@
             
             let contactInfo = [...allUsersData].map(u => {
                 let roleStr = String(u.role || u.Role || "").toLowerCase().trim();
-                let sId = u.id || u.username || u.Username || "-";
                 return {
                     name: u.name || u.Name || "", 
                     role: roleStr === 'admin' ? 'Admin' : (roleStr === 'teacher' ? 'Teacher' : 'Student'), 
                     initials: getInitials(u.name || u.Name || "A"), 
                     pic: u.pic || u.ProfilePic || "", 
-                    room: u.assigned || u.room || u.Room || "-",
-                    id: sId
+                    room: u.assigned || u.room || u.Room || "-"
                 }
             }).find(x => x.name === n);
 
@@ -1255,8 +1282,6 @@
             if (contactInfo) {
                 if (contactInfo.role === 'Admin') {
                     subjectBadgeHeader = ` <span class="text-xs text-rose-500 font-bold ml-2">(Admin)</span>`;
-                } else if (contactInfo.role === 'Student') {
-                    subjectBadgeHeader = ` <span class="text-xs text-slate-500 dark:text-slate-400 font-normal ml-2">(ID: ${contactInfo.id} | Class: ${contactInfo.room})</span>`;
                 } else if (contactInfo.room && contactInfo.room !== "-") {
                     subjectBadgeHeader = ` <span class="text-xs text-slate-500 dark:text-slate-400 font-normal ml-2">(วิชา: ${contactInfo.room})</span>`;
                 }
@@ -1338,7 +1363,6 @@
             let msg = document.getElementById('chatInputMessage').value.trim(); 
             if(!msg || !activeChatContact) return;
             
-            // Backup ตัวแปรสำคัญ
             let savedContacts = [...allUsersData];
             let activeContactBackup = activeChatContact;
             
