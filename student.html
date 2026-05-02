@@ -652,6 +652,7 @@
             document.getElementById('lessonGrid_student').innerHTML = filtered.length > 0 ? filtered.map(l => renderLessonCard(l, allLessons.indexOf(l), false, 'grid')).join('') : '<div class="col-span-full py-20 text-center text-slate-700 dark:text-slate-300 font-bold border-2 border-dashed border-slate-400/60 dark:border-slate-600/60 rounded-[2rem] bg-white/30 dark:bg-black/20 backdrop-blur-sm">ไม่พบสิ่งที่ค้นหา</div>';
         }
 
+        // ✨ แก้ไขตรรกะคะแนนสอบ ไม่ใช้ Score 0/1 ตอนยังไม่สอบ ✨
         function renderLessonCard(l, idx, isNew = false, layoutType = 'grid') {
             let isC = l.studentScore !== null && l.studentScore !== undefined;
             let favs = JSON.parse(localStorage.getItem('favs_'+currentUser.id)||'[]');
@@ -672,12 +673,16 @@
             let scoreHtml = '';
             
             if (totalQs > 0) {
-                scoreHtml = `<div class="mt-auto border-t border-slate-300/40 dark:border-slate-600/40 pt-4"><span class="text-xs font-bold text-[#f05a28]"><i class="fa-solid fa-star text-yellow-500 mr-1"></i> Score: ${isC ? l.studentScore : 0}/${totalQs}</span></div>`;
+                if (isC) {
+                    scoreHtml = `<div class="mt-auto border-t border-slate-300/40 dark:border-slate-600/40 pt-4 flex justify-between items-center"><span class="text-xs font-bold text-emerald-600 dark:text-emerald-400"><i class="fa-solid fa-star text-yellow-500 mr-1"></i> คะแนน: ${l.studentScore}/${totalQs}</span><i class="fa-solid fa-circle-check text-emerald-500 text-lg"></i></div>`;
+                } else {
+                    scoreHtml = `<div class="mt-auto border-t border-slate-300/40 dark:border-slate-600/40 pt-4"><span class="text-[10px] lg:text-xs font-bold text-slate-500 dark:text-slate-400"><i class="fa-regular fa-file-lines mr-1"></i> มีแบบทดสอบ ${totalQs} ข้อ (ยังไม่ได้ทำ)</span></div>`;
+                }
             } else {
                 if(isC) {
-                    scoreHtml = `<div class="mt-auto border-t border-slate-300/40 dark:border-slate-600/40 pt-4"><span class="text-xs font-bold text-emerald-600 dark:text-emerald-500"><i class="fa-solid fa-circle-check mr-1"></i>เรียนจบแล้ว</span></div>`;
+                    scoreHtml = `<div class="mt-auto border-t border-slate-300/40 dark:border-slate-600/40 pt-4 flex justify-between items-center"><span class="text-xs font-bold text-emerald-600 dark:text-emerald-500"><i class="fa-solid fa-circle-check mr-1"></i> เรียนจบแล้ว</span><i class="fa-solid fa-medal text-emerald-500 text-lg"></i></div>`;
                 } else {
-                    scoreHtml = `<div class="mt-auto border-t border-slate-300/40 dark:border-slate-600/40 pt-4"><span class="text-[10px] font-bold text-slate-500 dark:text-slate-400">ไม่มีแบบทดสอบ</span></div>`;
+                    scoreHtml = `<div class="mt-auto border-t border-slate-300/40 dark:border-slate-600/40 pt-4"><span class="text-[10px] font-bold text-slate-400 dark:text-slate-500"><i class="fa-solid fa-play mr-1"></i> ไม่มีแบบทดสอบ</span></div>`;
                 }
             }
 
@@ -697,7 +702,7 @@
             return `
             <div class="glass-panel course-card rounded-[2rem] p-4 lg:p-5 flex flex-col h-full relative w-full ${widthClass}" onclick="openLesson(${idx})">
                 
-                <div class="h-32 lg:h-40 w-full rounded-[1.5rem] mb-4 lg:mb-5 relative overflow-hidden group shrink-0 border border-white/40 dark:border-white/10 bg-gradient-to-br ${gradColor} ${isC?'grayscale':''}">
+                <div class="h-32 lg:h-40 w-full rounded-[1.5rem] mb-4 lg:mb-5 relative overflow-hidden group shrink-0 border border-white/40 dark:border-white/10 bg-gradient-to-br ${gradColor} ${isC?'grayscale opacity-80':''}">
                     
                     <div class="w-full h-full flex items-center justify-center transition duration-700 group-hover:scale-105">
                         <i class="fa-solid ${iconClass} text-white/30 text-6xl transform -rotate-12 group-hover:rotate-0 transition duration-500 drop-shadow-sm"></i>
@@ -709,7 +714,7 @@
                     ${newBadge}
                     
                     <div class="absolute top-3 right-3 w-8 h-8 bg-white/70 dark:bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center shadow-md z-20 transition hover:bg-white dark:hover:bg-slate-700 hover:scale-110 border border-white/60 dark:border-white/10" onclick="toggleFavorite(event, '${l.title.replace(/'/g, "\\'")}')"><i class="${heartClass} fa-heart text-sm pointer-events-none"></i></div>
-                    ${isC ? `<div class="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[1px] z-10"><div class="bg-emerald-500 text-white px-3 py-1 rounded-lg text-[10px] font-bold shadow-md border border-white/20">Completed</div></div>` : ''}
+                    ${isC ? `<div class="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[2px] z-10"><div class="bg-emerald-500/90 text-white px-4 py-1.5 rounded-xl text-xs font-bold shadow-lg border border-white/20 backdrop-blur-md"><i class="fa-solid fa-check mr-1"></i> Completed</div></div>` : ''}
                     ${progressIndicator}
                 </div>
                 
@@ -948,7 +953,7 @@
                 quizWrapper.classList.add('hidden');
             } else {
                 topBanner.classList.add('hidden');
-                if(!ytId) quizWrapper.classList.remove('hidden'); // ถ้าไม่มีวิดีโอ ให้โชว์แบบทดสอบด้านล่าง
+                if(!ytId && totalQs > 0) quizWrapper.classList.remove('hidden'); // ถ้าไม่มีวิดีโอ ให้โชว์แบบทดสอบด้านล่าง
                 else quizWrapper.classList.add('hidden'); // ถ้ามีวิดีโอ แบบทดสอบจะเด้งขึ้นมาระหว่างดูเอง
             }
 
@@ -985,11 +990,14 @@
                 imgContainer.classList.remove('hidden');
                 
                 if (currentLesson.studentScore === null || currentLesson.studentScore === undefined) {
-                    document.getElementById('quizForm').classList.remove('hidden'); 
                     
                     if(totalQs === 0) {
+                        quizWrapper.classList.remove('hidden');
+                        document.getElementById('quizForm').classList.remove('hidden'); 
                         document.getElementById('quizContainer').innerHTML = `<div class="text-center py-8"><button type="button" onclick="submitQuiz(true,0)" class="bg-[#f05a28] text-white font-bold px-10 py-4 rounded-full shadow-lg hover:bg-[#d94a1d] transition border border-white/20">บันทึกการเรียนจบ</button></div>`;
                     } else { 
+                        quizWrapper.classList.remove('hidden');
+                        document.getElementById('quizForm').classList.remove('hidden'); 
                         let qh = ""; 
                         vQs.forEach((q, i) => { qh += `<div class="glass-panel p-5 lg:p-8 rounded-2xl lg:rounded-3xl border border-white dark:border-slate-700 mb-6 shadow-sm"><p class="font-bold text-base lg:text-lg mb-5 text-slate-800 dark:text-slate-100">${i+1}. ${q.q}</p><div class="grid grid-cols-1 gap-3 text-sm text-slate-800 dark:text-slate-200 font-medium"><label class="p-4 bg-white/70 dark:bg-black/40 border border-white dark:border-slate-700 rounded-xl cursor-pointer flex items-center hover:bg-orange-50 dark:hover:bg-orange-900/30 hover:border-orange-300 dark:hover:border-orange-600 transition-all active:scale-[0.98] shadow-sm"><input type="radio" name="ans${i+1}" value="1" class="mr-3 accent-[#f05a28] w-4 h-4"> ก. ${q.c1}</label><label class="p-4 bg-white/70 dark:bg-black/40 border border-white dark:border-slate-700 rounded-xl cursor-pointer flex items-center hover:bg-orange-50 dark:hover:bg-orange-900/30 hover:border-orange-300 dark:hover:border-orange-600 transition-all active:scale-[0.98] shadow-sm"><input type="radio" name="ans${i+1}" value="2" class="mr-3 accent-[#f05a28] w-4 h-4"> ข. ${q.c2}</label><label class="p-4 bg-white/70 dark:bg-black/40 border border-white dark:border-slate-700 rounded-xl cursor-pointer flex items-center hover:bg-orange-50 dark:hover:bg-orange-900/30 hover:border-orange-300 dark:hover:border-orange-600 transition-all active:scale-[0.98] shadow-sm"><input type="radio" name="ans${i+1}" value="3" class="mr-3 accent-[#f05a28] w-4 h-4"> ค. ${q.c3}</label><label class="p-4 bg-white/70 dark:bg-black/40 border border-white dark:border-slate-700 rounded-xl cursor-pointer flex items-center hover:bg-orange-50 dark:hover:bg-orange-900/30 hover:border-orange-300 dark:hover:border-orange-600 transition-all active:scale-[0.98] shadow-sm"><input type="radio" name="ans${i+1}" value="4" class="mr-3 accent-[#f05a28] w-4 h-4"> ง. ${q.c4}</label></div></div>`; }); 
                         document.getElementById('quizContainer').innerHTML = qh + `<button type="button" onclick="submitQuiz()" class="w-full bg-[#f05a28] text-white font-bold py-4 rounded-full mt-4 text-lg shadow-lg hover:bg-[#d94a1d] transition border border-white/20">ส่งคำตอบ</button>`; 
@@ -1028,6 +1036,7 @@
             });
         }
 
+        // ✨ แก้ไขระบบวาดการ์ดรายชื่อ ให้แสดงข้อมูลชัดเจน ไม่หาย และเรียงสวยงาม
         function buildContactCard(c, type) {
             let isActive = activeChatContact === c.name ? "active" : "";
             let pPic = c.pic ? `<img src="${c.pic}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center font-bold text-xs lg:text-sm">${c.initials}</div>`;
@@ -1067,7 +1076,7 @@
             let subText = "";
             if (rRole === 'admin') {
                 subText = `<span class="text-rose-500 font-bold"><i class="fa-solid fa-user-shield"></i> Admin</span>`;
-            } else if (c.room && c.room !== "-") {
+            } else if (rRole === 'teacher' && c.room && c.room !== "-") {
                 subText = `<i class="fa-solid fa-book mr-1 text-slate-400"></i> วิชา: ${c.room}`;
             }
 
@@ -1108,30 +1117,43 @@
         }
 
         function renderChatContacts() {
-            let aList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'admin').map(u => ({...u, bgColor:'bg-rose-100 dark:bg-rose-900/50', textColor:'text-rose-600 dark:text-rose-400', initials:getInitials(u.name || u.Name || "A"), room:"-"}));
             let tList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'teacher').map(u => ({...u, bgColor:'bg-indigo-100 dark:bg-indigo-900/50', textColor:'text-indigo-600 dark:text-indigo-400', initials:getInitials(u.name || u.Name || "T"), room:u.assigned || u.room || u.Room || "-"}));
+            let aList = allUsersData.filter(u => String(u.role || u.Role).toLowerCase() === 'admin').map(u => ({...u, bgColor:'bg-rose-100 dark:bg-rose-900/50', textColor:'text-rose-600 dark:text-rose-400', initials:getInitials(u.name || u.Name || "A"), room:"-"}));
             
-            let h = "";
-            let sb = "";
-            
-            if(aList.length > 0) { 
-                h += `<p class="px-4 text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-widest mt-2">ผู้ดูแลระบบ</p>`; 
-                aList.forEach(c => { h += buildContactCard(c, "inbox"); sb += buildContactCard(c, "sidebar"); }); 
+            let htmlInboxList = "";
+            let htmlRightSidebar = "";
+
+            if(tList.length === 0 && aList.length === 0) {
+                 htmlInboxList = '<div class="text-center p-4 text-xs text-slate-500 dark:text-slate-400 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl mx-4 mt-4 bg-white/40 dark:bg-transparent">ไม่มีผู้ติดต่อ</div>';
+                 htmlRightSidebar = '<div class="text-[10px] text-slate-500 dark:text-slate-400 text-center py-4 bg-white/40 dark:bg-black/20 rounded-xl border border-dashed border-slate-400/50 dark:border-slate-600/50 shadow-inner">ไม่มีข้อมูลผู้ติดต่อ</div>';
+            } else {
+                if(tList.length > 0) {
+                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-widest mt-2">อาจารย์ผู้สอน</p>`;
+                    tList.forEach(c => {
+                        htmlInboxList += buildContactCard(c, "inbox");
+                        htmlRightSidebar += buildContactCard(c, "sidebar");
+                    });
+                }
+                
+                if(aList.length > 0) {
+                    htmlInboxList += `<p class="px-4 text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-widest mt-4">ผู้ดูแลระบบ</p>`;
+                    aList.forEach(c => {
+                        htmlInboxList += buildContactCard(c, "inbox");
+                        htmlRightSidebar += buildContactCard(c, "sidebar");
+                    });
+                }
             }
-            if(tList.length > 0) { 
-                h += `<p class="px-4 text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-3 uppercase tracking-widest mt-4">อาจารย์ผู้สอน</p>`; 
-                tList.forEach(c => { h += buildContactCard(c, "inbox"); sb += buildContactCard(c, "sidebar"); }); 
-            }
             
-            let clist = document.getElementById('chatContactList'); if(clist) clist.innerHTML = h || '<div class="text-center p-4 text-xs text-slate-600 dark:text-slate-400 font-medium border-2 border-dashed border-slate-400/50 dark:border-slate-600/50 rounded-xl mx-4 mt-4 bg-white/40 dark:bg-transparent">ไม่มีผู้ติดต่อ</div>';
+            let clist = document.getElementById('chatContactList');
+            if(clist) clist.innerHTML = htmlInboxList;
             
             let mentorUI = document.getElementById('mentorListUI');
-            if(mentorUI) mentorUI.innerHTML = sb || '<div class="text-[10px] text-slate-600 dark:text-slate-400 font-medium text-center py-4 bg-white/60 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-400/50 dark:border-slate-600/50 shadow-inner">ไม่มีข้อมูลผู้ติดต่อ</div>';
+            if(mentorUI) mentorUI.innerHTML = htmlRightSidebar;
 
             updateUnreadBadges(); 
         }
 
-        // ✨ ตรรกะใหม่ แสดงการอ่าน (Read Receipts)
+        // ✨ ตรรกะใหม่ แสดงการอ่านเหมือนแอปแชทจริง
         function openChat(n) {
             activeChatContact = n; document.getElementById('chatPlaceholder').classList.add('hidden'); 
             
@@ -1140,14 +1162,12 @@
             
             let contactInfo = [...allUsersData].map(u => {
                 let roleStr = String(u.role || u.Role || "").toLowerCase().trim();
-                let sId = u.id || u.username || u.Username || "-";
                 return {
                     name: u.name || u.Name || "", 
                     role: roleStr === 'admin' ? 'Admin' : (roleStr === 'teacher' ? 'Teacher' : 'Student'), 
                     initials: getInitials(u.name || u.Name || "A"), 
                     pic: u.pic || u.ProfilePic || "", 
-                    room: u.assigned || u.room || u.Room || "-",
-                    id: sId
+                    room: u.assigned || u.room || u.Room || "-"
                 }
             }).find(x => x.name === n);
 
